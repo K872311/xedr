@@ -130,8 +130,6 @@ _lock = threading.RLock()
 COMMAND_LEASE_DEFAULT_SEC = 60
 COMMAND_LEASE_SEC = {
     "scan_memory": 180, "upgrade": 300, "rollback_upgrade": 300, "refresh_modules": 90,
-    "run_cmd": 120, "reg_read": 90, "fs_list": 90, "fs_stat": 60, "fs_read": 120, "fs_volumes": 60,
-    "shell_open": 60, "shell_write": 45, "shell_poll": 45, "shell_close": 30,
 }
 COMMAND_MAX_ATTEMPTS = 3
 COMMAND_TTL_DEFAULT_SEC = 1800
@@ -150,52 +148,7 @@ ACTIONS = (
     "cancel_upgrade",
     "uninstall_agent",
     "collect_diagnostics",
-    "reg_read",
-    "fs_list",
-    "fs_stat",
-    "fs_read",
-    "fs_volumes",
-    "live_query",
-    "run_cmd",
-    "shell_open",
-    "shell_write",
-    "shell_poll",
-    "shell_close",
 )
-
-_REMOTE_OPS_READ = frozenset({"reg_read", "fs_list", "fs_stat", "fs_read", "fs_volumes", "live_query", "shell_poll"})
-_REMOTE_OPS_SHELL = frozenset({"shell_open", "shell_write", "shell_poll", "shell_close"})
-_REMOTE_OPS_ALL = _REMOTE_OPS_READ | frozenset({"run_cmd"}) | _REMOTE_OPS_SHELL
-
-
-def _remote_ops_policy_cfg() -> Dict[str, Any]:
-    try:
-        pol = (get_policy("global").get("policy") or {})
-    except Exception:
-        pol = dict(_DEFAULT_POLICY)
-    ro = pol.get("remote_ops") if isinstance(pol.get("remote_ops"), dict) else {}
-    return {
-        "enabled": bool(pol.get("remote_ops_enabled", ro.get("enabled", True))),
-        "read_only": bool(ro.get("read_only", False)),
-        "run_cmd_enabled": bool(ro.get("run_cmd_enabled", True)),
-        "shell_enabled": bool(ro.get("shell_enabled", True)),
-    }
-
-
-def _validate_remote_ops_command(action: str, params: Dict[str, Any]) -> str:
-    act = str(action or "").strip().lower()
-    if act not in _REMOTE_OPS_ALL:
-        return ""
-    cfg = _remote_ops_policy_cfg()
-    if not cfg["enabled"]:
-        return "远程运维未启用（策略 remote_ops）"
-    if act == "run_cmd":
-        if cfg["read_only"] or not cfg["run_cmd_enabled"]:
-            return "远程命令执行未启用或处于只读模式"
-    if act in ("shell_open", "shell_write", "shell_poll", "shell_close") and not cfg["shell_enabled"]:
-        return "交互式 Shell 未启用"
-    _ = params
-    return ""
 
 # ATT&CK 战术顺序（看板列）
 _ATTCK_TACTICS = [
@@ -366,9 +319,6 @@ def create_command(
     act = str(action or "").strip().lower()
     if not aid or act not in ACTIONS:
         return {"ok": False, "error": "agent_id 或 action 无效"}
-    pol_err = _validate_remote_ops_command(act, params or {})
-    if pol_err:
-        return {"ok": False, "error": pol_err}
     cid = uuid.uuid4().hex
     now = _now()
     blob = json.dumps(params or {}, ensure_ascii=False)
@@ -1779,19 +1729,6 @@ _DEFAULT_POLICY = {
         "max_checks_per_run": 48,
     },
     "active_response_enabled": True,
-    "remote_ops_enabled": True,
-    "remote_ops": {
-        "enabled": True,
-        "read_only": False,
-        "run_cmd_enabled": True,
-        "shell_enabled": True,
-        "shell_max_minutes": 15,
-        "run_cmd_whitelist": [
-            "dir", "type", "reg", "ipconfig", "netstat", "tasklist", "systeminfo",
-            "whoami", "hostname", "net", "sc", "cd", "echo", "where", "findstr",
-            "powershell -noprofile -command",
-        ],
-    },
     "memory_scan": {
         "mode": "yara_triggered",
         "rules_rev": "2026.10.31.1",
@@ -1847,7 +1784,6 @@ def get_policy(scope: str = "global") -> Dict[str, Any]:
 _POLICY_BOOL_KEYS = (
     "response_enabled", "timeline_process", "timeline_file", "timeline_network", "self_protect",
     "fim_enabled", "isolate_allow_server", "whitelist_skip_rules", "mysql_dual_write",
-    "remote_ops_enabled",
 )
 
 
@@ -1936,8 +1872,13 @@ def set_policy(scope: str, policy: Dict[str, Any], *, actor: str = "", note: str
     scope = str(scope or "global")
     if not isinstance(policy, dict):
         return {"ok": False, "error": "policy 必须是对象"}
+    policy = dict(policy)
+    policy.pop("remote_ops", None)
+    policy.pop("remote_ops_enabled", None)
     merged = dict(_DEFAULT_POLICY)
     merged.update(policy)
+    merged.pop("remote_ops", None)
+    merged.pop("remote_ops_enabled", None)
     errs = validate_policy(merged)
     if errs:
         return {"ok": False, "error": "；".join(errs), "errors": errs}

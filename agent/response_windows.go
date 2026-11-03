@@ -38,11 +38,6 @@ func execCommand(cfg Config, cmd agentCommand) (map[string]any, error) {
 		return uninstallAgentRemote(cfg, cmd.Params)
 	case "collect_diagnostics":
 		return collectDiagnosticsBundle(cfg)
-	case "live_query":
-		return liveQueryExec(cmd.Params)
-	case "reg_read", "fs_list", "fs_stat", "fs_read", "fs_volumes", "run_cmd",
-		"shell_open", "shell_write", "shell_poll", "shell_close":
-		return remoteOpsExec(cmd.Params, cmd.Action)
 	default:
 		return nil, fmt.Errorf("未知动作: %s", cmd.Action)
 	}

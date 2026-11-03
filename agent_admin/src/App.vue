@@ -2380,7 +2380,7 @@
               @click="selectHostGroup(g.id)"
             >{{ g.label }}</button>
           </nav>
-          <nav v-if="hostTabGroup !== 'remote'" class="mod-tabs bar">
+          <nav class="mod-tabs bar">
             <button
               v-for="m in hostGroupMods"
               :key="m"
@@ -2391,375 +2391,12 @@
             >{{ modLabel(m) }}</button>
           </nav>
 
-          <div v-if="hostTabGroup === 'remote'" class="host-remote-wrap panel">
-            <div class="host-remote-hero">
-              <div class="host-remote-hero-main">
-                <h2>应急远程管理</h2>
-                <p class="hint">经 Agent 指令通道运维（非 RDP）：Live Query 表 · 只读文件/注册表 · 白名单命令 · 交互 Shell。终端需<strong>在线</strong>，策略开启「远程运维」；下发需管理员。</p>
-                <div class="host-remote-steps">
-                  <span>① Live Query</span>
-                  <span>② 读盘/注册表</span>
-                  <span>③ Shell / 命令</span>
-                </div>
-              </div>
-              <div class="host-remote-hero-aside">
-                <span class="sync-pill lg" :class="{ on: selected.online }">
-                  <i class="sync-dot" />
-                  {{ selected.online ? '可下发指令' : '离线 · 仅可查看历史' }}
-                </span>
-                <span v-if="hostRemoteBusy" class="hr-busy-pill">执行中…</span>
-              </div>
-            </div>
-            <nav class="host-remote-subnav" aria-label="远程运维功能">
-              <button
-                v-for="t in HOST_REMOTE_TABS"
-                :key="t.id"
-                type="button"
-                class="hr-tab"
-                :class="{ on: hostRemoteSubTab === t.id }"
-                @click="hostRemoteSubTab = t.id"
-              >
-                <span class="hr-tab-label">{{ t.label }}</span>
-                <span class="hr-tab-hint">{{ t.hint }}</span>
-              </button>
-            </nav>
-            <div v-show="hostRemoteSubTab === 'files'" class="host-remote-panel hr-fs-panel">
-              <div class="host-remote-toolbar">
-                <input v-model="hostRemoteFsPath" class="field mono grow" placeholder="C:\" @keyup.enter="hostRemoteFsBrowse" />
-                <button type="button" class="btn sm" :disabled="!hostRemoteFsPath || hostRemoteBusy" @click="hostRemoteFsUp">上级</button>
-                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsBrowse">刷新</button>
-                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsRead">读文件</button>
-                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsLoadVolumes">重新获取盘符</button>
-              </div>
-              <p v-if="hostRemoteFsHint" class="hint sm">{{ hostRemoteFsHint }}</p>
-              <div class="hr-fs-explorer">
-                <aside class="hr-fs-tree">
-                  <div class="hr-fs-tree-hd">盘符 / 目录</div>
-                  <p v-if="!hostRemoteFsTree.length" class="empty sm">{{ selected.online ? '正在读取盘符…' : '终端离线，无法列盘符' }}</p>
-                  <ul v-else class="hr-fs-tree-ul">
-                    <li v-for="row in hostRemoteFsTree" :key="row.node.path">
-                      <button
-                        type="button"
-                        class="hr-fs-node"
-                        :class="{ on: hostRemoteFsSamePath(hostRemoteFsPath, row.node.path) }"
-                        :style="{ paddingLeft: (8 + row.depth * 14) + 'px' }"
-                        :disabled="hostRemoteBusy"
-                        @click="hostRemoteFsToggle(row.node)"
-                      >
-                        <i class="hr-fs-caret">{{ row.node.expanded ? '▼' : '▶' }}</i>
-                        <span class="hr-fs-node-name">{{ row.node.label }}</span>
-                        <em v-if="row.node.child_count != null">{{ row.node.child_count }} 项</em>
-                      </button>
-                    </li>
-                  </ul>
-                </aside>
-                <div class="hr-fs-main">
-                  <p class="hr-fs-crumb mono">
-                    {{ hostRemoteFsPath || '未选择' }}
-                    <span v-if="hostRemoteFsEntries.length"> · {{ hostRemoteFsEntries.length }} 项</span>
-                    <span v-if="hostRemoteFsDirCount"> · 目录 {{ hostRemoteFsDirCount }}</span>
-                    <span v-if="hostRemoteFsFileCount"> · 文件 {{ hostRemoteFsFileCount }}</span>
-                  </p>
-                  <p v-if="hostRemoteFsTruncated" class="hint sm warn-hint">目录项过多，仅显示前 200 条</p>
-                  <table v-if="hostRemoteFsEntries.length" class="host-remote-cmd-table hr-fs-table">
-                    <thead><tr><th>名称</th><th>类型</th><th>大小 / 项数</th><th></th></tr></thead>
-                    <tbody>
-                      <tr v-for="e in hostRemoteFsEntries" :key="e.name" class="hr-fs-row" @dblclick="hostRemoteFsEnter(e)">
-                        <td><span class="hr-fs-icon">{{ e.dir ? '📁' : '📄' }}</span>{{ e.name }}</td>
-                        <td>{{ e.dir ? '目录' : '文件' }}</td>
-                        <td>{{ e.dir ? (e.child_count != null ? `${e.child_count} 项` : '目录') : hostRemoteFmtSize(e.size) }}</td>
-                        <td>
-                          <button type="button" class="btn-text" @click="hostRemoteFsEnter(e)">{{ e.dir ? '进入' : '预览' }}</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p v-else class="empty sm">点左侧盘符展开目录</p>
-                  <pre v-if="hostRemoteFsPreview" class="host-remote-pre">{{ hostRemoteFsPreview }}</pre>
-                </div>
-              </div>
-            </div>
-            <div v-show="hostRemoteSubTab === 'reg'" class="host-remote-panel hr-reg-panel">
-              <div class="host-remote-toolbar">
-                <select v-model="hostRemoteReg.hive" class="field">
-                  <option value="HKLM">HKLM</option>
-                  <option value="HKCU">HKCU</option>
-                  <option value="HKU">HKU</option>
-                  <option value="HKCR">HKCR</option>
-                </select>
-                <input v-model="hostRemoteReg.key" class="field mono grow" placeholder="SOFTWARE\..." @keyup.enter="hostRemoteRegLoad" />
-                <input v-model="hostRemoteReg.value" class="field" placeholder="值名（留空列全部）" @keyup.enter="hostRemoteRegLoad" />
-                <button type="button" class="btn sm" :disabled="!hostRemoteReg.key || hostRemoteBusy" @click="hostRemoteRegUp">上级</button>
-                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteRegLoad">读取</button>
-              </div>
-              <div class="hr-reg-shortcuts">
-                <button
-                  v-for="s in HOST_REG_SHORTCUTS"
-                  :key="s.label"
-                  type="button"
-                  class="hr-reg-chip"
-                  @click="hostRemoteRegApplyShortcut(s)"
-                >{{ s.label }}</button>
-              </div>
-              <p v-if="hostRemoteRegBreadcrumb" class="hr-reg-crumb mono">{{ hostRemoteRegBreadcrumb }}</p>
-              <div v-if="hostRemoteRegResult" class="hr-reg-body">
-                <section v-if="hostRemoteRegSubkeys.length" class="hr-reg-section">
-                  <h4>子键 <span class="muted">({{ hostRemoteRegSubkeys.length }})</span></h4>
-                  <div class="hr-reg-subkey-list">
-                    <button
-                      v-for="sk in hostRemoteRegSubkeys"
-                      :key="sk"
-                      type="button"
-                      class="hr-reg-subkey"
-                      @click="hostRemoteRegOpenSubkey(sk)"
-                    >{{ sk }}</button>
-                  </div>
-                </section>
-                <section v-if="hostRemoteRegSingleValue" class="hr-reg-section">
-                  <h4>值 · {{ hostRemoteRegSingleValue.name }}</h4>
-                  <dl class="hr-reg-dl">
-                    <div><dt>类型</dt><dd>{{ hostRemoteRegSingleValue.type }}</dd></div>
-                    <div><dt>数据</dt><dd class="mono hr-reg-data">{{ hostRemoteRegSingleValue.data }}</dd></div>
-                  </dl>
-                </section>
-                <section v-else-if="hostRemoteRegValues.length" class="hr-reg-section">
-                  <h4>值 <span class="muted">({{ hostRemoteRegValues.length }}{{ hostRemoteRegResult.truncated ? '+' : '' }})</span></h4>
-                  <table class="host-remote-cmd-table hr-reg-val-table">
-                    <thead><tr><th>名称</th><th>类型</th><th>数据</th></tr></thead>
-                    <tbody>
-                      <tr v-for="v in hostRemoteRegValues" :key="v.name">
-                        <td class="mono">{{ v.name }}</td>
-                        <td>{{ v.type }}</td>
-                        <td class="mono hr-reg-data">{{ v.data || v.data_hex || '—' }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </section>
-                <p v-if="hostRemoteRegResult.truncated" class="hint sm">值过多，仅显示部分</p>
-              </div>
-              <p v-else class="empty sm">只读查询，不会修改注册表</p>
-            </div>
-            <div v-show="hostRemoteSubTab === 'livequery'" class="host-remote-panel hr-lq-panel">
-              <p class="hint sm">
-                按需向<strong>在线终端</strong>拉取只读资产表（进程、服务、监听端口、任务等），类似 Osquery 的「选表查询」。
-                不是在终端里跑 Osquery / SQL；返回的是 Agent 现场采集结果。
-              </p>
-              <div class="host-remote-toolbar">
-                <select v-model="hostLiveQueryTable" class="field">
-                  <option v-for="t in hostLiveQueryTableOptions" :key="t.name" :value="t.name">
-                    {{ t.name }}<template v-if="t.osquery_analog"> · ≈ {{ t.osquery_analog }}</template>
-                  </option>
-                </select>
-                <input v-model.number="hostLiveQueryLimit" type="number" min="10" max="500" class="field" style="max-width:6rem" title="行数上限" />
-                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostLiveQueryRun">查询</button>
-                <button type="button" class="btn sm" :disabled="!hostLiveQueryRows.length" @click="hostLiveQueryExport">导出 JSON</button>
-              </div>
-              <p v-if="hostLiveQueryMeta" class="hint sm mono">
-                {{ hostLiveQueryMeta.table }} · {{ hostLiveQueryMeta.row_count ?? hostLiveQueryRows.length }} 行 · {{ hostLiveQueryMeta.schema || 'forensic_v1' }}
-              </p>
-              <div v-if="hostLiveQueryRows.length" class="hr-lq-table-wrap">
-                <table class="host-remote-cmd-table hr-lq-table">
-                  <thead>
-                    <tr>
-                      <th v-for="col in hostLiveQueryCols" :key="col">{{ col }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row, ri) in hostLiveQueryRows" :key="ri">
-                      <td v-for="col in hostLiveQueryCols" :key="col" class="mono sm">{{ hostLiveQueryCell(row, col) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p v-else class="empty sm">{{ selected.online ? '选择表并点击查询' : '终端离线' }}</p>
-              <div class="panel pad" style="margin-top:12px">
-                <div class="panel-hd" style="display:flex;justify-content:space-between;align-items:center">
-                  <h4>Live Query 审计</h4>
-                  <button type="button" class="btn sm" @click="loadLiveQueryAudit">刷新</button>
-                </div>
-                <p class="hint sm">谁查了什么（来自 agent_audit · command:live_query）</p>
-                <table v-if="liveQueryAuditItems.length">
-                  <thead><tr><th>时间</th><th>操作者</th><th>参数</th></tr></thead>
-                  <tbody>
-                    <tr v-for="a in liveQueryAuditItems" :key="a.id">
-                      <td class="sm">{{ fmtTime(a.created_at) }}</td>
-                      <td class="mono sm">{{ a.actor || '—' }}</td>
-                      <td class="mono sm">{{ a.detail }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p v-else class="empty sm">暂无本机 Live Query 记录</p>
-              </div>
-            </div>
-            <div v-show="hostRemoteSubTab === 'cmd'" class="host-remote-panel">
-              <p class="hint sm">第二阶段：单条命令，Agent 侧白名单 + 危险关键字拦截；输出记录在下方与会话历史。</p>
-              <textarea v-model="hostRemoteCmdLine" class="field mono host-remote-cmd-in" rows="3" placeholder="dir C:\Users" />
-              <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteRunCmd">执行</button>
-              <pre v-if="hostRemoteCmdOut" class="host-remote-pre">{{ hostRemoteCmdOut }}</pre>
-              <div v-if="hostRemoteCmdLog.length" class="host-remote-cmd-log">
-                <h4>会话历史</h4>
-                <div v-for="(ln, i) in hostRemoteCmdLog" :key="i" class="host-remote-log-line">
-                  <em>{{ ln.at }}</em> <code>{{ ln.cmd }}</code>
-                </div>
-              </div>
-            </div>
-            <div v-show="hostRemoteSubTab === 'shell'" class="host-remote-panel hr-shell-panel">
-              <div class="hr-shell-layout">
-                <div class="hr-shell-card">
-                  <div class="hr-shell-hd">
-                    <div class="hr-shell-status">
-                      <i class="hr-shell-led" :class="hostRemoteShellPhase" />
-                      <span>{{ hostRemoteShellStatusLabel }}</span>
-                      <code v-if="hostRemoteShellId" class="mono hr-shell-sid">{{ hostRemoteShellId.slice(0, 12) }}…</code>
-                    </div>
-                    <div class="hr-shell-actions">
-                      <button
-                        type="button"
-                        class="btn sm primary"
-                        :disabled="hostRemoteShellConnectDisabled"
-                        @click="hostRemoteShellStart"
-                      >
-                        {{ hostRemoteShellPhase === 'connecting' ? '连接中…' : (hostRemoteShellPhase === 'live' ? '已连接' : '连接 Shell') }}
-                      </button>
-                      <button type="button" class="btn sm" :disabled="!hostRemoteShellId && hostRemoteShellPhase !== 'connecting'" @click="() => hostRemoteShellStop(false)">断开</button>
-                      <button type="button" class="btn sm" :disabled="!hostRemoteShellLines.length" @click="hostRemoteShellClear">清屏</button>
-                    </div>
-                  </div>
-                  <p v-if="hostRemoteShellHint" class="hr-shell-banner" :class="hostRemoteShellHintKind">{{ hostRemoteShellHint }}</p>
-                  <div ref="hostRemoteShellViewRef" class="hr-shell-body">
-                    <div v-if="!hostRemoteShellLines.length" class="hr-shell-empty">
-                      <p>尚未建立会话</p>
-                      <p class="muted">连接后输入命令；中文 Windows 输出已按 GBK 解码。右侧可点常用命令。</p>
-                      <p v-if="!isAdmin" class="warn-hint">当前账号非管理员，无法下发 Shell 指令，请使用 admin 登录。</p>
-                      <p v-else-if="!selected.online" class="warn-hint">终端离线，按钮不可用。</p>
-                    </div>
-                    <div
-                      v-for="(ln, i) in hostRemoteShellLines"
-                      :key="i"
-                      class="hr-shell-line"
-                      :class="ln.kind || 'out'"
-                    >{{ ln.text }}</div>
-                  </div>
-                  <div class="hr-shell-inputbar">
-                    <span class="hr-shell-prompt">&gt;</span>
-                    <input
-                      ref="hostRemoteShellInputRef"
-                      v-model="hostRemoteShellInput"
-                      class="field mono grow hr-shell-input"
-                      :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
-                      placeholder="连接后输入命令，Enter 发送"
-                      @keyup.enter="hostRemoteShellSend"
-                    />
-                    <button
-                      type="button"
-                      class="btn sm primary"
-                      :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
-                      @click="hostRemoteShellSend"
-                    >
-                      发送
-                    </button>
-                  </div>
-                </div>
-                <aside class="hr-shell-aside">
-                  <h4>常用命令</h4>
-                  <p class="hint sm">需先连接 Shell；危险命令仍会被 Agent 拦截。</p>
-                  <button
-                    v-for="c in HOST_SHELL_QUICK"
-                    :key="c"
-                    type="button"
-                    class="btn sm block hr-shell-quick"
-                    :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
-                    @click="hostRemoteShellQuick(c)"
-                  >{{ c }}</button>
-                </aside>
-              </div>
-              <p class="hint sm hr-shell-foot">会话默认 15 分钟空闲超时，单 Agent 最多 3 路；轮询拉取输出（约 1–2 秒）。</p>
-            </div>
-            <div v-show="hostRemoteSubTab === 'ops'" class="host-remote-grid">
-              <section class="host-remote-card">
-                <h4>调查入口</h4>
-                <div class="host-remote-links">
-                  <button type="button" class="btn sm" @click="openSelectedHostThreats">本机威胁事件</button>
-                  <button type="button" class="btn sm" @click="openInvestigateForHost">日志调查</button>
-                  <button type="button" class="btn sm" @click="goMenu('timeline'); tlAgentId = selected?.agent_id || ''; loadTimeline()">主机时间线</button>
-                  <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('refresh_modules')">立即刷新采集</button>
-                </div>
-              </section>
-              <section class="host-remote-card">
-                <h4>网络与采集</h4>
-                <p class="hint sm">隔离后仍保留 DNS/管理端通道，便于继续下发解除指令。</p>
-                <div class="host-remote-btns">
-                  <button type="button" class="btn sm danger-outline" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('isolate_network')">网络隔离</button>
-                  <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('unisolate_network')">解除隔离</button>
-                </div>
-              </section>
-              <section class="host-remote-card">
-                <h4>结束进程</h4>
-                <label class="hr-field">
-                  <span>PID</span>
-                  <input v-model="hostRemoteForm.pid" class="field" placeholder="如 9448" />
-                </label>
-                <button type="button" class="btn sm danger" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('kill_process')">结束进程</button>
-              </section>
-              <section class="host-remote-card">
-                <h4>隔离文件</h4>
-                <label class="hr-field">
-                  <span>完整路径</span>
-                  <input v-model="hostRemoteForm.path" class="field mono" placeholder="C:\Users\...\file.exe" />
-                </label>
-                <button type="button" class="btn sm danger-outline" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('quarantine_file')">隔离文件</button>
-              </section>
-              <section class="host-remote-card">
-                <h4>内存 YARA 扫描</h4>
-                <label class="hr-field">
-                  <span>PID（留空扫前 40 进程）</span>
-                  <input v-model="hostRemoteForm.scanPid" class="field" placeholder="可选" />
-                </label>
-                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('scan_memory')">开始扫描</button>
-              </section>
-              <section class="host-remote-card">
-                <h4>维护</h4>
-                <p class="hint sm">卸载会停止 Agent 服务；仅应急确认后使用。</p>
-                <button type="button" class="btn sm" :disabled="!selected.online" @click="uninstallHost(selected)">远程卸载 Agent</button>
-              </section>
-              <section class="host-remote-card wide">
-                <div class="host-remote-cmd-hd">
-                  <h4>指令记录</h4>
-                  <button type="button" class="btn sm" @click="loadHostRemoteCommands">刷新</button>
-                </div>
-                <table v-if="hostRemoteCommands.length" class="host-remote-cmd-table">
-                  <thead>
-                    <tr><th>时间</th><th>动作</th><th>状态</th><th>参数</th><th>结果</th><th></th></tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="c in hostRemoteCommands" :key="c.id">
-                      <td>{{ fmtTime(c.updated_at || c.created_at) }}</td>
-                      <td>{{ actionLabel(c.action) }}</td>
-                      <td><span class="cmd-st" :data-s="c.status">{{ cmdStatusLabel(c.status) }}</span></td>
-                      <td class="muted mono">{{ shortJson(c.params_json) }}</td>
-                      <td class="muted" :title="c.result_json">{{ friendlyCmdResult(c.action, c.result_json) }}</td>
-                      <td>
-                        <button
-                          v-if="c.action === 'quarantine_file' && c.status === 'done'"
-                          type="button"
-                          class="btn-text"
-                          @click="restoreQuarantined(c)"
-                        >回滚隔离</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p v-else class="empty sm">暂无远程指令记录</p>
-              </section>
-            </div>
-          </div>
-
-          <div v-if="hostTabGroup !== 'remote'" class="snap-flags">
+          <div class="snap-flags">
             <span v-for="f in snapStats.flags" :key="f.k" class="sflag" :data-t="f.tone">{{ f.label }}</span>
             <span class="sflag muted">共 {{ snapStats.total }} 条 · 同步 {{ fmtTime(snap?.collected_at) }}</span>
             <span v-if="columns.length" class="sflag muted">展示 {{ columns.length }} 列</span>
           </div>
-          <div class="snap-viewbar" v-if="hostTabGroup !== 'remote' && module !== 'sysinfo' && hostTabGroup === 'runtime'">
+          <div class="snap-viewbar" v-if="module !== 'sysinfo' && hostTabGroup === 'runtime'">
             <button type="button" class="tl-fchip" :class="{ on: snapView === 'all' }" @click="snapView = 'all'">全部</button>
             <button type="button" class="tl-fchip" :class="{ on: snapView === 'risk' }" data-k="file" @click="snapView = 'risk'">
               仅可疑 <em>{{ snapRiskCount }}</em>
@@ -2769,11 +2406,11 @@
             </button>
             <span class="meta">运行态筛选 · 告警/时间线请到「检测」分区</span>
           </div>
-          <div class="snap-viewbar" v-else-if="hostTabGroup !== 'remote' && module !== 'sysinfo' && hostTabGroup === 'inventory'">
+          <div class="snap-viewbar" v-else-if="module !== 'sysinfo' && hostTabGroup === 'inventory'">
             <span class="meta">资产清单：软件 / 补丁 / 监听端口 / 用户 · 与检测态分离</span>
           </div>
 
-          <div v-if="hostTabGroup !== 'remote'" class="snap-work has-detail">
+          <div class="snap-work has-detail">
             <div class="panel snap-list">
               <div class="panel-hd">
                 <div>
@@ -2860,9 +2497,6 @@
                       </div>
                     </dl>
                   </div>
-                </div>
-                <div class="sd-actions" v-if="snapRow && (module === 'process' || module === 'file')">
-                  <button type="button" class="btn sm primary block" @click="hostRemoteFromRow(snapRow)">远程管理 →</button>
                 </div>
                 <div class="sd-actions" v-if="module === 'process' && snapRow">
                   <h4>进程关系</h4>
@@ -4800,10 +4434,6 @@
           <div class="panel pad settings">
             <h3 style="margin:0 0 12px">全局策略</h3>
             <label class="chk"><input type="checkbox" v-model="policyForm.response_enabled" /> 允许远程处置</label>
-            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_enabled" /> 允许远程运维（读注册表/文件/命令/Shell）</label>
-            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_read_only" /> 远程运维只读（禁止 run_cmd；Shell 仅允许 dir/ipconfig 等调查命令）</label>
-            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_run_cmd" /> 允许白名单命令（run_cmd）</label>
-            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_shell" /> 允许交互式 Shell 会话</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_process" /> 上报进程时间线</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_file" /> 上报文件时间线</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_network" /> 上报网络外联时间线</label>
@@ -5026,7 +4656,7 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, h, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue'
 import {
   agentProtocol, agentRuleStats, addIoc, addWhitelist, attackStory, attckBoard,
   bulkAgentRulesEnabled, bulkElasticEvmEnabled, getElasticDetectionRuleDetail,
@@ -5065,34 +4695,6 @@ const LABELS = {
 const HOST_TAB_GROUPS = [
   { id: 'runtime', label: '运行态', mods: ['process', 'network', 'service', 'task', 'startup', 'file'] },
   { id: 'inventory', label: '资产清单', mods: ['software', 'hotfix', 'driver', 'listen', 'user', 'sysinfo', 'browser'] },
-  { id: 'remote', label: '远程管理', mods: [] },
-]
-const HOST_REMOTE_TABS = [
-  { id: 'ops', label: '应急处置', hint: '隔离 / 杀进程 / 指令审计' },
-  { id: 'livequery', label: 'Live Query', hint: 'Osquery 式只读表' },
-  { id: 'files', label: '文件浏览', hint: '只读列目录与读文件' },
-  { id: 'reg', label: '注册表', hint: '只读查询键值' },
-  { id: 'cmd', label: '白名单命令', hint: '单条 cmd，带白名单校验' },
-  { id: 'shell', label: '交互 Shell', hint: 'cmd 会话，轮询输出' },
-]
-const LIVE_QUERY_TABLES_DEFAULT = [
-  { name: 'processes', osquery_analog: 'processes' },
-  { name: 'services', osquery_analog: 'services' },
-  { name: 'listening_ports', osquery_analog: 'listening_ports' },
-  { name: 'scheduled_tasks', osquery_analog: 'scheduled_tasks' },
-  { name: 'startup_items', osquery_analog: 'startup_items' },
-  { name: 'users', osquery_analog: 'users' },
-  { name: 'network_connections', osquery_analog: 'process_open_sockets' },
-  { name: 'drivers', osquery_analog: 'drivers' },
-  { name: 'installed_software', osquery_analog: 'programs' },
-  { name: 'hotfixes', osquery_analog: 'patches' },
-]
-const HOST_SHELL_QUICK = ['ipconfig', 'whoami', 'systeminfo', 'tasklist', 'dir', 'netstat -ano']
-const HOST_REG_SHORTCUTS = [
-  { label: 'Run', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' },
-  { label: 'RunOnce', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce' },
-  { label: 'IFEO', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options' },
-  { label: 'Services', hive: 'HKLM', key: 'SYSTEM\\CurrentControlSet\\Services' },
 ]
 const FILE_EXT_OPTIONS = [
   'exe', 'dll', 'sys', 'scr', 'bat', 'cmd', 'ps1', 'vbs', 'js', 'msi', 'jar',
@@ -5509,114 +5111,6 @@ watch(error, (msg) => {
 const module = ref('process')
 const modules = ref(Object.keys(LABELS))
 const hostTabGroup = ref('runtime')
-const hostRemoteBusy = ref(false)
-const hostRemoteCommands = ref([])
-let hostRemotePollTimer = null
-const hostRemoteForm = ref({ pid: '', path: '', scanPid: '' })
-const hostRemoteSubTab = ref('ops')
-const hostRemoteFsPath = ref('C:\\')
-const hostRemoteFsEntries = ref([])
-const hostRemoteFsDrives = ref([])
-const hostRemoteFsRoots = ref([])
-const hostRemoteFsHint = ref('')
-const hostRemoteFsTruncated = ref(false)
-const hostRemoteFsPreview = ref('')
-const hostRemoteFsTree = computed(() => {
-  const out = []
-  const walk = (nodes, depth) => {
-    for (const n of nodes || []) {
-      out.push({ node: n, depth })
-      if (n.expanded && n.children?.length) walk(n.children, depth + 1)
-    }
-  }
-  walk(hostRemoteFsRoots.value, 0)
-  return out
-})
-const hostRemoteFsDirCount = computed(() => hostRemoteFsEntries.value.filter((e) => e.dir).length)
-const hostRemoteFsFileCount = computed(() => hostRemoteFsEntries.value.filter((e) => !e.dir).length)
-const hostRemoteReg = ref({ hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run', value: '' })
-const hostRemoteRegResult = ref(null)
-const hostRemoteRegBreadcrumb = computed(() => {
-  const h = hostRemoteReg.value.hive || 'HKLM'
-  const k = String(hostRemoteReg.value.key || '').trim()
-  return k ? `${h}\\${k}` : h
-})
-const hostRemoteRegSubkeys = computed(() => hostRemoteRegResult.value?.subkeys || [])
-const hostRemoteRegValues = computed(() => hostRemoteRegResult.value?.values || [])
-const hostRemoteRegSingleValue = computed(() => {
-  const r = hostRemoteRegResult.value
-  if (!r || r.values) return null
-  if (r.value_name == null && r.data == null && !r.data_hex) return null
-  return { name: r.value_name || '(默认)', type: r.type, data: r.data || r.data_hex }
-})
-const hostRemoteCmdLine = ref('')
-const hostRemoteCmdOut = ref('')
-const hostRemoteCmdLog = ref([])
-const hostLiveQueryTable = ref('processes')
-const hostLiveQueryLimit = ref(200)
-const hostLiveQueryRows = ref([])
-const hostLiveQueryMeta = ref(null)
-const liveQueryAuditItems = ref([])
-
-async function loadLiveQueryAudit() {
-  const aid = selected.value?.agent_id
-  if (!aid) {
-    liveQueryAuditItems.value = []
-    return
-  }
-  try {
-    const r = await listAgentAudit(200)
-    liveQueryAuditItems.value = (r?.items || []).filter((a) =>
-      a.agent_id === aid && String(a.action || '').includes('live_query'),
-    ).slice(0, 40)
-  } catch {
-    liveQueryAuditItems.value = []
-  }
-}
-const hostLiveQueryTableOptions = computed(() => {
-  const fromAgent = selected.value?.health?.sensors?.live_query_tables
-  if (Array.isArray(fromAgent) && fromAgent.length) {
-    return fromAgent.map((t) => ({
-      name: t.name || t,
-      osquery_analog: t.osquery_analog || '',
-    }))
-  }
-  return LIVE_QUERY_TABLES_DEFAULT
-})
-const hostLiveQueryCols = computed(() => {
-  const keys = new Set()
-  for (const row of hostLiveQueryRows.value.slice(0, 50)) {
-    if (row && typeof row === 'object') Object.keys(row).forEach((k) => keys.add(k))
-  }
-  return [...keys].slice(0, 24)
-})
-const hostRemoteShellId = ref('')
-const hostRemoteShellLines = ref([])
-const hostRemoteShellInput = ref('')
-const hostRemoteShellPhase = ref('idle') // idle | connecting | live | error
-const hostRemoteShellViewRef = ref(null)
-const hostRemoteShellInputRef = ref(null)
-let hostRemoteShellPollTimer = null
-let hostRemoteShellPollBusy = false
-
-const hostRemoteShellStatusLabel = computed(() => {
-  const m = {
-    idle: '未连接 — 请先点「连接 Shell」',
-    connecting: '正在连接终端…',
-    live: '会话进行中',
-    error: '连接失败',
-  }
-  return m[hostRemoteShellPhase.value] || m.idle
-})
-const hostRemoteShellHint = ref('')
-const hostRemoteShellHintKind = ref('info')
-const hostRemoteShellConnectDisabled = computed(() => {
-  if (!selected.value?.online) return true
-  if (hostRemoteShellPhase.value === 'connecting') return true
-  if (hostRemoteShellPhase.value === 'live' && hostRemoteShellId.value) return true
-  if (!isAdmin.value) return true
-  return false
-})
 const hostGroupMods = computed(() => {
   const g = HOST_TAB_GROUPS.find((x) => x.id === hostTabGroup.value)
   return g?.mods || HOST_TAB_GROUPS[0].mods
@@ -5917,10 +5411,6 @@ const policyForm = ref({
   winevent_channel_mode: 'all',
   winevent_channels_text: '',
   intervals_sec: { process: 5, network: 5, file: 12 },
-  remote_ops_enabled: true,
-  remote_ops_read_only: false,
-  remote_ops_run_cmd: true,
-  remote_ops_shell: true,
 })
 const iocItems = ref([])
 const iocText = ref('')
@@ -6649,17 +6139,6 @@ function selectHostGroup(gid) {
   const g = HOST_TAB_GROUPS.find((x) => x.id === gid)
   if (!g) return
   hostTabGroup.value = gid
-  if (gid === 'remote') {
-    loadHostRemoteCommands()
-    if (hostRemoteSubTab.value === 'files' && selected.value?.online) hostRemoteFsLoadVolumes()
-    if (hostRemoteSubTab.value === 'livequery') loadLiveQueryAudit()
-    if (hostRemoteShellPhase.value === 'connecting') {
-      hostRemoteShellPhase.value = 'idle'
-      hostRemoteShellHint.value = '上次连接未完成，请重新点击「连接 Shell」'
-      hostRemoteShellHintKind.value = 'warn'
-    }
-    return
-  }
   if (gid === 'inventory') snapView.value = 'all'
   const cur = module.value
   if (g.mods.length && !g.mods.includes(cur)) {
@@ -6667,16 +6146,11 @@ function selectHostGroup(gid) {
   }
 }
 function syncHostTabGroup(mod) {
-  if (hostTabGroup.value === 'remote') return
   const hit = HOST_TAB_GROUPS.find((g) => g.mods.includes(mod))
   if (hit) hostTabGroup.value = hit.id
 }
 
 function refreshHostDetail() {
-  if (hostTabGroup.value === 'remote') {
-    loadHostRemoteCommands()
-    return
-  }
   loadSnap(module.value)
 }
 const hostsWithAlert = computed(() => {
@@ -9433,11 +8907,7 @@ async function softRefresh({ snap = false, rules = false, overview = false, even
       const still = agents.value.find((a) => a.agent_id === selected.value.agent_id)
       selected.value = still || null
       if (still && (snap || page.value === 'hosts' || page.value === 'assets')) {
-        if (hostTabGroup.value === 'remote') {
-          loadHostRemoteCommands()
-        } else {
-          await loadSnap(module.value, { silent: true, keepRow: true })
-        }
+        await loadSnap(module.value, { silent: true, keepRow: true })
       }
     }
     // 告警列表：默认不每几秒全量重拉（会因 updated_at 重排，看起来像「事件名称一直在变」）
@@ -9488,8 +8958,7 @@ async function refresh() {
       const still = agents.value.find((a) => a.agent_id === selected.value.agent_id)
       selected.value = still || null
       if (still) {
-        if (hostTabGroup.value === 'remote') loadHostRemoteCommands()
-        else await loadSnap(module.value, { silent: false, keepRow: true })
+        await loadSnap(module.value, { silent: false, keepRow: true })
       }
     }
     await Promise.all([eventsP, loadOverview(), loadSettings()])
@@ -9602,18 +9071,7 @@ function actionLabel(a) {
     restore_file: '回滚隔离',
     rollback_upgrade: '回滚升级',
     uninstall_agent: '远程卸载',
-    reg_read: '读注册表',
-    fs_list: '列目录',
-    fs_volumes: '枚举盘符',
-    fs_stat: '文件信息',
-    fs_read: '读文件',
-    run_cmd: '执行命令',
-    live_query: 'Live Query',
     cancel_upgrade: '取消升级',
-    shell_open: 'Shell 开启',
-    shell_write: 'Shell 输入',
-    shell_poll: 'Shell 输出',
-    shell_close: 'Shell 关闭',
   })[a] || a
 }
 
@@ -9635,10 +9093,6 @@ async function restoreQuarantined(c) {
     okMsg.value = '回滚指令已下发'
     await loadRespCommands()
     startRespPoll()
-    if (hostTabGroup.value === 'remote') {
-      await loadHostRemoteCommands()
-      startHostRemotePoll()
-    }
   } catch (e) { error.value = e?.message || String(e) }
 }
 function cmdStatusLabel(s) {
@@ -9669,10 +9123,6 @@ function friendlyCmdResult(action, raw) {
   if (action === 'scan_memory') {
     return `扫描 ${o.scanned ?? 0} 个进程，发现 ${o.finding_count ?? 0} 处可疑`
   }
-  if (action === 'live_query') {
-    const n = o.row_count ?? (Array.isArray(o.rows) ? o.rows.length : 0)
-    return `${o.table || '表'} · ${n} 行`
-  }
   if (action === 'restore_file') return o.restored ? `已回滚：${o.restored}` : '隔离回滚完成'
   if (action === 'rollback_upgrade') return '升级回滚已执行'
   if (action === 'upgrade') return o.version ? `升级至 ${o.version}` : '升级指令已执行'
@@ -9698,599 +9148,6 @@ function showRespToast(cls, title, detail, { sticky = false, ms = 4200 } = {}) {
     respToast.value = null
     respToastTimer = null
   }, ms)
-}
-
-function stopHostRemotePoll() {
-  if (hostRemotePollTimer) {
-    clearInterval(hostRemotePollTimer)
-    hostRemotePollTimer = null
-  }
-}
-
-function stopHostRemoteShellPoll() {
-  if (hostRemoteShellPollTimer) {
-    clearInterval(hostRemoteShellPollTimer)
-    hostRemoteShellPollTimer = null
-  }
-}
-
-function hostRemoteResultOf(raw) {
-  const r = parseJsonSafe(raw)
-  if (r?.error && r.result && typeof r.result === 'object' && !Array.isArray(r.result)) {
-    return { ...r.result, _error: r.error }
-  }
-  return r
-}
-
-function hostRemoteCmdError(c) {
-  const r = hostRemoteResultOf(c?.result_json)
-  return r.error || r._error || friendlyCmdResult(c?.action, c?.result_json) || '执行失败'
-}
-
-async function hostRemoteWaitCommand(cmdId, timeoutMs = 120000) {
-  const want = String(cmdId || '').trim()
-  if (!want) return { ok: false, error: '指令未创建（需管理员账号，且策略允许 Shell）' }
-  const start = Date.now()
-  let polls = 0
-  while (Date.now() - start < timeoutMs) {
-    await new Promise((r) => setTimeout(r, polls < 3 ? 400 : 900))
-    polls += 1
-    await loadHostRemoteCommands()
-    const c = hostRemoteCommands.value.find((x) => String(x.id) === want)
-    if (!c) continue
-    if (c.status === 'done') return { ok: true, result: hostRemoteResultOf(c.result_json), cmd: c }
-    if (c.status === 'failed' || c.status === 'expired') {
-      return { ok: false, error: hostRemoteCmdError(c), cmd: c }
-    }
-  }
-  return { ok: false, error: '等待终端执行超时（Agent 是否在线、是否已升级支持 Shell？）' }
-}
-
-function hostLiveQueryCell(row, col) {
-  const v = row?.[col]
-  if (v == null || v === '') return '—'
-  if (typeof v === 'object') return JSON.stringify(v).slice(0, 120)
-  return String(v).slice(0, 200)
-}
-
-async function hostLiveQueryRun() {
-  hostLiveQueryRows.value = []
-  hostLiveQueryMeta.value = null
-  const lim = Math.min(500, Math.max(10, Number(hostLiveQueryLimit.value) || 200))
-  hostLiveQueryLimit.value = lim
-  const done = await hostRemoteExec('live_query', { table: hostLiveQueryTable.value, limit: lim }, { timeoutMs: 180000 })
-  loadLiveQueryAudit()
-  if (!done?.ok) return
-  const res = done.result || {}
-  hostLiveQueryRows.value = Array.isArray(res.rows) ? res.rows : []
-  hostLiveQueryMeta.value = {
-    table: res.table || hostLiveQueryTable.value,
-    row_count: res.row_count ?? hostLiveQueryRows.value.length,
-    schema: res.schema || 'forensic_v1',
-  }
-  okMsg.value = `Live Query ${hostLiveQueryMeta.value.table}：${hostLiveQueryMeta.value.row_count} 行`
-  setTimeout(() => { okMsg.value = '' }, 2500)
-}
-
-function hostLiveQueryExport() {
-  const blob = new Blob([JSON.stringify({ meta: hostLiveQueryMeta.value, rows: hostLiveQueryRows.value }, null, 2)], { type: 'application/json' })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = `live-query-${hostLiveQueryTable.value}-${Date.now()}.json`
-  a.click()
-  URL.revokeObjectURL(a.href)
-}
-
-async function hostRemoteExec(action, params, { timeoutMs = 120000, busy = true, refreshCmdLog = true } = {}) {
-  const a = selected.value
-  if (!a?.agent_id) return null
-  if (!a.online) {
-    error.value = '终端离线，无法下发远程运维指令'
-    return null
-  }
-  if (busy) hostRemoteBusy.value = true
-  try {
-    const r = await createAgentCommand(a.agent_id, action, params)
-    if (!r?.ok) {
-      const msg = r?.error || '创建指令失败（需管理员且策略允许）'
-      if (busy) error.value = msg
-      return { ok: false, error: msg }
-    }
-    if (refreshCmdLog) startHostRemotePoll()
-    const done = await hostRemoteWaitCommand(r?.id, timeoutMs)
-    if (!done.ok && busy) error.value = done.error || '执行失败'
-    return done
-  } catch (e) {
-    const msg = e?.message || String(e)
-    if (busy) error.value = msg
-    return { ok: false, error: msg }
-  } finally {
-    if (busy) hostRemoteBusy.value = false
-  }
-}
-
-function hostRemoteShellAppend(kind, text) {
-  const t = String(text ?? '').trimEnd()
-  if (!t) return
-  hostRemoteShellLines.value.push({ kind, text: t })
-  nextTick(() => {
-    const el = hostRemoteShellViewRef.value
-    if (el) el.scrollTop = el.scrollHeight
-  })
-}
-
-function hostRemoteFmtSize(n) {
-  const x = Number(n)
-  if (!Number.isFinite(x) || x < 0) return '—'
-  if (x < 1024) return `${x} B`
-  if (x < 1024 * 1024) return `${(x / 1024).toFixed(1)} KB`
-  if (x < 1024 * 1024 * 1024) return `${(x / 1024 / 1024).toFixed(1)} MB`
-  return `${(x / 1024 / 1024 / 1024).toFixed(2)} GB`
-}
-
-function hostRemoteFsNorm(p) {
-  return String(p || '').replace(/\//g, '\\').replace(/\\+$/, '').toLowerCase()
-}
-
-function hostRemoteFsSamePath(a, b) {
-  const x = hostRemoteFsNorm(a)
-  const y = hostRemoteFsNorm(b)
-  if (!x || !y) return false
-  return x === y
-}
-
-function hostRemoteFsJoin(base, name) {
-  const b = String(base || '').replace(/\\+$/, '')
-  return `${b}\\${name}`
-}
-
-function hostRemoteFsFind(nodes, path) {
-  const want = hostRemoteFsNorm(path)
-  for (const n of nodes || []) {
-    if (hostRemoteFsNorm(n.path) === want) return n
-    const hit = hostRemoteFsFind(n.children, path)
-    if (hit) return hit
-  }
-  return null
-}
-
-function hostRemoteFsNodeFromEntry(parentPath, e) {
-  const path = hostRemoteFsJoin(parentPath, e.name)
-  return {
-    path,
-    name: e.name,
-    label: e.name,
-    dir: true,
-    child_count: e.child_count ?? null,
-    expanded: false,
-    loaded: false,
-    children: [],
-  }
-}
-
-function hostRemoteFsAttach(path, entries) {
-  const node = hostRemoteFsFind(hostRemoteFsRoots.value, path)
-  if (!node) return
-  node.loaded = true
-  node.expanded = true
-  if (!hostRemoteFsTruncated.value || node.child_count == null) node.child_count = entries.length
-  const prev = new Map((node.children || []).map((c) => [hostRemoteFsNorm(c.path), c]))
-  node.children = entries.filter((e) => e.dir).map((e) => {
-    const childPath = hostRemoteFsJoin(path, e.name)
-    const old = prev.get(hostRemoteFsNorm(childPath))
-    if (old) {
-      old.child_count = e.child_count ?? old.child_count
-      return old
-    }
-    return hostRemoteFsNodeFromEntry(path, e)
-  })
-}
-
-function hostRemoteFsRootsFromEntries(entries) {
-  return (entries || []).map((d) => {
-    const path = String(d.path || d.name || '')
-    const letter = d.drive || path.replace(/:\\?$/, '')
-    return {
-      path: path.endsWith('\\') ? path : `${path}\\`,
-      name: letter,
-      label: String(letter).endsWith(':') ? letter : `${letter}:`,
-      dir: true,
-      child_count: d.child_count ?? null,
-      expanded: false,
-      loaded: false,
-      children: [],
-    }
-  }).filter((n) => n.path && n.path.length >= 3)
-}
-
-function hostRemoteFsNormalizePath(p) {
-  let s = String(p || '').trim().replace(/\//g, '\\')
-  if (/^[a-zA-Z]:$/.test(s)) s += '\\'
-  return s
-}
-
-async function hostRemoteFsDrivesFromCmd() {
-  let done = await hostRemoteExec('run_cmd', {
-    command: 'wmic logicaldisk get name',
-    timeout_sec: 25,
-  }, { timeoutMs: 35000, busy: false })
-  let text = String(done?.result?.output || '')
-  if (!text.trim()) {
-    done = await hostRemoteExec('run_cmd', {
-      command: 'powershell -noprofile -command "Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }"',
-      timeout_sec: 25,
-    }, { timeoutMs: 35000, busy: false })
-    text = String(done?.result?.output || '')
-  }
-  const seen = new Set()
-  const entries = []
-  for (const m of text.matchAll(/[A-Za-z]:\\/g)) {
-    const path = m[0].toUpperCase()
-    if (seen.has(path)) continue
-    seen.add(path)
-    entries.push({ path, drive: path.slice(0, 1), name: path, dir: true })
-  }
-  return entries
-}
-
-async function hostRemoteFsDiscoverByList() {
-  const entries = []
-  for (const letter of 'CDEFGHIJKLMNOPQRSTUVWXYZAB') {
-    const path = `${letter}:\\`
-    const done = await hostRemoteExec('fs_list', { path, max_entries: 1 }, { timeoutMs: 12000, busy: false })
-    if (done?.ok) entries.push({ path, drive: letter, name: path, dir: true })
-  }
-  return entries
-}
-
-async function hostRemoteFsLoadVolumes() {
-  if (!selected.value?.online) return
-  hostRemoteFsHint.value = ''
-  const done = await hostRemoteExec('fs_volumes', {}, { timeoutMs: 25000, busy: false })
-  let entries = done?.ok ? (done.result?.entries || []) : []
-  if (!entries.length) {
-    entries = await hostRemoteFsDrivesFromCmd()
-    if (entries.length) {
-      hostRemoteFsHint.value = '当前 Agent 较旧，已用 wmic/PowerShell 列出磁盘。'
-    }
-  }
-  if (!entries.length) {
-    entries = await hostRemoteFsDiscoverByList()
-    if (entries.length) hostRemoteFsHint.value = '已通过逐盘 fs_list 探测盘符（无需 run_cmd）。'
-  }
-  hostRemoteFsDrives.value = entries
-  hostRemoteFsRoots.value = hostRemoteFsRootsFromEntries(entries)
-  if (!hostRemoteFsRoots.value.length) {
-    hostRemoteFsHint.value = '没有读到盘符。确认终端在线且已开启远程运维，或手动输入 C:\\ 后点刷新。'
-    return
-  }
-  const first = hostRemoteFsRoots.value[0]
-  hostRemoteFsPath.value = first.path
-  await hostRemoteFsBrowse()
-}
-
-async function hostRemoteFsToggle(node) {
-  if (!node?.path) return
-  hostRemoteFsPath.value = node.path
-  if (node.loaded && node.expanded) {
-    node.expanded = false
-    return
-  }
-  node.expanded = true
-  await hostRemoteFsBrowse()
-}
-
-function hostRemoteFsUp() {
-  let p = String(hostRemoteFsPath.value || '').replace(/\\+$/, '')
-  if (!p) return
-  const i = p.lastIndexOf('\\')
-  if (i <= 2) hostRemoteFsPath.value = `${p.slice(0, 2)}\\`
-  else hostRemoteFsPath.value = p.slice(0, i)
-  hostRemoteFsBrowse()
-}
-
-async function hostRemoteFsBrowse() {
-  hostRemoteFsPreview.value = ''
-  const path = hostRemoteFsNormalizePath(hostRemoteFsPath.value)
-  hostRemoteFsPath.value = path
-  const atDriveRoot = /^[A-Za-z]:$/.test(path.replace(/\\+$/, ''))
-  const done = await hostRemoteExec('fs_list', {
-    path,
-    max_entries: 200,
-    count_dirs: atDriveRoot,
-  }, { timeoutMs: 120000 })
-  if (!done?.ok) {
-    hostRemoteFsHint.value = done?.error || '列目录失败（检查路径、策略是否允许远程运维）'
-    hostRemoteFsEntries.value = []
-    return
-  }
-  hostRemoteFsHint.value = ''
-  const entries = [...(done.result?.entries || [])]
-  entries.sort((a, b) => {
-    if (!!a.dir !== !!b.dir) return a.dir ? -1 : 1
-    return String(a.name || '').localeCompare(String(b.name || ''), 'zh')
-  })
-  hostRemoteFsEntries.value = entries
-  hostRemoteFsTruncated.value = !!done.result?.truncated
-  hostRemoteFsAttach(hostRemoteFsPath.value, entries)
-}
-
-function hostRemoteFsEnter(e) {
-  if (!e?.name) return
-  const base = hostRemoteFsPath.value.replace(/\\+$/, '')
-  const next = e.dir ? `${base}\\${e.name}` : `${base}\\${e.name}`
-  hostRemoteFsPath.value = next
-  if (e.dir) hostRemoteFsBrowse()
-  else {
-    hostRemoteForm.value.path = next
-    hostRemoteFsRead()
-  }
-}
-
-async function hostRemoteFsRead() {
-  const path = String(hostRemoteFsPath.value || '').trim()
-  if (!path) return
-  const stat = await hostRemoteExec('fs_stat', { path }, { timeoutMs: 60000, busy: false })
-  if (stat?.ok && stat.result?.dir) {
-    error.value = '当前路径是目录，请进入目录后双击文件，或选中文件再点「读文件」'
-    hostRemoteFsPreview.value = ''
-    return
-  }
-  const done = await hostRemoteExec('fs_read', { path, max_bytes: 65536 })
-  if (done?.ok) {
-    const r = done.result || {}
-    hostRemoteFsPreview.value = r.text || r.hex_preview || JSON.stringify(r, null, 2)
-  } else if (done?.error) {
-    error.value = done.error
-    hostRemoteFsPreview.value = ''
-  }
-}
-
-function hostRemoteRegApplyShortcut(s) {
-  hostRemoteReg.value.hive = s.hive
-  hostRemoteReg.value.key = s.key
-  hostRemoteReg.value.value = ''
-  if (selected.value?.online) hostRemoteRegLoad()
-}
-
-function hostRemoteRegOpenSubkey(sk) {
-  const base = String(hostRemoteReg.value.key || '').replace(/\\+$/, '')
-  hostRemoteReg.value.key = base ? `${base}\\${sk}` : sk
-  hostRemoteReg.value.value = ''
-  hostRemoteRegLoad()
-}
-
-function hostRemoteRegUp() {
-  const k = String(hostRemoteReg.value.key || '').replace(/\\+$/, '')
-  const i = k.lastIndexOf('\\')
-  if (i < 0) return
-  hostRemoteReg.value.key = k.slice(0, i)
-  hostRemoteReg.value.value = ''
-}
-
-async function hostRemoteRegLoad() {
-  hostRemoteRegResult.value = null
-  const p = { hive: hostRemoteReg.value.hive, key: hostRemoteReg.value.key }
-  if (hostRemoteReg.value.value?.trim()) p.value = hostRemoteReg.value.value.trim()
-  const done = await hostRemoteExec('reg_read', p)
-  if (done?.ok) hostRemoteRegResult.value = done.result
-}
-
-async function hostRemoteRunCmd() {
-  const cmd = hostRemoteCmdLine.value.trim()
-  if (!cmd) return
-  hostRemoteCmdLog.value.unshift({ at: fmtTime(new Date().toISOString()), cmd })
-  hostRemoteCmdLog.value = hostRemoteCmdLog.value.slice(0, 40)
-  const done = await hostRemoteExec('run_cmd', { command: cmd, timeout_sec: 90 })
-  if (done?.ok) {
-    hostRemoteCmdOut.value = done.result?.output || JSON.stringify(done.result, null, 2)
-  }
-}
-
-async function hostRemoteShellStart() {
-  hostRemoteShellHint.value = ''
-  error.value = ''
-  if (!isAdmin.value) {
-    hostRemoteShellHintKind.value = 'err'
-    hostRemoteShellHint.value = '需要管理员账号才能下发 Shell 指令'
-    hostRemoteShellAppend('err', hostRemoteShellHint.value)
-    return
-  }
-  if (!selected.value?.online) {
-    hostRemoteShellHintKind.value = 'err'
-    hostRemoteShellHint.value = '终端离线，无法连接'
-    hostRemoteShellAppend('err', hostRemoteShellHint.value)
-    return
-  }
-  hostRemoteShellLines.value = []
-  hostRemoteShellId.value = ''
-  hostRemoteShellPhase.value = 'connecting'
-  hostRemoteShellAppend('sys', '正在连接终端 cmd 会话…')
-  try {
-    const done = await hostRemoteExec('shell_open', {}, { timeoutMs: 90000 })
-    const sid = done?.result?.session_id || done?.result?.sessionId || ''
-    if (done?.ok && sid) {
-      hostRemoteShellId.value = String(sid)
-      hostRemoteShellPhase.value = 'live'
-      hostRemoteShellHintKind.value = 'ok'
-      hostRemoteShellHint.value = 'Shell 已连接，可直接输入命令'
-      hostRemoteShellAppend('sys', '已连接。输入命令后按 Enter；输出将自动刷新。')
-      stopHostRemoteShellPoll()
-      await hostRemoteShellPollOnce()
-      hostRemoteShellPollTimer = setInterval(() => { hostRemoteShellPollOnce() }, 1500)
-      nextTick(() => { hostRemoteShellInputRef.value?.focus() })
-      return
-    }
-    hostRemoteShellPhase.value = 'error'
-    const msg = done?.error || '连接失败：请确认 Agent 已重新编译部署、EDR 策略已开启「交互式 Shell」'
-    hostRemoteShellHintKind.value = 'err'
-    hostRemoteShellHint.value = msg
-    hostRemoteShellAppend('err', msg)
-  } catch (e) {
-    hostRemoteShellPhase.value = 'error'
-    const msg = e?.message || String(e)
-    hostRemoteShellHintKind.value = 'err'
-    hostRemoteShellHint.value = msg
-    hostRemoteShellAppend('err', msg)
-  }
-}
-
-async function hostRemoteShellPollOnce() {
-  if (hostRemoteShellPollBusy || !hostRemoteShellId.value || !selected.value?.online) return
-  hostRemoteShellPollBusy = true
-  try {
-    const done = await hostRemoteExec(
-      'shell_poll',
-      { session_id: hostRemoteShellId.value },
-      { timeoutMs: 45000, busy: false, refreshCmdLog: false },
-    )
-    if (!done?.ok) {
-      if (String(done?.error || '').includes('session not found')) {
-        hostRemoteShellAppend('err', '会话已在终端结束，请重新连接')
-        await hostRemoteShellStop(true)
-      }
-      return
-    }
-    const chunk = String(done.result?.output || '')
-    if (chunk.trim()) hostRemoteShellAppend('out', chunk.trimEnd())
-  } finally {
-    hostRemoteShellPollBusy = false
-  }
-}
-
-function hostRemoteShellClear() {
-  hostRemoteShellLines.value = []
-}
-
-async function hostRemoteShellQuick(cmd) {
-  if (!hostRemoteShellId.value) return
-  hostRemoteShellInput.value = cmd
-  await hostRemoteShellSend()
-}
-
-async function hostRemoteShellSend() {
-  const line = hostRemoteShellInput.value.trim()
-  if (!line || !hostRemoteShellId.value) return
-  hostRemoteShellAppend('in', line)
-  hostRemoteShellInput.value = ''
-  const done = await hostRemoteExec(
-    'shell_write',
-    { session_id: hostRemoteShellId.value, input: line },
-    { timeoutMs: 90000, busy: false, refreshCmdLog: true },
-  )
-  if (!done?.ok) {
-    hostRemoteShellAppend('err', done?.error || '发送失败')
-    return
-  }
-  await hostRemoteShellPollOnce()
-  setTimeout(() => { hostRemoteShellPollOnce() }, 800)
-}
-
-async function hostRemoteShellStop(silent = false) {
-  stopHostRemoteShellPoll()
-  const sid = hostRemoteShellId.value
-  hostRemoteShellId.value = ''
-  if (sid) {
-    await hostRemoteExec('shell_close', { session_id: sid }, { timeoutMs: 30000, busy: false, refreshCmdLog: true })
-  }
-  hostRemoteShellPhase.value = 'idle'
-  if (!silent) hostRemoteShellAppend('sys', '会话已断开')
-}
-
-function startHostRemotePoll() {
-  stopHostRemotePoll()
-  hostRemotePollTimer = setInterval(async () => {
-    if (page.value !== 'hosts' || hostTabGroup.value !== 'remote' || !selected.value?.agent_id) {
-      stopHostRemotePoll()
-      return
-    }
-    await loadHostRemoteCommands()
-    const pending = hostRemoteCommands.value.some((c) => c.status === 'pending' || c.status === 'sent')
-    if (!pending) stopHostRemotePoll()
-  }, 2500)
-}
-
-async function loadHostRemoteCommands() {
-  const aid = selected.value?.agent_id
-  if (!aid) return
-  try {
-    const r = await listAgentCommands(aid)
-    hostRemoteCommands.value = (r?.items || []).slice(0, 40)
-  } catch (e) {
-    error.value = e?.message || String(e)
-  }
-}
-
-function hostRemotePrefillFromRow(row) {
-  if (!row) return
-  if (row.pid != null && row.pid !== '') hostRemoteForm.value.pid = String(row.pid)
-  if (row.pid != null && row.pid !== '') hostRemoteForm.value.scanPid = String(row.pid)
-  const p = row.path || row.image || ''
-  if (p) hostRemoteForm.value.path = String(p)
-}
-
-function hostRemoteFromRow(row) {
-  hostRemotePrefillFromRow(row)
-  selectHostGroup('remote')
-}
-
-function openInvestigateForHost() {
-  const h = selected.value?.hostname || ''
-  if (!h) return
-  goMenu('investigate')
-  invFilters.value = { ...invFilters.value, hostname: h }
-  invQ.value = ''
-  runInvestigate()
-}
-
-async function hostRemoteAction(action) {
-  const a = selected.value
-  if (!a?.agent_id) return
-  if (!a.online) {
-    error.value = '终端离线，无法下发远程指令'
-    return
-  }
-  const params = {}
-  if (action === 'kill_process') {
-    const pid = Number(String(hostRemoteForm.value.pid || '').trim())
-    if (!pid) {
-      error.value = '请填写要结束的 PID'
-      return
-    }
-    if (!window.confirm(`确认结束 ${a.hostname || a.agent_id} 上的进程 PID ${pid}？`)) return
-    params.pid = pid
-  } else if (action === 'quarantine_file') {
-    const path = String(hostRemoteForm.value.path || '').trim()
-    if (!path) {
-      error.value = '请填写要隔离的文件路径'
-      return
-    }
-    if (!window.confirm(`确认隔离文件？\n${path}`)) return
-    params.path = path
-  } else if (action === 'isolate_network') {
-    if (!window.confirm('确认对该终端执行网络隔离？')) return
-  } else if (action === 'unisolate_network') {
-    if (!window.confirm('确认解除网络隔离？')) return
-  } else if (action === 'scan_memory') {
-    const sp = String(hostRemoteForm.value.scanPid || '').trim()
-    const pid = sp ? Number(sp) : 0
-    if (pid) params.pid = pid
-    else params.max_processes = 40
-    if (!window.confirm(pid ? `扫描 PID ${pid} 内存？` : '扫描该主机前 40 个进程内存？')) return
-  } else if (action === 'refresh_modules') {
-    if (!window.confirm('触发全模块快照刷新？下一心跳起立即采集。')) return
-  }
-  hostRemoteBusy.value = true
-  try {
-    await createAgentCommand(a.agent_id, action, params)
-    okMsg.value = `${actionLabel(action)} · 指令已下发`
-    await loadHostRemoteCommands()
-    startHostRemotePoll()
-  } catch (err) {
-    error.value = err?.message || String(err)
-  } finally {
-    hostRemoteBusy.value = false
-  }
 }
 
 async function loadRespCommands() {
@@ -11192,10 +10049,6 @@ async function loadPolicyPage() {
           network: p.policy.intervals_sec?.network ?? 5,
           file: p.policy.intervals_sec?.file ?? 12,
         },
-        remote_ops_enabled: p.policy.remote_ops_enabled !== false,
-        remote_ops_read_only: !!p.policy.remote_ops?.read_only,
-        remote_ops_run_cmd: p.policy.remote_ops?.run_cmd_enabled !== false,
-        remote_ops_shell: p.policy.remote_ops?.shell_enabled !== false,
       }
       policyRev.value = p.rev || 0
     }
@@ -11843,10 +10696,6 @@ async function savePolicy() {
       fim_paths_text: fimText,
       log_tail_paths_text: logTailText,
       winevent_channels_text: wevtText,
-      remote_ops_read_only,
-      remote_ops_run_cmd,
-      remote_ops_shell,
-      remote_ops_enabled,
       ...rest
     } = policyForm.value
     const fimPaths = String(fimText || '').split(/\r?\n/).map((s) => s.trim()).filter(Boolean).slice(0, 50)
@@ -11857,14 +10706,6 @@ async function savePolicy() {
       fim_paths: fimPaths,
       log_tail_paths: logTailPaths,
       winevent_channels: wineventChannels,
-      remote_ops_enabled,
-      remote_ops: {
-        enabled: remote_ops_enabled,
-        read_only: remote_ops_read_only,
-        run_cmd_enabled: remote_ops_run_cmd,
-        shell_enabled: remote_ops_shell,
-        shell_max_minutes: 15,
-      },
     }, 'global')
     policyRev.value = r?.rev || policyRev.value
     okMsg.value = '策略已保存，终端下次心跳生效'
@@ -12171,7 +11012,7 @@ function rowKey(row) {
 async function loadSnap(m, { silent = false, keepRow = false, syncGroup = true } = {}) {
   const switched = module.value !== m
   module.value = m
-  if (syncGroup && hostTabGroup.value !== 'remote') syncHostTabGroup(m)
+  if (syncGroup) syncHostTabGroup(m)
   if (switched) {
     snapRow.value = null
     snapQ.value = ''
@@ -12211,18 +11052,12 @@ function openHost(a, dest = 'hosts') {
 }
 
 function backFromHost() {
-  stopHostRemotePoll()
-  stopHostRemoteShellPoll()
-  hostRemoteShellId.value = ''
-  hostRemoteShellPhase.value = 'idle'
-  hostRemoteShellLines.value = []
   hostHdrMore.value = false
   hostHealthOpen.value = false
   selected.value = null
   snap.value = null
   snapRow.value = null
   hostRiskItems.value = []
-  hostRemoteCommands.value = []
   page.value = 'hosts'
 }
 
@@ -12435,24 +11270,6 @@ function closeUserMenu() { userMenuOpen.value = false }
 let snapTimer = null
 
 watch([section, page, eventListReturnPage, rulesSection, () => activeEvent.value?.id], saveNavState)
-
-watch(hostRemoteSubTab, (tab) => {
-  if (tab === 'files' && selected.value?.online) hostRemoteFsLoadVolumes()
-  if (tab === 'shell') nextTick(() => { hostRemoteShellInputRef.value?.focus() })
-})
-
-watch(() => selected.value?.agent_id, () => {
-  hostRemoteFsDrives.value = []
-  hostRemoteFsRoots.value = []
-  hostRemoteFsEntries.value = []
-  hostRemoteFsPreview.value = ''
-  hostRemoteFsHint.value = ''
-  hostLiveQueryRows.value = []
-  hostLiveQueryMeta.value = null
-  if (hostTabGroup.value === 'remote' && hostRemoteSubTab.value === 'files' && selected.value?.online) {
-    hostRemoteFsLoadVolumes()
-  }
-})
 
 onMounted(async () => {
   restoreNavState()
@@ -13763,227 +12580,6 @@ th { background: #fafbfd; color: var(--muted); font-weight: 600; font-size: 12px
   background: #0f172a; color: #fff; border-color: #0f172a;
 }
 .host-group-btn:hover:not(.on) { background: #f4f7fb; }
-.host-remote-wrap {
-  flex: 1 1 auto; min-height: 0; overflow: auto;
-  padding: 18px 20px 24px; box-shadow: var(--shadow);
-  background: linear-gradient(180deg, #f8fafc 0%, #fff 120px);
-}
-.host-remote-hero {
-  display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
-  margin-bottom: 18px; padding: 16px 18px; border-radius: 14px;
-  border: 1px solid var(--line); background: #fff;
-}
-.host-remote-hero h2 { margin: 0 0 8px; font-size: 18px; font-weight: 750; letter-spacing: -0.02em; }
-.host-remote-hero .hint { margin: 0; max-width: 680px; line-height: 1.55; font-size: 13px; }
-.host-remote-steps {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
-}
-.host-remote-steps span {
-  font-size: 11px; font-weight: 650; padding: 4px 10px; border-radius: 999px;
-  background: #f1f5f9; color: #475569;
-}
-.host-remote-hero-aside { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-.sync-pill.lg { padding: 8px 14px; font-size: 13px; }
-.hr-busy-pill {
-  font-size: 11px; font-weight: 650; color: #b45309; background: #fffbeb; border: 1px solid #fde68a;
-  padding: 4px 10px; border-radius: 999px;
-}
-.host-remote-banner {
-  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
-  margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed var(--line-2);
-}
-.host-remote-banner b { display: block; font-size: 15px; margin-bottom: 6px; }
-.host-remote-banner .hint { margin: 0; max-width: 720px; line-height: 1.5; }
-.host-remote-grid {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
-}
-.host-remote-card {
-  background: #fff; border: 1px solid var(--line); border-radius: 12px;
-  padding: 14px 16px; min-width: 0;
-}
-.host-remote-card.wide { grid-column: 1 / -1; }
-.host-remote-card h4 { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
-.hr-lq-table-wrap { max-height: 420px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; margin-top: 10px; }
-.hr-lq-table { font-size: 11px; }
-.hr-lq-table td { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.host-sensors-panel { display: none; }
-.btn.sm.ghost {
-  background: transparent;
-  border-color: transparent;
-  color: var(--muted);
-  padding-left: 6px;
-  padding-right: 6px;
-}
-.btn.sm.ghost:hover { color: var(--ink); background: #f4f7fb; }
-.hsp-chip {
-  display: inline-flex; align-items: center;
-  padding: 2px 8px; border-radius: 999px;
-  background: #fff; border: 1px solid #e2e8f0;
-  color: #334155; font-size: 11px; line-height: 1.4;
-}
-.hsp-chip.soft { background: #f8fafc; color: #64748b; }
-.hsp-chip.ok { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
-.hsp-chip.warn { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
-.hsp-chips, .hsp-channels { margin-top: 6px; }
-.hsp-label { font-size: 11px; color: #64748b; font-weight: 600; margin-right: 2px; }
-.hsp-drift { margin: 8px 0 0; font-size: 12px; color: #b45309; }
-.hsp-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; font-size: 12px; }
-.hsp-score { font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #ecfdf5; color: #047857; }
-.hsp-score[data-lv="fair"] { background: #fffbeb; color: #b45309; }
-.hsp-score[data-lv="poor"] { background: #fef2f2; color: #b91c1c; }
-.hsp-advise { margin: 8px 0 0; padding-left: 18px; color: #92400e; font-size: 12px; line-height: 1.45; }
-.host-remote-links, .host-remote-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-.hr-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.hr-field span { font-size: 11px; color: var(--muted); font-weight: 650; }
-.hr-field .field { width: 100%; box-sizing: border-box; }
-.host-remote-cmd-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-.host-remote-cmd-hd h4 { margin: 0; }
-.host-remote-cmd-table { width: 100%; font-size: 12px; }
-.host-remote-cmd-table th, .host-remote-cmd-table td { padding: 8px 10px; text-align: left; vertical-align: top; }
-.btn.block { display: block; width: 100%; margin-bottom: 10px; }
-.host-remote-subnav {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;
-}
-.hr-tab {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-  text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
-  background: #fff; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
-}
-.hr-tab:hover { border-color: #cbd5e1; background: #f8fafc; }
-.hr-tab.on {
-  border-color: #c81626; background: #fff5f5; box-shadow: 0 0 0 1px rgba(200, 22, 38, 0.12);
-}
-.hr-tab-label { font-size: 13px; font-weight: 700; color: var(--ink); }
-.hr-tab-hint { font-size: 10px; color: var(--muted); line-height: 1.3; }
-.host-remote-panel { margin-bottom: 16px; }
-.hr-shell-panel { max-width: none; }
-.hr-shell-layout {
-  display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 14px; align-items: start;
-}
-.hr-shell-aside {
-  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
-}
-.hr-shell-aside h4 { margin: 0 0 6px; font-size: 13px; }
-.hr-shell-quick { margin-bottom: 6px; text-align: left; font-family: ui-monospace, Consolas, monospace; font-size: 11px; }
-.hr-fs-explorer {
-  display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 12px; min-height: 320px;
-}
-.hr-fs-tree, .hr-fs-main {
-  border: 1px solid var(--line); border-radius: 12px; background: #fff; min-height: 280px;
-}
-.hr-fs-tree { overflow: auto; max-height: 520px; padding-bottom: 8px; }
-.hr-fs-tree-hd, .hr-fs-crumb {
-  margin: 0; padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--ink-2);
-  border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff;
-}
-.hr-fs-crumb { font-weight: 550; }
-.hr-fs-tree-ul { list-style: none; margin: 6px 0 0; padding: 0; }
-.hr-fs-node {
-  width: 100%; display: flex; align-items: center; gap: 6px; text-align: left;
-  border: 0; background: transparent; padding: 5px 8px; cursor: pointer; font-size: 12px;
-}
-.hr-fs-node:hover { background: #f4f7fb; }
-.hr-fs-node.on { background: #fff5f5; color: #9f1239; }
-.hr-fs-caret { width: 12px; font-size: 9px; color: var(--muted); flex-shrink: 0; }
-.hr-fs-node-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hr-fs-node em { font-style: normal; font-size: 10px; color: var(--muted); flex-shrink: 0; }
-.hr-fs-main { padding: 0 0 10px; overflow: auto; max-height: 520px; }
-.hr-fs-drives {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
-}
-.hr-fs-drives-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-right: 4px; }
-.hr-fs-drive {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-  min-width: 56px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line);
-  background: #fff; cursor: pointer; font-size: 12px;
-}
-.hr-fs-drive.on { border-color: #c81626; background: #fff5f5; }
-.hr-fs-drive strong { font-size: 15px; }
-.hr-fs-drive em { font-style: normal; font-size: 10px; color: var(--muted); }
-.hr-fs-row { cursor: pointer; }
-.hr-fs-icon { margin-right: 6px; opacity: 0.85; }
-.hr-fs-preview-ph { align-self: center; }
-.hr-reg-shortcuts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.hr-reg-chip {
-  border: 1px solid var(--line); background: #f8fafc; border-radius: 999px;
-  padding: 4px 12px; font-size: 11px; font-weight: 650; cursor: pointer;
-}
-.hr-reg-chip:hover { background: #eef2f7; }
-.hr-reg-crumb { margin: 0 0 12px; font-size: 12px; color: var(--ink-2); word-break: break-all; }
-.hr-reg-body { display: flex; flex-direction: column; gap: 16px; }
-.hr-reg-section h4 { margin: 0 0 8px; font-size: 13px; }
-.hr-reg-subkey-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.hr-reg-subkey {
-  border: 1px dashed #cbd5e1; background: #fff; border-radius: 8px; padding: 6px 10px;
-  font-size: 12px; font-family: ui-monospace, Consolas, monospace; cursor: pointer;
-}
-.hr-reg-subkey:hover { border-color: #c81626; background: #fff5f5; }
-.hr-reg-dl { display: grid; gap: 8px; margin: 0; font-size: 12px; }
-.hr-reg-dl dt { font-weight: 650; color: var(--muted); font-size: 11px; }
-.hr-reg-data { word-break: break-all; max-width: 100%; }
-.hr-reg-val-table .hr-reg-data { max-width: 480px; }
-.hr-shell-card {
-  border: 1px solid #1e293b; border-radius: 14px; overflow: hidden;
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
-}
-.hr-shell-hd {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
-  padding: 10px 14px; background: #1e293b; color: #e2e8f0; font-size: 12px;
-}
-.hr-shell-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.hr-shell-led {
-  width: 8px; height: 8px; border-radius: 50%; background: #64748b; flex-shrink: 0;
-}
-.hr-shell-led.live { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
-.hr-shell-led.connecting { background: #fbbf24; animation: hr-pulse 1s infinite; }
-.hr-shell-led.error { background: #ef4444; }
-.hr-shell-led.idle { background: #64748b; }
-@keyframes hr-pulse { 50% { opacity: 0.45; } }
-.hr-shell-sid { font-size: 10px; opacity: 0.75; padding: 2px 6px; background: rgba(0,0,0,0.25); border-radius: 4px; }
-.hr-shell-actions { display: flex; gap: 8px; }
-.hr-shell-body {
-  min-height: 280px; max-height: 420px; overflow: auto; padding: 14px 16px;
-  background: #0b1120; font-family: ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.5;
-}
-.hr-shell-empty { color: #94a3b8; text-align: center; padding: 48px 16px; }
-.hr-shell-empty p { margin: 0 0 8px; }
-.hr-shell-line { white-space: pre-wrap; word-break: break-word; margin-bottom: 4px; }
-.hr-shell-line.sys { color: #94a3b8; font-style: italic; }
-.hr-shell-line.in { color: #fde68a; }
-.hr-shell-line.in::before { content: '> '; color: #64748b; }
-.hr-shell-line.out { color: #86efac; }
-.hr-shell-line.err { color: #fca5a5; }
-.hr-shell-inputbar {
-  display: flex; align-items: center; gap: 8px; padding: 10px 12px;
-  background: #1e293b; border-top: 1px solid #334155;
-}
-.hr-shell-prompt { color: #86efac; font-family: ui-monospace, Consolas, monospace; font-weight: 700; }
-.hr-shell-input { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
-.hr-shell-foot { margin-top: 10px; }
-.hr-shell-banner {
-  margin: 0; padding: 8px 14px; font-size: 12px; border-bottom: 1px solid #334155;
-}
-.hr-shell-banner.ok { background: #14532d; color: #bbf7d0; }
-.hr-shell-banner.err { background: #7f1d1d; color: #fecaca; }
-.hr-shell-banner.warn { background: #78350f; color: #fde68a; }
-.hr-shell-banner.info { background: #1e3a5f; color: #bae6fd; }
-.host-remote-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
-.host-remote-toolbar .grow { flex: 1; min-width: 200px; }
-.host-remote-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 120px; }
-.host-remote-pre {
-  margin: 0; padding: 12px; background: #0f172a; color: #e2e8f0; border-radius: 10px;
-  font-size: 12px; line-height: 1.45; max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-all;
-}
-.host-remote-cmd-in { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
-.host-remote-cmd-log { margin-top: 12px; font-size: 12px; }
-.host-remote-log-line { padding: 4px 0; border-bottom: 1px dashed var(--line-2); }
-.host-remote-log-line em { color: var(--muted); font-style: normal; margin-right: 8px; }
-@media (max-width: 960px) {
-  .host-remote-grid { grid-template-columns: 1fr; }
-  .host-remote-split { grid-template-columns: 1fr; }
-  .hr-fs-explorer { grid-template-columns: 1fr; }
-  .hr-shell-layout { grid-template-columns: 1fr; }
-}
 .settings-rules-table {
   overflow: auto;
 }
