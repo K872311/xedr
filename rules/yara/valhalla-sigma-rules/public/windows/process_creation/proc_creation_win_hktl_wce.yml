@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - Windows Credential Editor (WCE) Execution
+id: 7aa7009a-28b9-4344-8c1f-159489a390df
+status: test
+description: |
+    Detects the use of Windows Credential Editor (WCE), a popular post-exploitation tool used to extract plaintext passwords, hash, PIN code and Kerberos tickets from memory.
+    It is often used by threat actors for credential dumping and lateral movement within compromised networks.
+references:
+    - https://www.ampliasecurity.com/research/windows-credentials-editor/
+date: "2019-12-31"
+modified: "2025-10-21"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: 1 of selection_*
+    selection_hash:
+        Hashes|contains:
+            - IMPHASH=136F0A8572C058A96436C82E541E4C41
+            - IMPHASH=589657C64DDE88533186C39F82FA1F50
+            - IMPHASH=6BFE09EFCB4FFDE061EBDBAFC4DB84CF
+            - IMPHASH=7D490037BF450877E6D0287BDCFF8D2E
+            - IMPHASH=8AB93B061287C79F3088C5BC7E7D97ED
+            - IMPHASH=A53A02B997935FD8EEDCB5F7ABAB9B9F
+            - IMPHASH=BA434A7A729EEC20E136CA4C32D6C740
+            - IMPHASH=BD1D1547DA13C0FCB6C15E86217D5EB8
+            - IMPHASH=E96A73C7BF33A464C510EDE582318BF2
+    selection_img:
+        Image|endswith:
+            - \WCE.exe
+            - \WCE64.exe
+falsepositives:
+    - Unknown
+level: critical
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+    - attack.s0005
+customer: 'demo'

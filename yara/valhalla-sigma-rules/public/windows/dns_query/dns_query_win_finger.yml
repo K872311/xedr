@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DNS Query by Finger Utility
+id: c082c2b0-525b-4dbc-9a26-a57dc4692074
+related:
+    - type: similar
+      id: 2fdaf50b-9fd5-449f-ba69-f17248119af6
+    - type: similar
+      id: af491bca-e752-4b44-9c86-df5680533dbc
+status: experimental
+description: |
+    Detects DNS queries made by the finger utility, which can be abused by threat actors to retrieve remote commands for execution on Windows devices.
+    In one ClickFix malware campaign, adversaries leveraged the finger protocol to fetch commands from a remote server.
+    Since the finger utility is not commonly used in modern Windows environments, its presence already raises suspicion.
+    Investigating such DNS queries can also help identify potential malicious infrastructure used by threat actors for command and control (C2) communication.
+references:
+    - https://www.bleepingcomputer.com/news/security/decades-old-finger-protocol-abused-in-clickfix-malware-attacks/
+date: "2025-11-19"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: dns_query
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \finger.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.command-and-control
+    - attack.t1071.004
+    - attack.execution
+    - attack.t1059.003
+customer: 'demo'

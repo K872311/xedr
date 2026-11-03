@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AMSI Disabled via Registry Modification
+id: aa37cbb0-da36-42cb-a90f-fdf216fc7467
+related:
+    - type: similar
+      id: 7dbbcac2-57a0-45ac-b306-ff30a8bd2981
+status: experimental
+description: |
+    Detects attempts to disable AMSI (Anti-Malware Scan Interface) by modifying the AmsiEnable registry value.
+    Anti-Malware Scan Interface (AMSI) is a security feature in Windows that allows applications and services to integrate with anti-malware products for enhanced protection against malicious content.
+    Adversaries may attempt to disable AMSI to evade detection by security software, allowing them to execute malicious scripts or code without being scanned.
+references:
+    - https://mostafayahiax.medium.com/hunting-for-amsi-bypassing-methods-9886dda0bf9d
+    - https://docs.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal
+    - https://www.mdsec.co.uk/2019/02/macros-and-more-with-sharpshooter-v2-0/
+date: "2025-12-25"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|endswith: \Software\Microsoft\Windows Script\Settings\AmsiEnable
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_amsi_disable/info.yml
+simulation:
+    - atomic_guid: 728eca7b-0444-4f6f-ac36-437e3d751dc0
+      name: AMSI Bypass - Create AMSIEnable Reg Key
+      technique: T1562.001
+      type: atomic-red-team

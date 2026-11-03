@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Tamper With Sophos AV Registry Keys
+id: 9f4662ac-17ca-43aa-8f12-5d7b989d0101
+status: test
+description: Detects tamper attempts to sophos av functionality via registry key modification
+references:
+    - https://redacted.com/blog/bianlian-ransomware-gang-gives-it-a-go/
+date: "2022-09-02"
+modified: "2023-08-17"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|contains:
+            - \Sophos Endpoint Defense\TamperProtection\Config\SAVEnabled
+            - \Sophos Endpoint Defense\TamperProtection\Config\SEDEnabled
+            - \Sophos\SAVService\TamperProtection\Enabled
+falsepositives:
+    - Some FP may occur when the feature is disabled by the AV itself, you should always investigate if the action was legitimate
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

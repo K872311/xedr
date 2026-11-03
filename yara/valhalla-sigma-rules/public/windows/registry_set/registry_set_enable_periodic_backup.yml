@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Periodic Backup For System Registry Hives Enabled
+id: 973ef012-8f1a-4c40-93b4-7e659a5cd17f
+status: test
+description: |
+    Detects the enabling of the "EnablePeriodicBackup" registry value. Once enabled, The OS will backup System registry hives on restarts to the "C:\Windows\System32\config\RegBack" folder. Windows creates a "RegIdleBackup" task to manage subsequent backups.
+    Registry backup was a default behavior on Windows and was disabled as of "Windows 10, version 1803".
+references:
+    - https://learn.microsoft.com/en-us/troubleshoot/windows-client/installing-updates-features-roles/system-registry-no-backed-up-regback-folder
+date: "2024-07-01"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000001)
+        TargetObject|endswith: \Control\Session Manager\Configuration Manager\EnablePeriodicBackup
+falsepositives:
+    - Legitimate need for RegBack feature by administrators.
+level: medium
+tags:
+    - attack.collection
+    - attack.t1113
+customer: 'demo'

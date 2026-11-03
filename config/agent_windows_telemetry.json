@@ -1,0 +1,41 @@
+{
+  "version": "1",
+  "model": "hybrid",
+  "note": "对齐 Elastic 思路：原生 ETW 主链路 + Winlog 多通道（类似 Winlogbeat/Sysmon），互补而非二选一。",
+  "primary": {
+    "engine": "etw_native",
+    "providers": [
+      "Microsoft-Windows-Kernel-Process",
+      "Microsoft-Windows-Kernel-Network",
+      "Microsoft-Windows-Kernel-File",
+      "Microsoft-Windows-DNS-Client",
+      "Microsoft-Windows-AMSI",
+      "Microsoft-Windows-Win32k",
+      "Microsoft-Windows-Threat-Intelligence",
+      "Microsoft-Windows-WMI-Activity",
+      "Microsoft-Windows-LDAP-Client"
+    ]
+  },
+  "secondary": {
+    "engine": "winevent_wevtapi",
+    "channels": [
+      "Security",
+      "System",
+      "Microsoft-Windows-Sysmon/Operational",
+      "Microsoft-Windows-PowerShell/Operational",
+      "Microsoft-Windows-Windows Defender/Operational",
+      "Microsoft-Windows-TaskScheduler/Operational",
+      "Microsoft-Windows-Windows Firewall With Advanced Security/Firewall",
+      "Microsoft-Windows-CodeIntegrity/Operational",
+      "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
+      "Microsoft-Windows-SmbClient/Security",
+      "Microsoft-Windows-Bits-Client/Operational",
+      "Microsoft-Windows-AppLocker/EXE and DLL"
+    ],
+    "ecs_enrichment": "timeline detail.ecs"
+  },
+  "fallback": {
+    "engine": "etw_evtlog_ps",
+    "when": "etw_native unavailable"
+  }
+}

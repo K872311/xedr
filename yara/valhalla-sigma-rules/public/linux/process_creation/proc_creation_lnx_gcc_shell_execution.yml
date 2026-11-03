@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Shell Execution GCC  - Linux
+id: 9b5de532-a757-4d70-946c-1f3e44f48b4d
+status: test
+description: |
+    Detects the use of the "gcc" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.
+references:
+    - https://gtfobins.github.io/gtfobins/gcc/#shell
+    - https://gtfobins.github.io/gtfobins/c89/#shell
+    - https://gtfobins.github.io/gtfobins/c99/#shell
+    - https://www.elastic.co/guide/en/security/current/linux-restricted-shell-breakout-via-linux-binary-s.html
+date: "2024-09-02"
+author: Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - /bin/bash,-s
+            - /bin/dash,-s
+            - /bin/fish,-s
+            - /bin/sh,-s
+            - /bin/zsh,-s
+    selection_img:
+        CommandLine|contains: -wrapper
+        Image|endswith:
+            - /c89
+            - /c99
+            - /gcc
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.discovery
+    - attack.t1083
+customer: 'demo'

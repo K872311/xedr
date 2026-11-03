@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious IIS URL GlobalRules Rewrite Via AppCmd
+id: 7c8af9b2-dcae-41a2-a9db-b28c288b5f08
+status: test
+description: Detects usage of "appcmd" to create new global URL rewrite rules. This behaviour has been observed being used by threat actors to add new rules so they can access their webshells.
+references:
+    - https://twitter.com/malmoeb/status/1616702107242971144
+    - https://learn.microsoft.com/en-us/answers/questions/739120/how-to-add-re-write-global-rule-with-action-type-r
+date: "2023-01-22"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains|all:
+            - set
+            - config
+            - section:system.webServer/rewrite/globalRules
+            - 'commit:'
+    selection_img:
+        - Image|endswith: \appcmd.exe
+        - OriginalFileName: appcmd.exe
+falsepositives:
+    - Legitimate usage of appcmd to add new URL rewrite rules
+level: medium
+tags:
+    - attack.stealth
+customer: 'demo'

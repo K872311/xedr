@@ -1,0 +1,34 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Process Launched Without Image Name
+id: f208d6d8-d83a-4c2c-960d-877c37da84e5
+status: test
+description: Detect the use of processes with no name (".exe"), which can be used to evade Image-based detections.
+references:
+    - https://www.huntress.com/blog/fake-browser-updates-lead-to-boinc-volunteer-computing-software
+date: "2024-07-23"
+author: Matt Anderson (Huntress)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \.exe
+falsepositives:
+    - Rare legitimate software.
+level: medium
+tags:
+    - attack.stealth
+customer: 'demo'

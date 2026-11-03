@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWL Bypass with Winrm.vbs and Malicious WsmPty.xsl/WsmTxt.xsl - File
+id: d353dac0-1b41-46c2-820c-d7d2561fc6ed
+related:
+    - type: derived
+      id: 074e0ded-6ced-4ebd-8b4d-53f55908119d
+status: test
+description: Detects execution of attacker-controlled WsmPty.xsl or WsmTxt.xsl via winrm.vbs and copied cscript.exe (can be renamed)
+references:
+    - https://posts.specterops.io/application-whitelisting-bypass-and-arbitrary-unsigned-code-execution-technique-in-winrm-vbs-c8c24fb40404
+date: "2020-10-06"
+modified: "2022-11-28"
+author: Julia Fomina, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: system_files and not in_system_folder
+    in_system_folder:
+        TargetFilename|startswith:
+            - C:\Windows\System32\
+            - C:\Windows\SysWOW64\
+    system_files:
+        TargetFilename|endswith:
+            - WsmPty.xsl
+            - WsmTxt.xsl
+falsepositives:
+    - Unlikely
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1216
+customer: 'demo'

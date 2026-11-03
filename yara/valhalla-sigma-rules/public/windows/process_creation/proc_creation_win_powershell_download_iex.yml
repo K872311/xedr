@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Download and Execution Cradles
+id: 85b0b087-eddf-4a2b-b033-d771fa2b9775
+status: test
+description: Detects PowerShell download and execution cradles.
+references:
+    - https://github.com/VirtualAlllocEx/Payload-Download-Cradles/blob/88e8eca34464a547c90d9140d70e9866dcbc6a12/Download-Cradles.cmd
+    - https://labs.withsecure.com/publications/fin7-target-veeam-servers
+date: "2022-03-24"
+modified: "2025-07-18"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_download:
+        CommandLine|contains:
+            - .DownloadString(
+            - .DownloadFile(
+            - 'Invoke-WebRequest '
+            - 'iwr '
+            - 'Invoke-RestMethod '
+            - 'irm '
+    selection_iex:
+        CommandLine|contains:
+            - ;iex $
+            - '| IEX'
+            - '|IEX '
+            - I`E`X
+            - I`EX
+            - IE`X
+            - 'iex '
+            - IEX (
+            - IEX(
+            - Invoke-Expression
+falsepositives:
+    - Some PowerShell installers were seen using similar combinations. Apply filters accordingly
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_powershell_download_iex/info.yml

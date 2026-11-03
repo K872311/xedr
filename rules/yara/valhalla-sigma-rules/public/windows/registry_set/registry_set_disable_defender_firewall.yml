@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Disable Microsoft Defender Firewall via Registry
+id: 974515da-6cc5-4c95-ae65-f97f9150ec7f
+status: test
+description: Adversaries may disable or modify system firewalls in order to bypass controls limiting network usage
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.004/T1562.004.md#atomic-test-2---disable-microsoft-defender-firewall-via-registry
+date: "2022-01-09"
+modified: "2024-03-25"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|contains: \Services\SharedAccess\Parameters\FirewallPolicy\
+        TargetObject|endswith: \EnableFirewall
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_disable_defender_firewall/info.yml
+simulation:
+    - atomic_guid: afedc8c4-038c-4d82-b3e5-623a95f8a612
+      name: Disable Microsoft Defender Firewall via Registry
+      technique: T1562.004
+      type: atomic-red-team

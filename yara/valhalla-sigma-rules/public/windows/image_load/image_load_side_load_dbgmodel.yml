@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential DLL Sideloading Of DbgModel.DLL
+id: fef394cd-f44d-4040-9b18-95d92fe278c0
+status: test
+description: Detects potential DLL sideloading of "DbgModel.dll"
+references:
+    - https://hijacklibs.net/entries/microsoft/built-in/dbgmodel.html
+date: "2024-07-11"
+modified: "2024-07-22"
+author: Gary Lobermier
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_generic:
+        ImageLoaded|startswith:
+            - C:\Windows\System32\
+            - C:\Windows\SysWOW64\
+            - C:\Windows\WinSxS\
+    filter_optional_windbg:
+        ImageLoaded|startswith: C:\Program Files\WindowsApps\Microsoft.WinDbg_
+    filter_optional_windows_kits:
+        ImageLoaded|startswith:
+            - C:\Program Files (x86)\Windows Kits\
+            - C:\Program Files\Windows Kits\
+    selection:
+        ImageLoaded|endswith: \dbgmodel.dll
+falsepositives:
+    - Legitimate applications loading their own versions of the DLL mentioned in this rule
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'

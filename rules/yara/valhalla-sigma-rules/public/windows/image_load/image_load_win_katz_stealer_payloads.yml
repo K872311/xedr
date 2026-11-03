@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Katz Stealer DLL Loaded
+id: e6c7ab7c-c79d-4b84-b913-b2ec3f8e8a98
+status: experimental
+description: |
+    Detects loading of DLLs associated with Katz Stealer malware 2025 variants.
+    Katz Stealer is a malware variant that is known to be used for stealing sensitive information from compromised systems.
+    The process that loads these DLLs are very likely to be malicious.
+references:
+    - Internal Research
+date: "2025-05-22"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection
+    selection:
+        ImageLoaded|endswith:
+            - \katz_ontop.dll
+            - \AppData\Local\Temp\received_dll.dll
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.execution
+    - attack.t1129
+    - detection.emerging-threats
+customer: 'demo'

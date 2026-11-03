@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HKTL - SharpSuccessor Privilege Escalation Tool Execution
+id: 38a1ac5f-9c74-47d2-a345-dd6f5eb4e7c8
+status: experimental
+description: |
+    Detects the execution of SharpSuccessor, a tool used to exploit the BadSuccessor attack for privilege escalation in WinServer 2025 Active Directory environments.
+    Successful usage of this tool can let the attackers gain the domain admin privileges by exploiting the BadSuccessor vulnerability.
+references:
+    - https://github.com/logangoins/SharpSuccessor
+date: "2025-06-06"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - Image|endswith: \SharpSuccessor.exe
+        - OriginalFileName: SharpSuccessor.exe
+        - CommandLine|contains: SharpSuccessor
+        - CommandLine|contains|all:
+            - ' add '
+            - ' /impersonate'
+            - ' /path'
+            - ' /account'
+            - ' /name'
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.t1068
+customer: 'demo'

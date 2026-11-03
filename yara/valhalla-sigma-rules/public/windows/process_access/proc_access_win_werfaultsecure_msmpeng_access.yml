@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Process Access of MsMpEng by WerFaultSecure - EDR-Freeze
+id: 387df17d-3b04-448f-8669-9e7fd5e5fd8c
+related:
+    - type: similar
+      id: 8a2f4b1c-3d5e-4f7a-9b2c-1e4f6d8a9c2b
+    - type: similar
+      id: 1f0b4cac-9c81-41f4-95d0-8475ff46b3e2
+status: experimental
+description: |
+    Detects process access events where WerFaultSecure accesses MsMpEng.exe with dbgcore.dll or dbghelp.dll in the call trace, indicating potential EDR freeze techniques.
+    This technique leverages WerFaultSecure.exe running as a Protected Process Light (PPL) with WinTCB protection level to call MiniDumpWriteDump and suspend EDR/AV processes, allowing malicious activity to execute undetected during the suspension period.
+references:
+    - https://blog.axelarator.net/hunting-for-edr-freeze/
+date: "2025-11-27"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_access
+    product: windows
+    definition: |
+        Requires Sysmon Event ID 10 (ProcessAccess) with CallTrace enabled.
+        Example sysmon config snippet with grouping, as logging individual ProcessAccess events can generate excessive logs:
+        <ProcessAccess onmatch="include">
+            <Rule groupRelation="and">
+            <TargetImage condition="end with">\MsMpEng.exe</TargetImage>
+            <SourceImage condition="end with">\WerFaultSecure.exe</SourceImage>
+            </Rule>
+        </ProcessAccess>
+detection:
+    condition: selection
+    selection:
+        CallTrace|contains:
+            - \dbgcore.dll
+            - \dbghelp.dll
+        SourceImage|endswith: \WerFaultSecure.exe
+        TargetImage|endswith: \MsMpEng.exe
+falsepositives:
+    - Legitimate Windows Error Reporting operations
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_access/proc_access_win_werfaultsecure_msmpeng_access/info.yml

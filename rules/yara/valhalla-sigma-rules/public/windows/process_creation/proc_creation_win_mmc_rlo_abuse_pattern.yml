@@ -1,0 +1,53 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: MMC Executing Files with Reversed Extensions Using RTLO Abuse
+id: 9cfe4b27-1e56-48b4-b7a8-d46851c91a44
+status: experimental
+description: Detects malicious behavior where the MMC utility (`mmc.exe`) executes files with reversed extensions caused by Right-to-Left Override (RLO) abuse, disguising them as document formats.
+references:
+    - https://www.unicode.org/versions/Unicode5.2.0/ch02.pdf
+    - https://en.wikipedia.org/wiki/Right-to-left_override
+    - https://tria.ge/241015-l98snsyeje/behavioral2
+date: "2025-02-05"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_commandline:
+        CommandLine|contains:
+            - cod.msc
+            - fdp.msc
+            - ftr.msc
+            - lmth.msc
+            - slx.msc
+            - tdo.msc
+            - xcod.msc
+            - xslx.msc
+            - xtpp.msc
+    selection_image:
+        - Image|endswith: \mmc.exe
+        - OriginalFileName: MMC.exe
+falsepositives:
+    - Legitimate administrative actions using MMC to execute misnamed `.msc` files.
+    - Unconventional but non-malicious usage of RLO or reversed extensions.
+level: high
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1204.002
+    - attack.t1218.014
+    - attack.t1036.002
+customer: 'demo'

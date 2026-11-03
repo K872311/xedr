@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Guest Account Enabled Via Sysadminctl
+id: d7329412-13bd-44ba-a072-3387f804a106
+status: test
+description: Detects attempts to enable the guest account using the sysadminctl utility
+references:
+    - https://ss64.com/osx/sysadminctl.html
+date: "2023-02-18"
+author: Sohan G (D4rkCiph3r)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: macos
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains|all:
+            - ' -guestAccount'
+            - ' on'
+        Image|endswith: /sysadminctl
+falsepositives:
+    - Unknown
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.initial-access
+    - attack.stealth
+    - attack.t1078
+    - attack.t1078.001
+customer: 'demo'

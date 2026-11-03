@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: EvilTokens PhaaS Kit Phishing Related Request - Proxy
+id: e0e121d0-be4d-4281-af7e-17abbba4a408
+status: experimental
+description: |
+    Detects outbound web proxy requests to URLs matching the EvilTokens Phishing-as-a-Service (PhaaS) kit infrastructure.
+    Specifically Cloudflare Workers and Railway.app domains used in OAuth device code authorization phishing attacks.
+    This indicates a user has clicked a phishing link.
+references:
+    - https://blog.sekoia.io/new-widespread-eviltokens-kit-device-code-phishing-as-a-service-part-1/
+date: "2026-04-28"
+author: uniqu3-us3r
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: proxy
+detection:
+    condition: selection
+    selection:
+        c-uri|re: -[a-z0-9]{3}\.[a-z0-9-]{3,}-s-account\.workers\.dev|\.up\.railway\.app
+falsepositives:
+    - Legitimate use of Cloudflare Workers or Railway.app domains
+level: low
+tags:
+    - attack.initial-access
+    - attack.t1566.002
+    - detection.emerging-threats
+customer: 'demo'

@@ -1,0 +1,17 @@
+{
+  "server_url": "http://127.0.0.1:8100",
+  "token": "粘贴平台登录后的 Bearer Token",
+  "agent_id": "",
+  "insecure_skip_verify": false,
+  "modules": ["sysinfo", "service", "task", "startup", "network", "process", "file", "user"],
+  "intervals_sec": {
+    "sysinfo": 60,
+    "service": 8,
+    "task": 10,
+    "startup": 8,
+    "network": 5,
+    "process": 5,
+    "file": 12,
+    "user": 20
+  }
+}

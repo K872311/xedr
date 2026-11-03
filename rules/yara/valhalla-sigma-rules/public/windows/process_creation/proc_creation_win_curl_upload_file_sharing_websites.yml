@@ -1,0 +1,66 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Curl File Upload To File Sharing Websites
+id: e328cc73-f92a-42fb-b3fa-7c2cffda981a
+related:
+    - type: derived
+      id: 00bca14a-df4e-4649-9054-3f2aa676bc04
+    - type: similar
+      id: 7d1aaf3d-4304-425c-b7c3-162055e0b3ab
+status: experimental
+description: Detects usage of curl to upload files to known file sharing domains, which may indicate data exfiltration.
+references:
+    - https://unit42.paloaltonetworks.com/advanced-backdoor-squidoor/
+date: "2026-03-29"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_domain:
+        CommandLine|contains:
+            - 0x0.st
+            - bashupload.com
+            - chunk.io
+            - file.io
+            - filebin.net
+            - pastebin
+            - send.firefox.com
+            - temp.sh
+            - transfer.sh
+            - ufile.io
+            - uploadfiles.io
+            - wetransfer.com
+            - x0.at
+    selection_cli_flags:
+        - CommandLine|contains:
+            - ' --form'
+            - ' --upload-file'
+            - ' --data'
+            - ' -X POST'
+            - ' --request POST '
+        - CommandLine|re:
+            - \s-[FTd]\s
+            - \s-sT\s
+    selection_img:
+        - Image|endswith: \curl.exe
+        - OriginalFileName: curl.exe
+falsepositives:
+    - Legitimate file uploads to these services by administrators or developers
+level: high
+tags:
+    - attack.exfiltration
+    - attack.t1567.002
+customer: 'demo'

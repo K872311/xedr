@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Sitecore Pre-Auth RCE CVE-2021-42237
+id: 20c6ed1c-f7f0-4ea3-aa65-4f198e6acb0f
+status: test
+description: Detects exploitation attempts of Sitecore Experience Platform Pre-Auth RCE CVE-2021-42237 found in Report.ashx
+references:
+    - https://blog.assetnote.io/2021/11/02/sitecore-rce/
+    - https://support.sitecore.com/kb?id=kb_article_view&sysparm_article=KB1000776
+date: "2021-11-17"
+modified: "2023-01-02"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: webserver
+detection:
+    condition: selection
+    selection:
+        cs-method: POST
+        cs-uri-query|contains: /sitecore/shell/ClientBin/Reporting/Report.ashx
+        sc-status: "200"
+falsepositives:
+    - Vulnerability Scanning
+level: high
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - cve.2021-42237
+    - detection.emerging-threats
+customer: 'demo'

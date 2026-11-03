@@ -1,0 +1,37 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Okta Suspicious Activity Reported by End-user
+id: 07e97cc6-aed1-43ae-9081-b3470d2367f1
+status: test
+description: Detects when an Okta end-user reports activity by their account as being potentially suspicious.
+references:
+    - https://developer.okta.com/docs/reference/api/system-log/
+    - https://github.com/okta/workflows-templates/blob/1164f0eb71ce47c9ddc7d850e9ab87b5a2b42333/workflows/suspicious_activity_reported/readme.md
+date: "2023-09-07"
+modified: "2026-04-27"
+author: kelnage
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: okta
+    service: okta
+detection:
+    condition: selection
+    selection:
+        eventType: user.account.report_suspicious_activity_by_enduser
+falsepositives:
+    - If an end-user incorrectly identifies normal activity as suspicious.
+level: high
+tags:
+    - attack.resource-development
+    - attack.t1586.003
+customer: 'demo'

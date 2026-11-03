@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Vcruntime140 DLL Sideloading
+id: d7a63acb-1284-49bc-bfea-7771146c8b1c
+status: experimental
+description: |
+    Detects potential DLL sideloading of vcruntime140.dll, a common C++ runtime library.
+    Threat actors have been observed using DLL sideloading techniques to load malicious payloads under the guise of legitimate applications such as SqlWriter, SqlDumper etc.
+    Notably, APT29 has been documented leveraging WinELOADER to sideload vcruntime140.dll for executing malicious code.
+references:
+    - https://www.mandiant.com/resources/blog/apt29-wineloader-german-political-parties
+    - https://www.zscaler.com/blogs/security-research/european-diplomats-targeted-spikedwine-wineloader
+    - https://www.nextron-systems.com/2023/09/15/detecting-janelarat-with-yara-and-thor/
+date: "2026-01-12"
+modified: "2026-05-18"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_legitimate_path:
+        ImageLoaded|startswith:
+            - C:\Windows\System32\
+            - C:\Windows\SysWOW64\
+            - C:\Program Files\
+            - C:\Program Files (x86)\
+    filter_main_legitimate_signer:
+        Description|endswith: C Runtime Library
+        SignatureStatus: Valid
+        Signed: "true"
+    filter_optional_onedrive:
+        Image|contains: \AppData\Local\Microsoft\OneDrive\
+        Image|startswith: C:\Users\
+    selection:
+        ImageLoaded|endswith: \vcruntime140.dll
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/image_load/image_load_side_load_vcruntime140/info.yml

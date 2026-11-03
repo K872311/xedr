@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: NTLM Hash Leak Via Curl NTLM Authentication
+id: 916eb839-895e-47f8-99ee-3008bf377a3e
+status: test
+description: |
+    Detects the use of curl with NTLM authentication and empty credentials (-u :), which can be abused to leak the currently logged-in user's NTLMv2 challenge-response to an
+    attacker-controlled server, enabling offline cracking or relay attacks.
+    When no credentials are provided, the Microsoft-shipped curl passes a NULL identity to Windows SSPI, which automatically falls back to the current user's logon session credentials
+    stored in LSASS — without requiring a plaintext password.
+    This behavior is exclusive to the curl binary shipped by Microsoft (available since Windows 10 / Windows Server 2019), which is built with SSPI support.
+references:
+    - https://github.com/curl/curl/blob/master/lib/vauth/ntlm_sspi.c#L128-L140
+    - https://learn.microsoft.com/en-us/windows/win32/secauthn/acquirecredentialshandle--ntlm
+    - https://curl.se/docs/manpage.html#--ntlm
+date: "2026-06-04"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_empty_creds:
+        CommandLine|re: '(?i)\s(-u|--user)\s*:'
+    selection_img:
+        - Image|endswith: \curl.exe
+        - OriginalFileName: curl.exe
+    selection_ntlm_flag:
+        CommandLine|contains: --ntlm
+falsepositives:
+    - Should be very rare as it's not widely known or used, but could occur in legitimate use cases where curl is used with NTLM authentication and empty credentials, such as in certain scripts or automation tasks.
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1187
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_curl_ntlm_hash_leak_attempt/info.yml

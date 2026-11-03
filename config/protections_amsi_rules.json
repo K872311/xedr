@@ -1,0 +1,303 @@
+{
+  "version": 2,
+  "profile": "protections-api-unified",
+  "updated_at": "2026-11-02T09:27:28",
+  "rev": "ae64f8948a00",
+  "rules": [
+    {
+      "id": "amsi.b3f91726",
+      "kind": "amsi_buffer",
+      "title": "PowerShell Script with Screen Capture Capability",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        ".CopyFromScreen(",
+        "System.Drawing",
+        "Drawing.Graphics"
+      ],
+      "protections_rule_id": "b3f91726-0afa-43e5-a07b-da1c7fa35243",
+      "enabled": true
+    },
+    {
+      "id": "amsi.57bc4c03",
+      "kind": "amsi_buffer",
+      "title": "PowerShell Script with Passwords Vault Access Capability",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Credentials.PasswordVault",
+        ".RetrievePassword",
+        ".RetrieveAll"
+      ],
+      "protections_rule_id": "57bc4c03-7ed9-409e-971a-a0a03ea99ea0",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ee4fbf59",
+      "kind": "amsi_buffer",
+      "title": "AMSI Bypass via PowerShell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "amsiContext",
+        "amsiSession",
+        "amsiInitFailed",
+        "AmsiUtils",
+        "AmsiInitialize",
+        "AmsiScanString",
+        ".SetValue",
+        ".GetField",
+        "[Ref].Assembly.GetType*System.Management.Automation.Amsi",
+        ".SetValue",
+        ".GetField",
+        "[Ref].Assembly.GetTypes()",
+        "GetFields",
+        "amsiIn"
+      ],
+      "protections_rule_id": "ee4fbf59-c858-4a5d-bc74-e027926d7e2e",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ce95fc52",
+      "kind": "amsi_buffer",
+      "title": "Execution via Obfuscated PowerShell Script",
+      "severity": "medium",
+      "process_names": [
+        "powershell.exe"
+      ],
+      "app_names": [],
+      "buffer_all": [
+        "-bxor",
+        ":sptth",
+        "//:p##h",
+        ".rEplAcE(([chAr]",
+        "$pShOMe[",
+        "$ShellId[",
+        "$env:Public[",
+        "-bxor",
+        "-bxor",
+        "-bxor 0xFFFF0000",
+        "Ansible.Basic.AnsibleModule",
+        " -bxor ",
+        "HSTITest_Encoded*TVqQAAMAAAAEAAAA"
+      ],
+      "protections_rule_id": "ce95fc52-051e-4409-9c99-f2daf3e6e609",
+      "enabled": true
+    },
+    {
+      "id": "amsi.c4cd4b82",
+      "kind": "amsi_buffer",
+      "title": "Potential Pentesting PowerShell Script",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Invoke-Empire",
+        "Invoke-Mimikatz",
+        "PowerShellMafia",
+        "redcanaryco",
+        "PowerShellEmpire",
+        "$local:PowerSploitIndicators",
+        "function Set-HookFunctionTabs"
+      ],
+      "protections_rule_id": "c4cd4b82-6a78-484e-a86f-470381006ab5",
+      "enabled": true
+    },
+    {
+      "id": "amsi.a4a0537b",
+      "kind": "amsi_buffer",
+      "title": "Potential Reverse Shell via Powershell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Sockets.TCPClient(",
+        "Sockets.UDPClient(",
+        "Net.NetworkInformation.Ping",
+        "while(",
+        "while (",
+        ".GetStream()",
+        ".GetBytes(",
+        ".Read(",
+        ".Receive(",
+        ".GetString(",
+        ".Write(",
+        ".Send("
+      ],
+      "protections_rule_id": "a4a0537b-040e-4319-afce-a71ea547d45d",
+      "enabled": true
+    },
+    {
+      "id": "amsi.7158afc1",
+      "kind": "amsi_buffer",
+      "title": "Potential Shellcode Download and Execution via PowerShell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Add-Type",
+        "VirtualAlloc",
+        "Marshal*Copy",
+        "CreateThread",
+        "NtCreateThreadEx",
+        "RtlCreateUserThread",
+        "QueueUserAPC",
+        "https://",
+        "http://",
+        "Invoke-WebRequest",
+        "WebClient",
+        "DownloadData",
+        "DownloadString"
+      ],
+      "protections_rule_id": "7158afc1-7415-4318-b080-71edc18068f5",
+      "enabled": true
+    },
+    {
+      "id": "amsi.c286b078",
+      "kind": "amsi_buffer",
+      "title": "Powershell Execution via Named Pipe",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Pipes.NamedPipeClientStream*.Connect(",
+        "Pipes.NamedPipeServerStream*WaitForConnection",
+        ".StreamReader",
+        ".StreamWriter",
+        ".ReadLine",
+        ".WriteLine",
+        "while(",
+        "while ("
+      ],
+      "protections_rule_id": "c286b078-793f-4c51-a49a-27948e0ed741",
+      "enabled": true
+    },
+    {
+      "id": "amsi.08fa5da1",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Base64 Decoding",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "FromBase64String",
+        "Ansible"
+      ],
+      "protections_rule_id": "08fa5da1-81af-413d-a960-f7e489c75cfb",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ba92d8ed",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Download and Execution via Windows Terminal",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "iex (",
+        "iex(",
+        "| IEX;",
+        "|IEX;",
+        "http"
+      ],
+      "protections_rule_id": "ba92d8ed-2d9a-405e-ab96-0e523d8b6cd2",
+      "enabled": true
+    },
+    {
+      "id": "amsi.dc6caf51",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Script with .NET Reflection",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Reflection.Assembly]::Load($",
+        "Reflection.Assembly*::UnsafeLoad",
+        "assembly.Load(",
+        "::FromBase64String($",
+        ".downloadstring",
+        ".downloaddata",
+        ".WebClient",
+        ".Invoke("
+      ],
+      "protections_rule_id": "dc6caf51-828c-4264-a96f-bcf21ed18762",
+      "enabled": true
+    },
+    {
+      "id": "amsi.01bcebbb",
+      "kind": "amsi_buffer",
+      "title": "Suspicious Powershell via Windows Power User Menu",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "iwr ",
+        "|iex",
+        "invoke-web",
+        "WebClient",
+        "http",
+        "irm*-UserAgent*iex",
+        "# https://go.microsoft.com/fwlink"
+      ],
+      "protections_rule_id": "01bcebbb-6fce-4921-b932-e8f6da9e73fd",
+      "enabled": true
+    },
+    {
+      "id": "amsi.0c23f47e",
+      "kind": "amsi_buffer",
+      "title": "Suspicious Windows Script Base64 Encoding",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "bin.base64",
+        ".Run(",
+        ".ShellExecute(",
+        ".responseBody",
+        "XMLHTTP",
+        "WinHttp",
+        ".responseText",
+        "http:"
+      ],
+      "protections_rule_id": "0c23f47e-2f47-48fb-b00c-201368a9975c",
+      "enabled": true
+    },
+    {
+      "id": "amsi.2e9cac0f",
+      "kind": "amsi_buffer",
+      "title": "Windows Installer via Windows Script",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "ActiveXObject",
+        ".InstallProduct(",
+        ".WindowsInstaller.Installer",
+        "WindowsInstaller",
+        "InstallProduct",
+        "http"
+      ],
+      "protections_rule_id": "2e9cac0f-84a8-4578-b480-f3716b7db959",
+      "enabled": true
+    }
+  ]
+}

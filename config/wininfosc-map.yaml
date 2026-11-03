@@ -1,0 +1,88 @@
+# WinInfoSC / forensic-pack 采集路径 → 平台模块映射
+# forensic_paths: 原始采集目录常见名；pack: forensic-pack/v1 分片文件
+collector: wininfosc
+schema: forensic-pack/v1
+modules:
+  - id: host
+    label: 主机信息
+    pack: host.json
+    report_keys: [hostname, os, os_family, ip, collect_time, system_info]
+    forensic_paths:
+      - Forensic_SystemInfo
+      - Forensic_Host
+      - Forensic_BasicInfo
+
+  - id: processes
+    label: 进程
+    pack: processes.json
+    report_keys: [processes]
+    forensic_paths:
+      - Forensic_Process
+      - Forensic_Processes
+      - Forensic_Proc
+
+  - id: network
+    label: 网络
+    pack: network.json
+    report_keys: [established_connections, open_ports, dns_cache_entries, hosts_file, firewall_rules]
+    forensic_paths:
+      - Forensic_Network
+      - Forensic_Netstat
+      - Forensic_DNS
+
+  - id: persistence
+    label: 持久化
+    pack: persistence.json
+    report_keys: [services, scheduled_tasks, startup_items, drivers, wmi_subscriptions, users]
+    forensic_paths:
+      - Forensic_Persistence
+      - Forensic_Services
+      - Forensic_Tasks
+      - Forensic_Startup
+      - Forensic_WMI
+      - Forensic_Users
+
+  - id: eventlog
+    label: 事件日志
+    pack: eventlog.jsonl
+    report_keys: [event_logs]
+    forensic_paths:
+      - Forensic_EventLog
+      - Forensic_EventLogs
+      - Forensic_Logs
+
+  - id: files
+    label: 文件扫描
+    pack: files.jsonl
+    report_keys: [file_scans, dir_snapshots]
+    forensic_paths:
+      - Forensic_Files
+      - Forensic_FileScan
+      - Forensic_DirSnap
+      - Forensic_MFT
+
+  - id: browser
+    label: 浏览器
+    pack: browser.json
+    report_keys: [browser_artifacts]
+    forensic_paths:
+      - Forensic_Browser
+      - Forensic_Browsers
+
+  - id: memory
+    label: 内存取证
+    pack: memory.json
+    report_keys: [memory_artifacts]
+    forensic_paths:
+      - Forensic_Memory
+      - Forensic_Mem
+
+  - id: extras
+    label: 其它分片
+    pack: extras.json
+    report_keys: []
+    forensic_paths:
+      - Forensic_Prefetch
+      - Forensic_Registry
+      - Forensic_USB
+      - Forensic_Wifi

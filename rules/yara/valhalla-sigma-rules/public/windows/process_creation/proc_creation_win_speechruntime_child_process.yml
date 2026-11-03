@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Speech Runtime Binary Child Process
+id: 78f10490-f2f4-4d19-a75b-4e0683bf3b8d
+status: experimental
+description: |
+    Detects suspicious Speech Runtime Binary Execution by monitoring its child processes.
+    Child processes spawned by SpeechRuntime.exe could indicate an attempt for lateral movement via COM & DCOM hijacking.
+references:
+    - https://github.com/rtecCyberSec/SpeechRuntimeMove
+date: "2025-10-23"
+author: andrewdanis
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        ParentImage|endswith: \SpeechRuntime.exe
+falsepositives:
+    - Unlikely.
+level: high
+tags:
+    - attack.lateral-movement
+    - attack.stealth
+    - attack.t1021.003
+    - attack.t1218
+customer: 'demo'

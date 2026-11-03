@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS KMS Imported Key Material Usage
+id: 1279262f-1464-422f-ac0d-5b545320c526
+status: experimental
+description: |
+    Detects the import or deletion of key material in AWS KMS, which can be used as part of ransomware attacks. This activity is uncommon and provides a high certainty signal.
+references:
+    - https://www.chrisfarris.com/post/effective-aws-ransomware/
+    - https://docs.aws.amazon.com/kms/latest/developerguide/ct-importkeymaterial.html
+    - https://docs.aws.amazon.com/kms/latest/developerguide/ct-deleteimportedkeymaterial.html
+date: "2025-10-18"
+author: toopricey
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName:
+            - ImportKeyMaterial
+            - DeleteImportedKeyMaterial
+        eventSource: kms.amazonaws.com
+falsepositives:
+    - Legitimate use cases for imported key material are rare, but may include, Organizations with hybrid cloud architectures that import external key material for compliance requirements.
+    - Development or testing environments that simulate external key management scenarios. Even in these cases, such activity is typically infrequent and should not add significant noise.
+level: high
+tags:
+    - attack.impact
+    - attack.t1486
+    - attack.resource-development
+    - attack.t1608.003
+customer: 'demo'

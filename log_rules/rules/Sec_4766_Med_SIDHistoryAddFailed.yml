@@ -1,0 +1,26 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '尝试添加 SID History 失败'
+description: '审计事件 4766 表示尝试为账号添加 SID History 但失败，可能是 SID History 注入尝试。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a03
+level: medium
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4766
+    condition: selection
+falsepositives:
+    - 域迁移配置错误
+tags:
+    - attack.privilege-escalation
+    - attack.t1134.005
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4766
+ruletype: Hayabusa

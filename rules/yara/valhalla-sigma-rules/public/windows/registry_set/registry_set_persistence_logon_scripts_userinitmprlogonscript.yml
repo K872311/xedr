@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Persistence Via Logon Scripts - Registry
+id: 9ace0707-b560-49b8-b6ca-5148b42f39fb
+status: test
+description: Detects creation of "UserInitMprLogonScript" registry value which can be used as a persistence method by malicious actors
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1037.001/T1037.001.md
+date: "2019-01-12"
+modified: "2025-10-26"
+author: Tom Ueltschi (@c_APT_ure)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetObject|contains: UserInitMprLogonScript
+falsepositives:
+    - Investigate the contents of the "UserInitMprLogonScript" value to determine of the added script is legitimate
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.t1037.001
+    - attack.persistence
+    - attack.lateral-movement
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_persistence_logon_scripts_userinitmprlogonscript/info.yml
+simulation:
+    - atomic_guid: d6042746-07d4-4c92-9ad8-e644c114a231
+      name: Logon Scripts
+      technique: T1037.001
+      type: atomic-red-team

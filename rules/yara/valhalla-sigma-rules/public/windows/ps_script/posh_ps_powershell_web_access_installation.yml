@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Web Access Installation - PsScript
+id: 5f9c7f1a-7c21-4c39-b2f3-8d8006e0e51f
+status: test
+description: Detects the installation and configuration of PowerShell Web Access, which could be used for remote access and potential abuse
+references:
+    - https://docs.microsoft.com/en-us/powershell/module/powershellwebaccess/install-pswawebapplication
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-241a
+    - https://gist.github.com/MHaggis/7e67b659af9148fa593cf2402edebb41
+date: "2024-09-03"
+author: Michael Haag
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: 1 of selection_*
+    selection_auth:
+        ScriptBlockText|contains|all:
+            - Add-PswaAuthorizationRule
+            - -UserName *
+            - -ComputerName *
+    selection_config:
+        ScriptBlockText|contains: Install-PswaWebApplication
+    selection_install:
+        ScriptBlockText|contains: Install-WindowsFeature WindowsPowerShellWebAccess
+falsepositives:
+    - Legitimate PowerShell Web Access installations by administrators
+level: high
+tags:
+    - attack.persistence
+    - attack.execution
+    - attack.t1059.001
+customer: 'demo'

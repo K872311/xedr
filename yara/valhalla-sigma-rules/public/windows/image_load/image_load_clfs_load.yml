@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Clfs.SYS Loaded By Process Located In a Potential Suspicious Location
+id: fb4e2211-6d08-426b-8e6f-0d4a161e3b1d
+status: experimental
+description: Detects Clfs.sys being loaded by a process running from a potentially suspicious location. Clfs.sys is loaded as part of many CVEs exploits that targets Common Log File.
+references:
+    - https://ssd-disclosure.com/ssd-advisory-common-log-file-system-clfs-driver-pe/
+    - https://x.com/Threatlabz/status/1879956781360976155
+date: "2025-01-20"
+author: X__Junior
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection_dll and 1 of selection_folders_*
+    selection_dll:
+        ImageLoaded|endswith: \clfs.sys
+    selection_folders_1:
+        Image|contains:
+            - :\Perflogs\
+            - :\Users\Public\
+            - \Temporary Internet
+            - \Windows\Temp\
+    selection_folders_2:
+        - Image|contains|all:
+            - :\Users\
+            - \Favorites\
+        - Image|contains|all:
+            - :\Users\
+            - \Favourites\
+        - Image|contains|all:
+            - :\Users\
+            - \Contacts\
+        - Image|contains|all:
+            - :\Users\
+            - \Pictures\
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.execution
+    - attack.t1059
+customer: 'demo'

@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DLL Loaded From Suspicious Location Via Cmspt.EXE
+id: 75e508f7-932d-4ebc-af77-269237a84ce1
+status: test
+description: Detects cmstp loading "dll" or "ocx" files from suspicious locations
+references:
+    - https://github.com/vadim-hunter/Detection-Ideas-Rules/blob/02bcbfc2bfb8b4da601bb30de0344ae453aa1afe/TTPs/Defense%20Evasion/T1218%20-%20Signed%20Binary%20Proxy%20Execution/T1218.003%20-%20CMSTP/Procedures.yaml
+date: "2022-08-30"
+modified: "2023-02-17"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \cmstp.exe
+        ImageLoaded|contains:
+            - \PerfLogs\
+            - \ProgramData\
+            - \Users\
+            - \Windows\Temp\
+            - C:\Temp\
+        ImageLoaded|endswith:
+            - .dll
+            - .ocx
+falsepositives:
+    - Unikely
+level: high
+tags:
+    - attack.stealth
+    - attack.t1218.003
+customer: 'demo'

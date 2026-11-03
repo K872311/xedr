@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows Default Domain GPO Modification
+id: e5ac86dd-2da1-454b-be74-05d26c769d7d
+related:
+    - type: similar
+      id: dcff7e85-d01f-4eb5-badd-84e2e6be8294
+status: experimental
+description: |
+    Detects modifications to Default Domain or Default Domain Controllers Group Policy Objects (GPOs).
+    Adversaries may modify these default GPOs to deploy malicious configurations across the domain.
+references:
+    - https://www.trendmicro.com/en_us/research/25/i/unmasking-the-gentlemen-ransomware.html
+    - https://adsecurity.org/?p=3377
+    - https://www.pentestpartners.com/security-blog/living-off-the-land-gpo-style/
+    - https://jgspiers.com/audit-group-policy-changes/
+date: "2025-11-22"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+    definition: |
+        Enable 'Audit Directory Service Changes' in the Default Domain Controllers Policy under:
+        Computer Configuration -> Policies -> Windows Settings -> Security Settings -> Advanced Audit Policy Configuration -> Audit Policies -> DS Access -> Audit Directory Service Changes (Success).
+        Additionally, proper SACL needs to be configured on the 'CN=Policies,CN=System,DC=<domain>,DC=<tld>' container in Active Directory to capture changes to Group Policy Objects.
+detection:
+    condition: selection
+    selection:
+        EventID: "5136"
+        ObjectClass: groupPolicyContainer
+        ObjectDN|startswith:
+            - CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=POLICIES,CN=SYSTEM
+            - CN={6AC1786C-016F-11D2-945F-00C04FB984F9},CN=POLICIES,CN=SYSTEM
+falsepositives:
+    - Legitimate modifications to Default Domain or Default Domain Controllers GPOs
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1484.001
+customer: 'demo'

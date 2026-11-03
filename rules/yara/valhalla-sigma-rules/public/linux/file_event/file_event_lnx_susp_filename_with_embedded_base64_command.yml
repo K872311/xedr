@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Filename with Embedded Base64 Commands
+id: 179b3686-6271-4d87-807d-17d843a8af73
+status: experimental
+description: |
+    Detects files with specially crafted filenames that embed Base64-encoded bash payloads designed to execute when processed by shell scripts.
+    These filenames exploit shell interpretation quirks to trigger hidden commands, a technique observed in VShell malware campaigns.
+references:
+    - https://www.trellix.com/blogs/research/the-silent-fileless-threat-of-vshell/
+date: "2025-11-22"
+author: '@kostastsale'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: linux
+detection:
+    condition: selection
+    selection:
+        TargetFilename|contains:
+            - '{echo'
+            - '{base64,-d}'
+falsepositives:
+    - Legitimate files with similar naming patterns (very unlikely).
+level: high
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1059.004
+    - attack.t1027
+customer: 'demo'

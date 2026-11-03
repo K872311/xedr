@@ -1,0 +1,37 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Disabling Multi Factor Authentication
+id: 60de9b57-dc4d-48b9-a6a0-b39e0469f876
+status: test
+description: Detects disabling of Multi Factor Authentication.
+references:
+    - https://research.splunk.com/cloud/c783dd98-c703-4252-9e8a-f19d9f5c949e/
+date: "2023-09-18"
+author: Splunk Threat Research Team (original rule), Harjot Singh @cyb3rjy0t (sigma rule)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: m365
+    service: audit
+detection:
+    condition: selection
+    selection:
+        Operation|contains: Disable Strong Authentication.
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.persistence
+    - attack.credential-access
+    - attack.defense-impairment
+    - attack.t1556.006
+customer: 'demo'

@@ -1,0 +1,63 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential HackTool - Defendnot Security Center AV Registry Modification
+id: 9991c683-05aa-47b7-a865-df14dc4b9dc4
+status: experimental
+description: |
+    Detects modification of the Microsoft Security Center AV registry keys, particularly those related with DisplayName, ProductEXE, or ReportingExe.
+    These keys typically store information about antivirus products installed on the system, which is Windows Defender or third-party antivirus software.
+    But, if these keys holds unexpected values or are modified in a suspicious manner, it could indicate an attempt to tamper with the security settings of the system.
+references:
+    - https://www.huntress.com/blog/defendnot-detecting-malicious-security-product-bypass-techniques
+date: "2026-10-18"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_optional_*
+    filter_optional_antivirus:
+        Details|contains:
+            - Avira
+            - Windows Defender
+            - Microsoft Defender
+            - Sophos
+            - Kaspersky
+            - ESET
+            - Bitdefender
+            - Trend Micro
+            - McAfee
+            - Symantec
+            - CrowdStrike
+            - SentinelOne
+            - Carbon Black
+            - Elastic
+            - Cortex
+            - AVG
+            - Avast
+            - Malwarebytes
+        Image: C:\Windows\System32\svchost.exe
+    selection:
+        TargetObject|contains: \Software\Microsoft\Security Center\Provider\Av\
+        TargetObject|endswith:
+            - \ProductEXE
+            - \DisplayName
+            - \ReportingExe
+falsepositives:
+    - Legitimate changes by antivirus software missing in the filter list
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

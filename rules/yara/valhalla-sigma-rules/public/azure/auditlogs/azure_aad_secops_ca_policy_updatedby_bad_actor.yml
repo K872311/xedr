@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: CA Policy Updated by Non Approved Actor
+id: 50a3c7aa-ec29-44a4-92c1-fce229eef6fc
+status: test
+description: Monitor and alert on conditional access changes. Is Initiated by (actor) approved to make changes? Review Modified Properties and compare "old" vs "new" value.
+references:
+    - https://learn.microsoft.com/en-us/entra/architecture/security-operations-infrastructure#conditional-access
+date: "2022-07-19"
+modified: "2024-05-28"
+author: Corissa Koopmans, '@corissalea'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: azure
+    service: auditlogs
+detection:
+    condition: selection
+    selection:
+        properties.message: Update conditional access policy
+falsepositives:
+    - Misconfigured role permissions
+    - Verify whether the user identity, user agent, and/or hostname should be making changes in your environment.
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.credential-access
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1548
+    - attack.t1556
+customer: 'demo'

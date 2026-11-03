@@ -1,0 +1,69 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: User Shell Folders Registry Modification via CommandLine
+id: 8f3ab69a-aa22-4943-aa58-e0a52fdf6818
+related:
+    - type: similar
+      id: 9c226817-8dc9-46c2-a58d-66655aafd7dc
+status: experimental
+description: |
+    Detects modifications to User Shell Folders registry values via reg.exe or PowerShell, which could indicate persistence attempts.
+    Attackers may modify User Shell Folders registry values to point to malicious executables or scripts that will be executed during startup.
+    This technique is often used to maintain persistence on a compromised system by ensuring that malicious payloads are executed automatically.
+references:
+    - https://www.welivesecurity.com/en/eset-research/muddywater-snakes-riverbank/
+date: "2026-01-05"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_action:
+        CommandLine|contains:
+            - ' add '
+            - New-ItemProperty
+            - Set-ItemProperty
+            - 'si '
+    selection_cli_paths_root:
+        CommandLine|contains:
+            - \Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+            - \Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+    selection_cli_paths_suffix:
+        CommandLine|contains: Startup
+    selection_img:
+        - Image|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+            - \reg.exe
+        - OriginalFileName:
+            - powershell.exe
+            - pwsh.dll
+            - reg.exe
+falsepositives:
+    - Usage of reg.exe or PowerShell to modify User Shell Folders for legitimate purposes; but rare.
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1547.001
+    - attack.t1112
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_user_shell_folders_registry_modification/info.yml
+simulation:
+    - atomic_guid: acfef903-7662-447e-a391-9c91c2f00f7b
+      name: Change Startup Folder - HKLM Modify User Shell Folders Common Startup Value
+      technique: T1547.001
+      type: atomic-red-team

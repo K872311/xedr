@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Secure Deletion with SDelete
+id: 39a80702-d7ca-4a83-b776-525b1f86a36d
+status: test
+description: Detects files that have extensions commonly seen while SDelete is used to wipe files.
+references:
+    - https://jpcertcc.github.io/ToolAnalysisResultSheet/details/sdelete.htm
+    - https://www.jpcert.or.jp/english/pub/sr/ir_research.html
+    - https://learn.microsoft.com/en-gb/sysinternals/downloads/sdelete
+date: "2017-06-14"
+modified: "2024-12-13"
+author: Thomas Patzke
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+detection:
+    condition: selection
+    selection:
+        EventID:
+            - "4656"
+            - "4663"
+            - "4658"
+        ObjectName|endswith:
+            - .AAA
+            - .ZZZ
+falsepositives:
+    - Legitimate usage of SDelete
+    - Files that are interacted with that have these extensions legitimately
+level: medium
+tags:
+    - attack.impact
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.t1070.004
+    - attack.t1027.005
+    - attack.t1485
+    - attack.t1553.002
+    - attack.s0195
+customer: 'demo'

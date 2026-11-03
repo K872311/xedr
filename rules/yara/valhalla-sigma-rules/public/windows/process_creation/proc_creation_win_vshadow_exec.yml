@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Proxy Execution via Vshadow
+id: d7c75059-2901-4578-b209-8837fd31c6a8
+status: experimental
+description: |
+    Detects the invocation of vshadow.exe with the -exec parameter that executes a specified script or command after the shadow copies are created but before the VShadow tool exits.
+    VShadow is a command-line tool that you can use to create and manage volume shadow copies. While legitimate backup or administrative scripts may use this flag,
+    attackers can leverage this parameter to proxy the execution of malware.
+references:
+    - https://lolbas-project.github.io/lolbas/OtherMSBinaries/Vshadow/
+    - https://learn.microsoft.com/en-us/windows/win32/vss/vshadow-tool-and-sample
+date: "2025-05-26"
+author: David Faiss
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains: -exec
+    selection_img:
+        - Image|endswith: \vshadow.exe
+        - OriginalFileName: vshadow.exe
+falsepositives:
+    - System backup or administrator tools
+    - Legitimate administrative scripts
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1202
+customer: 'demo'

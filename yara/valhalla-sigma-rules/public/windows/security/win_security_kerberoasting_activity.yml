@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Kerberoasting Activity - Initial Query
+id: d04ae2b8-ad54-4de0-bd87-4bc1da66aa59
+status: test
+description: |
+    This rule will collect the data needed to start looking into possible kerberoasting activity.
+    Further analysis or computation within the query is needed focusing on requests from one specific host/IP towards multiple service names within a time period of 5 seconds.
+    You can then set a threshold for the number of requests and time between the requests to turn this into an alert.
+references:
+    - https://www.trustedsec.com/blog/art_of_kerberoast/
+    - https://adsecurity.org/?p=3513
+date: "2022-01-21"
+modified: "2025-10-19"
+author: '@kostastsale'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_krbtgt:
+        ServiceName|endswith:
+            - krbtgt
+            - $
+    filter_main_machine_accounts:
+        TargetUserName|contains: $@
+    selection:
+        EventID: "4769"
+        Status: "0x0"
+        TicketEncryptionType: "0x17"
+falsepositives:
+    - Legacy applications.
+level: medium
+tags:
+    - attack.credential-access
+    - attack.t1558.003
+customer: 'demo'

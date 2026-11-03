@@ -1,0 +1,16 @@
+{
+  "last_ok": true,
+  "last_error": "",
+  "indexed": 5652277,
+  "added": 5652277,
+  "skipped": 0,
+  "scanned": 5652277,
+  "total": 5652277,
+  "mode": "recreate",
+  "started_at": "2026-10-23T11:07:10",
+  "finished_at": "2026-10-23T11:24:22",
+  "elapsed_ms": 1023576,
+  "errors": 0,
+  "mysql_count_before": 4858000,
+  "mysql_count_after": 5652277
+}

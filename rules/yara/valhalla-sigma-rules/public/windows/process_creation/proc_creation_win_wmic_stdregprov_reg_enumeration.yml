@@ -1,0 +1,62 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Registry Enumeration via WMI Stdregprov
+id: a0e417e2-2fa1-40da-b6d2-e094cd5e1191
+related:
+    - type: similar
+      id: c453ab7a-1f5c-4716-a3b4-dea8135fb43a
+status: experimental
+description: |
+    Detects the usage of wmic.exe to enumerate or read Windows registry via the WMI StdRegProv class read methods (EnumKey, EnumValues, GetStringValue, etc.).
+    While registry reads are common, attackers may use this technique to perform reconnaissance and discover sensitive configuration values, credentials, or installed software.
+    The use of WMI as an alternative to standard tools like reg.exe can indicate an attempt to evade detection focused on traditional registry query commands.
+references:
+    - https://trustedsec.com/blog/command-line-underdog-wmic-in-action
+    - https://trustedsec.com/blog/wmi-for-script-kiddies
+    - https://learn.microsoft.com/en-us/previous-versions/windows/desktop/regprov/stdregprov
+date: "2025-07-30"
+modified: "2026-06-19"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - CheckAccess
+            - EnumKey
+            - EnumValues
+            - GetBinaryValue
+            - GetDWORDValue
+            - GetExpandedStringValue
+            - GetMultiStringValue
+            - GetQWORDValue
+            - GetSecurityDescriptor
+            - GetStringValue
+        CommandLine|contains|all:
+            - stdregprov
+            - call
+    selection_img:
+        - Image|endswith: \wmic.exe
+        - OriginalFileName: wmic.exe
+falsepositives:
+    - Legitimate administrative activity
+level: medium
+tags:
+    - attack.execution
+    - attack.t1047
+    - attack.discovery
+    - attack.t1012
+customer: 'demo'

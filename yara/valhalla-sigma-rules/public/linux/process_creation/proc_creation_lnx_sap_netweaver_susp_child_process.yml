@@ -1,0 +1,74 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Child Process of SAP NetWeaver - Linux
+id: 69dea60b-2deb-4c9e-a685-ad542f4367f9
+status: experimental
+description: |
+    Detects suspicious child processes spawned by SAP NetWeaver on Linux systems that could indicate potential
+    exploitation of vulnerability that allows arbitrary execution via webshells such as CVE-2025-31324.
+references:
+    - https://reliaquest.com/blog/threat-spotlight-reliaquest-uncovers-vulnerability-behind-sap-netweaver-compromise/
+    - https://onapsis.com/blog/active-exploitation-of-sap-vulnerability-cve-2025-31324/
+date: "2025-04-28"
+author: Elastic (idea), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: (selection_parent_img or selection_current_dict) and selection_child
+    selection_child:
+        Image|endswith:
+            - /ash
+            - /bash
+            - /csh
+            - /dash
+            - /ksh
+            - /sh
+            - /tcsh
+            - /zsh
+            - /python
+            - /python2
+            - /python3
+            - /perl
+            - /ruby
+            - /curl
+            - /wget
+            - /nc
+            - /netcat
+            - /ncat
+            - /socat
+            - /nmap
+            - /telnet
+            - /awk
+            - /sed
+    selection_current_dict:
+        CurrentDirectory|contains:
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/work
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/root
+    selection_parent_img:
+        ParentImage|contains:
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/work
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/root
+falsepositives:
+    - Legitimate administrative activities such as software updates
+level: medium
+tags:
+    - attack.execution
+    - attack.initial-access
+    - attack.t1190
+    - attack.persistence
+    - attack.t1059.003
+    - cve.2025-31324
+    - detection.emerging-threats
+customer: 'demo'

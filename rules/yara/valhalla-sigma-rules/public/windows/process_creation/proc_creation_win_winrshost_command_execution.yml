@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Lateral Movement via Windows Remote Shell
+id: 79df3f68-dccb-48e9-9171-b75cbc37c51d
+status: experimental
+description: |
+    Detects a child process spawned by 'winrshost.exe', which suggests remote command execution through Windows Remote Shell (WinRs) and may indicate potential lateral movement activity.
+references:
+    - https://cardinalops.com/blog/living-off-winrm-abusing-complexity-in-remote-management/
+    - https://www.ired.team/offensive-security/lateral-movement/winrs-for-lateral-movement
+date: "2025-10-22"
+author: Liran Ravich
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_conhost:
+        Image: C:\Windows\System32\conhost.exe
+    selection:
+        ParentImage|endswith: \winrshost.exe
+falsepositives:
+    - Legitimate use of WinRM within the organization
+level: medium
+tags:
+    - attack.lateral-movement
+    - attack.t1021.006
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_winrshost_command_execution/info.yml

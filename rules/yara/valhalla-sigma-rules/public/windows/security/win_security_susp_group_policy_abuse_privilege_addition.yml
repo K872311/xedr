@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Group Policy Abuse for Privilege Addition
+id: 1c480e10-7ee1-46d4-8ed2-85f9789e3ce4
+status: test
+description: |
+    Detects the first occurrence of a modification to Group Policy Object Attributes to add privileges to user accounts or use them to add users as local admins.
+references:
+    - https://www.elastic.co/guide/en/security/current/group-policy-abuse-for-privilege-addition.html#_setup_275
+date: "2024-09-04"
+author: Elastic, Josh Nickels, Marius Rothenbücher
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+    definition: 'Requirements: The "Audit Directory Service Changes" logging policy must be configured in order to receive events.'
+detection:
+    condition: selection
+    selection:
+        AttributeLDAPDisplayName: gPCMachineExtensionNames
+        AttributeValue|contains:
+            - 827D319E-6EAC-11D2-A4EA-00C04F79F83A
+            - 803E14A0-B4FB-11D0-A0D0-00A0C90F574B
+        EventID: "5136"
+falsepositives:
+    - Users allowed to perform these modifications (user found in field SubjectUserName)
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1484.001
+customer: 'demo'

@@ -1,0 +1,61 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'
+id: 1e8a9b4d-3c2a-4f9b-8d1e-7c6a5b4f3d2e
+related:
+    - type: similar
+      id: 5a9e1b2c-8f7d-4a1e-9b3c-0f6d7e5a4b1f
+status: experimental
+description: |
+    Detects the use of PowerShell to execute the 'Set-MpPreference' cmdlet to configure Windows Defender's threat severity default action to 'Allow' (value '6') or 'NoAction' (value '9').
+    This is a highly suspicious configuration change that effectively disables Defender's ability to automatically mitigate threats of a certain severity level.
+    An attacker might use this technique via the command line to bypass defenses before executing payloads.
+references:
+    - https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference
+    - https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-threatseveritydefaultaction
+    - https://research.splunk.com/endpoint/7215831c-8252-4ae3-8d43-db588e82f952
+    - https://gist.github.com/Dump-GUY/8daef859f382b895ac6fd0cf094555d2
+    - https://thedfirreport.com/2021/10/18/icedid-to-xinglocker-ransomware-in-24-hours/
+date: "2025-07-11"
+author: Matt Anderson (Huntress)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_action:
+        CommandLine|contains:
+            - -LowThreatDefaultAction
+            - -ModerateThreatDefaultAction
+            - -HighThreatDefaultAction
+            - -SevereThreatDefaultAction
+            - '-ltdefac '
+            - '-mtdefac '
+            - '-htdefac '
+            - '-stdefac '
+    selection_cmdlet:
+        CommandLine|contains: Set-MpPreference
+    selection_value:
+        CommandLine|contains:
+            - Allow
+            - "6"
+            - NoAction
+            - "9"
+falsepositives:
+    - Highly unlikely
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

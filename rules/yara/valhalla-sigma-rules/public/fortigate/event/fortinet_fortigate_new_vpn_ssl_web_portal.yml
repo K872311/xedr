@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: FortiGate - New VPN SSL Web Portal Added
+id: 2bfb6216-0c31-4d20-8501-2629b29a3fa2
+status: experimental
+description: |
+    Detects the addition of a VPN SSL Web Portal on a Fortinet FortiGate Firewall.
+    This behavior was observed in pair with modification of VPN SSL settings.
+references:
+    - https://www.fortiguard.com/psirt/FG-IR-24-535
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/398/event
+    - https://docs.fortinet.com/document/fortigate/7.6.4/cli-reference/113121765/config-vpn-ssl-web-portal
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/44547/44547-logid-event-config-objattr
+date: "2025-11-01"
+author: Marco Pedrinazzi (@pedrinazziM) (InTheCyber)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: fortigate
+    service: event
+detection:
+    condition: selection
+    selection:
+        action: Add
+        cfgpath: vpn.ssl.web.portal
+falsepositives:
+    - A VPN SSL Web Portal can be added for legitimate purposes.
+level: medium
+tags:
+    - attack.persistence
+    - attack.initial-access
+    - attack.t1133
+customer: 'demo'

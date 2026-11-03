@@ -1,0 +1,116 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious SYSTEM User Process Creation
+id: 2617e7ed-adb7-40ba-b0f3-8f9945fe6c09
+status: test
+description: Detects a suspicious process creation as SYSTEM user (suspicious program or command line parameter)
+references:
+    - Internal Research
+    - https://tools.thehacker.recipes/mimikatz/modules
+date: "2021-12-20"
+modified: "2025-10-19"
+author: Florian Roth (Nextron Systems), David ANDRE (additional keywords)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection* and not 1 of filter_*
+    filter_config_mgr:
+        ParentImage|contains: :\Packages\Plugins\Microsoft.GuestConfiguration.ConfigurationforWindows\
+    filter_java:
+        CommandLine|contains: ' -ma '
+        Image|contains:
+            - :\Program Files (x86)\Java\
+            - :\Program Files\Java\
+        Image|endswith: \bin\jp2launcher.exe
+        ParentImage|contains:
+            - :\Program Files (x86)\Java\
+            - :\Program Files\Java\
+        ParentImage|endswith: \bin\javaws.exe
+    filter_main_ping:
+        CommandLine|contains|all:
+            - ping
+            - 127.0.0.1
+            - ' -n '
+    filter_vs:
+        Image|endswith: \PING.EXE
+        ParentCommandLine|contains: \DismFoDInstall.cmd
+    selection:
+        IntegrityLevel:
+            - System
+            - S-1-16-16384
+        User|contains:
+            - AUTHORI
+            - AUTORI
+    selection_special:
+        - Image|endswith:
+            - \calc.exe
+            - \cscript.exe
+            - \forfiles.exe
+            - \hh.exe
+            - \mshta.exe
+            - \ping.exe
+            - \wscript.exe
+        - CommandLine|re: net\s+user\s+
+        - CommandLine|contains:
+            - ' -NoP '
+            - ' -W Hidden '
+            - ' -decode '
+            - ' /decode '
+            - ' /urlcache '
+            - ' -urlcache '
+            - ' -e* JAB'
+            - ' -e* SUVYI'
+            - ' -e* SQBFAFgA'
+            - ' -e* aWV4I'
+            - ' -e* IAB'
+            - ' -e* PAA'
+            - ' -e* aQBlAHgA'
+            - vssadmin delete shadows
+            - reg SAVE HKLM
+            - ' -ma '
+            - Microsoft\Windows\CurrentVersion\Run
+            - .downloadstring(
+            - .downloadfile(
+            - ' /ticket:'
+            - 'dpapi::'
+            - event::clear
+            - event::drop
+            - id::modify
+            - 'kerberos::'
+            - 'lsadump::'
+            - 'misc::'
+            - 'privilege::'
+            - 'rpc::'
+            - 'sekurlsa::'
+            - 'sid::'
+            - 'token::'
+            - vault::cred
+            - vault::list
+            - ' p::d '
+            - ;iex(
+            - MiniDump
+falsepositives:
+    - Administrative activity
+    - Scripts and administrative tools used in the monitored environment
+    - Monitoring activity
+level: high
+tags:
+    - attack.credential-access
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1134
+    - attack.t1003
+    - attack.t1027
+customer: 'demo'

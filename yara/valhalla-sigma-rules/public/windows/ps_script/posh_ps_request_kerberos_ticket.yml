@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Kerberos Ticket Request via PowerShell Script - ScriptBlock
+id: a861d835-af37-4930-bcd6-5b178bfb54df
+related:
+    - type: similar
+      id: caa9a802-8bd8-4b9e-a5cd-4d6221670219
+status: test
+description: |
+    Detects PowerShell scripts that utilize native PowerShell Identity modules to request Kerberos tickets.
+    This behavior is typically seen during a Kerberoasting or silver ticket attack. A TGS request is issued by
+    the KerberosRequestorSecurityToken constructor, resulting tickets are cached in LSA and become
+    extractable by other tools later on.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1558.003/T1558.003.md#atomic-test-4---request-a-single-ticket-via-powershell
+    - https://learn.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.kerberosrequestorsecuritytoken?view=netframework-4.8.1
+date: "2021-12-28"
+modified: "2026-09-14"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: selection
+    selection:
+        ScriptBlockText|contains: System.IdentityModel.Tokens.KerberosRequestorSecurityToken
+falsepositives:
+    - Legitimate Kerberos authentication development and troubleshooting scripts
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1558.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/powershell/powershell_script/posh_ps_request_kerberos_ticket/info.yml

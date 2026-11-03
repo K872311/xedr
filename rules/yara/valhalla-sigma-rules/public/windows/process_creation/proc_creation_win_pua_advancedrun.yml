@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - AdvancedRun Execution
+id: d2b749ee-4225-417e-b20e-a8d2193cbb84
+related:
+    - type: similar
+      id: fa00b701-44c6-4679-994d-5a18afa8a707
+status: test
+description: Detects the execution of AdvancedRun utility
+references:
+    - https://twitter.com/splinter_code/status/1483815103279603714
+    - https://medium.com/s2wblog/analysis-of-destructive-malware-whispergate-targeting-ukraine-9d5d158f19f3
+    - https://www.elastic.co/security-labs/operation-bleeding-bear
+    - https://www.winhelponline.com/blog/run-program-as-system-localsystem-account-windows/
+date: "2022-01-20"
+modified: "2023-02-21"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - OriginalFileName: AdvancedRun.exe
+        - CommandLine|contains|all:
+            - ' /EXEFilename '
+            - ' /Run'
+        - CommandLine|contains|all:
+            - ' /WindowState 0'
+            - ' /RunAs '
+            - ' /CommandLine '
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.execution
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1564.003
+    - attack.t1134.002
+    - attack.t1059.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_pua_advancedrun/info.yml

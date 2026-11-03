@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential JLI.dll Side-Loading
+id: 7a3b6d1f-4a2b-4f8c-9d7e-e9f8cbf21a35
+status: experimental
+description: |
+    Detects potential DLL side-loading of jli.dll.
+    JLI.dll has been observed being side-loaded by Java processes by various threat actors, including APT41, XWorm,
+    and others in order to load malicious payloads in context of legitimate Java processes.
+references:
+    - https://securelist.com/apt41-in-africa/116986/
+    - https://lab52.io/blog/snake-keylogger-in-geopolitical-affairs-abuse-of-trusted-java-utilities-in-cybercrime-operations/
+    - https://hijacklibs.net/entries/3rd_party/oracle/jli.html
+    - https://www.proofpoint.com/us/blog/threat-insight/phish-china-aligned-espionage-actors-ramp-up-taiwan-semiconductor-targeting
+date: "2025-07-25"
+modified: "2025-10-06"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_legitimate_install_paths:
+        Description: OpenJDK Platform binary
+        ImageLoaded|startswith:
+            - C:\Program Files\
+            - C:\Program Files (x86)\
+        OriginalFileName: jli.dll
+        Product|startswith: OpenJDK Platform
+        Signed: "true"
+    filter_optional_eclipse:
+        ImageLoaded|startswith: C:\eclipse\plugins\
+    selection:
+        ImageLoaded|endswith: \jli.dll
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'

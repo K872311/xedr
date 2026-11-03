@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential DLL Sideloading Of Libcurl.DLL Via GUP.EXE
+id: e49b5745-1064-4ac1-9a2e-f687bc2dd37e
+status: test
+description: Detects potential DLL sideloading of "libcurl.dll" by the "gup.exe" process from an uncommon location
+references:
+    - https://labs.withsecure.com/publications/fin7-target-veeam-servers
+date: "2023-05-05"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_notepad_plusplus:
+        Image|endswith: \Notepad++\updater\GUP.exe
+    selection:
+        Image|endswith: \gup.exe
+        ImageLoaded|endswith: \libcurl.dll
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'

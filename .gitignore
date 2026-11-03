@@ -1,0 +1,60 @@
+# 本机密钥与连接配置（根目录旧路径兼容 + config/）
+db_config.json
+ai_config.json
+platform_settings.json
+redis_config.json
+es_config.json
+config/db_config.json
+config/ai_config.json
+config/platform_settings.json
+config/redis_config.json
+config/es_config.json
+platform_secret.key
+config/platform_secret.key
+
+# 运行数据与用户上传
+reports/
+jg/
+lists/
+
+# 运行时索引 / 缓存
+rule_index.db
+config/rule_index.db
+__pycache__/
+*.pyc
+*.log
+.pending_purge.json
+
+# 本机环境路径（示例见 *.example.json）
+config/stack_paths.json
+config/hj_stack.json
+
+# 用户 / 运行时数据
+config/user_ai/
+config/runtime_metrics.json
+data/agent_upgrades/
+ioc/*.db
+ioc_data.db*
+index.db
+*.db-wal
+*.db-shm
+agent/state/
+agent/agent.log
+agent/_test_agent.json
+
+# 工具缓存
+node_modules/
+.pytest_cache/
+.claude/
+
+# 编译产物与二进制工具包（通过 Releases 分发）
+agent/*.exe
+agent/dist/
+agent/*.sys
+agent/*.cer
+agent/driver/out/
+tools/caiji/
+tools/Yj/
+*.pdb
+*.obj
+结果/

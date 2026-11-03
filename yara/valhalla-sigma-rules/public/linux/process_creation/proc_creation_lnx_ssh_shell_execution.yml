@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Shell Invocation Via Ssh - Linux
+id: 8737b7f6-8df3-4bb7-b1da-06019b99b687
+status: test
+description: |
+    Detects the use of the "ssh" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.
+references:
+    - https://gtfobins.github.io/gtfobins/ssh/
+    - https://www.elastic.co/guide/en/security/current/linux-restricted-shell-breakout-via-linux-binary-s.html
+date: "2024-08-29"
+author: Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - /bin/bash
+            - /bin/dash
+            - /bin/fish
+            - /bin/sh
+            - /bin/zsh
+            - sh 0<&2 1>&2
+            - sh 1>&2 0<&2
+    selection_img:
+        CommandLine|contains:
+            - ProxyCommand=;
+            - permitlocalcommand=yes
+            - localhost
+        Image|endswith: /ssh
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+customer: 'demo'

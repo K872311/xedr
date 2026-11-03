@@ -1,0 +1,30 @@
+author: Zach Mathis, Eric Conrad
+date: 2022-02-05
+modified: 2025-04-11
+
+title: 'Susp CmdLine (Possible Meterpreter getsystem)'
+description: 'Process Creation with command line option logging needs to be turned on. Detects possible Meterpreter getsystem technique using named pipes.'
+
+id: 75744b7f-7e4a-47fe-afbe-1ee74ec2448e
+level: medium
+status: stable
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    Channel: Security
+    EventID: 4688
+    NewProcessName|endswith: 'cmd.exe'
+    CommandLine|contains: '.\pipe'
+  condition: selection
+falsepositives:
+  - normal system usage
+tags:
+  - attack.execution
+  - attack.t1059
+  - attack.privilege_escalation
+references:
+  - https://attack.mitre.org/techniques/T1059/
+sample-evtx:
+ruletype: Hayabusa

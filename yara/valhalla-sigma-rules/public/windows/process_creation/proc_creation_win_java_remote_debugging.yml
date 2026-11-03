@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Java Running with Remote Debugging
+id: 8f88e3f6-2a49-48f5-a5c4-2f7eedf78710
+status: test
+description: Detects a JAVA process running with remote debugging allowing more than just localhost to connect
+references:
+    - https://dzone.com/articles/remote-debugging-java-applications-with-jdwp
+date: "2019-01-16"
+modified: "2023-02-01"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not exclusion
+    exclusion:
+        CommandLine|contains:
+            - address=127.0.0.1
+            - address=localhost
+    selection_jdwp_transport:
+        CommandLine|contains: transport=dt_socket,address=
+    selection_old_jvm_version:
+        CommandLine|contains:
+            - jre1.
+            - jdk1.
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.t1203
+    - attack.execution
+customer: 'demo'

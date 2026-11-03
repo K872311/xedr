@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Velociraptor Child Process
+id: 4bc90587-e6ca-4b41-be0b-ed4d04e4ed0c
+status: experimental
+description: Detects the suspicious use of the Velociraptor DFIR tool to execute other tools or download additional payloads, as seen in a campaign where it was abused for remote access and to stage further attacks.
+references:
+    - https://news.sophos.com/en-us/2025/08/26/velociraptor-incident-response-tool-abused-for-remote-access/
+date: "2025-08-29"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_parent and 1 of selection_child_*
+    selection_child_msiexec:
+        CommandLine|contains|all:
+            - msiexec
+            - /i
+            - http
+    selection_child_powershell:
+        CommandLine|contains:
+            - 'Invoke-WebRequest '
+            - 'IWR '
+            - .DownloadFile
+            - .DownloadString
+        Image|endswith:
+            - \powershell.exe
+            - \powershell_ise.exe
+            - \pwsh.exe
+    selection_child_vscode_tunnel:
+        CommandLine|contains|all:
+            - code.exe
+            - tunnel
+            - --accept-server-license-terms
+    selection_parent:
+        ParentImage|endswith: \Velociraptor.exe
+falsepositives:
+    - Legitimate administrators or incident responders might use Velociraptor to execute scripts or tools. However, the combination of Velociraptor spawning these specific processes with these command lines is suspicious. Tuning may be required to exclude known administrative actions or specific scripts.
+level: high
+tags:
+    - attack.command-and-control
+    - attack.persistence
+    - attack.t1219
+customer: 'demo'

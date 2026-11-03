@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - NimScan Execution
+id: 4fd6b1c7-19b8-4488-97f6-00f0924991a3
+status: test
+description: |
+    Detects usage of NimScan, a portscanner utility.
+    In early 2025, adversaries were observed using this utility to scan for open ports on remote hosts in a compromised environment.
+    This rule identifies the execution of NimScan based on the process image name and specific hash values associated with different versions of the tool.
+references:
+    - https://x.com/cyberfeeddigest/status/1887041526397587859
+    - https://github.com/elddy/NimScan
+date: "2025-02-05"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - Image|endswith: \NimScan.exe
+        - Hashes|contains:
+            - IMPHASH=41BB1C7571B3A724EB83A1D2B96DBB8C
+            - IMPHASH=B1B6ADACB172795480179EFD18A29549
+            - IMPHASH=0D1F896DC7642AD8384F9042F30279C2
+falsepositives:
+    - Legitimate administrator activity
+level: medium
+tags:
+    - attack.discovery
+    - attack.t1046
+customer: 'demo'

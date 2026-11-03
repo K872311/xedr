@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: File Access Of Signal Desktop Sensitive Data
+id: 5d6c375a-18ae-4952-b4f6-8b803f6c8555
+status: experimental
+description: |
+    Detects access to Signal Desktop's sensitive data files: db.sqlite and config.json.
+    The db.sqlite file in Signal Desktop stores all locally saved messages in an encrypted SQLite database, while the config.json contains the decryption key needed to access that data.
+    Since the key is stored in plain text, a threat actor who gains access to both files can decrypt and read sensitive messages without needing the users credentials.
+    Currently the rule only covers the default Signal installation path in AppData\Roaming. Signal Portable installations may use different paths based on user configuration. Additional paths can be added to the selection as needed.
+references:
+    - https://cloud.google.com/blog/topics/threat-intelligence/russia-targeting-signal-messenger/
+    - https://vmois.dev/query-signal-desktop-messages-sqlite/
+date: "2025-10-19"
+author: Andreas Braathen (mnemonic.io)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+    definition: 'Requirements: System Access Control List (SACL) policy with attributes List folder/read data on Objects'
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_signal:
+        ProcessName|endswith:
+            - \signal-portable.exe
+            - \signal.exe
+    selection:
+        EventID: "4663"
+        ObjectName|contains: \AppData\Roaming\Signal\
+        ObjectName|endswith:
+            - \config.json
+            - \db.sqlite
+        ObjectType: File
+falsepositives:
+    - Unlikely, but possible from AV or backup software accessing the files.
+level: medium
+tags:
+    - attack.credential-access
+    - attack.t1003
+customer: 'demo'

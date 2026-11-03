@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon Connection to Active Directory Web Services
+id: b3ad3c0f-c949-47a1-a30e-b0491ccae876
+status: test
+description: |
+    Detects uncommon network connections to the Active Directory Web Services (ADWS) from processes not typically associated with ADWS management.
+references:
+    - https://medium.com/falconforce/soaphound-tool-to-collect-active-directory-data-via-adws-165aca78288c
+    - https://github.com/FalconForceTeam/FalconFriday/blob/a9219dfcfd89836f34660223f47d766982bdce46/Discovery/ADWS_Connection_from_Unexpected_Binary-Win.md
+date: "2024-01-26"
+author: '@kostastsale'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_dsac:
+        Image: C:\Windows\system32\dsac.exe
+    filter_main_ms_monitoring_agent:
+        Image: C:\Program Files\Microsoft Monitoring Agent\
+    filter_main_powershell:
+        Image|startswith:
+            - C:\Program Files\PowerShell\7\pwsh.exe
+            - C:\Program Files\PowerShell\7-preview\pwsh.ex
+            - C:\Windows\System32\WindowsPowerShell\
+            - C:\Windows\SysWOW64\WindowsPowerShell\
+    selection:
+        DestinationPort: "9389"
+        Initiated: "true"
+falsepositives:
+    - ADWS is used by a number of legitimate applications that need to interact with Active Directory. These applications should be added to the allow-listing to avoid false positives.
+level: medium
+tags:
+    - attack.discovery
+    - attack.t1087
+customer: 'demo'

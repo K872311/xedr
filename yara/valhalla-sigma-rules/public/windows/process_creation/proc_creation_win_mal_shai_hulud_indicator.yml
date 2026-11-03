@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Shai-Hulud Malware Indicators - Windows
+id: 540703fb-a874-4385-a9d6-7cd1bfab268c
+related:
+    - type: similar
+      id: 11bb9b26-4179-4a06-afcb-1ec31fce1627
+    - type: similar
+      id: 8f2a9c3b-7e5d-4f1a-9b8e-2c4d6a8f9e1b
+status: experimental
+description: |
+    Detects potential Shai-Hulud malware indicators based on specific command line arguments associated with its execution.
+references:
+    - https://www.wiz.io/blog/shai-hulud-2-0-ongoing-supply-chain-attack
+    - https://www.aikido.dev/blog/shai-hulud-strikes-again-hitting-zapier-ensdomains
+    - https://semgrep.dev/blog/2025/digging-for-secrets-sha1-hulud-the-second-coming-of-the-npm-worm/
+date: "2025-11-25"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains:
+            - Shai-Hulud
+            - SHA1HULUD
+falsepositives:
+    - Legitimate software containing similar strings
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+    - detection.emerging-threats
+customer: 'demo'
+regression_tests_path: regression_data/rules-emerging-threats/2025/Malware/Shai-Hulud/proc_creation_win_mal_shai_hulud_indicator/info.yml

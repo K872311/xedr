@@ -1,0 +1,21 @@
+{
+  "version": "1",
+  "updated_at": "2026-10-31",
+  "enabled": true,
+  "rules": [
+    {
+      "id": "ar.critical.memory",
+      "match": { "module": "memory_scan", "severity_in": ["critical", "high"] },
+      "action": "scan_memory",
+      "params": { "trigger": "ar_followup" },
+      "note": "内存检出后可选二次扫描（默认仅上报，不隔离）"
+    },
+    {
+      "id": "ar.win.account_create",
+      "match": { "etype": "win_account_create" },
+      "action": "notify_only",
+      "params": {},
+      "note": "账号创建仅告警，需人工下发 kill/isolate"
+    }
+  ]
+}

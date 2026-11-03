@@ -1,0 +1,44 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: 'LSA 加载非系统安全包（疑似 SSP 注入）'
+description: '审计事件 4622 表示 LSA 加载了安全包。已排除 Windows 自带的 kerberos、negoexts、wdigest、schannel 等；其余条目常见于 mimilib 等恶意 SSP（记录明文密码），需核对 DLL 路径、签名及注册表 Security Packages。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a08
+level: high
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4622
+    filter_builtin:
+        SecurityPackageName|contains:
+            - 'kerberos.dll'
+            - 'msv1_0.dll'
+            - 'negoexts.dll'
+            - 'pku2u.dll'
+            - 'cloudAP.dll'
+            - 'wdigest.dll'
+            - 'tspkg.dll'
+            - 'schannel.dll'
+            - 'livessp.dll'
+            - 'msapsspc.dll'
+            - 'msnsspc.dll'
+            - 'lsasrv.dll'
+            - 'credssp.dll'
+            - 'msoidssp.dll'
+            - 'negotiate'
+    condition: selection and not filter_builtin
+falsepositives:
+    - 厂商安全组件
+tags:
+    - attack.persistence
+    - attack.credential-access
+    - attack.t1547.005
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4622
+ruletype: Hayabusa

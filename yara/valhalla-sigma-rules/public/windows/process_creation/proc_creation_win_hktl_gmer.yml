@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - GMER Rootkit Detector and Remover Execution
+id: 9082ff1f-88ab-4678-a3cc-5bcff99fc74d
+status: test
+description: Detects the execution GMER tool based on image and hash fields.
+references:
+    - http://www.gmer.net/
+date: "2022-10-05"
+modified: "2024-11-23"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: 1 of selection_*
+    selection_img:
+        Image|endswith: \gmer.exe
+    selection_sysmon_hash:
+        Hashes|contains:
+            - MD5=E9DC058440D321AA17D0600B3CA0AB04
+            - SHA1=539C228B6B332F5AA523E5CE358C16647D8BBE57
+            - SHA256=E8A3E804A96C716A3E9B69195DB6FFB0D33E2433AF871E4D4E1EAB3097237173
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.stealth
+customer: 'demo'

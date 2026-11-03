@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Registry Disable System Restore
+id: 5de03871-5d46-4539-a82d-3aa992a69a83
+related:
+    - type: similar
+      id: 7c06ab9b-b1d2-4ba9-b06e-09491ded20d9
+status: test
+description: Detects the modification of the registry to disable a system restore on the computer
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1490/T1490.md#atomic-test-9---disable-system-restore-through-registry
+date: "2022-04-04"
+modified: "2023-08-17"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000001)
+        TargetObject|contains:
+            - \Policies\Microsoft\Windows NT\SystemRestore
+            - \Microsoft\Windows NT\CurrentVersion\SystemRestore
+        TargetObject|endswith:
+            - DisableConfig
+            - DisableSR
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.impact
+    - attack.t1490
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_disable_system_restore/info.yml
+simulation:
+    - atomic_guid: 66e647d1-8741-4e43-b7c1-334760c2047f
+      name: Disable System Restore Through Registry
+      technique: T1490
+      type: atomic-red-team

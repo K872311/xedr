@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Abusing Print Executable
+id: bafac3d6-7de9-4dd9-8874-4a1194b493ed
+status: test
+description: Attackers can use print.exe for remote file copy
+references:
+    - https://lolbas-project.github.io/lolbas/Binaries/Print/
+    - https://twitter.com/Oddvarmoe/status/985518877076541440
+date: "2020-10-05"
+modified: "2022-07-07"
+author: Furkan CALISKAN, @caliskanfurkan_, @oscd_initiative
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not filter_print
+    filter_print:
+        CommandLine|contains: print.exe
+    selection:
+        CommandLine|contains|all:
+            - /D
+            - .exe
+        CommandLine|startswith: print
+        Image|endswith: \print.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_print_remote_file_copy/info.yml

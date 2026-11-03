@@ -1,0 +1,90 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Unsigned DLL Loaded by Windows Utility
+id: b5de0c9a-6f19-43e0-af4e-55ad01f550af
+status: test
+description: |
+    Detects windows utilities loading an unsigned or untrusted DLL.
+    Adversaries often abuse those programs to proxy execution of malicious code.
+references:
+    - https://www.elastic.co/security-labs/Hunting-for-Suspicious-Windows-Libraries-for-Execution-and-Evasion
+    - https://akhere.hashnode.dev/hunting-unsigned-dlls-using-kql
+    - https://unit42.paloaltonetworks.com/unsigned-dlls/?web_view=true
+date: "2024-02-28"
+modified: "2025-10-07"
+author: Swachchhanda Shrawan Poudel
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_assembly:
+        Image|endswith: \RegAsm.exe
+        Image|startswith:
+            - C:\Windows\SysWOW64\
+            - C:\Windows\System32\
+            - C:\Windows\Microsoft.NET\Framework64
+        ImageLoaded|endswith: .dll
+        ImageLoaded|startswith: C:\Windows\assembly\NativeImages
+    filter_main_sig_status:
+        SignatureStatus:
+            - errorChaining
+            - errorCode_endpoint
+            - errorExpired
+            - trusted
+            - Valid
+    filter_main_sig_status_empty:
+        SignatureStatus:
+            - ""
+            - '-'
+    filter_main_sig_status_null:
+        SignatureStatus: []
+    filter_main_signed:
+        Signed: "true"
+    filter_main_signed_empty:
+        Signed:
+            - ""
+            - '-'
+    filter_main_signed_null:
+        Signed: []
+    filter_main_windows_installer:
+        Image:
+            - C:\Windows\SysWOW64\rundll32.exe
+            - C:\Windows\System32\rundll32.exe
+        ImageLoaded|endswith:
+            - .tmp-\Microsoft.Deployment.WindowsInstaller.dll
+            - .tmp-\Avira.OE.Setup.CustomActions.dll
+        ImageLoaded|startswith: C:\Windows\Installer\
+    filter_optional_klite_codec:
+        Image:
+            - C:\Windows\SysWOW64\regsvr32.exe
+            - C:\Windows\System32\regsvr32.exe
+        ImageLoaded|startswith:
+            - C:\Program Files (x86)\K-Lite Codec Pack\
+            - C:\Program Files\K-Lite Codec Pack\
+    selection:
+        Image|endswith:
+            - \InstallUtil.exe
+            - \RegAsm.exe
+            - \RegSvcs.exe
+            - \regsvr32.exe
+            - \rundll32.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218.011
+    - attack.t1218.010
+customer: 'demo'

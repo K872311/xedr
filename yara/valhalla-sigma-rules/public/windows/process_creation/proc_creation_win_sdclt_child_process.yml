@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Sdclt Child Processes
+id: da2738f2-fadb-4394-afa7-0a0674885afa
+status: test
+description: A General detection for sdclt spawning new processes. This could be an indicator of sdclt being used for bypass UAC techniques.
+references:
+    - https://github.com/OTRF/detection-hackathon-apt29/issues/6
+    - https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/3.B.2_C36B49B5-DF58-4A34-9FE9-56189B9DEFEA.md
+date: "2020-05-02"
+modified: "2021-11-27"
+author: Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        ParentImage|endswith: \sdclt.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.t1548.002
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_sdclt_child_process/info.yml

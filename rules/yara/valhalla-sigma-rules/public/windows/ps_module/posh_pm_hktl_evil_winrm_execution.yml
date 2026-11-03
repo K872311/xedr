@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - Evil-WinRm Execution - PowerShell Module
+id: 9fe55ea2-4cd6-4491-8a54-dd6871651b51
+status: test
+description: |
+    Detects the execution of Evil-WinRM via PowerShell Module logs by leveraging the hardcoded strings inside the utility.
+references:
+    - https://github.com/Hackplayers/evil-winrm/blob/7514b055d67ec19836e95c05bd63e7cc47c4c2aa/evil-winrm.rb
+    - https://github.com/search?q=repo%3AHackplayers%2Fevil-winrm++shell.run%28&type=code
+date: "2024-02-25"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_module
+    product: windows
+detection:
+    condition: selection_wsm and 1 of selection_payload_*
+    selection_payload_1:
+        Payload|contains:
+            - value="(get-location).path
+            - value="(get-item*).length
+            - 'Invoke-Binary '
+            - Donut-Loader -process_id*-donutfile
+            - Bypass-4MSI
+            - IEX ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($a))).replace('???','')
+    selection_payload_2:
+        Payload|contains|all:
+            - $servicios = Get-ItemProperty "registry::HKLM\System\CurrentControlSet\Services\"
+            - Where-Object {$_.imagepath -notmatch "system" -and $_.imagepath -ne $null } | Select-Object pschildname,imagepath
+    selection_payload_3:
+        Payload|contains|all:
+            - $a +=  \"$($_.FullName.Replace('\\','/'))/\"}else{  $a += \"$($_.FullName.Replace('\\', '/'))\" }
+            - $a=@();$
+    selection_wsm:
+        ContextInfo|contains:
+            - :\Windows\System32\wsmprovhost.exe
+            - :\Windows\SysWOW64\wsmprovhost.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.lateral-movement
+customer: 'demo'

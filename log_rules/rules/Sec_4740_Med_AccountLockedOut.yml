@@ -1,0 +1,26 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '账号因多次失败被锁定'
+description: '审计事件 4740 表示账号被锁定，通常由连续密码错误触发。需结合 4625 失败登录的来源地址，区分用户误输与爆破。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a06
+level: medium
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4740
+    condition: selection
+falsepositives:
+    - 用户忘记密码或旧凭据残留
+tags:
+    - attack.credential-access
+    - attack.t1110
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4740
+ruletype: Hayabusa

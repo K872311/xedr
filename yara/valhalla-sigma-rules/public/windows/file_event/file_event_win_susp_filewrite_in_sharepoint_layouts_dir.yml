@@ -1,0 +1,69 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious File Write to SharePoint Layouts Directory
+id: 1f0489be-b496-4ddf-b3a9-5900f2044e9c
+status: experimental
+description: |
+    Detects suspicious file writes to SharePoint layouts directory which could indicate webshell activity or post-exploitation.
+    This behavior has been observed in the exploitation of SharePoint vulnerabilities such as CVE-2025-49704, CVE-2025-49706 or CVE-2025-53770.
+references:
+    - https://unit42.paloaltonetworks.com/microsoft-sharepoint-cve-2025-49704-cve-2025-49706-cve-2025-53770/
+    - https://www.microsoft.com/en-us/security/blog/2025/07/22/disrupting-active-exploitation-of-on-premises-sharepoint-vulnerabilities/
+date: "2025-07-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \cmd.exe
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+            - \w3wp.exe
+        TargetFilename|contains:
+            - \15\TEMPLATE\LAYOUTS\
+            - \16\TEMPLATE\LAYOUTS\
+        TargetFilename|endswith:
+            - .asax
+            - .ascx
+            - .ashx
+            - .asmx
+            - .asp
+            - .aspx
+            - .bat
+            - .cmd
+            - .cer
+            - .config
+            - .hta
+            - .js
+            - .jsp
+            - .jspx
+            - .php
+            - .ps1
+            - .vbs
+        TargetFilename|startswith:
+            - C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\
+            - C:\Program Files (x86)\Common Files\Microsoft Shared\Web Server Extensions\
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.persistence
+    - attack.t1505.003
+customer: 'demo'

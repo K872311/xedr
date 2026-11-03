@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS Bucket Block Public Access Weakened
+id: ab18a523-e093-4ac6-8303-8c47431f4fca
+status: experimental
+description: |
+    Detects the weakening of "Block Public Access" setting of S3 buckets in CloudTrail logs.
+    Monitoring changes to Block Public Access settings is critical, as attackers may disable these safeguards before exposing a bucket through a public ACL or bucket policy.
+references:
+    - https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html
+    - https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutPublicAccessBlock.html
+date: "2026-10-21"
+author: Shoban Chiddarth
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection_event_name and 1 of selection_weaken_* and 1 of selection_status_*
+    selection_event_name:
+        eventName: PutBucketPublicAccessBlock
+        eventSource: s3.amazonaws.com
+    selection_status_null:
+        errorCode: []
+    selection_status_success:
+        errorCode: Success
+    selection_weaken_block_public_acls:
+        requestParameters.PublicAccessBlockConfiguration.BlockPublicAcls: "false"
+    selection_weaken_block_public_policy:
+        requestParameters.PublicAccessBlockConfiguration.BlockPublicPolicy: "false"
+    selection_weaken_ignore_public_acls:
+        requestParameters.PublicAccessBlockConfiguration.IgnorePublicAcls: "false"
+    selection_weaken_restrict_public_buckets:
+        requestParameters.PublicAccessBlockConfiguration.RestrictPublicBuckets: "false"
+falsepositives:
+    - Administrators intentionally modifying Block Public Access settings to support a legitimate application or public bucket configuration.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.001
+customer: 'demo'

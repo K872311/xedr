@@ -1,0 +1,66 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: ServiceDll Hijack
+id: 612e47e9-8a59-43a6-b404-f48683f45bd6
+status: test
+description: |
+    Detects changes to the "ServiceDLL" value related to a service in the registry.
+    This is often used as a method of persistence.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1543.003/T1543.003.md#atomic-test-4---tinyturla-backdoor-service-w64time
+    - https://www.hexacorn.com/blog/2013/09/19/beyond-good-ol-run-key-part-4/
+date: "2022-02-04"
+modified: "2026-08-31"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_domain_controller:
+        Details: '%%systemroot%%\system32\ntdsa.dll'
+        Image: C:\Windows\system32\lsass.exe
+        TargetObject|endswith: \Services\NTDS\Parameters\ServiceDll
+    filter_main_poqexec:
+        Image: C:\Windows\System32\poqexec.exe
+    filter_main_printextensionmanger_1:
+        Details: C:\Windows\system32\spool\drivers\x64\3\PrintConfig.dll
+    filter_main_printextensionmanger_2:
+        Details|endswith: \arm64\PrintConfig.dll
+        Details|startswith: C:\WINDOWS\System32\DriverStore\FileRepository\
+        Image|endswith: \regsvr32.exe
+        TargetObject|endswith: \Services\PrintNotify\Parameters\ServiceDll
+    filter_optional_safetica:
+        Details: C:\Windows\System32\STAgent.dll
+        Image|endswith: \regsvr32.exe
+    selection:
+        TargetObject|contains|all:
+            - \System\
+            - ControlSet
+            - \Services\
+        TargetObject|endswith: \Parameters\ServiceDll
+falsepositives:
+    - Administrative scripts
+    - Installation of a service
+level: medium
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1543.003
+customer: 'demo'
+simulation:
+    - atomic_guid: ef0581fd-528e-4662-87bc-4c2affb86940
+      name: TinyTurla backdoor service w64time
+      technique: T1543.003
+      type: atomic-red-team

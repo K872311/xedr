@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Launch-VsDevShell.PS1 Proxy Execution
+id: 45d3a03d-f441-458c-8883-df101a3bb146
+status: test
+description: Detects the use of the 'Launch-VsDevShell.ps1' Microsoft signed script to execute commands.
+references:
+    - https://twitter.com/nas_bench/status/1535981653239255040
+date: "2022-08-19"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_flags:
+        CommandLine|contains:
+            - 'VsWherePath '
+            - 'VsInstallationPath '
+    selection_script:
+        CommandLine|contains: Launch-VsDevShell.ps1
+falsepositives:
+    - Legitimate usage of the script by a developer
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1216.001
+customer: 'demo'

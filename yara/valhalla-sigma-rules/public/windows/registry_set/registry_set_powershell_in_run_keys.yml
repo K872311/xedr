@@ -1,0 +1,82 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious PowerShell In Registry Run Keys
+id: 8d85cf08-bf97-4260-ba49-986a2a65129c
+status: test
+description: Detects potential PowerShell commands or code within registry run keys
+references:
+    - https://github.com/frack113/atomic-red-team/blob/a9051c38de8a5320b31c7039efcbd3b56cf2d65a/atomics/T1547.001/T1547.001.md#atomic-test-9---systembc-malware-as-a-service-registry
+    - https://www.trendmicro.com/en_us/research/22/j/lv-ransomware-exploits-proxyshell-in-attack.html
+    - https://github.com/HackTricks-wiki/hacktricks/blob/e4c7b21b8f36c97c35b7c622732b38a189ce18f7/src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.md
+date: "2022-03-17"
+modified: "2025-07-18"
+author: frack113, Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details|contains:
+            - powershell
+            - 'pwsh '
+            - FromBase64String
+            - .DownloadFile(
+            - .DownloadString(
+            - ' -w hidden '
+            - ' -w 1 '
+            - -windowstyle hidden
+            - -window hidden
+            - ' -nop '
+            - ' -encodedcommand '
+            - -ExecutionPolicy Bypass
+            - Invoke-Expression
+            - IEX (
+            - Invoke-Command
+            - ICM -
+            - Invoke-WebRequest
+            - 'IWR '
+            - Invoke-RestMethod
+            - 'IRM '
+            - ' -noni '
+            - ' -noninteractive '
+        TargetObject|contains:
+            - \Software\Microsoft\Windows\CurrentVersion\Run
+            - \Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run
+            - \Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+falsepositives:
+    - Legitimate admin or third party scripts. Baseline according to your environment
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1547.001
+customer: 'demo'
+simulation:
+    - atomic_guid: 9dc7767b-30c1-4cc4-b999-50cab5e27891
+      name: SystemBC Malware-as-a-Service Registry
+      technique: T1547.001
+      type: atomic-red-team
+    - atomic_guid: a70faea1-e206-4f6f-8d9a-67379be8f6f1
+      name: HKCU - Policy Settings Explorer Run Key
+      technique: T1547.001
+      type: atomic-red-team
+    - atomic_guid: b5c9a9bc-dda3-4ea0-b16a-add8e81ab75f
+      name: HKLM - Policy Settings Explorer Run Key
+      technique: T1547.001
+      type: atomic-red-team
+    - atomic_guid: eb44f842-0457-4ddc-9b92-c4caa144ac42
+      name: PowerShell Registry RunOnce
+      technique: T1547.001
+      type: atomic-red-team

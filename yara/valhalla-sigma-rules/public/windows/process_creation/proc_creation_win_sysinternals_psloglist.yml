@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Use of PsLogList
+id: aae1243f-d8af-40d8-ab20-33fc6d0c55bc
+status: test
+description: Detects usage of the PsLogList utility to dump event log in order to extract admin accounts and perform account discovery or delete events logs
+references:
+    - https://research.nccgroup.com/2021/01/12/abusing-cloud-services-to-fly-under-the-radar/
+    - https://www.cybereason.com/blog/deadringer-exposing-chinese-threat-actors-targeting-major-telcos
+    - https://github.com/3CORESec/MAL-CL/tree/master/Descriptors/Sysinternals/PsLogList
+    - https://twitter.com/EricaZelic/status/1614075109827874817
+date: "2021-12-18"
+modified: "2026-06-29"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_eventlog:
+        CommandLine|contains:
+            - ' security'
+            - ' application'
+            - ' system'
+    selection_cli_flags:
+        CommandLine|contains|windash:
+            - ' -d'
+            - ' -x'
+            - ' -s'
+            - ' -c'
+            - ' -g'
+    selection_img:
+        - OriginalFileName: psloglist.exe
+        - Image|endswith:
+            - \psloglist.exe
+            - \psloglist64.exe
+            - \psloglist64a.exe
+falsepositives:
+    - Another tool that uses the command line switches of PsLogList
+    - Legitimate use of PsLogList by an administrator
+level: medium
+tags:
+    - attack.discovery
+    - attack.t1087
+    - attack.t1087.001
+    - attack.t1087.002
+customer: 'demo'

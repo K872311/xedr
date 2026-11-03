@@ -1,0 +1,66 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - RemoteKrbRelay Execution
+id: a7664b14-75fb-4a50-a223-cb9bc0afbacf
+status: test
+description: |
+    Detects the use of RemoteKrbRelay, a Kerberos relaying tool via CommandLine flags and PE metadata.
+references:
+    - https://github.com/CICADA8-Research/RemoteKrbRelay
+date: "2024-06-27"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_img or selection_cli_required or all of selection_cli_attack_rbcd_* or selection_cli_attack_changepass or selection_cli_attack_addgrpname or selection_cli_attack_smb
+    selection_cli_attack_addgrpname:
+        CommandLine|contains|all:
+            - '-addgroupmember '
+            - '-group '
+            - '-groupuser '
+    selection_cli_attack_changepass:
+        CommandLine|contains: '-chp '
+        CommandLine|contains|all:
+            - '-chpPass '
+            - '-chpUser '
+    selection_cli_attack_rbcd_main:
+        CommandLine|contains: '-rbcd '
+    selection_cli_attack_rbcd_options:
+        CommandLine|contains:
+            - '-cn '
+            - '--computername '
+    selection_cli_attack_smb:
+        CommandLine|contains:
+            - interactive
+            - secrets
+            - service-add
+        CommandLine|contains|all:
+            - '-smb '
+            - '--smbkeyword '
+    selection_cli_required:
+        CommandLine|contains|all:
+            - ' -clsid '
+            - ' -target '
+            - ' -victim '
+    selection_img:
+        - Image|endswith: \RemoteKrbRelay.exe
+        - OriginalFileName: RemoteKrbRelay.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1558.003
+customer: 'demo'

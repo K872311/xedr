@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Service Reload or Start - Linux
+id: 2625cc59-0634-40d0-821e-cb67382a3dd7
+status: test
+description: Detects the start, reload or restart of a service.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1543.002/T1543.002.md
+date: "2019-09-23"
+modified: "2025-03-03"
+author: Jakob Weinzettl, oscd.community, CheraghiMilad
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: linux
+    service: auditd
+detection:
+    condition: selection
+    selection:
+        a0|contains:
+            - systemctl
+            - service
+        a1|contains:
+            - reload
+            - start
+        type: EXECVE
+falsepositives:
+    - Installation of legitimate service.
+    - Legitimate reconfiguration of service.
+    - Command line contains daemon-reload.
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1543.002
+customer: 'demo'

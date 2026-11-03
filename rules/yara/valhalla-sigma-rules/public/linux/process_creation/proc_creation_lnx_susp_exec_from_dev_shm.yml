@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Process Execution From Shared Memory Directory
+id: 5cd16c8f-44a6-4654-81e7-a84d6db507d4
+status: experimental
+description: |
+    Detects the execution of a binary from the Linux shared memory directory /dev/shm.
+    This directory is a tmpfs mount backed entirely by RAM and is abused by attackers for fileless malware staging because files written there never touch physical disk and may evade disk-based detection.
+references:
+    - https://www.sysdig.com/blog/containers-read-only-fileless-malware
+    - https://unfinished.bike/fun-with-the-new-bpfdoor-2023
+    - https://asiapacificdefencereporter.com/wp-content/uploads/2023/08/Final-CRWD-2023-Threat-Hunting-Report.pdf
+    - https://www.crowdstrike.com/en-us/blog/how-to-hunt-for-decisivearchitect-and-justforfun-implant/
+    - https://www.linkedin.com/posts/avradeep_malware-apt-infostealer-activity-7373203959697719296-JR-7
+    - https://www.stormshield.com/news/orbit-analysis-of-a-linux-dedicated-malware/
+date: "2026-06-20"
+author: Stan Beukers
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        Image|startswith: /dev/shm/
+falsepositives:
+    - Unlikely in production environments; some container runtimes or IPC frameworks may use /dev/shm for inter-process communication but should not spawn executables.
+level: high
+tags:
+    - attack.stealth
+    - attack.execution
+    - attack.t1027.011
+customer: 'demo'

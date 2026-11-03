@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: FortiGate - Firewall Address Object Added
+id: 5c8d7b41-3812-432f-a0bb-4cfb7c31827e
+status: experimental
+description: Detects the addition of firewall address objects on a Fortinet FortiGate Firewall.
+references:
+    - https://www.fortiguard.com/psirt/FG-IR-24-535
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/398/event
+    - https://docs.fortinet.com/document/fortigate/7.6.4/cli-reference/306021697/config-firewall-address
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/44547/44547-logid-event-config-objattr
+date: "2025-11-01"
+modified: "2026-05-04"
+author: Marco Pedrinazzi (@pedrinazziM) (InTheCyber)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: fortigate
+    service: event
+detection:
+    condition: selection
+    selection:
+        action: Add
+        cfgpath: firewall.address
+falsepositives:
+    - An address could be added or deleted for legitimate purposes.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.002
+customer: 'demo'

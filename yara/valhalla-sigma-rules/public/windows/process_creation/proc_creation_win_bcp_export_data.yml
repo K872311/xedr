@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Data Export From MSSQL Table Via BCP.EXE
+id: c615d676-f655-46b9-b913-78729021e5d7
+status: test
+description: |
+    Detects the execution of the BCP utility in order to export data from the database.
+    Attackers were seen saving their malware to a database column or table and then later extracting it via "bcp.exe" into a file.
+references:
+    - https://docs.microsoft.com/en-us/sql/tools/bcp-utility
+    - https://asec.ahnlab.com/en/61000/
+    - https://asec.ahnlab.com/en/78944/
+    - https://www.huntress.com/blog/attacking-mssql-servers
+    - https://www.huntress.com/blog/attacking-mssql-servers-pt-ii
+    - https://news.sophos.com/en-us/2024/08/07/sophos-mdr-hunt-tracks-mimic-ransomware-campaign-against-organizations-in-india/
+    - https://research.nccgroup.com/2018/03/10/apt15-is-alive-and-strong-an-analysis-of-royalcli-and-royaldns/
+date: "2024-08-20"
+author: Omar Khaled (@beacon_exe), MahirAli Khan (in/mahiralikhan), Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - ' out '
+            - ' queryout '
+    selection_img:
+        - Image|endswith: \bcp.exe
+        - OriginalFileName: BCP.exe
+falsepositives:
+    - Legitimate data export operations.
+level: medium
+tags:
+    - attack.execution
+    - attack.exfiltration
+    - attack.t1048
+customer: 'demo'

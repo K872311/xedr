@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "description": "Elastic protections-artifacts 精选策略：YARA 内存/文件签名 + 行为规则转 Agent EVM/PTM",
+  "source_root": "rules/protections-artifacts-main",
+  "yara": {
+    "max_files": 72,
+    "max_total_bytes": 4500000,
+    "filename_prefix": "ep_",
+    "include_prefixes": [
+      "Windows_Hacktool_",
+      "Windows_Ransomware_Lockbit",
+      "Windows_Ransomware_BlackBasta",
+      "Windows_Ransomware_Conti",
+      "Windows_Ransomware_Hive",
+      "Windows_Ransomware_Ryuk",
+      "Windows_Ransomware_Clop",
+      "Windows_Trojan_Asyncrat",
+      "Windows_Trojan_Bumblebee",
+      "Windows_Trojan_BruteRatel",
+      "Windows_Trojan_Cobalt",
+      "Windows_Trojan_Emotet",
+      "Windows_Trojan_Qakbot",
+      "Windows_Trojan_IcedID",
+      "Windows_Trojan_RedLine",
+      "Windows_Infostealer_",
+      "Windows_Shellcode_"
+    ],
+    "exclude_files": [
+      "Windows_Generic_Threat.yar",
+      "Windows_Generic_MalCert.yar",
+      "Windows_PUP_Generic.yar"
+    ],
+    "exclude_prefixes": [
+      "Windows_Generic_",
+      "Windows_PUP_",
+      "Windows_Rootkit_Generic",
+      "Windows_AttackSimulation_"
+    ]
+  },
+  "evm": {
+    "max_rules": 72,
+    "min_score": 74,
+    "library": {
+      "max_rules": 40
+    },
+    "signed_process": {
+      "max_rules": 36
+    },
+    "file": {
+      "max_rules": 28
+    },
+    "severity_allow": ["critical", "high", "medium"],
+    "name_prefix_allow": [
+      "execution_",
+      "defense_evasion_",
+      "credential_access_",
+      "persistence_",
+      "command_and_control_",
+      "discovery_",
+      "lateral_movement_",
+      "impact_"
+    ]
+  },
+  "ptm_extra_rules": [
+    {
+      "id": "ptm.prot.temp_file_then_shell",
+      "type": "sequence",
+      "title": "临时目录文件后出现脚本/Shell",
+      "severity": "high",
+      "window_sec": 180,
+      "steps": [
+        { "etype": "file_create", "path_regex": "(?i)\\\\(Temp|Downloads|AppData\\\\Local\\\\Temp)\\\\" },
+        { "etype": "process_create", "summary_contains": "powershell" }
+      ],
+      "mitre": ["T1059.001", "T1204"]
+    },
+    {
+      "id": "ptm.prot.persist_then_rundll",
+      "type": "sequence",
+      "title": "持久化变更后 rundll32 执行",
+      "severity": "high",
+      "window_sec": 300,
+      "steps": [
+        { "etype": "persist_add", "summary_contains": "Run" },
+        { "etype": "process_create", "summary_contains": "rundll32" }
+      ],
+      "mitre": ["T1547", "T1218"]
+    },
+    {
+      "id": "ptm.prot.encoded_ps_freq",
+      "type": "frequency",
+      "title": "短时多次编码 PowerShell 进程",
+      "severity": "medium",
+      "window_sec": 120,
+      "min_count": 2,
+      "match": { "etype": "process_create", "summary_contains": "-enc" },
+      "mitre": ["T1059.001"]
+    },
+    {
+      "id": "ptm.prot.53e680ea",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "LDAP Search followed by Kerberos Connection",
+      "severity": "high",
+      "window_sec": 60,
+      "steps": [
+        { "etype": "api_call", "api_name": "ldap_search" },
+        { "etype": "network_connect_etw", "destination_port": 88 }
+      ],
+      "source": "protections-artifacts-pin",
+      "mitre": ["T1558"]
+    }
+  ]
+}

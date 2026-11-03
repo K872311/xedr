@@ -1,0 +1,2687 @@
+{
+  "version": "1",
+  "updated_at": "2026-11-02",
+  "rules": [
+    {
+      "id": "ptm.usb.exfil",
+      "type": "sequence",
+      "title": "本地写入后可移动盘",
+      "severity": "high",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "fim_add",
+          "path_regex": "(?i)[A-Z]:\\\\"
+        },
+        {
+          "etype": "fim_add",
+          "path_regex": "(?i)[A-Z]:\\\\.*(Removable|USB)"
+        }
+      ],
+      "mitre": [
+        "T1052"
+      ]
+    },
+    {
+      "id": "ptm.lsass.repeat",
+      "type": "frequency",
+      "title": "多次 LSASS 访问",
+      "severity": "high",
+      "window_sec": 120,
+      "min_count": 3,
+      "match": {
+        "etype": "process_access",
+        "summary_contains": "lsass"
+      },
+      "mitre": [
+        "T1003.001"
+      ]
+    },
+    {
+      "id": "ptm.prot.temp_file_then_shell",
+      "type": "sequence",
+      "title": "临时目录文件后出现脚本/Shell",
+      "severity": "high",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "file_create",
+          "path_regex": "(?i)\\\\(Temp|Downloads|AppData\\\\Local\\\\Temp)\\\\"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "powershell"
+        }
+      ],
+      "mitre": [
+        "T1059.001",
+        "T1204"
+      ]
+    },
+    {
+      "id": "ptm.prot.persist_then_rundll",
+      "type": "sequence",
+      "title": "持久化变更后 rundll32 执行",
+      "severity": "high",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "persist_add",
+          "summary_contains": "Run"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        }
+      ],
+      "mitre": [
+        "T1547",
+        "T1218"
+      ]
+    },
+    {
+      "id": "ptm.prot.encoded_ps_freq",
+      "type": "frequency",
+      "title": "短时多次编码 PowerShell 进程",
+      "severity": "medium",
+      "window_sec": 120,
+      "min_count": 2,
+      "match": {
+        "etype": "process_create",
+        "summary_contains": "-enc"
+      },
+      "mitre": [
+        "T1059.001"
+      ]
+    },
+    {
+      "id": "ptm.prot.ccbc4a79",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a File Written by a Signed Binary Proxy",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ccbc4a79-3bae-4623-aaef-e28a96bf538b"
+    },
+    {
+      "id": "ptm.prot.bd4d88c1",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Ingress Tool Transfer via INET Cache",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "bd4d88c1-466e-4591-9c81-f2d257dbc9db"
+    },
+    {
+      "id": "ptm.prot.19cd9212",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "LSA Dump via Windows Error Reporting",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "WerFaultSecure"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "19cd9212-034a-4835-a0a9-617299b94060"
+    },
+    {
+      "id": "ptm.prot.d154bb87",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Browser Credentials Stealer",
+      "severity": "medium",
+      "window_sec": 1,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "d154bb87-dc5d-4e6e-8be8-24f631ef09ff"
+    },
+    {
+      "id": "ptm.prot.39f60a36",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Sensitive File Access - Cloud Credentials",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "39f60a36-8c5a-4703-8576-ad3e8c800a0f"
+    },
+    {
+      "id": "ptm.prot.52e4ad92",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Sensitive File Access - Unattended Panther",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "52e4ad92-e09b-4331-b827-cd0f2cbaf576"
+    },
+    {
+      "id": "ptm.prot.c4c69f61",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Access to Cryptocurrency Wallet Files",
+      "severity": "medium",
+      "window_sec": 30,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "c4c69f61-db49-4e05-adea-82122e889044"
+    },
+    {
+      "id": "ptm.prot.03758167",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Access to Web Browser Credential Stores",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "03758167-3eed-465f-9174-b284d599036d"
+    },
+    {
+      "id": "ptm.prot.ced93ac0",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Credential Files Creation via Kerberos",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "network_connect_etw"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ced93ac0-f153-402f-9239-17ae32f304e2"
+    },
+    {
+      "id": "ptm.prot.ae7812a1",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "System BootKey Registry Access",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ae7812a1-1329-47b4-9d76-8c7359cda4e4"
+    },
+    {
+      "id": "ptm.prot.968e989d",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Unusual LDAP Client Process",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "msiexec",
+          "summary_contains": "dllhost"
+        },
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 389
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "968e989d-de58-48db-9a06-38a170090def"
+    },
+    {
+      "id": "ptm.prot.215d1262",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Web Browser Credential Access via Scripting Utility",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "wscript"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "215d1262-984e-4ffc-8e26-f568ed77b3cb"
+    },
+    {
+      "id": "ptm.prot.5b856290",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a Binary Dropped via Microsoft BSDTAR Archive Tool",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5b856290-d3f5-4b2f-9f49-e753ce4ade28"
+    },
+    {
+      "id": "ptm.prot.e13a65b7",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution via Internet Explorer Exporter",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e13a65b7-f46f-4c7f-85cf-7e59170071fa"
+    },
+    {
+      "id": "ptm.prot.70c01e6b",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution via MsiExec DownloadAndExecute CustomAction",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "rundll32"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "70c01e6b-bc59-411e-9bf7-6a46e08d953b"
+    },
+    {
+      "id": "ptm.prot.4b2f842b",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution via Windows Installer Transforms",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "python*",
+          "summary_contains": "msiexec"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "msiexec",
+          "summary_contains": "msiexec"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "4b2f842b-8a9e-4e9d-91ae-0ef875efd561"
+    },
+    {
+      "id": "ptm.prot.fae9f554",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Library Loaded via a CallBack Function",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "vaultcli.dll"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "fae9f554-d3bc-4d48-8863-54d0dd68db54"
+    },
+    {
+      "id": "ptm.prot.5a898048",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Managed .NET Code Execution via Windows Script Interpreter",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "Explorer",
+          "summary_contains": "mshta"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5a898048-d98c-44c6-b7ba-f63a31eb3571"
+    },
+    {
+      "id": "ptm.prot.95601d8b",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Network Connection via Process with Unusual Arguments",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "gpupdate"
+        },
+        {
+          "etype": "network_connect_etw"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "95601d8b-b969-4189-9744-090140ae29e6"
+    },
+    {
+      "id": "ptm.prot.706bf4ca",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Remote MSI Package Installation via MSIEXEC",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "msiexec"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "706bf4ca-45b7-4eb1-acae-b1228124594a"
+    },
+    {
+      "id": "ptm.prot.b58a6662",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Rundll32 or Regsvr32 Executing an OverSized File",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "b58a6662-cc72-4c1c-a24e-703427f3b725"
+    },
+    {
+      "id": "ptm.prot.226df8a0",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Rundll32 or Regsvr32 Loaded a DLL from Unbacked Memory",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "wininet.dll"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "226df8a0-6ef8-4965-91b4-7ce64078c206"
+    },
+    {
+      "id": "ptm.prot.42d2bbfb",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Execution from a Mounted Device",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer",
+          "summary_contains": "rundll32"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "42d2bbfb-a2fb-4327-b701-89ead6044ca1"
+    },
+    {
+      "id": "ptm.prot.7a804cf1",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious Execution from an Oversized Executable",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "wscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "7a804cf1-aec7-474d-a776-7e78f6b14658"
+    },
+    {
+      "id": "ptm.prot.feb6d562",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious PowerShell Console History Deletion",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "feb6d562-7c15-412a-8be1-48d93f382028"
+    },
+    {
+      "id": "ptm.prot.56751d32",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Windows Defender Registry Modification",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "56751d32-cded-41ad-a273-e6860820c4c3"
+    },
+    {
+      "id": "ptm.prot.7b186a20",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Windows Console Execution from Unbacked Memory",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "7b186a20-22eb-4ea2-81ec-6d15dd6ee341"
+    },
+    {
+      "id": "ptm.prot.3d16f5f9",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Windows Error Manager/Reporting Masquerading",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "wermgr"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "3d16f5f9-da4c-4b15-a501-505761b75ca6"
+    },
+    {
+      "id": "ptm.prot.5c01669c",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Windows Firewall Exception List Modified via Untrusted Process",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "fdm_x64_setup.tmp",
+          "summary_contains": "netsh"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5c01669c-e1cc-4acc-95b6-8b5e4a92c970"
+    },
+    {
+      "id": "ptm.prot.559bb183",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution from a Password Protected Self Extracting Archive",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "559bb183-f343-4ad6-926f-144db38018d6"
+    },
+    {
+      "id": "ptm.prot.90912b6c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a downloaded executable with low or unknown reputation",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "90912b6c-fc36-4e13-83c2-469e6b60e915"
+    },
+    {
+      "id": "ptm.prot.d8e8168f",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution of a Downloaded Windows Script via Explorer",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "d8e8168f-3f1f-4e03-a069-a36879bde0f9"
+    },
+    {
+      "id": "ptm.prot.a87d8240",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a Windows Script Downloaded from the Internet",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "a87d8240-0b80-4255-8680-cee8c68b2d1e"
+    },
+    {
+      "id": "ptm.prot.f60d4c82",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution of a Windows Script Downloaded via a LOLBIN",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "cmd",
+          "summary_contains": "cscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "f60d4c82-2de5-4c70-95f5-cde9f3ad41a7"
+    },
+    {
+      "id": "ptm.prot.dc9c8c7c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a Windows Script File Written by a Suspicious Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "cmd",
+          "summary_contains": "wscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "dc9c8c7c-f398-401f-804a-325570a5f167"
+    },
+    {
+      "id": "ptm.prot.17030515",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution via Outlook Application COM Object",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "svchost",
+          "summary_contains": "outlook"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "17030515-5ed0-43c8-9602-f97cbebd43c0"
+    },
+    {
+      "id": "ptm.prot.b5d02713",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "JAVA Application Execution from Suspicious Paths",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "javaw"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "b5d02713-e392-47c4-b38b-10b68dbc00a6"
+    },
+    {
+      "id": "ptm.prot.13615fd4",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "JAVA Application with Unusual File Extension",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "javaw"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "13615fd4-b220-4033-ab4f-8b16b9beae57"
+    },
+    {
+      "id": "ptm.prot.e8dded92",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Oversized Windows Script Execution",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "wscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e8dded92-4ef5-4322-8098-98e7cb33994f"
+    },
+    {
+      "id": "ptm.prot.8eb74917",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Execution via ZIPExec",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8eb74917-9363-4073-a09b-c47101f52c40"
+    },
+    {
+      "id": "ptm.prot.53e680ea",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "LDAP Search followed by Kerberos Connection",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "api_call",
+          "api_name": "ldap_search"
+        },
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 88
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "53e680ea-89b7-474a-ac10-089adcd02f13"
+    },
+    {
+      "id": "ptm.prot.ef0a2322",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "GetAsyncKeyState API Call from Suspicious Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "svchost",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "GetAsyncKeyState"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ef0a2322-641b-4127-8b48-2def55fe1f1f"
+    },
+    {
+      "id": "ptm.prot.10f7051d",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Keystroke Capture by Unsigned Process",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "SetWindowsHookEx"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "10f7051d-2b32-411b-acdc-b7529662c921"
+    },
+    {
+      "id": "ptm.prot.92243752",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Keystrokes Input Capture from a Managed Application",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "SetWindowsHookEx"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "92243752-7639-45c2-b416-6072b04d2320"
+    },
+    {
+      "id": "ptm.prot.a7e3958f",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Keystrokes Input Capture via SetWindowsHookEx",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "SetWindowsHookEx"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "a7e3958f-3f07-495a-8b2f-2a1d342c943f"
+    },
+    {
+      "id": "ptm.prot.1b5e9d4a",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Remote Management Access Launch After MSI Install",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "msiexec"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "ScreenConnect.ClientService"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "1b5e9d4a-7c2f-4e8b-a3d6-0f9c8e2b1a4d"
+    },
+    {
+      "id": "ptm.prot.c86090ab",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Browser Debugging via Localhost",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "network_connect_etw"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "connect"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "c86090ab-b507-40b6-abdf-2d7104454d49"
+    },
+    {
+      "id": "ptm.prot.9ed4ee4a",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Web Browser Credential Access via Unsigned Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "9ed4ee4a-bc91-4d38-b6dd-11467b774460"
+    },
+    {
+      "id": "ptm.prot.e62f022c",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "API Call from a Process with a Spoofed Parent",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer"
+        },
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e62f022c-88e2-403f-9f83-f76a91dd2203"
+    },
+    {
+      "id": "ptm.prot.eab94afc",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Evasion via Multiple Memory Section Mapping",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "api_call"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "eab94afc-d8c0-41e6-964f-d396cb0cfbe4"
+    },
+    {
+      "id": "ptm.prot.bf072c39",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Firewall Policy Changed by a Suspicious Process",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "bf072c39-90bc-4b1b-9c78-1d8a9bd6f0e1"
+    },
+    {
+      "id": "ptm.prot.f1d05929",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Remote Code Injection",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "WriteProcessMemory"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "f1d05929-4271-4d39-9cae-05eab6d4efca"
+    },
+    {
+      "id": "ptm.prot.358b23e4",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Unbacked Memory Content Masking",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "api_call",
+          "api_name": "VirtualProtect"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "VirtualProtect"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "358b23e4-ed82-454f-9351-69f5844e7da9"
+    },
+    {
+      "id": "ptm.prot.13dadee2",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Process Creation from Backed RWX Memory",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "13dadee2-f4b8-4877-8b9c-37ce59f82432"
+    },
+    {
+      "id": "ptm.prot.5eb295bd",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Process Creation from Unbacked Memory via Unsigned Parent",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5eb295bd-38d5-48b0-9753-47e1651cef1b"
+    },
+    {
+      "id": "ptm.prot.daaf517e",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Process from Archive or Removable Media via Unbacked Code",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "daaf517e-f4fc-4366-bfa7-87e651b3055b"
+    },
+    {
+      "id": "ptm.prot.905f4c30",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Protected Process Light Bypass via DLL Tampering",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "905f4c30-a8c5-40a5-80e3-a50c5613432f"
+    },
+    {
+      "id": "ptm.prot.5007b805",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Image Load by System Protected Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5007b805-0cee-44e8-b807-22c95d5d2998"
+    },
+    {
+      "id": "ptm.prot.78165d05",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Memory Protection Fluctuation",
+      "severity": "medium",
+      "window_sec": 30,
+      "steps": [
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "api_call"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "78165d05-f1d6-4c5c-bb4d-b618df979868"
+    },
+    {
+      "id": "ptm.prot.667a1895",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Process with a Spoofed Parent",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "powershell"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "WriteProcessMemory"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "667a1895-5920-4fb2-820f-16c356f79341"
+    },
+    {
+      "id": "ptm.prot.f7e6d239",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Shell Extension Handler Registry Modification",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "reg"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "f7e6d239-9af5-42e3-8d23-91e7188a5cb0"
+    },
+    {
+      "id": "ptm.prot.9d5f965f",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Windows API Call from Virtual Disk or USB",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "api_call"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "9d5f965f-6f77-45df-9733-8707e40d1d71"
+    },
+    {
+      "id": "ptm.prot.96ffa829",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "VirtualAlloc API Call from an Unsigned DLL",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "image_load_etw",
+          "image_contains": "issetup.dll"
+        },
+        {
+          "etype": "api_call"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "96ffa829-b9fc-4456-be96-2b59b8facaed"
+    },
+    {
+      "id": "ptm.prot.e6cebe64",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Windows Defender Exclusions by Path",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e6cebe64-0f47-42e9-813e-fd9a53aa59b1"
+    },
+    {
+      "id": "ptm.prot.61b8b978",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Command and Scripting Interpreter from Suspicious Parent",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "cmd"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "61b8b978-847b-4b1f-9771-b646cde53a9a"
+    },
+    {
+      "id": "ptm.prot.a279fa6c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Obfuscated Script Execution",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "cmd"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "a279fa6c-61eb-49ea-926e-704db27855e8"
+    },
+    {
+      "id": "ptm.prot.15c94c07",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Reverse Shell via Java",
+      "severity": "medium",
+      "window_sec": 1,
+      "steps": [
+        {
+          "etype": "network_connect_etw"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "java"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "15c94c07-07ec-4e68-a623-e690be3d9d6b"
+    },
+    {
+      "id": "ptm.prot.c1b4893e",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Script Execution via APDS XSS Injection",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "c1b4893e-49cb-4003-8e88-a7305c6bbf6d"
+    },
+    {
+      "id": "ptm.prot.1a88b997",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Shell Execution via Windows Shortcut File",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer",
+          "summary_contains": "cmd"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "1a88b997-bcae-430a-8a24-7378e8bf5cc4"
+    },
+    {
+      "id": "ptm.prot.7be3d607",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious Oversized Script Execution",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "wscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "7be3d607-5c11-4609-91b9-0a3cf10cac8e"
+    },
+    {
+      "id": "ptm.prot.01bcebbb",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Powershell via Windows Power User Menu",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "api_amsi",
+          "buffer_contains": "iwr "
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "01bcebbb-6fce-4921-b932-e8f6da9e73fd"
+    },
+    {
+      "id": "ptm.prot.5b5926cf",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Windows Script Execution via MMC Console File",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5b5926cf-03ad-476b-959c-a0d15cd1efe0"
+    },
+    {
+      "id": "ptm.prot.8076640d",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Windows Shortcut File Embedded Object Execution",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "cmd"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "cmd"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8076640d-ec66-4d24-a252-ee2f054e00a1"
+    },
+    {
+      "id": "ptm.prot.92f114fb",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Inhibit System Recovery Followed by a Suspicious File Rename",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "bcdedit"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "92f114fb-7113-4e82-b021-6c2c4ca0a507"
+    },
+    {
+      "id": "ptm.prot.220ab556",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Inhibit System Recovery via Stopping Backup Services",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "powershell",
+          "summary_contains": "cmd"
+        },
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "220ab556-e008-44d4-9c50-44d455225eee"
+    },
+    {
+      "id": "ptm.prot.c8776070",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Data wiping Attack Behavior",
+      "severity": "medium",
+      "window_sec": 1,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "c8776070-eca6-4370-8438-f2b6282615ef"
+    },
+    {
+      "id": "ptm.prot.5dba1130",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Ransomware Note File",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5dba1130-72df-46f1-b581-18d9c866cb23"
+    },
+    {
+      "id": "ptm.prot.47356607",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Ransomware Note File via SMB",
+      "severity": "medium",
+      "window_sec": 3,
+      "steps": [
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 445
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "47356607-cb03-476d-b722-5199246904fe"
+    },
+    {
+      "id": "ptm.prot.df874d7e",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious File Rename by an Unusual Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "df874d7e-6639-44ce-b47d-96254022ccd5"
+    },
+    {
+      "id": "ptm.prot.adc08f95",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious File Rename from Unbacked Memory",
+      "severity": "medium",
+      "window_sec": 30,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "adc08f95-6a12-441a-be30-0443d6ccae52"
+    },
+    {
+      "id": "ptm.prot.58b7beb4",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious File Rename via SMB",
+      "severity": "medium",
+      "window_sec": 3,
+      "steps": [
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 445
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "58b7beb4-0b8a-4196-a17d-7317620ef495"
+    },
+    {
+      "id": "ptm.prot.d6cde651",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "VSS Service Disabled Followed by a Suspicious File Rename",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "d6cde651-adc9-4074-b167-65e6b82116b4"
+    },
+    {
+      "id": "ptm.prot.df9cc41e",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution from a Downloaded ISO File",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "df9cc41e-4686-4aa0-8f79-60055dd01812"
+    },
+    {
+      "id": "ptm.prot.fc2debc9",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution from a Remote Working Directory",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "cmd"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "fc2debc9-b8ad-45e3-b95a-b18ada0350b0"
+    },
+    {
+      "id": "ptm.prot.8bc4f22c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of File Written or Modified by Microsoft Equation Editor",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8bc4f22c-9bb1-4c76-a7b6-195bee3579db"
+    },
+    {
+      "id": "ptm.prot.9c3b13f6",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "File Execution via Microsoft HTML Help",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "9c3b13f6-bc26-4397-9721-4ba23ddd1014"
+    },
+    {
+      "id": "ptm.prot.6b3aa7d9",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Microsoft Office Fetching Remote Content",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "6b3aa7d9-08c6-4091-aa03-715d25b34000"
+    },
+    {
+      "id": "ptm.prot.54aabea0",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Microsoft Office File Execution via Script Interpreter",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "54aabea0-3687-4ef1-b70c-015ca588e563"
+    },
+    {
+      "id": "ptm.prot.ad1cd9c5",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential CVE-2024-21412 Exploitation",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ad1cd9c5-f440-4f70-baa9-3f262d5ea414"
+    },
+    {
+      "id": "ptm.prot.5ec7d995",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Decoy Document via User Execution",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "cmd",
+          "summary_contains": "cmd"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "WINWORD.EXE"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5ec7d995-c321-4866-b304-8cc5c4bb6157"
+    },
+    {
+      "id": "ptm.prot.27d1b0dc",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Execution via LNK Stomping",
+      "severity": "medium",
+      "window_sec": 3,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "27d1b0dc-a50c-4e7b-9ec5-961351fbe819"
+    },
+    {
+      "id": "ptm.prot.4c6cea1d",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Initial Access via Rogue RDP Server",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "svchost",
+          "summary_contains": "mstsc"
+        },
+        {
+          "etype": "network_connect_etw"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "4c6cea1d-7c50-4d83-861b-3fee8c079d97"
+    },
+    {
+      "id": "ptm.prot.1a3b0389",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential WinRAR CVE-2023-38831 Exploitation",
+      "severity": "medium",
+      "window_sec": 10,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "winrar"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "1a3b0389-eeb3-46f6-a304-e1983a4dae09"
+    },
+    {
+      "id": "ptm.prot.926b6cd1",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Registry Modification via Microsoft Office",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "EQNEDT32.EXE"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "926b6cd1-c0c7-46d4-82d6-9deb6ae431d6"
+    },
+    {
+      "id": "ptm.prot.321e7877",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Signed Binary Execution via Microsoft Office",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "321e7877-075a-4582-8eff-777dde15e787"
+    },
+    {
+      "id": "ptm.prot.cbbb130f",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious Execution via ShellBrowserWindow/ShellWindow COM",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "process_create",
+          "summary_contains": "wscript"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "cbbb130f-d9d3-459d-a796-c61ee27f9f70"
+    },
+    {
+      "id": "ptm.prot.4415ab60",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious File Delivery via HTML Smuggling",
+      "severity": "medium",
+      "window_sec": 30,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "explorer"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "4415ab60-7cff-41dc-b3f0-939bd22c1810"
+    },
+    {
+      "id": "ptm.prot.6a714747",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Suspicious MS Office Execution via DCOM",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "6a714747-2671-4523-b233-744f119949b6"
+    },
+    {
+      "id": "ptm.prot.365571bb",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Network Connection from Microsoft Equation Editor",
+      "severity": "medium",
+      "window_sec": 30,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "EQNEDT32.EXE"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "365571bb-2b93-4ae8-8c39-0558f8a6c4cc"
+    },
+    {
+      "id": "ptm.prot.bb23a662",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Untrusted File Execution via Microsoft Office",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "bb23a662-2d75-4714-837d-4ec9c2e772a5"
+    },
+    {
+      "id": "ptm.prot.713501c8",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Execution of a File Dropped from SMB via Services",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create",
+          "parent_name_contains": "services"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "713501c8-d1fa-49be-bf91-0ae916a088f6"
+    },
+    {
+      "id": "ptm.prot.2fbbd139",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Unexpected SMB Connection from User-mode Process",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 445
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "2fbbd139-3919-4b6b-9c50-9452b0aef005"
+    },
+    {
+      "id": "ptm.prot.d7fda3d7",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Chromium Extension Loaded from Unusual Parent",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "node",
+          "summary_contains": "cmd"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "d7fda3d7-fe77-49c2-8b50-d28a6da206c4"
+    },
+    {
+      "id": "ptm.prot.02920d68",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Component Object Model Registry Modification by a Low Reputation Process",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "02920d68-cd43-47d2-9552-99284979a1c6"
+    },
+    {
+      "id": "ptm.prot.22fbd47a",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Persistence via Extensible Firmware Modification",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "services"
+        },
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "22fbd47a-8c72-4117-9355-f07fdcd9c0f4"
+    },
+    {
+      "id": "ptm.prot.2dfb5c86",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Persistence via WinSock Name Space DLL",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "2dfb5c86-0563-4c1e-aaf2-f975f37cc84d"
+    },
+    {
+      "id": "ptm.prot.6fa88d6b",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Scheduled Task by a Low Reputation Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "6fa88d6b-e4cf-4862-ad8e-7c7022773e74"
+    },
+    {
+      "id": "ptm.prot.cb5fdbe3",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Scheduled Task Creation by an Unusual Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "msiexec",
+          "summary_contains": "javaw",
+          "reputation_not": "trusted"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "cb5fdbe3-84fa-4277-a967-1ffc0e8d3d25"
+    },
+    {
+      "id": "ptm.prot.e5ad5d97",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Self Service Persistence by an Unsigned Process",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e5ad5d97-da99-4371-9611-b6dfa8e55e30"
+    },
+    {
+      "id": "ptm.prot.d02ebf45",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Component Object Model Registry Modification",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "d02ebf45-64b8-4824-96b3-d7b9e27ab980"
+    },
+    {
+      "id": "ptm.prot.8bfc0b79",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Shortcut Modification",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "svchost",
+          "summary_contains": "cmd",
+          "reputation_not": "trusted"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8bfc0b79-b3f1-4869-98b9-745b0bf1cb6e"
+    },
+    {
+      "id": "ptm.prot.392b0c89",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Untrusted Process Writing to Commonly Abused Persistence Locations",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "392b0c89-1427-4601-8b32-01e8e40600a6"
+    },
+    {
+      "id": "ptm.prot.4a964318",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Windows Service Configuration Hjack",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "registry_set"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "4a964318-31be-46de-9bc6-fde362e37c60"
+    },
+    {
+      "id": "ptm.prot.3f1cbf09",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Driver Dropped by Untrusted Executable",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "3f1cbf09-dba1-428d-8c84-a86db573889e"
+    },
+    {
+      "id": "ptm.prot.54cff348",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Elevation via Common Log File System Exploitation",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "54cff348-106e-42bf-bf94-ce8e3ed68440"
+    },
+    {
+      "id": "ptm.prot.5b5fa228",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Kernel Driver Registered via NtLoadDriver",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "registry_set"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "5b5fa228-596a-4df2-a0ff-4d98b97e67b3"
+    },
+    {
+      "id": "ptm.prot.27a3e57c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Privilege Escalation via LocalPotato Exploit",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 445
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "27a3e57c-d5ae-42bd-99de-052f29dbfb13"
+    },
+    {
+      "id": "ptm.prot.33962262",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Privilege Escalation via Rogue WinRM",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "network_connect_etw",
+          "destination_port": 5985
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "33962262-436f-43d7-86e9-06dbddfffb5d"
+    },
+    {
+      "id": "ptm.prot.99da9371",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential UAC Bypass via IElevatedFactoryServer",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "dllhost"
+        },
+        {
+          "etype": "file_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "99da9371-dca4-400c-8b62-3c222553d2d3"
+    },
+    {
+      "id": "ptm.prot.e9d6f6a5",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Privilege Escalation via SeImpersonatePrivilege",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "process_create"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e9d6f6a5-c375-4313-b269-1a8d42c64480"
+    },
+    {
+      "id": "ptm.prot.048737fe",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Vault Client Image Load",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create",
+          "parent_name_contains": "NGenTask",
+          "summary_contains": "rundll32"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "vaultcli.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "048737fe-80d6-4462-aa80-ffeed853103e"
+    },
+    {
+      "id": "ptm.prot.c3758f2c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Module Stomping from a Copied Library",
+      "severity": "medium",
+      "window_sec": 180,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "ws2_32.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "c3758f2c-66d5-4cbe-820f-1c6207c6e341"
+    },
+    {
+      "id": "ptm.prot.33cdad6c",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Oversized DLL Creation followed by SideLoad",
+      "severity": "medium",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "libcef.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "33cdad6c-5809-4d78-94f0-5a5153289e7e"
+    },
+    {
+      "id": "ptm.prot.2f7630e4",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential AMSI Bypass via SetThreadContext",
+      "severity": "medium",
+      "window_sec": 3,
+      "steps": [
+        {
+          "etype": "image_load_etw",
+          "image_contains": "amsi.dll"
+        },
+        {
+          "etype": "api_call",
+          "api_name": "SetThreadContext"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "2f7630e4-a125-4ba6-a8a7-3d4f17ece8d5"
+    },
+    {
+      "id": "ptm.prot.ad65d579",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Potential Evasion via Inline Execute Assembly",
+      "severity": "medium",
+      "window_sec": 5,
+      "steps": [
+        {
+          "etype": "image_load_etw",
+          "image_contains": "mscorwks.dll"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "ad65d579-b904-48e0-9408-f4c4e8e685a0"
+    },
+    {
+      "id": "ptm.prot.65a402ff",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "Potential Evasion via Oversized Image Load",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "file_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "qt5webenginecore.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "65a402ff-904b-4d14-b7aa-fa0c5ae575f8"
+    },
+    {
+      "id": "ptm.prot.8f237d98",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious Windows LUA Script Execution",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "image_load_etw",
+          "image_contains": "luacom.dll"
+        },
+        {
+          "etype": "network_connect_etw"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8f237d98-1825-4c27-a5cd-e38bde70882a"
+    },
+    {
+      "id": "ptm.prot.18371ec4",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Suspicious WMIC XSL Script Execution",
+      "severity": "medium",
+      "window_sec": 120,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "WMIC"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "jscript.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "18371ec4-ee2f-465b-8757-ee726914006c"
+    },
+    {
+      "id": "ptm.prot.76da5dca",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Unusual DLL Extension Loaded by Rundll32 or Regsvr32",
+      "severity": "medium",
+      "window_sec": 1,
+      "steps": [
+        {
+          "etype": "process_create",
+          "summary_contains": "regsvr32"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": ".dll.mui"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "76da5dca-ffe5-4756-85ba-3ac2e6ccf623"
+    },
+    {
+      "id": "ptm.prot.e691d379",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Execution of a DNGUard Protected Program",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "hvmruntm.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "e691d379-6d01-43cc-9f1e-ab10df48a6bc"
+    },
+    {
+      "id": "ptm.prot.de3615bc",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Script Execution via MSXSL",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "scrobj.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "de3615bc-4e50-485e-b3b5-8548ef6faa3d"
+    },
+    {
+      "id": "ptm.prot.8adfa9ad",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Scriptlet Execution via CMSTP",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "scrobj.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "8adfa9ad-0ed2-4b1b-bdad-f2c52e1d2a00"
+    },
+    {
+      "id": "ptm.prot.93438ae3",
+      "type": "entity_sequence",
+      "same_entity_id": true,
+      "title": "Scriptlet Execution via Rundll32",
+      "severity": "medium",
+      "window_sec": 60,
+      "steps": [
+        {
+          "etype": "process_create"
+        },
+        {
+          "etype": "image_load_etw",
+          "image_contains": "scrobj.dll"
+        }
+      ],
+      "source": "protections-artifacts",
+      "protections_rule_id": "93438ae3-becd-43fa-81de-645ce17afa8e"
+    },
+    {
+      "id": "ptm.custom.cmd_wscript_ps_hidden",
+      "type": "sequence",
+      "same_entity_id": false,
+      "title": "CMD→WScript→隐藏 PowerShell",
+      "severity": "high",
+      "window_sec": 300,
+      "steps": [
+        {
+          "etype": "process_create_etw",
+          "summary_contains": "wscript",
+          "parent_name_contains": "cmd"
+        },
+        {
+          "etype": "process_create_etw",
+          "summary_contains": "powershell",
+          "parent_name_contains": "wscript"
+        }
+      ],
+      "mitre": [
+        "T1059.001",
+        "T1564.003"
+      ],
+      "source": "custom",
+      "note": "与 agent-ps-hidden-bat-scriptblock 互补：命令行未采集时仍可按父子链告警"
+    }
+  ]
+}

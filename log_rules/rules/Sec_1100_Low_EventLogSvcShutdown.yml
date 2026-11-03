@@ -1,0 +1,26 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '事件日志服务关闭'
+description: '安全日志事件 1100 表示事件日志服务关闭。正常关机也会产生；若不在关机时间点，或之后有日志缺口，可能是攻击者停用日志。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a0c
+level: low
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 1100
+    condition: selection
+falsepositives:
+    - 正常关机或重启
+tags:
+    - attack.defense-evasion
+    - attack.t1562.002
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-1100
+ruletype: Hayabusa

@@ -1,0 +1,59 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Account Tampering - Suspicious Failed Logon Reasons
+id: 9eb99343-d336-4020-a3cd-67f3819e68ee
+status: test
+description: This method uses uncommon error codes on failed logons to determine suspicious activity and tampering with accounts that have been disabled or somehow restricted.
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625
+    - https://twitter.com/SBousseaden/status/1101431884540710913
+date: "2017-02-19"
+modified: "2025-10-17"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+detection:
+    condition: all of selection_* and not filter
+    filter:
+        SubjectUserSid: S-1-0-0
+    selection_eid:
+        EventID:
+            - "4625"
+            - "4776"
+    selection_status:
+        - Status:
+            - "0xC0000072"
+            - "0xC000006F"
+            - "0xC0000070"
+            - "0xC0000413"
+            - "0xC000018C"
+            - "0xC000015B"
+        - SubStatus:
+            - "0xC0000072"
+            - "0xC000006F"
+            - "0xC0000070"
+            - "0xC0000413"
+            - "0xC000018C"
+            - "0xC000015B"
+falsepositives:
+    - User using a disabled account
+level: medium
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.initial-access
+    - attack.stealth
+    - attack.t1078
+customer: 'demo'

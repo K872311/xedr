@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: OpenEDR Spawning Command Shell
+id: 7f3a9c2d-4e8b-4a7f-9d3e-5c6f8a9b2e1d
+status: experimental
+description: |
+    Detects the OpenEDR ssh-shellhost.exe spawning a command shell (cmd.exe) or PowerShell with PTY (pseudo-terminal) capabilities.
+    This may indicate remote command execution through OpenEDR's remote management features, which could be legitimate administrative activity or potential abuse of the remote access tool.
+    Threat actors may leverage OpenEDR's remote shell capabilities to execute commands on compromised systems, facilitating lateral movement or other command-and-control operations.
+references:
+    - https://kostas-ts.medium.com/detecting-abuse-of-openedrs-permissive-edr-trial-a-security-researcher-s-perspective-fc55bf53972c
+date: "2026-02-19"
+author: '@kostastsale'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_shell:
+        CommandLine|contains:
+            - bash
+            - cmd
+            - powershell
+            - pwsh
+    selection_img:
+        CommandLine|contains: --pty
+        Image|endswith: \ssh-shellhost.exe
+        ParentImage|endswith: \ITSMService.exe
+falsepositives:
+    - Legitimate use of OpenEDR for remote command execution
+level: medium
+tags:
+    - attack.execution
+    - attack.t1059.003
+    - attack.lateral-movement
+    - attack.t1021.004
+    - attack.command-and-control
+    - attack.t1219
+customer: 'demo'

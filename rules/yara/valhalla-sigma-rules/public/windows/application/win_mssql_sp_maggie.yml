@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: MSSQL Extended Stored Procedure Backdoor Maggie
+id: 711ab2fe-c9ba-4746-8840-5228a58c3cb8
+status: test
+description: This rule detects the execution of the extended storage procedure backdoor named Maggie in the context of Microsoft SQL server
+references:
+    - https://medium.com/@DCSO_CyTec/mssql-meet-maggie-898773df3b01
+date: "2022-10-09"
+author: Denis Szadkowski, DIRT / DCSO CyTec
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: application
+detection:
+    condition: selection
+    selection:
+        EventID: "8128"
+        Message|contains: maggie
+        Provider_Name: MSSQLSERVER
+falsepositives:
+    - Legitimate extended stored procedures named maggie
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1546
+    - detection.emerging-threats
+customer: 'demo'

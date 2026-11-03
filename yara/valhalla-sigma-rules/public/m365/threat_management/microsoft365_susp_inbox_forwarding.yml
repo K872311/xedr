@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Inbox Forwarding
+id: 6c220477-0b5b-4b25-bb90-66183b4089e8
+status: test
+description: Detects when a Microsoft Cloud App Security reported suspicious email forwarding rules, for example, if a user created an inbox rule that forwards a copy of all emails to an external address.
+references:
+    - https://learn.microsoft.com/en-us/defender-cloud-apps/anomaly-detection-policy
+    - https://learn.microsoft.com/en-us/defender-cloud-apps/policy-template-reference
+date: "2021-08-22"
+modified: "2022-10-09"
+author: Austin Songer @austinsonger
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: m365
+    service: threat_management
+detection:
+    condition: selection
+    selection:
+        eventName: Suspicious inbox forwarding
+        eventSource: SecurityComplianceCenter
+        status: success
+falsepositives:
+    - Unknown
+level: low
+tags:
+    - attack.exfiltration
+    - attack.t1020
+customer: 'demo'

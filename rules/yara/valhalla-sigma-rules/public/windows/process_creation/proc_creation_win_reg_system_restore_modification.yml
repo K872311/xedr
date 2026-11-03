@@ -1,0 +1,65 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: System Restore Registry Modification via CommandLine
+id: 7c06ab9b-b1d2-4ba9-b06e-09491ded20d9
+related:
+    - type: similar
+      id: 5de03871-5d46-4539-a82d-3aa992a69a83
+status: experimental
+description: |
+    Detects system restore registry modification via command line, which can be used by adversaries to disable system restore on the computer.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1490/T1490.md#atomic-test-9---disable-system-restore-through-registry
+date: "2026-03-11"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_action:
+        CommandLine|contains:
+            - ' add '
+            - Set-ItemProperty
+            - New-ItemProperty
+    selection_cli_reg_key:
+        CommandLine|contains:
+            - DisableConfig
+            - DisableSR
+    selection_cli_reg_root:
+        CommandLine|contains:
+            - \SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore
+            - \SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore
+    selection_img:
+        - Image|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+            - \reg.exe
+        - OriginalFileName:
+            - powershell.exe
+            - pwsh.dll
+            - reg.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.impact
+    - attack.t1490
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_reg_system_restore_modification/info.yml
+simulation:
+    - atomic_guid: 66e647d1-8741-4e43-b7c1-334760c2047f
+      name: Disable System Restore Through Registry
+      technique: T1490
+      type: atomic-red-team

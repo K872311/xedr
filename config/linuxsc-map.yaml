@@ -1,0 +1,71 @@
+# LinuxSC 采集目录 → forensic-pack 模块映射
+# 与 tools/linux/LinuxSC.sh（SCRIPT_VER=1.39）实际产出目录对齐；勿写未采集的虚路径。
+collector: linuxsc
+schema: forensic-pack/v1
+modules:
+  - id: host
+    label: 系统信息
+    pack: host.json
+    report_keys: [hostname, os, os_family, ip, collect_time, system_info, users]
+    linuxsc_paths:
+      - SystemInfo
+      - _COLLECTION_TIME.txt
+
+  - id: processes
+    label: 进程
+    pack: processes.json
+    report_keys: [processes]
+    linuxsc_paths:
+      - ProcInfo
+
+  - id: network
+    label: 网络
+    pack: network.json
+    report_keys: [established_connections, open_ports, hosts_file, firewall_rules]
+    linuxsc_paths:
+      - Network
+
+  - id: persistence
+    label: 持久化
+    pack: persistence.json
+    report_keys: [services, scheduled_tasks, startup_items, drivers]
+    linuxsc_paths:
+      - Persistence
+      - Kernel
+
+  - id: eventlog
+    label: 系统日志
+    pack: eventlog.jsonl
+    report_keys: [event_logs]
+    linuxsc_paths:
+      - Logs
+
+  - id: files
+    label: 文件扫描
+    pack: files.jsonl
+    report_keys: [file_scans]
+    linuxsc_paths:
+      - Files
+      - Hunt
+
+  - id: remote
+    label: 远程/SSH
+    pack: remote.json
+    report_keys: [remote_access]
+    linuxsc_paths:
+      - SSH
+
+  - id: security
+    label: 安全策略
+    pack: security.json
+    report_keys: [security_extras, audit_pol, firewall_rules]
+    linuxsc_paths:
+      - Security
+
+  - id: extras
+    label: 其它
+    pack: extras.json
+    report_keys: []
+    linuxsc_paths:
+      - RootkitHunt
+      # CloudAgents：脚本若未建目录则导入侧忽略

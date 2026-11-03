@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Audit Rules Deleted Via Auditctl
+id: bed26dea-4525-47f4-b24a-76e30e44ffb0
+status: experimental
+description: |
+    Detects the execution of 'auditctl' with the '-D' command line parameter, which deletes all configured audit rules and watches on Linux systems.
+    This technique is commonly used by attackers to disable audit logging and cover their tracks by removing monitoring capabilities.
+    Removal of audit rules can significantly impair detection of malicious activities on the affected system.
+references:
+    - https://www.atomicredteam.io/atomic-red-team/atomics/T1562.012
+    - https://linux.die.net/man/8/auditct
+date: "2025-10-17"
+author: Mohamed LAKRI
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        CommandLine|re: -D
+        Image|endswith: /auditctl
+falsepositives:
+    - An administrator troubleshooting. Investigate all attempts.
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685.004
+customer: 'demo'

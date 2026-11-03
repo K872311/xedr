@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Remote Access Tool - TacticalRMM Agent Registration to Potentially Attacker-Controlled Server
+id: 2db93a3f-3249-4f73-9e68-0e77a0f8ae7e
+status: experimental
+description: |
+    Detects TacticalRMM agent installations where the --api, --auth, and related flags are used on the command line.
+    These parameters configure the agent to connect to a specific RMM server with authentication, client ID, and site ID.
+    This technique could indicate a threat actor attempting to register the agent with an attacker-controlled RMM infrastructure silently.
+references:
+    - https://github.com/amidaware/tacticalrmm
+    - https://apophis133.medium.com/powershell-script-tactical-rmm-installation-45afb639eff3
+date: "2025-05-29"
+author: Ahmed Nosir (@egycondor)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains|all:
+            - --api
+            - --auth
+            - --client-id
+            - --site-id
+            - --agent-type
+        Image|contains: \TacticalAgent\tacticalrmm.exe
+falsepositives:
+    - Legitimate system administrator deploying TacticalRMM
+level: medium
+tags:
+    - attack.command-and-control
+    - attack.t1219
+    - attack.t1105
+customer: 'demo'

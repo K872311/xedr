@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows Vulnerable Driver Blocklist Disabled
+id: d526c60a-e236-4011-b165-831ffa52ab70
+related:
+    - type: similar
+      id: 22154f0e-5132-4a54-aa78-cc62f6def531
+status: experimental
+description: |
+    Detects when the Windows Vulnerable Driver Blocklist is set to disabled. This setting is crucial for preventing the loading of known vulnerable drivers,
+    and its modification may indicate an attempt to bypass security controls. It is often targeted by threat actors to facilitate the installation of malicious or vulnerable drivers,
+    particularly in scenarios involving Endpoint Detection and Response (EDR) bypass techniques.
+    This rule applies to systems that support the Vulnerable Driver Blocklist feature, including Windows 10 version 1903 and later, and Windows Server 2022 and later.
+    Note that this change will require a reboot to take effect, and this rule only detects the registry modification action.
+references:
+    - https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/microsoft-recommended-driver-block-rules
+    - https://www.sophos.com/en-us/blog/sharpening-the-knife-gold-blades-strategic-evolution
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/design/microsoft-recommended-driver-block-rules
+date: "2026-01-26"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|endswith: \Control\CI\Config\VulnerableDriverBlocklistEnable
+falsepositives:
+    - Unlikely and should be investigated immediately.
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_vulnerable_driver_blocklist_disable/info.yml

@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon Child Process Spawned From XBootMgrSleep.EXE
+id: 74697c29-1b30-4e1f-a517-33574061821d
+status: experimental
+description: |
+    Detects a process other than XBootMgr.exe spawned by XBootMgrSleep.exe.
+    XBootMgrSleep.exe is a Microsoft-signed Windows Performance Toolkit binary that can execute an arbitrary executable after a delay.
+references:
+    - https://lolbas-project.github.io/lolbas/OtherMSBinaries/XBootMgrSleep/
+    - https://learn.microsoft.com/en-us/previous-versions/windows/desktop/xperf/reference
+date: "2026-09-27"
+author: Diablo Research
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_xbootmgr:
+        Image: C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\xbootmgr.exe
+    selection:
+        ParentImage|endswith: \xbootmgrsleep.exe
+falsepositives:
+    - Custom Windows Performance Toolkit automation that intentionally launches another executable through XBootMgrSleep.exe
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1202
+customer: 'demo'

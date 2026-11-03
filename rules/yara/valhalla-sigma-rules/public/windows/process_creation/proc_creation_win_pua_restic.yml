@@ -1,0 +1,62 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - Restic Backup Tool Execution
+id: 6ddff2e8-ea1a-45d0-8938-93dfc1d67ae7
+status: experimental
+description: |
+    Detects the execution of the Restic backup tool, which can be used for data exfiltration.
+    Threat actors may leverage Restic to back up and exfiltrate sensitive data to remote storage locations, including cloud services.
+    If not legitimately used in the enterprise environment, its presence may indicate malicious activity.
+references:
+    - https://thedfirreport.com/2024/09/30/nitrogen-campaign-drops-sliver-and-ends-with-blackcat-ransomware/#exfiltration
+    - https://restic.net/
+    - https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html
+date: "2025-10-17"
+author: Nounou Mbeiri, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: 1 of selection_*
+    selection_restic:
+        CommandLine|contains:
+            - 'sftp:'
+            - rest:http
+            - s3:s3.
+            - s3.http
+            - 'azure:'
+            - ' gs:'
+            - 'rclone:'
+            - 'swift:'
+            - ' b2:'
+        CommandLine|contains|all:
+            - ' init '
+            - ' -r '
+    selection_specific:
+        - CommandLine|contains|all:
+            - --password-file
+            - init
+            - ' -r '
+        - CommandLine|contains|all:
+            - --use-fs-snapshot
+            - backup
+            - ' -r '
+falsepositives:
+    - Legitimate use of Restic for backup purposes within the organization.
+level: high
+tags:
+    - attack.exfiltration
+    - attack.t1048
+    - attack.t1567.002
+customer: 'demo'

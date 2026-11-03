@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Process Memory Dump via RdrLeakDiag.EXE
+id: edadb1e5-5919-4e4c-8462-a9e643b02c4b
+related:
+    - type: obsolete
+      id: 6355a919-2e97-4285-a673-74645566340d
+status: test
+description: Detects the use of the Microsoft Windows Resource Leak Diagnostic tool "rdrleakdiag.exe" to dump process memory
+references:
+    - https://www.pureid.io/dumping-abusing-windows-credentials-part-1/
+    - https://www.crowdstrike.com/blog/overwatch-exposes-aquatic-panda-in-possession-of-log-4-shell-exploit-tools/
+    - https://lolbas-project.github.io/lolbas/Binaries/Rdrleakdiag/
+    - https://twitter.com/0gtweet/status/1299071304805560321?s=21
+    - https://news.sophos.com/en-us/2024/06/05/operation-crimson-palace-a-technical-deep-dive
+date: "2021-09-24"
+modified: "2024-08-15"
+author: Cedric MAURUGEON, Florian Roth (Nextron Systems), Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_dump:
+        CommandLine|contains|windash:
+            - /memdmp
+            - fullmemdmp
+    selection_cli_output_process:
+        CommandLine|contains|windash:
+            - ' /o '
+            - ' /p '
+    selection_img:
+        - Image|endswith: \rdrleakdiag.exe
+        - OriginalFileName: RdrLeakDiag.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+customer: 'demo'

@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Uninstall of Windows Defender Feature via PowerShell
+id: c443012c-7928-43bf-ac20-7eda5efe61ad
+status: experimental
+description: |
+    Detects the use of PowerShell with Uninstall-WindowsFeature or Remove-WindowsFeature cmdlets to disable or remove the Windows Defender GUI feature, a common technique used by adversaries to evade defenses.
+references:
+    - https://learn.microsoft.com/en-us/powershell/module/microsoft.windows.servermanager.migration/uninstall-windowsfeature
+    - https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware
+date: "2025-08-22"
+author: yxinmiracle
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_defender_feature:
+        CommandLine|contains: Windows-Defender
+    selection_cli_uninstall:
+        CommandLine|contains:
+            - Uninstall-WindowsFeature
+            - Remove-WindowsFeature
+    selection_img:
+        - Image|endswith:
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+        - OriginalFileName:
+            - PowerShell_ISE.EXE
+            - PowerShell.EXE
+            - pwsh.dll
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

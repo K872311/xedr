@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Ingress/Egress Security Group Modification
+id: 6fb77778-040f-4015-9440-572aa9b6b580
+status: test
+description: |
+    Detects when an account makes changes to the ingress or egress rules of a security group.
+    This can indicate that an attacker is attempting to open up new attack vectors in the account, that they are trying to exfiltrate data over the network, or that they are trying to allow machines in that VPC/Subnet to contact a C&C server.
+references:
+    - https://www.gorillastack.com/blog/real-time-events/important-aws-cloudtrail-security-events-tracking/
+date: "2024-07-11"
+author: jamesc-grafana
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName:
+            - AuthorizeSecurityGroupEgress
+            - AuthorizeSecurityGroupIngress
+            - RevokeSecurityGroupEgress
+            - RevokeSecurityGroupIngress
+        eventSource: ec2.amazonaws.com
+falsepositives:
+    - New VPCs and Subnets being setup requiring a different security profile to those already defined
+    - A single port being opened for a new service that is known to be deploying
+    - Administrators closing unused ports to reduce the attack surface
+level: medium
+tags:
+    - attack.initial-access
+    - attack.t1190
+customer: 'demo'

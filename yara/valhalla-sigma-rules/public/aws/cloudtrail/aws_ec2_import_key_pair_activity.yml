@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS Key Pair Import Activity
+id: 92f84194-8d9a-4ee0-8699-c30bfac59780
+status: experimental
+description: |
+    Detects the import of SSH key pairs into AWS EC2, which may indicate an attacker attempting to gain unauthorized access to instances. This activity could lead to initial access, persistence, or privilege escalation, potentially compromising sensitive data and operations.
+references:
+    - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html
+date: "2024-12-19"
+author: Ivan Saakov
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName: ImportKeyPair
+        eventSource: ec2.amazonaws.com
+falsepositives:
+    - Legitimate administrative actions by authorized users importing keys for valid purposes.
+    - Automated processes for infrastructure setup may trigger this alert.
+    - Verify the user identity, user agent, and source IP address to ensure they are expected.
+level: medium
+tags:
+    - attack.initial-access
+    - attack.stealth
+    - attack.t1078
+    - attack.persistence
+    - attack.privilege-escalation
+customer: 'demo'

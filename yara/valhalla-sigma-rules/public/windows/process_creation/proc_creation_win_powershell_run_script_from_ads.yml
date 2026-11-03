@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Run PowerShell Script from ADS
+id: 45a594aa-1fbd-4972-a809-ff5a99dd81b8
+status: test
+description: Detects PowerShell script execution from Alternate Data Stream (ADS)
+references:
+    - https://github.com/p0shkatz/Get-ADS/blob/1c3a3562e713c254edce1995a7d9879c687c7473/Get-ADS.ps1
+date: "2019-10-30"
+modified: "2022-07-14"
+author: Sergey Soldatov, Kaspersky Lab, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains|all:
+            - Get-Content
+            - -Stream
+        Image|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+        ParentImage|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1564.004
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_powershell_run_script_from_ads/info.yml

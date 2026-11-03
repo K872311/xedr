@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AppLocker Application Would Have Been Blocked
+id: 557e3bd3-7f21-495d-8d50-7c8bdfb8041c
+status: experimental
+description: |
+    Detects when AppLocker "Audit only" enforcement mode reports that an Application, DLL, Script, MSI,
+    or Packaged-App would have been blocked if AppLocker "Enforce rules" enforcement mode was enabled.
+    This rule triggers on the AppLocker audit events and requires review of the reported path against the local AppLocker policy.
+    Since this rule triggers solely on event IDs without path-based filtering, tuning and false positive
+    suppression must be handled at the AppLocker policy level by the policy author, not via Sigma filters.
+    Analysts should review the reported FullFilePath and correlate with the local AppLocker policy to
+    determine whether the activity is expected or warrants investigation.
+references:
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/applocker/what-is-applocker
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/applocker/using-event-viewer-with-applocker
+    - https://www.splunk.com/en_us/blog/security/deploy-test-monitor-mastering-microsoft-applocker-part-2.html
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/ee844150(v=ws.11)
+date: "2026-03-26"
+modified: "2026-10-20"
+author: heyyanu
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: applocker
+detection:
+    condition: selection
+    selection:
+        EventID:
+            - "8003"
+            - "8006"
+            - "8021"
+            - "8024"
+falsepositives:
+    - Expected during AppLocker policy testing and audit mode deployments
+    - Legitimate system DLLs and applications not yet covered by the AppLocker policy (e.g. Windows system components, third-party software). False positives must be handled at the AppLocker policy level by the policy author, not via Sigma filters.
+level: low
+tags:
+    - attack.execution
+    - attack.t1204.002
+    - attack.t1059.001
+    - attack.t1059.003
+    - attack.t1059.005
+    - attack.t1059.006
+    - attack.t1059.007
+customer: 'demo'

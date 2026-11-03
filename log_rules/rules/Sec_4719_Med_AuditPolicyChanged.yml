@@ -1,0 +1,26 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '系统审计策略被修改'
+description: '审计事件 4719 表示系统审计策略被修改。攻击者常用 auditpol 关闭登录、进程创建等审计以隐藏痕迹；组策略刷新也会产生，需看被关闭的是哪类审计。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a05
+level: medium
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4719
+    condition: selection
+falsepositives:
+    - 组策略下发审计配置
+tags:
+    - attack.defense-evasion
+    - attack.t1562.002
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4719
+ruletype: Hayabusa

@@ -1,0 +1,59 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Python One-Liners with Base64 Decoding
+id: 50a0aa3d-ab16-4594-a8aa-5145a6e6792b
+related:
+    - type: similar
+      id: 55e862a8-dd9c-4651-807a-f21fcad56716
+status: experimental
+description: |
+    Detects Python one-liners that use base64 decoding functions in command line executions.
+    Malicious scripts or attackers often use python one-liners to decode and execute base64-encoded payloads, which is a common technique for obfuscation and evasion.
+references:
+    - https://docs.python.org/3/library/base64.html
+    - https://www.virustotal.com/gui/file/bc43e925d7b4b74319f6e74e836a96f1997ba404e14ac566cf12a21e9da463db/behavior
+    - https://cloud.google.com/blog/topics/threat-intelligence/cybercriminals-weaponize-fake-ai-websites
+date: "2026-03-09"
+author: Hugh Ryan (HueCodes), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - .decode
+            - b16decode
+            - b32decode
+            - b32hexdecode
+            - b64decode
+            - b85decode
+            - z85decode
+        CommandLine|contains|all:
+            - import
+            - base64
+            - ' -c'
+    selection_img:
+        - Image|contains: \python
+        - OriginalFileName|contains: python
+falsepositives:
+    - Legitimate use of Python for decoding data, which is uncommon in typical enterprise environments but possible in development or data analysis contexts.
+level: high
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1059.006
+    - attack.t1027.010
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_python_base64_encoded_execution/info.yml

@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Process Masquerading As SvcHost.EXE
+id: be58d2e2-06c8-4f58-b666-b99f6dc3b6cd
+related:
+    - type: similar
+      id: 01d2e2a1-5f09-44f7-9fc1-24faa7479b6d
+    - type: similar
+      id: e4a6b256-3e47-40fc-89d2-7a477edd6915
+status: test
+description: |
+    Detects a suspicious process that is masquerading as the legitimate "svchost.exe" by naming its binary "svchost.exe" and executing from an uncommon location.
+    Adversaries often disguise their malicious binaries by naming them after legitimate system processes like "svchost.exe" to evade detection.
+references:
+    - https://tria.ge/240731-jh4crsycnb/behavioral2
+    - https://redcanary.com/blog/threat-detection/process-masquerading/
+date: "2024-08-07"
+author: Swachchhanda Shrawan Poudel
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_img_location:
+        Image:
+            - C:\Windows\System32\svchost.exe
+            - C:\Windows\SysWOW64\svchost.exe
+    filter_main_ofn:
+        OriginalFileName: svchost.exe
+    selection:
+        Image|endswith: \svchost.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.stealth
+    - attack.t1036.005
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_svchost_masqueraded_execution/info.yml

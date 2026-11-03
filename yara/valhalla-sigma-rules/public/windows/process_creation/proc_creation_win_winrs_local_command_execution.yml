@@ -1,0 +1,53 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Winrs Local Command Execution
+id: bcfece3d-56fe-4545-9931-3b8e92927db1
+status: experimental
+description: |
+    Detects the execution of Winrs.exe where it is used to execute commands locally.
+    Commands executed this way are launched under Winrshost.exe and can represent proxy execution used for defense evasion or lateral movement.
+references:
+    - https://cardinalops.com/blog/living-off-winrm-abusing-complexity-in-remote-management/
+    - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/winrs
+date: "2025-10-22"
+author: Liran Ravich, Nasreddine Bencherchali
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* or (selection_img and not 1 of filter_main_*)
+    filter_main_remote:
+        CommandLine|contains|windash:
+            - '/r:'
+            - '/remote:'
+    selection_img:
+        - Image|endswith: \winrs.exe
+        - OriginalFileName: winrs.exe
+    selection_local_ip:
+        CommandLine|contains|windash:
+            - /r:localhost
+            - /r:127.0.0.1
+            - /r:[::1]
+            - /remote:localhost
+            - /remote:127.0.0.1
+            - /remote:[::1]
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.lateral-movement
+    - attack.stealth
+    - attack.t1021.006
+    - attack.t1218
+customer: 'demo'

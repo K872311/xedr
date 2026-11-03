@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: VBA DLL Loaded Via Office Application
+id: e6ce8457-68b1-485b-9bdd-3c2b5d679aa9
+status: test
+description: Detects VB DLL's loaded by an office application. Which could indicate the presence of VBA Macros.
+references:
+    - https://medium.com/threatpunter/detecting-adversary-tradecraft-with-image-load-event-logging-and-eql-8de93338c16
+date: "2020-02-19"
+modified: "2023-02-10"
+author: Antonlovesdnb
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \excel.exe
+            - \mspub.exe
+            - \onenote.exe
+            - \onenoteim.exe
+            - \outlook.exe
+            - \powerpnt.exe
+            - \winword.exe
+        ImageLoaded|endswith:
+            - \VBE7.DLL
+            - \VBEUI.DLL
+            - \VBE7INTL.DLL
+falsepositives:
+    - Legitimate macro usage. Add the appropriate filter according to your environment
+level: high
+tags:
+    - attack.execution
+    - attack.t1204.002
+customer: 'demo'

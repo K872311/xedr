@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Registry Hive File Staged Outside Standard User Profile Path
+id: a7f3c891-2e4d-4b6a-9f8c-d5e2a1b04c73
+status: experimental
+description: |
+    Detects the creation of a registry hive file (UsrClass.dat or NTUSER.DAT) outside of the standard user profile path.
+    These files generally contain various user-specific registry settings and are typically located in the user's profile directory.
+    Staging these files outside of the standard path can be indicative of an attacker attempting to manipulate user registry settings
+    for persistence, privilege escalation, or dump user registry hives for credential harvesting.
+references:
+    - https://github.com/MSNightmare/LegacyHive
+    - https://git.projectnightcrawler.dev/NightmareEclipse/LegacyHive
+date: "2026-07-23"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_ntuser:
+        TargetFilename|re|i: ^C:\\Users\\[^\\]+\\NTUSER\.DAT$
+    filter_main_system:
+        TargetFilename|startswith:
+            - C:\Windows\System32\config\
+            - C:\Windows\SYSVOL\
+            - C:\Windows\ServiceProfiles\
+    filter_main_usrclass:
+        TargetFilename|endswith: \AppData\Local\Microsoft\Windows\UsrClass.dat
+    selection:
+        TargetFilename|endswith:
+            - \UsrClass.dat
+            - \NTUSER.DAT
+falsepositives:
+    - Backup or profile migration software
+    - Forensic acquisition tools
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.t1548
+    - attack.credential-access
+    - attack.t1003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/file/file_event/file_event_win_susp_registry_hive_file_creation/info.yml

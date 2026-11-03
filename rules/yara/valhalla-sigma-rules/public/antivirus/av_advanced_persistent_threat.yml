@@ -1,0 +1,99 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Antivirus - APT Malware Signature
+id: 101a1877-2cf4-474d-abfd-7f6ac4788d1a
+status: experimental
+description: |
+    Detects a highly relevant Antivirus alert that reports APT malware.
+    This event must not be ignored just because the AV has blocked the malware but investigate, how it came there in the first place.
+references:
+    - https://www.nextron-systems.com/?s=antivirus
+date: "2026-06-15"
+author: Arnim Rupp (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: antivirus
+detection:
+    condition: selection
+    selection:
+        - Signature|re:
+            - APT\d
+            - ATK\d
+            - UNC\d
+            - UAC\d
+        - Signature|contains:
+            - '[APT]'
+            - APT_
+            - APT-
+            - BackOrder
+            - BlindingCan
+            - Blizzard
+            - Chollima
+            - Cleaver
+            - Cobra
+            - DarkHotel
+            - Dragon
+            - DTrack
+            - Equation
+            - GiftedCrook
+            - GraphSteel
+            - GreyEnergy
+            - GEnergy
+            - GrimPlant
+            - Hydra
+            - Jackal
+            - Kitten
+            - Kimsuky
+            - Lazar
+            - LightRail
+            - Lotus
+            - Luminous
+            - LumiMoth
+            - Nimbus
+            - Manticore
+            - MiniBike
+            - MiniBrowse
+            - MiniBus
+            - MiniFast
+            - MiniJuke
+            - MiniUpdate
+            - MuddyWater
+            - NukeSped
+            - OilRig
+            - Panda
+            - Sandstorm
+            - SandWorm
+            - Seamonkey
+            - Sleet
+            - SlugResin
+            - SnailResin
+            - Snake
+            - Tempest
+            - Tsunami
+            - Turla
+            - Typhoon
+            - UAC_
+            - UAC-
+            - UNC_
+            - UNC-
+            - VinoSiren
+            - Winnti
+falsepositives:
+    - Unlikely
+level: critical
+tags:
+    - attack.execution
+    - attack.t1203
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

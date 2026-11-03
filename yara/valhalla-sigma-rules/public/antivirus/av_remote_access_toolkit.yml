@@ -1,0 +1,85 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Antivirus - Remote Access Tools Signature
+id: 97233998-3838-4581-88c6-f1d19d3993fb
+status: experimental
+description: |
+    Detects a highly relevant Antivirus alert that reports a remote access tool.
+    This event must not be ignored just because the AV has blocked the malware but investigate, how it came there in the first place.
+references:
+    - https://www.nextron-systems.com/?s=antivirus
+    - https://www.virustotal.com/gui/file/d9669f7e3eb3a9cdf6a750eeb2ba303b5ae148a43e36546896f1d1801e912466
+date: "2026-06-15"
+author: Arnim Rupp (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: antivirus
+detection:
+    condition: selection
+    selection:
+        Signature|contains:
+            - AgentB
+            - AgentTesla
+            - AMRat
+            - Ammyy
+            - AsyncRAT
+            - Bandook
+            - Bitrat
+            - Bladabindi
+            - Connectwise
+            - CyberGate
+            - DarkComet
+            - DCrat
+            - Delf
+            - DokStorm
+            - Egairtigado
+            - Gh0st
+            - Gorat
+            - GodRat
+            - Jalapeno
+            - LummaC2
+            - Minirat
+            - Netwire
+            - NanoCore
+            - NJRat
+            - Paralax
+            - PlugX
+            - Pulsar
+            - Quasar
+            - Remcos
+            - Ravartar
+            - RemoteAdmin
+            - RemoteTool
+            - revengeRAT
+            - rokRAT
+            - salatstealer
+            - Salgorea
+            - SmokedHam
+            - TigerRat
+            - Tzeebot
+            - WarZone
+            - VenomRAT
+            - Vidar
+            - Wirenet
+            - XWorm
+            - Zapchast
+            - Zegost
+falsepositives:
+    - Unlikely
+level: critical
+tags:
+    - attack.execution
+    - attack.t1203
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

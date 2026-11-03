@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon Svchost Command Line Parameter
+id: f17211f1-1f24-4d0c-829f-31e28dc93cdd
+status: experimental
+description: |
+    Detects instances of svchost.exe running with an unusual or uncommon command line parameter by excluding known legitimate or common patterns.
+    This could point at a file masquerading as svchost, a process injection, or hollowing of a legitimate svchost instance.
+references:
+    - https://cardinalops.com/blog/the-art-of-anomaly-hunting-patterns-detection/
+    - https://www.security.com/threat-intelligence/blackbyte-exbyte-ransomware
+    - https://cloud.google.com/blog/topics/threat-intelligence/apt41-initiates-global-intrusion-campaign-using-multiple-exploits/
+    - https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/08064518/Carbanak_APT_eng.pdf
+date: "2025-11-14"
+modified: "2026-03-23"
+author: Liran Ravich
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_empty:
+        CommandLine: ""
+    filter_main_flags:
+        CommandLine|re: -k\s\w{1,64}(?:\s?(?:-p|-s))?
+    filter_main_null:
+        CommandLine: []
+    filter_optional_defender:
+        CommandLine|contains: svchost.exe
+        ParentImage|endswith: \MsMpEng.exe
+    filter_optional_mrt:
+        CommandLine: svchost.exe
+        ParentImage|endswith: \MRT.exe
+    selection:
+        Image|endswith: \svchost.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1036.005
+    - attack.t1055
+    - attack.t1055.012
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_svchost_uncommon_command_line_flags/info.yml

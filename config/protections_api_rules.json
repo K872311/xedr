@@ -1,0 +1,2025 @@
+{
+  "version": 2,
+  "profile": "protections-api-unified",
+  "updated_at": "2026-11-02T09:27:28",
+  "rev": "ae64f8948a00",
+  "rules": [
+    {
+      "id": "amsi.b3f91726",
+      "kind": "amsi_buffer",
+      "title": "PowerShell Script with Screen Capture Capability",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        ".CopyFromScreen(",
+        "System.Drawing",
+        "Drawing.Graphics"
+      ],
+      "protections_rule_id": "b3f91726-0afa-43e5-a07b-da1c7fa35243",
+      "enabled": true
+    },
+    {
+      "id": "amsi.57bc4c03",
+      "kind": "amsi_buffer",
+      "title": "PowerShell Script with Passwords Vault Access Capability",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Credentials.PasswordVault",
+        ".RetrievePassword",
+        ".RetrieveAll"
+      ],
+      "protections_rule_id": "57bc4c03-7ed9-409e-971a-a0a03ea99ea0",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ee4fbf59",
+      "kind": "amsi_buffer",
+      "title": "AMSI Bypass via PowerShell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "amsiContext",
+        "amsiSession",
+        "amsiInitFailed",
+        "AmsiUtils",
+        "AmsiInitialize",
+        "AmsiScanString",
+        ".SetValue",
+        ".GetField",
+        "[Ref].Assembly.GetType*System.Management.Automation.Amsi",
+        ".SetValue",
+        ".GetField",
+        "[Ref].Assembly.GetTypes()",
+        "GetFields",
+        "amsiIn"
+      ],
+      "protections_rule_id": "ee4fbf59-c858-4a5d-bc74-e027926d7e2e",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ce95fc52",
+      "kind": "amsi_buffer",
+      "title": "Execution via Obfuscated PowerShell Script",
+      "severity": "medium",
+      "process_names": [
+        "powershell.exe"
+      ],
+      "app_names": [],
+      "buffer_all": [
+        "-bxor",
+        ":sptth",
+        "//:p##h",
+        ".rEplAcE(([chAr]",
+        "$pShOMe[",
+        "$ShellId[",
+        "$env:Public[",
+        "-bxor",
+        "-bxor",
+        "-bxor 0xFFFF0000",
+        "Ansible.Basic.AnsibleModule",
+        " -bxor ",
+        "HSTITest_Encoded*TVqQAAMAAAAEAAAA"
+      ],
+      "protections_rule_id": "ce95fc52-051e-4409-9c99-f2daf3e6e609",
+      "enabled": true
+    },
+    {
+      "id": "amsi.c4cd4b82",
+      "kind": "amsi_buffer",
+      "title": "Potential Pentesting PowerShell Script",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Invoke-Empire",
+        "Invoke-Mimikatz",
+        "PowerShellMafia",
+        "redcanaryco",
+        "PowerShellEmpire",
+        "$local:PowerSploitIndicators",
+        "function Set-HookFunctionTabs"
+      ],
+      "protections_rule_id": "c4cd4b82-6a78-484e-a86f-470381006ab5",
+      "enabled": true
+    },
+    {
+      "id": "amsi.a4a0537b",
+      "kind": "amsi_buffer",
+      "title": "Potential Reverse Shell via Powershell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Sockets.TCPClient(",
+        "Sockets.UDPClient(",
+        "Net.NetworkInformation.Ping",
+        "while(",
+        "while (",
+        ".GetStream()",
+        ".GetBytes(",
+        ".Read(",
+        ".Receive(",
+        ".GetString(",
+        ".Write(",
+        ".Send("
+      ],
+      "protections_rule_id": "a4a0537b-040e-4319-afce-a71ea547d45d",
+      "enabled": true
+    },
+    {
+      "id": "amsi.7158afc1",
+      "kind": "amsi_buffer",
+      "title": "Potential Shellcode Download and Execution via PowerShell",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Add-Type",
+        "VirtualAlloc",
+        "Marshal*Copy",
+        "CreateThread",
+        "NtCreateThreadEx",
+        "RtlCreateUserThread",
+        "QueueUserAPC",
+        "https://",
+        "http://",
+        "Invoke-WebRequest",
+        "WebClient",
+        "DownloadData",
+        "DownloadString"
+      ],
+      "protections_rule_id": "7158afc1-7415-4318-b080-71edc18068f5",
+      "enabled": true
+    },
+    {
+      "id": "amsi.c286b078",
+      "kind": "amsi_buffer",
+      "title": "Powershell Execution via Named Pipe",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Pipes.NamedPipeClientStream*.Connect(",
+        "Pipes.NamedPipeServerStream*WaitForConnection",
+        ".StreamReader",
+        ".StreamWriter",
+        ".ReadLine",
+        ".WriteLine",
+        "while(",
+        "while ("
+      ],
+      "protections_rule_id": "c286b078-793f-4c51-a49a-27948e0ed741",
+      "enabled": true
+    },
+    {
+      "id": "amsi.08fa5da1",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Base64 Decoding",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "FromBase64String",
+        "Ansible"
+      ],
+      "protections_rule_id": "08fa5da1-81af-413d-a960-f7e489c75cfb",
+      "enabled": true
+    },
+    {
+      "id": "amsi.ba92d8ed",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Download and Execution via Windows Terminal",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "iex (",
+        "iex(",
+        "| IEX;",
+        "|IEX;",
+        "http"
+      ],
+      "protections_rule_id": "ba92d8ed-2d9a-405e-ab96-0e523d8b6cd2",
+      "enabled": true
+    },
+    {
+      "id": "amsi.dc6caf51",
+      "kind": "amsi_buffer",
+      "title": "Suspicious PowerShell Script with .NET Reflection",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [
+        "PowerShell"
+      ],
+      "buffer_all": [
+        "Reflection.Assembly]::Load($",
+        "Reflection.Assembly*::UnsafeLoad",
+        "assembly.Load(",
+        "::FromBase64String($",
+        ".downloadstring",
+        ".downloaddata",
+        ".WebClient",
+        ".Invoke("
+      ],
+      "protections_rule_id": "dc6caf51-828c-4264-a96f-bcf21ed18762",
+      "enabled": true
+    },
+    {
+      "id": "amsi.01bcebbb",
+      "kind": "amsi_buffer",
+      "title": "Suspicious Powershell via Windows Power User Menu",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "iwr ",
+        "|iex",
+        "invoke-web",
+        "WebClient",
+        "http",
+        "irm*-UserAgent*iex",
+        "# https://go.microsoft.com/fwlink"
+      ],
+      "protections_rule_id": "01bcebbb-6fce-4921-b932-e8f6da9e73fd",
+      "enabled": true
+    },
+    {
+      "id": "amsi.0c23f47e",
+      "kind": "amsi_buffer",
+      "title": "Suspicious Windows Script Base64 Encoding",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "bin.base64",
+        ".Run(",
+        ".ShellExecute(",
+        ".responseBody",
+        "XMLHTTP",
+        "WinHttp",
+        ".responseText",
+        "http:"
+      ],
+      "protections_rule_id": "0c23f47e-2f47-48fb-b00c-201368a9975c",
+      "enabled": true
+    },
+    {
+      "id": "amsi.2e9cac0f",
+      "kind": "amsi_buffer",
+      "title": "Windows Installer via Windows Script",
+      "severity": "medium",
+      "process_names": [],
+      "app_names": [],
+      "buffer_all": [
+        "ActiveXObject",
+        ".InstallProduct(",
+        ".WindowsInstaller.Installer",
+        "WindowsInstaller",
+        "InstallProduct",
+        "http"
+      ],
+      "protections_rule_id": "2e9cac0f-84a8-4578-b480-f3716b7db959",
+      "enabled": true
+    },
+    {
+      "id": "api.ef0a2322",
+      "kind": "api_call",
+      "title": "GetAsyncKeyState API Call from Suspicious Process",
+      "severity": "medium",
+      "api_names": [
+        "GetAsyncKeyState"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "ef0a2322-641b-4127-8b48-2def55fe1f1f",
+      "enabled": true,
+      "min_background_call_count": 400,
+      "min_ms_since_last_key": 100
+    },
+    {
+      "id": "api.10f7051d",
+      "kind": "api_call",
+      "title": "Keystroke Capture by Unsigned Process",
+      "severity": "medium",
+      "api_names": [
+        "SetWindowsHookEx"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "10f7051d-2b32-411b-acdc-b7529662c921",
+      "enabled": true,
+      "hook_filter_types": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": "api.102b5c1a",
+      "kind": "api_call",
+      "title": "Keystroke Input Capture via DirectInput",
+      "severity": "medium",
+      "api_names": [
+        "RegisterRawInputDevices"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "102b5c1a-7f2a-4254-8b26-6b299705fce7",
+      "enabled": true
+    },
+    {
+      "id": "api.4dbb9dfb",
+      "kind": "api_call",
+      "title": "Keystroke Input Capture via RegisterRawInputDevices",
+      "severity": "medium",
+      "api_names": [
+        "RegisterRawInputDevices"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4dbb9dfb-b3e2-49d7-8919-d6f221526df4",
+      "enabled": true
+    },
+    {
+      "id": "api.7ae180e1",
+      "kind": "api_call",
+      "title": "Keystroke Messages Hooking via SetWindowsHookEx",
+      "severity": "medium",
+      "api_names": [
+        "SetWindowsHookEx"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "7ae180e1-e08f-40c2-82db-f274f688eea2",
+      "enabled": true,
+      "hook_filter_types": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": "api.92243752",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture from a Managed Application",
+      "severity": "medium",
+      "api_names": [
+        "SetWindowsHookEx"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "92243752-7639-45c2-b416-6072b04d2320",
+      "enabled": true,
+      "hook_filter_types": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": "api.ca00acf2",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture from a Suspicious Module",
+      "severity": "medium",
+      "api_names": [
+        "GetAsyncKeyState"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "ca00acf2-6e1b-4823-8fdd-7339ffa7079f",
+      "enabled": true,
+      "min_background_call_count": 400,
+      "min_ms_since_last_key": 100
+    },
+    {
+      "id": "api.6ef43c9a",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture from Suspicious CallStack",
+      "severity": "medium",
+      "api_names": [
+        "GetAsyncKeyState"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "6ef43c9a-25af-449c-8416-20349780a146",
+      "enabled": true,
+      "min_background_call_count": 400,
+      "min_ms_since_last_key": 100
+    },
+    {
+      "id": "api.8ab0b921",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture from Unsigned DLL",
+      "severity": "medium",
+      "api_names": [
+        "GetAsyncKeyState"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "8ab0b921-38fb-495c-b5b8-075d1cbc731c",
+      "enabled": true,
+      "min_background_call_count": 400,
+      "min_ms_since_last_key": 100
+    },
+    {
+      "id": "api.a8311681",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture via PowerShell",
+      "severity": "medium",
+      "api_names": [
+        "SetWindowsHookEx"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "a8311681-6a92-4daa-973a-58f509156907",
+      "enabled": true,
+      "hook_filter_types": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": "api.a7e3958f",
+      "kind": "api_call",
+      "title": "Keystrokes Input Capture via SetWindowsHookEx",
+      "severity": "medium",
+      "api_names": [
+        "SetWindowsHookEx"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "a7e3958f-3f07-495a-8b2f-2a1d342c943f",
+      "enabled": true,
+      "hook_filter_types": [
+        13,
+        14
+      ]
+    },
+    {
+      "id": "api.8092c7fc",
+      "kind": "api_call",
+      "title": "Network Connect API from Modified Memory",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "8092c7fc-2cd4-4630-84b0-b9c9ea140856",
+      "enabled": true
+    },
+    {
+      "id": "api.720e0265",
+      "kind": "api_call",
+      "title": "Network Connect API from Unbacked Memory",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "720e0265-03bc-4cb7-9116-7fad5ea9cdfc",
+      "enabled": true
+    },
+    {
+      "id": "api.2ad77d41",
+      "kind": "api_call",
+      "title": "Potential Remote Desktop Protocol Tunneling",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [
+        "powershell.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "2ad77d41-b36a-49b2-a54b-7be157e7a8c3",
+      "enabled": true
+    },
+    {
+      "id": "api.53e680ea",
+      "kind": "api_call",
+      "title": "LDAP Search followed by Kerberos Connection",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "53e680ea-89b7-474a-ac10-089adcd02f13",
+      "enabled": true,
+      "search_filter_any": [
+        "rid manager$)",
+        "krbtgt)",
+        "proxyAddresses=smtp:*))"
+      ]
+    },
+    {
+      "id": "api.75483a4a",
+      "kind": "api_call",
+      "title": "LSASS Memory Read via PPL Bypass",
+      "severity": "medium",
+      "api_names": [
+        "ReadProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "75483a4a-9ce6-4dcb-9ceb-fe9244ce0d34",
+      "enabled": true
+    },
+    {
+      "id": "api.c86090ab",
+      "kind": "api_call",
+      "title": "Potential Browser Debugging via Localhost",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c86090ab-b507-40b6-abdf-2d7104454d49",
+      "enabled": true
+    },
+    {
+      "id": "api.39580aee",
+      "kind": "api_call",
+      "title": "Potential LSASS Credential Dumping via KslD Driver",
+      "severity": "medium",
+      "api_names": [
+        "DeviceIoControl"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "39580aee-f9b8-4828-a4d1-91036280a7c2",
+      "enabled": true
+    },
+    {
+      "id": "api.64043824",
+      "kind": "api_call",
+      "title": "AMSI Bypass from Suspicious Module",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "64043824-bd8f-408d-a92b-3e552b6ecd20",
+      "enabled": true
+    },
+    {
+      "id": "api.06516087",
+      "kind": "api_call",
+      "title": "AMSI Bypass via Unbacked Memory",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "06516087-9305-482b-af9a-92f4386d2f19",
+      "enabled": true
+    },
+    {
+      "id": "api.586bf106",
+      "kind": "api_call",
+      "title": "AMSI or WLDP Bypass via Memory Patching",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "586bf106-b208-45fc-9401-727664175ca0",
+      "enabled": true
+    },
+    {
+      "id": "api.2842dbe3",
+      "kind": "api_call",
+      "title": "API Call via Timer Callback Event",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "2842dbe3-4ce7-4e4d-b18b-c5eefdaf1fae",
+      "enabled": true
+    },
+    {
+      "id": "api.002d9a6d",
+      "kind": "api_call",
+      "title": "Cross Process API Activity with Truncated Stack",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "bash.exe",
+        "bash.exe",
+        "perl.exe",
+        "perl.exe",
+        "ssh.exe",
+        "ssh.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "002d9a6d-c09e-4d3f-a1c1-05b92dbdbb67",
+      "enabled": true
+    },
+    {
+      "id": "api.fe44381a",
+      "kind": "api_call",
+      "title": "Direct Syscall from Unsigned Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "fe44381a-435c-4e19-ad89-40ac3750f514",
+      "enabled": true
+    },
+    {
+      "id": "api.c6231a7f",
+      "kind": "api_call",
+      "title": "Hollow Image Behavior via Native API",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c6231a7f-edb0-455f-9bc0-5a1b0213bb29",
+      "enabled": true
+    },
+    {
+      "id": "api.446e61bf",
+      "kind": "api_call",
+      "title": "Image Hollow from Unusual Stack",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "446e61bf-8370-45df-88ab-7b213ee653db",
+      "enabled": true
+    },
+    {
+      "id": "api.647e485d",
+      "kind": "api_call",
+      "title": "Memory Protection from Read to Execute",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "647e485d-4850-43da-9407-7618c9b23843",
+      "enabled": true
+    },
+    {
+      "id": "api.27202cd8",
+      "kind": "api_call",
+      "title": "Native API Call from Unsigned Module",
+      "severity": "medium",
+      "api_names": [
+        "MapViewOfFile"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "27202cd8-c5a6-4b82-9bb8-f3da69a4d5d3",
+      "enabled": true
+    },
+    {
+      "id": "api.4388a77b",
+      "kind": "api_call",
+      "title": "Network Activity from a Stomped Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4388a77b-4ddf-4e15-8314-ecf96c77807a",
+      "enabled": true
+    },
+    {
+      "id": "api.29688edf",
+      "kind": "api_call",
+      "title": "NTDLL Memory Protection Change via Unsigned DLL",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "29688edf-a003-42e4-8d79-c958cffce9fc",
+      "enabled": true
+    },
+    {
+      "id": "api.2f7630e4",
+      "kind": "api_call",
+      "title": "Potential AMSI Bypass via SetThreadContext",
+      "severity": "medium",
+      "api_names": [
+        "SetThreadContext"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "2f7630e4-a125-4ba6-a8a7-3d4f17ece8d5",
+      "enabled": true
+    },
+    {
+      "id": "api.d04edc65",
+      "kind": "api_call",
+      "title": "Potential Beacon Masking from a Stomped Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "d04edc65-b0a1-4445-a148-3fb7ec4f731e",
+      "enabled": true
+    },
+    {
+      "id": "api.87cf026c",
+      "kind": "api_call",
+      "title": "Potential CVE-2024-21338 Exploitation",
+      "severity": "medium",
+      "api_names": [
+        "DeviceIoControl"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "87cf026c-b242-4fbb-9343-1bdc62136586",
+      "enabled": true
+    },
+    {
+      "id": "api.2316b571",
+      "kind": "api_call",
+      "title": "Potential Injection via Asynchronous Procedure Call",
+      "severity": "medium",
+      "api_names": [
+        "QueueUserAPC"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "2316b571-731d-4745-97ac-4fd6922d32df",
+      "enabled": true
+    },
+    {
+      "id": "api.f1d05929",
+      "kind": "api_call",
+      "title": "Potential Remote Code Injection",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "f1d05929-4271-4d39-9cae-05eab6d4efca",
+      "enabled": true
+    },
+    {
+      "id": "api.1370f164",
+      "kind": "api_call",
+      "title": "Potential Shellcode Injection via CLR",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "1370f164-1809-4668-ad6c-dbf5bd278120",
+      "enabled": true
+    },
+    {
+      "id": "api.47167118",
+      "kind": "api_call",
+      "title": "Potential Suspended Process Code Injection",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "47167118-ba42-48e8-8555-dd50d98d21c4",
+      "enabled": true
+    },
+    {
+      "id": "api.358b23e4",
+      "kind": "api_call",
+      "title": "Potential Unbacked Memory Content Masking",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "358b23e4-ed82-454f-9351-69f5844e7da9",
+      "enabled": true
+    },
+    {
+      "id": "api.4db10fd9",
+      "kind": "api_call",
+      "title": "Process Anti-Debug via Memory Patching",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4db10fd9-e219-4566-9388-8e9a0b7ac7a9",
+      "enabled": true
+    },
+    {
+      "id": "api.9c4bd6d6",
+      "kind": "api_call",
+      "title": "Process Explorer Device Access by Unusual Process",
+      "severity": "medium",
+      "api_names": [
+        "DeviceIoControl"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "9c4bd6d6-9e2f-4ce2-8266-923e1799726c",
+      "enabled": true
+    },
+    {
+      "id": "api.fa2e2435",
+      "kind": "api_call",
+      "title": "Process Memory Write to a Non Child Process",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "fa2e2435-d285-485e-9890-dff92cb78ab7",
+      "enabled": true
+    },
+    {
+      "id": "api.4953d091",
+      "kind": "api_call",
+      "title": "Process Suspended via TTD Monitor Driver",
+      "severity": "medium",
+      "api_names": [
+        "DeviceIoControl"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4953d091-dd91-4380-9531-e373a5bfffaf",
+      "enabled": true
+    },
+    {
+      "id": "api.325933f6",
+      "kind": "api_call",
+      "title": "Registry Modification via WMI StdRegProv",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecMethod"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "325933f6-e0b9-4cd2-bc4f-a91d78f97f1d",
+      "enabled": true,
+      "operation_contains": [
+        "StdRegProv::SetStringValue",
+        "SetStringValue",
+        "StdRegProv",
+        "C:\\\\Program Files (x86)\\\\GreenwayTR\\\\GMTGC.exe",
+        "Reason Cybersecurity Inc.",
+        "Micro-Star International CO., LTD.",
+        "Lansweeper NV",
+        "YANDEX LLC",
+        "Beijing Sogou Technology Development Co., Ltd.",
+        "HP Inc.",
+        "95895A1E-217A-4242-9200-7E698391758E",
+        "Omnissa, LLC"
+      ]
+    },
+    {
+      "id": "api.f5bbe671",
+      "kind": "api_call",
+      "title": "Remote Memory Write to a non Child Process",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "f5bbe671-5351-4566-b708-6e09d1de7dd2",
+      "enabled": true
+    },
+    {
+      "id": "api.5c6c166c",
+      "kind": "api_call",
+      "title": "Remote Memory Write to Trusted Target Process",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "5c6c166c-a894-4263-918a-c7632014a486",
+      "enabled": true
+    },
+    {
+      "id": "api.634dcd98",
+      "kind": "api_call",
+      "title": "Remote Process Injection via Python",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "634dcd98-0656-48a8-bd41-5fa025b6c812",
+      "enabled": true
+    },
+    {
+      "id": "api.54916896",
+      "kind": "api_call",
+      "title": "Remote Process Memory Write by Low Reputation Module",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "54916896-1f73-441d-acec-1141094b15e3",
+      "enabled": true
+    },
+    {
+      "id": "api.50dd274c",
+      "kind": "api_call",
+      "title": "Self Injection via AppDomain Manager Assembly",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "50dd274c-651e-46aa-9485-768fa4939b93",
+      "enabled": true
+    },
+    {
+      "id": "api.947ad28a",
+      "kind": "api_call",
+      "title": "Shellcode API behavior from a signed module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "947ad28a-98de-49cc-988b-fef69785585a",
+      "enabled": true
+    },
+    {
+      "id": "api.a8bacf2b",
+      "kind": "api_call",
+      "title": "Shellcode behavior from suspicious RWX provenance",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "a8bacf2b-23a9-4a6d-a117-5df433403c70",
+      "enabled": true
+    },
+    {
+      "id": "api.4fd32c09",
+      "kind": "api_call",
+      "title": "Shellcode Behavior from Unusual Memory",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4fd32c09-dcb8-442c-a5ac-b8f3f98ffe6c",
+      "enabled": true
+    },
+    {
+      "id": "api.d084c509",
+      "kind": "api_call",
+      "title": "Shellcode Behavior via .NET Core",
+      "severity": "medium",
+      "api_names": [
+        "SetThreadContext"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "d084c509-0222-49a2-b908-c9c3510f0f97",
+      "enabled": true
+    },
+    {
+      "id": "api.9fda6a38",
+      "kind": "api_call",
+      "title": "Shellcode Execution from Low Reputation Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualAlloc"
+      ],
+      "process_names": [
+        "msiexec.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "9fda6a38-3822-45b6-b621-02f750e8cf0d",
+      "enabled": true
+    },
+    {
+      "id": "api.1d0a1b39",
+      "kind": "api_call",
+      "title": "Shellcode Execution via Python Script",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "1d0a1b39-a29e-4370-a712-546ed047f5f5",
+      "enabled": true
+    },
+    {
+      "id": "api.ef671d7c",
+      "kind": "api_call",
+      "title": "Shellcode Heap Allocation from Unbacked Memory",
+      "severity": "medium",
+      "api_names": [
+        "VirtualAlloc"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "ef671d7c-0bb2-46c9-9a6f-9f44e30d037f",
+      "enabled": true
+    },
+    {
+      "id": "api.5754cf6f",
+      "kind": "api_call",
+      "title": "Shellcode Injection from Mounted Device",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "5754cf6f-9ba7-4520-a0a5-9498af1baaf3",
+      "enabled": true
+    },
+    {
+      "id": "api.98fffa16",
+      "kind": "api_call",
+      "title": "Shellcode Injection via PowerShell",
+      "severity": "medium",
+      "api_names": [
+        "connect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "98fffa16-53e1-4db9-9126-2d0441cac417",
+      "enabled": true
+    },
+    {
+      "id": "api.631df705",
+      "kind": "api_call",
+      "title": "Shellcode Injection with Parent as Provenance",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "631df705-0636-4f83-8374-24d61307735e",
+      "enabled": true
+    },
+    {
+      "id": "api.c5e0a2f9",
+      "kind": "api_call",
+      "title": "Stack Spoofing via ROP Gadget for Memory API",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c5e0a2f9-7d1b-3f6c-e4a8-0b9d5e2c1a3f",
+      "enabled": true
+    },
+    {
+      "id": "api.67a459a1",
+      "kind": "api_call",
+      "title": "Suspicious BindFilterPort Client Process",
+      "severity": "medium",
+      "api_names": [
+        "DeviceIoControl"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "67a459a1-6d86-4002-adc3-a6e1249a7d2e",
+      "enabled": true
+    },
+    {
+      "id": "api.98e95014",
+      "kind": "api_call",
+      "title": "Suspicious Executable Heap Allocation via CLR",
+      "severity": "medium",
+      "api_names": [
+        "VirtualAlloc"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "98e95014-ee8c-429a-9ff0-359c80d9ec8d",
+      "enabled": true
+    },
+    {
+      "id": "api.c6e63ef1",
+      "kind": "api_call",
+      "title": "Suspicious Executable Memory Permission Modification",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c6e63ef1-e2d8-4703-80c7-a544f2aa5c6e",
+      "enabled": true
+    },
+    {
+      "id": "api.6bd0cf1f",
+      "kind": "api_call",
+      "title": "Suspicious File Memory Mapping via Managed .NET",
+      "severity": "medium",
+      "api_names": [
+        "MapViewOfFile"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "6bd0cf1f-e3b9-4c09-884e-1a722f10326b",
+      "enabled": true
+    },
+    {
+      "id": "api.c53dfced",
+      "kind": "api_call",
+      "title": "Suspicious Kernel32 Memory Protection",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c53dfced-feba-4527-bb8a-f181bcac59bc",
+      "enabled": true
+    },
+    {
+      "id": "api.7a23d763",
+      "kind": "api_call",
+      "title": "Suspicious NTDLL Memory Write",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "7a23d763-4904-40f9-8169-0c49af65ad30",
+      "enabled": true
+    },
+    {
+      "id": "api.a4684714",
+      "kind": "api_call",
+      "title": "Suspicious Null Terminated Call Stack",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "a4684714-f605-4944-98de-e593246faf15",
+      "enabled": true
+    },
+    {
+      "id": "api.667a1895",
+      "kind": "api_call",
+      "title": "Suspicious Process with a Spoofed Parent",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "powershell.exe",
+        "werfault.exe",
+        "tailscale-ipn.exe",
+        "filecoauth.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "667a1895-5920-4fb2-820f-16c356f79341",
+      "enabled": true
+    },
+    {
+      "id": "api.b2104624",
+      "kind": "api_call",
+      "title": "Suspicious Remote Memory Allocation",
+      "severity": "medium",
+      "api_names": [
+        "VirtualAllocEx"
+      ],
+      "process_names": [
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [
+        "S-1-5-19",
+        "S-1-5-20"
+      ],
+      "protections_rule_id": "b2104624-d0e8-4864-8266-605056c6469a",
+      "enabled": true
+    },
+    {
+      "id": "api.f01594de",
+      "kind": "api_call",
+      "title": "Suspicious Remote Process Thread Access",
+      "severity": "medium",
+      "api_names": [
+        "OpenThread"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "f01594de-1d8e-4995-87e5-dd9e5edb8f88",
+      "enabled": true
+    },
+    {
+      "id": "api.542a6a6c",
+      "kind": "api_call",
+      "title": "Suspicious System Module Image Hollowing",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "542a6a6c-1af2-4e51-a8a4-5406765f5642",
+      "enabled": true
+    },
+    {
+      "id": "api.71f908de",
+      "kind": "api_call",
+      "title": "Suspicious Thread Context Manipulation",
+      "severity": "medium",
+      "api_names": [
+        "SetThreadContext"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "71f908de-8f53-4cb4-8f3a-6fa473fe9488",
+      "enabled": true
+    },
+    {
+      "id": "api.e6b77636",
+      "kind": "api_call",
+      "title": "Suspicious Windows Core Module Change",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "e6b77636-53e6-416f-81bb-863b74a896e8",
+      "enabled": true
+    },
+    {
+      "id": "api.63f3d1c5",
+      "kind": "api_call",
+      "title": "Suspicious Windows NT API Hooking",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "63f3d1c5-7e19-48db-965d-cc2a52e96650",
+      "enabled": true
+    },
+    {
+      "id": "api.8cee3db8",
+      "kind": "api_call",
+      "title": "Thread Suspension from Unbacked Memory",
+      "severity": "medium",
+      "api_names": [
+        "SuspendThread"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "8cee3db8-2cbd-477e-9673-dd103952ddbb",
+      "enabled": true
+    },
+    {
+      "id": "api.99d3049e",
+      "kind": "api_call",
+      "title": "Unbacked Shellcode from Unsigned Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "99d3049e-f4af-46a7-9406-33482955bec9",
+      "enabled": true
+    },
+    {
+      "id": "api.51e79dda",
+      "kind": "api_call",
+      "title": "VirtualProtect API Call from Unusual Stack",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "51e79dda-9a89-4825-93ec-ce560d7d5459",
+      "enabled": true
+    },
+    {
+      "id": "api.ef47dbfc",
+      "kind": "api_call",
+      "title": "VirtualProtect API via Stack Truncation",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "ef47dbfc-5e0b-4e97-83f6-d40026634999",
+      "enabled": true
+    },
+    {
+      "id": "api.9906a386",
+      "kind": "api_call",
+      "title": "VirtualProtect Call via NtTestAlert",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "9906a386-771f-4003-b426-fbe75bdd6e73",
+      "enabled": true
+    },
+    {
+      "id": "api.036c0b79",
+      "kind": "api_call",
+      "title": "VirtualProtect from Unusual NTDLL Offset",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "036c0b79-9cba-4f01-a529-e0ef86981bad",
+      "enabled": true
+    },
+    {
+      "id": "api.e7d63d66",
+      "kind": "api_call",
+      "title": "VirtualProtect via Indirect Syscall",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [
+        "powershell.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "e7d63d66-2d46-4051-a304-4c34f7bbf11d",
+      "enabled": true
+    },
+    {
+      "id": "api.20b374bd",
+      "kind": "api_call",
+      "title": "VirtualProtect via Vectored Exception Handling",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "20b374bd-2288-48f1-ad70-fa498e69e164",
+      "enabled": true
+    },
+    {
+      "id": "api.8a8daa15",
+      "kind": "api_call",
+      "title": "Windows API via a CallBack Function",
+      "severity": "medium",
+      "api_names": [
+        "SetThreadContext"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "8a8daa15-eed0-4bf0-85b5-ada73b55ab05",
+      "enabled": true
+    },
+    {
+      "id": "api.73310ee3",
+      "kind": "api_call",
+      "title": "Windows Defender Exclusions via WMI",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecMethod"
+      ],
+      "process_names": [
+        "powershell.exe",
+        "wmic.exe",
+        "powershell.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "73310ee3-5e48-4680-b7c5-c096813c7f03",
+      "enabled": true,
+      "operation_contains": [
+        "MSFT_MpPreference::Add",
+        "Add",
+        "MSFT_MpPreference",
+        "S-1-5-18",
+        "C:\\\\Windows\\\\Sys?????\\\\WindowsPowerShell\\\\v*\\\\powershell.exe",
+        "C:\\\\Windows\\\\System32\\\\svchost.exe",
+        "C:\\\\Windows\\\\System32\\\\services.exe",
+        "?:\\\\Program Files\\\\JetBrains\\\\*\\\\lib\\\\ReSharperHost\\\\JetBrains.Rider.AfterInstall.exe",
+        "?:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Programs\\\\*\\\\lib\\\\ReSharperHost\\\\JetBrains.Rider.AfterInstall.exe",
+        "?:\\\\Program Files\\\\JetBrains\\\\*\\\\bin\\\\elevator.exe",
+        "?:\\\\Users\\\\*\\\\AppData\\\\Local\\\\Programs\\\\*\\\\bin\\\\elevator.exe",
+        "?:\\\\Users\\\\*\\\\AppData\\\\Local\\\\JetBrains\\\\*\\\\bin\\\\elevator.exe"
+      ]
+    },
+    {
+      "id": "api.46b3b2f8",
+      "kind": "api_call",
+      "title": "Windows Socket Creation from Stomped Module",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "46b3b2f8-d876-4344-8fff-8c86103bf8e2",
+      "enabled": true
+    },
+    {
+      "id": "api.59a55372",
+      "kind": "api_call",
+      "title": "Windows Socket Creation from Unbacked Memory",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "59a55372-5b1a-4a72-bd6e-9a55cf9298b4",
+      "enabled": true
+    },
+    {
+      "id": "api.4c10ee1d",
+      "kind": "api_call",
+      "title": "Windows System Module Remote Hooking",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe",
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "4c10ee1d-8373-4450-bf5c-81ce138739a1",
+      "enabled": true
+    },
+    {
+      "id": "api.1a1c26bb",
+      "kind": "api_call",
+      "title": "WriteProcessMemory to Suspicious Memory Location",
+      "severity": "medium",
+      "api_names": [
+        "WriteProcessMemory"
+      ],
+      "process_names": [
+        "rundll32.exe",
+        "rundll32.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "1a1c26bb-7fe5-4683-9b94-bc1d89782873",
+      "enabled": true
+    },
+    {
+      "id": "api.e79d5328",
+      "kind": "api_call",
+      "title": "Active Directory Data Collection via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "e79d5328-16fc-45ea-8179-ea2746042af6",
+      "enabled": true,
+      "search_filter_any": [
+        "objectGUID=)",
+        "objectGUID="
+      ]
+    },
+    {
+      "id": "api.d5c1ecae",
+      "kind": "api_call",
+      "title": "AD Certificate Services Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "d5c1ecae-c25a-4ad5-b9e8-3d4fa8ffa25f",
+      "enabled": true,
+      "search_filter_any": [
+        "objectclass=pKIEnrollmentService)",
+        "objectclass=certificationAuthority)",
+        "objectclass=pKICertificateTemplate)",
+        "objectclass=msPKI-Enterprise-Oid)"
+      ]
+    },
+    {
+      "id": "api.559c64c5",
+      "kind": "api_call",
+      "title": "Distributed File System Shares Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "559c64c5-47f9-44b1-9261-4295eff8491f",
+      "enabled": true,
+      "search_filter_any": [
+        "objectClass=msDFS-Linkv2))",
+        "objectClass=msDFS-Linkv2)",
+        "objectClass=msDFS-Linkv2"
+      ]
+    },
+    {
+      "id": "api.c3b3cd2e",
+      "kind": "api_call",
+      "title": "Domain Accounts Enumeration via LDAP Search",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18",
+        "S-1-5-19",
+        "S-1-5-20"
+      ],
+      "protections_rule_id": "c3b3cd2e-04f5-457f-8d69-f92468f22eae",
+      "enabled": true,
+      "search_filter_any": [
+        "samAccountType=805306368)(samAccountName=)",
+        "objectCategory=person)(lastLogon>=",
+        "objectClass=user)(lastLogon>=",
+        "objectClass=user)(directReports=)(!(manager=)))"
+      ]
+    },
+    {
+      "id": "api.0380d8b9",
+      "kind": "api_call",
+      "title": "Domain Computers Enumeration via LDAP Search",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "0380d8b9-e643-40b9-a763-67ab52021bb4",
+      "enabled": true,
+      "search_filter_any": [
+        "objectCategory=computer)(operatingSystem=server))",
+        "sAMAccountType=805306369)(dnshostname=))",
+        "objectCategory=computer)(lastLogon>=*)(operatingSystem=*windows*))",
+        "objectCategory=computer)(lastLogonTimestamp<=133000000000000000))",
+        "objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=5242",
+        "objectCategory=Computer)(userAccountControl:1.2.840.113556.1.4.803:=8192",
+        "objectclass=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))",
+        "objectclass=computer)(userAccountControl&8192))",
+        "samAccountType=805306369)(!(primaryGroupId=516)))(objectCategory=compute",
+        "objectCategory=computer)(operatingSystem=server)(!(userAccountControl:1."
+      ]
+    },
+    {
+      "id": "api.bbf68a5c",
+      "kind": "api_call",
+      "title": "Domain Password Policy Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "bbf68a5c-9346-40f4-8a9b-da3d9136f39f",
+      "enabled": true,
+      "search_filter_any": [
+        "msDS-PasswordSettings",
+        "msDS-MinimumPasswordLength",
+        "msDS-LockoutThreshold",
+        "(pwdlastset>=*(operatingSystem=*windows*))"
+      ]
+    },
+    {
+      "id": "api.9c928393",
+      "kind": "api_call",
+      "title": "Domain Trust and Schema Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18",
+        "S-1-5-19",
+        "S-1-5-20"
+      ],
+      "protections_rule_id": "9c928393-2aeb-4143-8ed6-c9704c094f76",
+      "enabled": true,
+      "search_filter_any": [
+        "objectclass=trusteddomain)",
+        "(schemaIDGUID=)",
+        "cn=schema,cn=configuration,dc="
+      ]
+    },
+    {
+      "id": "api.447b004a",
+      "kind": "api_call",
+      "title": "Group and Privileged Accounts Discovery via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "447b004a-ac74-4ba4-8131-44efc25fdd47",
+      "enabled": true,
+      "search_filter_any": [
+        "objectClass=group))",
+        "objectClass=group)(managedBy=))",
+        "objectClass=group)(managedBy=)(groupType:1.2.840.113556.1.4.803:=2147483",
+        "objectCategory=group)(name=Domain Admins))",
+        "(adminCount=1)"
+      ]
+    },
+    {
+      "id": "api.375b5571",
+      "kind": "api_call",
+      "title": "Password Spraying Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "375b5571-4cc4-427e-a39e-77b7f18f3d7e",
+      "enabled": true,
+      "search_filter_any": [
+        "objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
+        "objectCategory=Computer)(!userAccountControl:1.2.840.113556.1.4.803:=2))",
+        "objectClass=user)*(pwdLastSet=0))",
+        "objectClass=user)*(pwdLastSet>=129473172000000000))",
+        "objectClass=user)*(userAccountControl:1.2.840.113556.1.4.803:=65536))",
+        "objectClass=user)*(userAccountControl:1.2.840.113556.1.4.803:=32))",
+        "samAccountType=805306368)(|(homeDirectory=)(scriptPath=*)(profilePath=))",
+        "objectClass=user)(directReports=)(!(manager=)))"
+      ]
+    },
+    {
+      "id": "api.c709fe69",
+      "kind": "api_call",
+      "title": "Privileged Domain Group Enumeration via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c709fe69-b699-4498-b858-eb6afcfd17ab",
+      "enabled": true,
+      "search_filter_any": [
+        "objectClass=",
+        "objectClass=)",
+        "cn=domain admins",
+        "cn=enterprise admins",
+        "cn=dnsadmins",
+        "cn=cloneable domain controllers",
+        "cn=read-only domain controllers",
+        "cn=exchange organization administrators",
+        "cn=backup admins",
+        "cn=group policy creator owners",
+        "cn=domain controllers",
+        "objectClass=user)(memberof"
+      ]
+    },
+    {
+      "id": "api.b64874f2",
+      "kind": "api_call",
+      "title": "Sensitive Attributes Discovery via LDAP",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "b64874f2-a50c-4fb0-837e-cc1925067587",
+      "enabled": true,
+      "search_filter_any": [
+        "(name=ms-Mcs-AdmPwd)",
+        "objectCategory=Computer)(ms-MCS-AdmPwd=))",
+        "(name=ms-Mcs-AdmPwdExpirationTime)",
+        "(name=msLAPS-Password)",
+        "(name=dBCSPwd)",
+        "(name=lmPwdHistory)",
+        "(name=ntPwdHistory)",
+        "(name=supplementalCredentials)",
+        "(name=*secret*)",
+        "(name=*trust*)",
+        "objectClass=user))(|(description=pass)(comment=pass)))"
+      ]
+    },
+    {
+      "id": "api.9e8fec58",
+      "kind": "api_call",
+      "title": "Suspicious Enumeration via LDAP Search",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "9e8fec58-4f0d-4a30-8e9e-54c717202064",
+      "enabled": true,
+      "search_filter_any": [
+        "samAccountType=805306368)(samAccountType=805306369)(objectclass=organiza",
+        "objectCategory=user)(userAccountControl:1.2.840.113556.1.4.803:=524288))",
+        "samAccountType=805306368)(|(homedirectory=)(scriptpath=)(profilepath=)))",
+        "objectClass=user)(objectClass=group))(objectSid=S-1-5-21-*-512))",
+        "samaccounttype=268435456)(samaccounttype=268435457)(samaccounttype=53687",
+        "samAccountType=805306368)(samAccountType=805306369)(samAccountType=26843",
+        "samaccounttype=805306369)(!(objectclass=msDS-GroupManagedServiceAccount)",
+        "UserAccountControl:1.2.840.113556.1.4.804:=17301504))",
+        "userAccountControl:1.2.840.113556.1.4.803:=524288)(msDS-AllowedToDelegat",
+        "objectcategory=computer)(objectcategory=person)(objectcategory=msDS-Grou"
+      ]
+    },
+    {
+      "id": "api.7367213e",
+      "kind": "api_call",
+      "title": "Suspicious Kerberos Enumeration via LDAP Search",
+      "severity": "medium",
+      "api_names": [
+        "ldap_search"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "7367213e-05e3-41a9-b298-20ad8ba23aa6",
+      "enabled": true,
+      "search_filter_any": [
+        "samAccountType=805306368)(servicePrincipalName=))",
+        "samAccountType=805306368)(servicePrincipalName=)(!samAccountName=krbtgt)",
+        "samAccountType=805306368)(servicePrincipalName=)(!(UserAccountControl:1.",
+        "samAccountType=805306369)(servicePrincipalName=))",
+        "samAccountName=krbtgt)(servicePrincipalName=)))",
+        "servicePrincipalName=)",
+        "servicePrincipalName=)(userAccountControl:1.2.840.113556.1.4.803:=524288",
+        "userAccountControl:1.2.840.113556.1.4.803:=524288))",
+        "servicePrincipalName=)(userAccountControl:1.2.840.113556.1.4.803:=167772",
+        "servicePrincipalName=)(userAccountControl:1.2.840.113556.1.4.803:=104857",
+        "objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))",
+        "samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=419"
+      ]
+    },
+    {
+      "id": "api.1e9ac3fe",
+      "kind": "api_call",
+      "title": ".NET COM object created in non-standard Windows Script Interpreter",
+      "severity": "medium",
+      "api_names": [
+        "VirtualAlloc"
+      ],
+      "process_names": [
+        "mshta.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "1e9ac3fe-edb4-d669-71ab-220acc092982",
+      "enabled": true
+    },
+    {
+      "id": "api.2cbb7988",
+      "kind": "api_call",
+      "title": "Process Creation from an Unusual WMI Client",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecMethod"
+      ],
+      "process_names": [
+        "powershell.exe",
+        "powershell.exe",
+        "powershell.exe",
+        "powershell.exe"
+      ],
+      "exclude_user_ids": [],
+      "protections_rule_id": "2cbb7988-4fea-4242-a0c0-25f4dd068946",
+      "enabled": true,
+      "operation_contains": [
+        "Win32_Process::Create",
+        "Create",
+        "Win32_Process",
+        "TENABLE, INC.",
+        "Autodesk, Inc.",
+        "Archer Technologies LLC",
+        "Opera Norway AS",
+        "Beijing Qihu Technology Co., Ltd.",
+        "ACD Systems International Inc.",
+        "CS.NIWC-ATLANTIC.001",
+        "Check Point Software Technologies Ltd.",
+        "VMware, Inc."
+      ]
+    },
+    {
+      "id": "api.6ad0c702",
+      "kind": "api_call",
+      "title": "Suspicious API Call from a PowerShell Script",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "6ad0c702-ddf0-4631-ac43-37eeea444ee6",
+      "enabled": true
+    },
+    {
+      "id": "api.ee5d33a2",
+      "kind": "api_call",
+      "title": "Suspicious WMI Enumeration via Windows Scripts",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecQuery"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [
+        "S-1-5-18"
+      ],
+      "protections_rule_id": "ee5d33a2-604f-4466-bace-4aea921846ed",
+      "enabled": true,
+      "operation_contains": [
+        "IWbemServices::ExecQuery( Select * from Win32_ComputerSystemProduct )",
+        "ExecQuery( Select * from Win32_ComputerSystemProduct )",
+        "Win32_ComputerSystemProduct",
+        "IWbemServices::ExecQuery( Select * from Win32_Process Where Name",
+        "ExecQuery( Select * from Win32_Process Where Name",
+        "Win32_Process",
+        "cscript.exe  //NoLogo //B ?:\\\\Windows\\\\System32\\\\slmgr.vbs",
+        "C:\\\\WINDOWS\\\\System32\\\\WScript.exe\\",
+        "C:\\\\Program Files (x86)\\\\Microsoft Office\\\\Office??\\\\ospp.vbs\\",
+        "C:\\\\Program Files (x86)\\\\LIEBHERR\\\\LIKAPLAN\\\\starteplocal.vbs\\",
+        "C:\\\\Program Files\\\\Barracuda SSM\\\\launchCommonAgent.vbs\\",
+        "C:\\\\Program Files\\\\Barracuda SSM\\\\launchSaasAgent.vbs\\"
+      ]
+    },
+    {
+      "id": "api.c8591841",
+      "kind": "api_call",
+      "title": "Shadow Copy Deletion via Windows Management Instrumentation",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecMethod"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "c8591841-6b50-42ea-a6c2-7f88b19897f0",
+      "enabled": true,
+      "operation_contains": [
+        "Win32_ShadowCopy.",
+        "Win32_ShadowCopy",
+        "?:\\\\Program Files\\\\Veeam\\\\Backup and Replication\\\\*.exe",
+        "?:\\\\Program Files (x86)\\\\Veeam\\\\Backup and Replication\\\\*.exe",
+        "Veeam Software Group GmbH",
+        "Veeam Software AG",
+        "C:\\\\Windows\\\\System32\\\\svchost.exe",
+        "C:\\\\Windows\\\\System32\\\\services.exe",
+        "C:\\\\Program Files\\\\2BrightSparks\\\\SyncBackPro\\\\SyncBackPro.exe",
+        "C:\\\\Windows\\\\System32\\\\cmd.exe",
+        "powershell  -ExecutionPolicy ByPass -FILE \\"
+      ]
+    },
+    {
+      "id": "api.d5fb2972",
+      "kind": "api_call",
+      "title": "Potential Shellcode Injection by a Browser Process",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "d5fb2972-bf70-42a8-ad42-4db62491f2ad",
+      "enabled": true
+    },
+    {
+      "id": "api.9c0a744f",
+      "kind": "api_call",
+      "title": "Suspicious VirtualProtect via Jscript9 from Internet Explorer",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "9c0a744f-d6f5-49d6-9c26-077ea8dd2b59",
+      "enabled": true
+    },
+    {
+      "id": "api.3946dd5a",
+      "kind": "api_call",
+      "title": "Suspicious WMI Event Consumer Subscription",
+      "severity": "medium",
+      "api_names": [
+        "IWbemServices::ExecMethod"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "3946dd5a-820d-4e5a-ad01-d2f00a6bb2e2",
+      "enabled": true,
+      "operation_contains": [
+        "IWbemServices::PutInstance*FilterToConsumerBinding",
+        "PutInstance*FilterToConsumerBinding",
+        "FilterToConsumerBinding",
+        ") and\n process.Ext.api.parameters.consumer_type ==",
+        "PutInstance"
+      ]
+    },
+    {
+      "id": "api.1ddca85b",
+      "kind": "api_call",
+      "title": "Suspicious Desktop Window Manager API Call",
+      "severity": "medium",
+      "api_names": [
+        "VirtualProtect"
+      ],
+      "process_names": [],
+      "exclude_user_ids": [],
+      "protections_rule_id": "1ddca85b-866b-4bee-96cd-ac5466f36e0a",
+      "enabled": true
+    }
+  ]
+}

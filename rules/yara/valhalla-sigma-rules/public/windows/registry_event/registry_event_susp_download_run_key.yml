@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Run Key from Download
+id: 9c5037d1-c568-49b3-88c7-9846a5bdc2be
+status: test
+description: Detects the suspicious RUN keys created by software located in Download or temporary Outlook/Internet Explorer directories
+references:
+    - https://app.any.run/tasks/c5bef5b7-f484-4c43-9cf3-d5c5c7839def/
+    - https://github.com/HackTricks-wiki/hacktricks/blob/e4c7b21b8f36c97c35b7c622732b38a189ce18f7/src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.md
+date: "2019-10-01"
+modified: "2025-02-17"
+author: Florian Roth (Nextron Systems), Swachchhanda Shrawan Poude (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|contains:
+            - \AppData\Local\Packages\Microsoft.Outlook_
+            - \AppData\Local\Microsoft\Olk\Attachments\
+            - \Downloads\
+            - \Temporary Internet Files\Content.Outlook\
+            - \Local Settings\Temporary Internet Files\
+        TargetObject|contains:
+            - \Software\Microsoft\Windows\CurrentVersion\Run
+            - \Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run
+            - \Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+falsepositives:
+    - Software installers downloaded and used by users
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1547.001
+customer: 'demo'

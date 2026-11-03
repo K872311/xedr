@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS STS GetCallerIdentity Enumeration Via TruffleHog
+id: 9b1b8e9b-0a5d-4af1-9d2f-4c4b6e7c2c9d
+status: experimental
+description: |
+    Detects the use of TruffleHog for AWS credential validation by identifying GetCallerIdentity API calls where the userAgent indicates TruffleHog.
+    Threat actors leverage TruffleHog to enumerate and validate exposed AWS keys.
+    Successful exploitation allows threat actors to confirm the validity of compromised AWS credentials, facilitating further unauthorized access and actions within the AWS environment.
+references:
+    - https://www.rapid7.com/blog/post/tr-crimson-collective-a-new-threat-group-observed-operating-in-the-cloud/
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html
+    - https://github.com/trufflesecurity/trufflehog
+date: "2025-10-12"
+author: Adan Alvarez @adanalvarez
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName: GetCallerIdentity
+        eventSource: sts.amazonaws.com
+        userAgent|contains: TruffleHog
+falsepositives:
+    - Legitimate internal security scanning or key validation that intentionally uses TruffleHog. Authorize and filter known scanner roles, IP ranges, or assumed roles as needed.
+level: medium
+tags:
+    - attack.discovery
+    - attack.t1087.004
+customer: 'demo'

@@ -1,0 +1,68 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potentially Suspicious WDAC Policy File Creation
+id: 1d2de8a6-4803-4fde-b85b-f58f3aa7a705
+status: experimental
+description: |
+    Detects suspicious Windows Defender Application Control (WDAC) policy file creation from abnormal processes that could be abused by attacker to block EDR/AV components while allowing their own malicious code to run on the system.
+references:
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-using-group-policy
+    - https://beierle.win/2024-12-20-Weaponizing-WDAC-Killing-the-Dreams-of-EDR/
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/appcontrol-deployment-guide
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-with-script
+    - https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-with-memcm
+date: "2025-02-07"
+modified: "2026-05-18"
+author: X__Junior
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection_target and not 1 of filter_main_*
+    filter_main_cli:
+        - CommandLine|contains|all:
+            - ConvertFrom-CIPolicy -XmlFilePath
+            - '-BinaryFilePath '
+        - CommandLine|contains: CiTool --update-policy
+        - CommandLine|contains|all:
+            - Copy-Item -Path
+            - -Destination
+    filter_main_images:
+        Image|endswith:
+            - \Microsoft.ConfigurationManagement.exe
+            - \WDAC Wizard.exe
+            - C:\Program Files\PowerShell\7-preview\pwsh.exe
+            - C:\Program Files\PowerShell\7\pwsh.exe
+            - C:\Windows\System32\dllhost.exe
+            - C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe
+            - C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+            - C:\Windows\SysWOW64\dllhost.exe
+            - C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell_ise.exe
+            - C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe
+    filter_main_system:
+        Image: System
+    filter_main_wuauclt:
+        Image: C:\Windows\System32\wuauclt.exe
+    filter_main_wuaucltcore:
+        Image:
+            - C:\Windows\UUS\arm64\wuaucltcore.exe
+            - C:\Windows\UUS\Packages\Preview\arm64\wuaucltcore.exe
+    selection_target:
+        TargetFilename|contains: \Windows\System32\CodeIntegrity\
+falsepositives:
+    - Administrators and security vendors could leverage WDAC, apply additional filters as needed.
+level: medium
+tags:
+    - attack.defense-impairment
+customer: 'demo'

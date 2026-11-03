@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: New Capture Session Launched Via DXCap.EXE
+id: 60f16a96-db70-42eb-8f76-16763e333590
+status: test
+description: |
+    Detects the execution of "DXCap.EXE" with the "-c" flag, which allows a user to launch any arbitrary binary or windows package through DXCap itself. This can be abused to potentially bypass application whitelisting.
+references:
+    - https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dxcap/
+    - https://twitter.com/harr0ey/status/992008180904419328
+date: "2019-10-26"
+modified: "2022-06-09"
+author: Beyu Denis, oscd.community, Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection*
+    selection_cli:
+        CommandLine|contains: ' -c '
+    selection_img:
+        - Image|endswith: \DXCap.exe
+        - OriginalFileName: DXCap.exe
+falsepositives:
+    - Legitimate execution of dxcap.exe by legitimate user
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'

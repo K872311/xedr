@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - NetExec File Indicators
+id: efc21479-9e83-41da-8cf1-122e06ba8db3
+status: experimental
+description: |
+    Detects file creation events indicating NetExec (nxc.exe) execution on the local machine.
+    NetExec is a PyInstaller-bundled binary that extracts its embedded data files to a "_MEI<random>" directory
+    under the Temp folder upon execution. Files dropped under the "\nxc\" sub-directory of that
+    extraction path are unique to NetExec and serve as reliable on-disk indicators of execution.
+    NetExec (formerly CrackMapExec) is a widely used post-exploitation and lateral movement tool used for
+    Active Directory enumeration, credential harvesting, and remote code execution.
+references:
+    - https://github.com/Pennyw0rth/NetExec
+    - https://www.netexec.wiki/
+date: "2026-04-08"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - Image|contains: \nxc-windows-latest\
+        - TargetFilename|contains|all:
+            - \Temp\_MEI
+            - \nxc\data\
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.lateral-movement
+    - attack.discovery
+    - attack.t1021.002
+    - attack.t1059.005
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/file/file_event/file_event_win_hktl_netexec_file_indicators/info.yml

@@ -1,0 +1,53 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - SysmonEnte Execution
+id: d29ada0f-af45-4f27-8f32-f7b77c3dbc4e
+status: test
+description: Detects the use of SysmonEnte, a tool to attack the integrity of Sysmon
+references:
+    - https://codewhitesec.blogspot.com/2022/09/attacks-on-sysmon-revisited-sysmonente.html
+    - https://github.com/codewhitesec/SysmonEnte/
+    - https://github.com/codewhitesec/SysmonEnte/blob/fe267690fcc799fbda15398243615a30451d9099/screens/1.png
+date: "2022-09-07"
+modified: "2026-06-29"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_access
+    product: windows
+detection:
+    condition: ( selection_sysmon and not 1 of filter_main_* ) or selection_calltrace
+    filter_main_generic:
+        SourceImage|contains:
+            - :\Program Files (x86)\
+            - :\Program Files\
+            - :\Windows\System32\
+            - :\Windows\SysWOW64\
+    filter_main_msdefender:
+        SourceImage|contains: :\ProgramData\Microsoft\Windows Defender\Platform\
+        SourceImage|endswith: \MsMpEng.exe
+    selection_calltrace:
+        CallTrace: Ente
+    selection_sysmon:
+        GrantedAccess: "0x1400"
+        TargetImage|contains:
+            - :\Windows\Sysmon.exe
+            - :\Windows\Sysmon64.exe
+            - :\Windows\Sysmon64a.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685.001
+customer: 'demo'

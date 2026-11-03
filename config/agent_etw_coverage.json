@@ -1,0 +1,66 @@
+{
+  "version": "1",
+  "filebeat_etw_input_note": "Elastic Filebeat ETW 为可插拔 input；Forensic 为进程内 etw_native，对齐时比 provider/场景而非是否 ETW。",
+  "forensic_session": "ForensicAgentETW",
+  "providers": [
+    {
+      "guid": "{22FB2CD6-0E7B-422B-A0C7-2FAD1FD0E716}",
+      "name": "Microsoft-Windows-Kernel-Process",
+      "events": [1, 2, 5],
+      "scenarios": ["process_create", "process_stop", "image_load"]
+    },
+    {
+      "guid": "{7DD42A49-5329-4832-8DFD-43D979153A88}",
+      "name": "Microsoft-Windows-Kernel-Network",
+      "events": [12, 28],
+      "scenarios": ["tcp_connect_v4", "tcp_connect_v6"]
+    },
+    {
+      "guid": "{EDD08927-9CC4-4E65-B970-C2560FB5C289}",
+      "name": "Microsoft-Windows-Kernel-File",
+      "events": [30],
+      "scenarios": ["file_create"]
+    },
+    {
+      "guid": "{1C95126E-7EEA-49A9-A3FE-A378B03DDB4D}",
+      "name": "Microsoft-Windows-DNS-Client",
+      "events": [3008, 3020],
+      "scenarios": ["dns_query", "dns_response"]
+    },
+    {
+      "guid": "{17489600-3900-4396-B6E6-7B572478086D}",
+      "name": "Microsoft-Windows-AMSI",
+      "events": [1101],
+      "integration": "amsi",
+      "scenarios": ["script_scan"]
+    },
+    {
+      "guid": "{8c416c79-d49b-4f01-a467-e56d3aa8234c}",
+      "name": "Microsoft-Windows-Win32k",
+      "integration": "api_etw",
+      "scenarios": ["hook_api"]
+    },
+    {
+      "guid": "{11cdeda0-043e-11d1-0eb4-00c04fd3251b}",
+      "name": "Microsoft-Windows-Threat-Intelligence",
+      "integration": "api_etw",
+      "scenarios": ["process_memory_api"]
+    },
+    {
+      "guid": "{1418ef04-b0b4-4623-8fd3-43dae2e8896d}",
+      "name": "Microsoft-Windows-WMI-Activity",
+      "integration": "api_etw",
+      "scenarios": ["wmi_operation"]
+    },
+    {
+      "guid": "{098f7910-4617-4158-adbb-0485d76b4e32}",
+      "name": "Microsoft-Windows-LDAP-Client",
+      "integration": "api_etw",
+      "scenarios": ["ldap_query"]
+    }
+  ],
+  "winlog_overlap": {
+    "note": "Sysmon/Security 4688 等由 winevent 辅链路覆盖，避免与 ETW 主链路互斥",
+    "channels": ["Microsoft-Windows-Sysmon/Operational", "Security"]
+  }
+}

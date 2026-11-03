@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: SMB Create Remote File Admin Share
+id: b210394c-ba12-4f89-9117-44a2464b9511
+status: test
+description: Look for non-system accounts SMB accessing a file with write (0x2) access mask via administrative share (i.e C$).
+references:
+    - https://github.com/OTRF/ThreatHunter-Playbook/blob/f7a58156dbfc9b019f17f638b8c62d22e557d350/playbooks/WIN-201012004336.yaml
+    - https://securitydatasets.com/notebooks/atomic/windows/lateral_movement/SDWIN-200806015757.html?highlight=create%20file
+date: "2020-08-06"
+modified: "2025-10-17"
+author: Jose Rodriguez (@Cyb3rPandaH), OTR (Open Threat Research)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_subjectusername:
+        SubjectUserName|endswith: $
+    filter_optional_local_ip:
+        IpAddress: ::1
+    selection:
+        AccessMask: "0x2"
+        EventID: "5145"
+        ShareName|endswith: C$
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.lateral-movement
+    - attack.t1021.002
+customer: 'demo'

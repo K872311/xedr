@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - RemoteKrbRelay SMB Relay Secrets Dump Module Indicators
+id: 3ab79e90-9fab-4cdf-a7b2-6522bc742adb
+status: test
+description: Detects the creation of file with specific names used by RemoteKrbRelay SMB Relay attack module.
+references:
+    - https://github.com/CICADA8-Research/RemoteKrbRelay/blob/19ec76ba7aa50c2722b23359bc4541c0a9b2611c/Exploit/RemoteKrbRelay/Relay/Attacks/RemoteRegistry.cs#L31-L40
+date: "2024-06-27"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetFilename|endswith:
+            - :\windows\temp\sam.tmp
+            - :\windows\temp\sec.tmp
+            - :\windows\temp\sys.tmp
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

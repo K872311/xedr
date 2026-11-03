@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: File Download Via Nscurl - MacOS
+id: 6d8a7cf1-8085-423b-b87d-7e880faabbdf
+status: test
+description: Detects the execution of the nscurl utility in order to download files.
+references:
+    - https://www.loobins.io/binaries/nscurl/
+    - https://www.agnosticdev.com/content/how-diagnose-app-transport-security-issues-using-nscurl-and-openssl
+    - https://gist.github.com/nasbench/ca6ef95db04ae04ffd1e0b1ce709cadd
+date: "2024-06-04"
+author: Daniel Cortez
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: macos
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains:
+            - '--download '
+            - '--download-directory '
+            - '--output '
+            - '-dir '
+            - '-dl '
+            - -ld
+            - '-o '
+        Image|endswith: /nscurl
+falsepositives:
+    - Legitimate usage of nscurl by administrators and users.
+level: medium
+tags:
+    - attack.command-and-control
+    - attack.t1105
+customer: 'demo'

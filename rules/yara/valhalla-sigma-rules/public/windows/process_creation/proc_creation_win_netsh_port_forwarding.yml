@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: New Port Forwarding Rule Added Via Netsh.EXE
+id: 322ed9ec-fcab-4f67-9a34-e7c6aef43614
+status: test
+description: Detects the execution of netsh commands that configure a new port forwarding (PortProxy) rule
+references:
+    - https://www.fireeye.com/blog/threat-research/2019/01/bypassing-network-restrictions-through-rdp-tunneling.html
+    - https://adepts.of0x.cc/netsh-portproxy-code/
+    - https://www.dfirnotes.net/portproxy_detection/
+date: "2019-01-29"
+modified: "2023-09-01"
+author: Florian Roth (Nextron Systems), omkar72, oscd.community, Swachchhanda Shrawan Poudel
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_img and 1 of selection_cli_*
+    selection_cli_1:
+        CommandLine|contains|all:
+            - interface
+            - portproxy
+            - add
+            - v4tov4
+    selection_cli_2:
+        CommandLine|contains|all:
+            - 'i '
+            - 'p '
+            - 'a '
+            - 'v '
+    selection_cli_3:
+        CommandLine|contains|all:
+            - connectp
+            - listena
+            - c=
+    selection_img:
+        - Image|endswith: \netsh.exe
+        - OriginalFileName: netsh.exe
+falsepositives:
+    - Legitimate administration activity
+    - WSL2 network bridge PowerShell script used for WSL/Kubernetes/Docker (e.g. https://github.com/microsoft/WSL/issues/4150#issuecomment-504209723)
+level: medium
+tags:
+    - attack.lateral-movement
+    - attack.command-and-control
+    - attack.t1090
+customer: 'demo'

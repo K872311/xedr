@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Previously Installed IIS Module Was Removed
+id: 9e1a1fdf-ee58-40ce-8e15-b66ca5a80e1f
+status: test
+description: Detects the removal of a previously installed IIS module.
+references:
+    - https://learn.microsoft.com/en-us/iis/manage/provisioning-and-managing-iis/configure-logging-in-iis
+    - https://www.microsoft.com/en-us/security/blog/2022/12/12/iis-modules-the-evolution-of-web-shells-and-how-to-detect-them/
+    - https://www.microsoft.com/en-us/security/blog/2022/07/26/malicious-iis-extensions-quietly-open-persistent-backdoors-into-servers/
+    - https://learn.microsoft.com/en-us/iis/get-started/introduction-to-iis/iis-modules-overview
+date: "2024-10-06"
+author: Nasreddine Bencherchali
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: iis-configuration
+detection:
+    condition: selection
+    selection:
+        Configuration|contains: /system.webServer/modules/remove
+        EventID: "29"
+falsepositives:
+    - Legitimate administrator activity
+level: low
+tags:
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1685.001
+    - attack.t1505.004
+customer: 'demo'

@@ -1,0 +1,44 @@
+{
+  "version": "1",
+  "note": "与 Elastic Stack 能力对照（Forensic Agent 目标：EDR 编排 + 混合遥测，非 Elastic Defend 替代品）",
+  "tiers": {
+    "elastic_defend": {
+      "scope": "out_of_scope",
+      "items": [
+        "内核防护 / 篡改保护 / 内核隔离",
+        "产品化内存威胁（内核回调 + 完整 exploit 防护栈）"
+      ],
+      "forensic_equivalent": [
+        "用户态 YARA 内存扫描（定时 + 条件触发）",
+        "EVM/PTM 行为检测",
+        "原生 ETW + Threat-Intelligence provider（需管理员）",
+        "可选 kernel 自保护 hook（非 Defend 级）"
+      ]
+    },
+    "winlogbeat": {
+      "scope": "partial_align",
+      "forensic": "winevent_wevtapi 多通道 + ECS 字段子集（detail.ecs）",
+      "gaps": ["非全量 Winlog 集成包", "需策略/权限才能订阅 Security 等"],
+      "critical_channels": "config/agent_winlog_channels.json"
+    },
+    "filebeat_etw_input": {
+      "scope": "builtin_primary",
+      "compare_by": "provider 与场景列表，而非是否启用 ETW",
+      "reference": "config/agent_etw_coverage.json"
+    },
+    "osquery": {
+      "scope": "live_query_tables",
+      "forensic": "固定 snapshot 模块 + live_query 按需表（非 osquery SQL）",
+      "tables": "config/agent_live_query_tables.json"
+    },
+    "metricbeat": {
+      "scope": "agent_plus_host_basic",
+      "forensic": "心跳 CPU/RSS/outbox + host 磁盘/网卡计数",
+      "gaps": ["无 Beat pipeline 全量指标", "无 Linux 主机指标"]
+    },
+    "filebeat_filestream": {
+      "scope": "not_generic_shipper",
+      "forensic": "FIM + 时间线 + 可选 log_tail_paths（策略内路径，非任意 filestream）"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Notepad++ Updater DNS Query to Uncommon Domains
+id: 2074e137-1b73-4e2d-88ba-5a3407dbdce0
+status: experimental
+description: |
+    Detects when the Notepad++ updater (gup.exe) makes DNS queries to domains that are not part of the known legitimate update infrastructure.
+    This could indicate potential exploitation of the updater mechanism or suspicious network activity that warrants further investigation.
+references:
+    - https://notepad-plus-plus.org/news/v889-released/
+    - https://www.heise.de/en/news/Notepad-updater-installed-malware-11109726.html
+    - https://www.rapid7.com/blog/post/tr-chrysalis-backdoor-dive-into-lotus-blossoms-toolkit/
+    - https://www.validin.com/blog/exploring_notepad_plus_plus_network_indicators/
+    - https://securelist.com/notepad-supply-chain-attack/118708/
+date: "2026-02-02"
+modified: "2026-03-16"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: dns_query
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_notepad_legit_domain:
+        QueryName: notepad-plus-plus.org
+    filter_optional_github_legit_domain:
+        - QueryName|endswith: .githubusercontent.com
+        - QueryName: github.com
+    filter_optional_google_storage_legit_domain:
+        QueryName|endswith: .googleapis.com
+    filter_optional_sourceforge_legit_domain:
+        QueryName|endswith: .sourceforge.net
+    filter_optional_uncommon_domains:
+        QueryName|endswith:
+            - .azurewebsites.net
+            - block.opendns.com
+            - gateway.zscalerthree.net
+    selection:
+        Image|endswith: \gup.exe
+falsepositives:
+    - Some legitimate network misconfigurations or proxy issues causing unexpected DNS queries.
+    - Other legitimate query to official domains not listed in the filter, needing tuning.
+level: medium
+tags:
+    - attack.collection
+    - attack.credential-access
+    - attack.t1195.002
+    - attack.initial-access
+    - attack.t1557
+customer: 'demo'

@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Remote Access Tool - AnyDesk Incoming Connection
+id: d58ba5c6-0ed7-4b9d-a433-6878379efda9
+status: experimental
+description: |
+    Detects incoming connections to AnyDesk. This could indicate a potential remote attacker trying to connect to a listening instance of AnyDesk and use it as potential command and control channel.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1219/T1219.md#atomic-test-2---anydesk-files-detected-test-on-windows
+    - https://asec.ahnlab.com/en/40263/
+date: "2024-09-02"
+modified: "2025-02-24"
+author: '@d4ns4n_ (Wuerth-Phoenix)'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \AnyDesk.exe
+            - \AnyDeskMSI.exe
+        Initiated: "false"
+falsepositives:
+    - Legitimate incoming connections (e.g. sysadmin activity). Most of the time I would expect outgoing connections (initiated locally).
+level: medium
+tags:
+    - attack.persistence
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

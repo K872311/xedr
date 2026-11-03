@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Msiexec Execute Arbitrary DLL
+id: 6f4191bb-912b-48a8-9ce7-682769541e6d
+status: test
+description: |
+    Adversaries may abuse msiexec.exe to proxy execution of malicious payloads.
+    Msiexec.exe is the command-line utility for the Windows Installer and is thus commonly associated with executing installation packages (.msi)
+references:
+    - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/msiexec
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1218.007/T1218.007.md
+    - https://twitter.com/_st0pp3r_/status/1583914515996897281
+date: "2022-01-16"
+modified: "2026-01-09"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_legit_path:
+        CommandLine|contains:
+            - \MsiExec.exe" /Y "C:\Program Files\
+            - \MsiExec.exe" /Y "C:\Program Files (x86)\
+            - \MsiExec.exe" /Y "C:\Windows\System32\
+            - \MsiExec.exe" /Y "C:\Windows\SysWOW64\
+    selection:
+        CommandLine|contains|windash: ' /Y'
+        Image|endswith: \msiexec.exe
+falsepositives:
+    - Legitimate script
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218.007
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_msiexec_execute_dll/info.yml

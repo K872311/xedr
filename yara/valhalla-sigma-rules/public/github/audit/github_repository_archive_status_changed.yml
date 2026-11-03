@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: GitHub Repository Archive Status Changed
+id: dca8991c-cb16-4128-abf8-6b11e5cd156f
+status: experimental
+description: |
+    Detects when a GitHub repository is archived or unarchived, which may indicate unauthorized changes to repository status.
+references:
+    - https://docs.github.com/en/repositories/archiving-a-github-repository/archiving-repositories
+    - https://www.sentinelone.com/blog/exploiting-repos-6-ways-threat-actors-abuse-github-other-devops-platforms
+    - https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/security-log-events
+date: "2025-10-18"
+author: Ivan Saakov
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: github
+    service: audit
+detection:
+    condition: selection
+    selection:
+        action:
+            - repo.archived
+            - repo.unarchived
+falsepositives:
+    - Archiving or unarchiving a repository is often legitimate. Investigate this action to determine if it was authorized.
+level: low
+tags:
+    - attack.persistence
+    - attack.impact
+    - attack.defense-impairment
+customer: 'demo'

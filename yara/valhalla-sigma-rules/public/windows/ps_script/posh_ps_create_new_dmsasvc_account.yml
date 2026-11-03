@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DMSA Service Account Created in Specific OUs - PowerShell
+id: 02122374-b74e-495c-b285-9e4da973f3d6
+related:
+    - type: similar
+      id: e15bc294-ae2a-45ad-b7d6-637b33868bde
+    - type: similar
+      id: 0ea8db81-2ff6-4525-9448-33bbe7effc13
+status: experimental
+description: |
+    Detects the creation of a dMSA service account using the New-ADServiceAccount cmdlet in certain OUs.
+    The fact that the cmdlet is used to create a dMSASvc account in a specific OU is highly suspicious.
+    It is a pattern trying to exploit the BadSuccessor privilege escalation vulnerability in Windows Server 2025.
+    On top of that, if the user that is creating the dMSASvc account is not a legitimate administrator or does not have the necessary permissions,
+    it is a strong signal of an attempted or successful abuse of the BaDSuccessor vulnerability for privilege escalation within the Windows Server 2025 Active Directory environment.
+references:
+    - https://www.akamai.com/blog/security-research/abusing-bad-successor-for-privilege-escalation-in-active-directory
+date: "2025-05-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+detection:
+    condition: selection
+    selection:
+        ScriptBlockText|contains|all:
+            - New-ADServiceAccount
+            - -CreateDelegatedServiceAccount
+            - -path
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.initial-access
+    - attack.persistence
+    - attack.stealth
+    - attack.t1078.002
+    - attack.t1098
+customer: 'demo'

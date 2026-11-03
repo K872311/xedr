@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Shell Open Command Registry Modification
+id: 9e8894c0-0ae0-11ef-9d85-1f2942bec57c
+status: experimental
+description: |
+    Detects modifications to shell open registry keys that point to suspicious locations typically used by malware for persistence.
+    Generally, modifications to the `*\shell\open\command` registry key can indicate an attempt to change the default action for opening files,
+    and various UAC bypass or persistence techniques involve modifying these keys to execute malicious scripts or binaries.
+references:
+    - https://www.trendmicro.com/en_us/research/25/f/water-curse.html
+date: "2026-01-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details|contains:
+            - \$Recycle.Bin\
+            - \AppData\Local\Temp\
+            - \Contacts\
+            - \Music\
+            - \PerfLogs\
+            - \Photos\
+            - \Pictures\
+            - \Users\Public\
+            - \Videos\
+            - \Windows\Temp\
+            - '%AppData%'
+            - '%LocalAppData%'
+            - '%Temp%'
+            - '%tmp%'
+        TargetObject|contains: \shell\open\command\
+falsepositives:
+    - Legitimate software installations or updates that modify the shell open command registry keys to these locations.
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1548.002
+    - attack.t1546.001
+customer: 'demo'

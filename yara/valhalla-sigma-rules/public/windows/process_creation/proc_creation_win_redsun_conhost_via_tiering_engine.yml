@@ -1,0 +1,74 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: RedSun - Conhost.exe Spawned by TieringEngineService.exe
+id: 2ad78473-6978-40f5-b8f1-89c7e1c27a1a
+status: experimental
+description: |
+    Detects two stages of the RedSun post-exploitation process chain that deliver a SYSTEM-level shell to the attacker's interactive session.
+    Observed process chain
+      services.exe
+        → TieringEngineService.exe
+          → conhost.exe             (SYSTEM, CommandLine: bare path, no arguments)
+            → cmd.exe / shell       (SYSTEM, TerminalSessionId = attacker's session)
+
+    Stage 1 — TieringEngineService.exe spawns argument-less conhost.exe:
+      After winning the oplock + Cloud Files mount point race, the malicious TieringEngineService.exe (RedSun.exe copied to System32, started via CoCreateInstance
+      / services.exe) detects it is NT AUTHORITY\SYSTEM and calls LaunchConsoleInSessionId().
+      This opens \\.\pipe\REDSUN, reads the attacker's session ID, duplicates the SYSTEM token, re-stamps it with that session ID via SetTokenInformation(TokenSessionId), then
+      calls CreateProcessAsUser to spawn conhost.exe with no arguments.
+
+    Stage 2 — Shell spawned from rogue conhost.exe (EDR sources with GrandParentImage):
+      The rogue SYSTEM conhost.exe spawns a shell (cmd.exe, PowerShell, etc.) as SYSTEM in the attacker's interactive session.
+      On EDR sources that expose GrandParentImage, the full three-level chain (TieringEngineService.exe → conhost.exe → shell) can be matched directly.
+      The legitimate TieringEngineService.exe is a headless COM server that is unlikely to spawn conhost.exe under normal conditions.
+references:
+    - https://github.com/Nightmare-Eclipse/RedSun
+date: "2026-04-17"
+author: Swachchhanda Shrawan Poudel (Nextron Systems), @unresolvedhost
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+    definition: 'Requirements: By default the process_creation type event might not contain the GrandParentImage. Make sure you collect such fields in order to use this rule'
+detection:
+    condition: 1 of selection_*
+    selection_shell_full_chain:
+        GrandParentImage|endswith: \TieringEngineService.exe
+        Image|endswith:
+            - \cmd.exe
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+        ParentImage|endswith: \conhost.exe
+        User|contains:
+            - AUTHORI
+            - AUTORI
+            - $
+    selection_tiering_to_conhost:
+        CommandLine|endswith: conhost.exe"
+        Image|endswith: \conhost.exe
+        ParentImage|endswith: \TieringEngineService.exe
+        User|contains:
+            - AUTHORI
+            - AUTORI
+            - $
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1134.002
+    - attack.t1036.005
+    - detection.emerging-threats
+customer: 'demo'

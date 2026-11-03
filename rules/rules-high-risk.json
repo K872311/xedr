@@ -1,0 +1,504 @@
+{
+  "meta": {
+    "id": "high-risk",
+    "name": "High risk_rules",
+    "version": "1.3",
+    "description": "未签名高危路径 + 未签名载荷（svchost→脏 ServiceDll；LOLBin→脏路径载荷）。path* 只匹配载荷，不因 System32 宿主误杀。",
+    "updatedAt": "2026-08-20T20:40:00"
+  },
+  "taskRules": [
+    {
+      "id": "task.kw.rundll32_shellexec_rundll",
+      "name": "计划任务关键词-rundll32 ShellExec_RunDLL",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "commandContainsAny": [
+        "shell32.dll,ShellExec_RunDLL",
+        "shell32.dll, ShellExec_RunDLL",
+        "rundll32.exe shell32.dll,ShellExec_RunDLL",
+        "rundll32 shell32.dll,ShellExec_RunDLL"
+      ],
+      "reason": "计划任务通过 rundll32 + shell32!ShellExec_RunDLL 间接拉起程序，常见于持久化/免杀落地。",
+      "confidence": 85,
+      "fpRisk": "medium",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053.005",
+        "T1218.011"
+      ],
+      "score": 80,
+      "source": "custom.keyword",
+      "portable": "yes"
+    },
+    {
+      "id": "task.kw.rundll32_url_fileprotocol",
+      "name": "计划任务关键词-rundll32 url.dll间接执行",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "commandContainsAll": [
+        "rundll32",
+        "url.dll"
+      ],
+      "commandContainsAny": [
+        "FileProtocolHandler",
+        "OpenURL"
+      ],
+      "reason": "计划任务通过 rundll32 + url.dll!FileProtocolHandler/OpenURL 经 ShellExecute 间接执行，常见免杀持久化。",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053.005",
+        "T1218.011"
+      ],
+      "score": 85,
+      "source": "custom.lolbin",
+      "portable": "yes"
+    },
+    {
+      "id": "high_risk_task",
+      "name": "可疑计划任务",
+      "severity": "high",
+      "enabled": true,
+      "requireUnsigned": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\Roaming\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\User\\",
+        "\\Drivers\\"
+      ],
+      "pathImmediateUnder": [
+        "C:\\ProgramData",
+        "C:\\Program Files",
+        "C:\\Program Files (x86)",
+        "\\AppData\\Local",
+        "C:\\Drivers"
+      ],
+      "reason": "未签名且位于高危路径：AppData\\Roaming、Temp、Public、ProgramData\\User、C:\\Drivers，或 ProgramData / Program Files / AppData\\Local / Drivers 根目录独立文件",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053"
+      ],
+      "score": 85,
+      "source": "custom",
+      "portable": "yes"
+    },
+    {
+      "id": "task.sideload.lolbin_dirty_payload",
+      "name": "计划任务未签名载荷：系统宿主指向脏路径",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "commandContainsAny": [
+        "regsvr32",
+        "rundll32",
+        "msiexec",
+        "verclsid",
+        "cmstp",
+        "odbcconf",
+        "mavinject",
+        "regasm",
+        "regsvcs",
+        "installutil"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\Roaming\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\Downloads\\",
+        "\\ProgramData\\"
+      ],
+      "pathNotContainsAny": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Roaming\\Microsoft\\"
+      ],
+      "reason": "已签名/系统 LOLBin（regsvr32/rundll32 等）执行参数指向 Temp/Public/AppData/ProgramData 等脏路径——任务侧未签名/可疑载荷。",
+      "confidence": 88,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1218",
+        "T1053"
+      ],
+      "score": 85,
+      "source": "custom.sideload",
+      "portable": "yes"
+    },
+    {
+      "id": "task.sideload.system32_subdir",
+      "name": "计划任务白加黑：System32异常子目录",
+      "severity": "critical",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "matchMode": "system32_subdir_sideload",
+      "requireHostSigned": true,
+      "reason": "System32/SysWOW64 下非微软已知子目录中的已签名 exe，同目录存在未签名 DLL/EXE（典型白加黑落地）",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053.005",
+        "T1574.002"
+      ],
+      "score": 95,
+      "source": "custom.sideload",
+      "portable": "yes"
+    },
+    {
+      "id": "task.semantic_update_disguise",
+      "name": "计划任务-更新名语义伪装",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "matchMode": "semantic_update_disguise",
+      "nameContainsAny": [
+        "MicrosoftUpdate",
+        "WindowsUpdate",
+        "AdobeUpdate",
+        "ChromeUpdate",
+        "JavaUpdate",
+        "SecurityUpdate",
+        "IEUpdate"
+      ],
+      "reason": "任务名伪装为系统/厂商更新，但执行路径不在 Windows\\Microsoft 官方目录（含已签名载荷）",
+      "confidence": 88,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053.005"
+      ],
+      "score": 88,
+      "source": "registry/silverfox_persistence.go",
+      "portable": "yes"
+    },
+    {
+      "id": "task.disguise_update_wefault_kit",
+      "name": "计划任务-更新伪装执行wefault/嵌入式Python",
+      "severity": "critical",
+      "enabled": true,
+      "applyTo": [
+        "scheduled_tasks"
+      ],
+      "nameContainsAny": [
+        "MicrosoftUpdate",
+        "WindowsUpdate",
+        "AdobeUpdate",
+        "ChromeUpdate",
+        "JavaUpdate",
+        "SecurityUpdate",
+        "IEUpdate"
+      ],
+      "commandContainsAny": [
+        "wefault.exe",
+        "python3.dll",
+        "python310.dll",
+        "python39.dll",
+        "python311.dll",
+        "python312.dll"
+      ],
+      "commandMinHits": 1,
+      "commandNotContains": [
+        "\\Windows\\System32\\",
+        "\\Windows\\SysWOW64\\",
+        "\\Microsoft\\Windows\\"
+      ],
+      "reason": "任务名语义伪装（如 MicrosoftUpdate）且命令指向 wefault.exe / 嵌入式 python3*.dll（非微软任务路径）",
+      "confidence": 96,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1053.005",
+        "T1036.005"
+      ],
+      "score": 96,
+      "source": "custom.lumma_python_kit",
+      "portable": "yes"
+    }
+  ],
+  "serviceRules": [
+    {
+      "id": "svc.sideload.empty_meta",
+      "name": "服务白加黑：空元数据+少量未签DLL",
+      "severity": "critical",
+      "enabled": true,
+      "applyTo": [
+        "services"
+      ],
+      "matchMode": "any_dir_sideload",
+      "requireHostSigned": true,
+      "requireEmptyHostMeta": true,
+      "allowCrossDirPayload": true,
+      "maxDirFiles": 24,
+      "maxUnsignedSiblings": 2,
+      "pathNotContainsAny": [
+        "\\Windows\\System32\\",
+        "\\Windows\\SysWOW64\\",
+        "\\Microsoft\\",
+        "\\VRV\\CEMS\\",
+        "\\Kingsoft\\",
+        "\\WPS Office\\"
+      ],
+      "reason": "已签名服务宿主但公司/版本/描述等元数据为空，同目录未签名 DLL≤2（白加黑精简投放，如 VPN/flutter 插件旁路）",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1543.003",
+        "T1574.002"
+      ],
+      "score": 93,
+      "source": "custom.sideload",
+      "portable": "yes"
+    },
+    {
+      "id": "high_risk_service",
+      "name": "可疑服务",
+      "severity": "high",
+      "enabled": true,
+      "requireUnsigned": true,
+      "applyTo": [
+        "services"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\Roaming\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\User\\"
+      ],
+      "pathImmediateUnder": [
+        "C:\\ProgramData",
+        "C:\\Program Files",
+        "C:\\Program Files (x86)",
+        "\\AppData\\Local"
+      ],
+      "pathNotContainsAny": [
+        "\\DriverStore\\",
+        "\\FileRepository\\",
+        "\\NVIDIA Corporation\\",
+        "\\NVIDIA\\",
+        "\\Display.NvContainer\\"
+      ],
+      "reason": "未签名且位于高危路径：AppData\\Roaming、Temp、Public、ProgramData\\User，或 ProgramData / Program Files / Program Files (x86) / AppData\\Local 根目录独立文件（排除 DriverStore/NVIDIA）",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1543.003"
+      ],
+      "score": 85,
+      "source": "custom",
+      "portable": "yes"
+    },
+    {
+      "id": "svc.sideload.svchost_dirty_dll",
+      "name": "服务未签名载荷：svchost 指向脏路径 ServiceDll",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "services"
+      ],
+      "imagePathContainsAny": [
+        "\\svchost.exe"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\",
+        "\\Downloads\\"
+      ],
+      "pathNotContainsAny": [
+        "\\Windows\\System32\\",
+        "\\Windows\\SysWOW64\\",
+        "\\Windows\\WinSxS\\",
+        "\\Windows Defender\\"
+      ],
+      "reason": "svchost 宿主指向非系统目录的 ServiceDll/载荷——服务侧未签名/可疑载荷。",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1543.003",
+        "T1574.001"
+      ],
+      "score": 88,
+      "source": "custom.sideload",
+      "portable": "yes"
+    }
+  ],
+  "startupRules": [
+    {
+      "id": "high_risk_startup",
+      "name": "可疑启动项",
+      "severity": "high",
+      "enabled": true,
+      "requireUnsigned": true,
+      "applyTo": [
+        "startup_items"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\Roaming\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\User\\"
+      ],
+      "pathImmediateUnder": [
+        "C:\\ProgramData",
+        "C:\\Program Files",
+        "C:\\Program Files (x86)",
+        "\\AppData\\Local"
+      ],
+      "reason": "未签名且位于高危路径：AppData\\Roaming、Temp、Public、ProgramData\\User，或 ProgramData / Program Files / Program Files (x86) / AppData\\Local 根目录独立文件",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1547"
+      ],
+      "score": 85,
+      "source": "custom",
+      "portable": "yes"
+    },
+    {
+      "id": "startup.sideload.lolbin_dirty_payload",
+      "name": "启动项未签名载荷：系统宿主指向脏路径",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "startup_items"
+      ],
+      "commandContainsAny": [
+        "regsvr32",
+        "rundll32",
+        "msiexec",
+        "verclsid",
+        "cmstp",
+        "odbcconf"
+      ],
+      "pathContainsAny": [
+        "\\AppData\\Roaming\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\Downloads\\",
+        "\\ProgramData\\"
+      ],
+      "pathNotContainsAny": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Roaming\\Microsoft\\"
+      ],
+      "reason": "启动项用系统 LOLBin 加载 Temp/Public/AppData/ProgramData 载荷——启动项侧未签名/可疑载荷。",
+      "confidence": 88,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1547",
+        "T1218"
+      ],
+      "score": 85,
+      "source": "custom.sideload",
+      "portable": "yes"
+    },
+    {
+      "id": "startup.isolated_single_exe",
+      "name": "启动项-单exe孤立目录",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "startup_items"
+      ],
+      "matchMode": "isolated_single_exe",
+      "maxDirFiles": 6,
+      "pathContainsAny": [
+        "\\AppData\\Local\\",
+        "\\AppData\\Roaming\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\"
+      ],
+      "pathNotContainsAny": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Roaming\\Microsoft\\",
+        "\\ProgramData\\Microsoft\\",
+        "\\ProgramData\\Package Cache\\"
+      ],
+      "reason": "启动项指向紧凑投放目录：目录内仅 1 个 exe（常见于 Startup .lnk 或 Run 键断链落地）。",
+      "confidence": 88,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1547.001"
+      ],
+      "score": 86,
+      "source": "custom.startup",
+      "portable": "yes"
+    },
+    {
+      "id": "startup.invalid_signature",
+      "name": "启动项-无效签名",
+      "severity": "high",
+      "enabled": true,
+      "applyTo": [
+        "startup_items"
+      ],
+      "requireInvalidSignature": true,
+      "pathContainsAny": [
+        "\\AppData\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\Users\\Public\\",
+        "\\Public\\",
+        "\\ProgramData\\"
+      ],
+      "pathNotContainsAny": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Roaming\\Microsoft\\",
+        "\\Windows\\WinSxS\\"
+      ],
+      "reason": "启动项载荷 Authenticode 无效（NotTrusted/HashMismatch 等），覆盖 BARE/PANCAKE 类假签名。",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1547",
+        "T1036.005"
+      ],
+      "score": 87,
+      "source": "custom.startup",
+      "portable": "yes"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential WSL InstallLocation Registry Key Modification
+id: 83475063-b1c8-4774-9568-69bbda71a539
+related:
+    - type: similar
+      id: f9f62824-de4e-40ca-afe7-8358f76a876d
+status: experimental
+description: |
+    Detects modifications to the Windows Subsystem for Linux (WSL) InstallLocation registry key.
+    Attackers can modify this registry key to redirect the execution flow of legitimate WSL processes (wsl.exe or bash.exe) to a malicious payload, acting as a proxy execution and defense evasion technique.
+references:
+    - https://cardinalops.com/blog/bash-and-switch-hijacking-via-windows-subsystem-for-linux/
+    - https://blog.qualys.com/vulnerabilities-threat-research/2022/04/20/implications-of-windows-subsystem-for-linux-for-adversaries-defenders-part-2
+    - https://www.bleepingcomputer.com/news/security/new-malware-uses-windows-subsystem-for-linux-for-stealthy-attacks/
+    - https://thehackernews.com/2021/09/new-malware-targets-windows-subsystem.html
+    - https://learn.microsoft.com/en-us/windows/wsl/
+date: "2026-05-05"
+author: Liran Ravich, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_legitimate_binary:
+        - Details:
+            - C:\Program Files\WSL
+            - '%ProgramFiles%\WSL'
+        - Details|contains:
+            - :\Program Files\WindowsApps\MicrosoftCorporationII.WindowsSubsystemForLinux_
+            - \AppData\Local\Microsoft\WindowsApps
+            - '%ProgramFiles%\WindowsApps\MicrosoftCorporationII.WindowsSubsystemForLinux_'
+    filter_main_msiexec:
+        Image:
+            - C:\Windows\System32\msiexec.exe
+            - C:\Windows\SysWOW64\msiexec.exe
+    selection:
+        TargetObject|contains: \Lxss\MSI\InstallLocation
+falsepositives:
+    - Unlikely
+level: medium
+tags:
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.persistence
+    - attack.t1112
+    - attack.t1218
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_wsl_installlocation_registry_key_modification/info.yml

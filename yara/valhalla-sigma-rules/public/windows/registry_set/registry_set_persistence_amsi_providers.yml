@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Persistence Via New AMSI Providers - Registry
+id: 33efc23c-6ea2-4503-8cfe-bdf82ce8f705
+status: test
+description: |
+    Detects when an attacker adds a new AMSI provider via the Windows Registry to bypass AMSI (Antimalware Scan Interface) protections.
+    Attackers may add custom AMSI providers to persist on the system and evade detection by security software that relies on AMSI for scanning scripts and other content.
+    This technique is often used in conjunction with fileless malware and script-based attacks to maintain persistence while avoiding detection.
+references:
+    - https://persistence-info.github.io/Data/amsi.html
+    - https://github.com/gtworek/PSBits/blob/8d767892f3b17eefa4d0668f5d2df78e844f01d8/FakeAMSI/FakeAMSI.c
+date: "2022-07-21"
+modified: "2025-10-26"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_optional_*
+    filter_optional_avast:
+        Image:
+            - C:\Program Files\Avast Software\Avast\RegSvr.exe
+            - C:\Program Files\Avast Software\Avast\x86\RegSvr.exe
+        TargetObject|contains: \{FB904E4E-D2C7-4C8D-8492-B620BB9896B1}
+    filter_optional_avg:
+        Image:
+            - C:\Program Files\AVG\Antivirus\RegSvr.exe
+            - C:\Program Files\AVG\Antivirus\x86\RegSvr.exe
+        TargetObject|contains: \{FB904E4E-D2C7-4C8D-8492-B620BB9896B1}
+    filter_optional_avira:
+        Image: C:\Program Files\Avira\Endpoint Protection SDK\endpointprotection.exe
+        TargetObject|contains: \{00000001-3DCC-4B48-A82E-E2071FE58E05}
+    selection:
+        TargetObject|contains:
+            - \SOFTWARE\Microsoft\AMSI\Providers\
+            - \SOFTWARE\WOW6432Node\Microsoft\AMSI\Providers\
+falsepositives:
+    - Legitimate security products adding their own AMSI providers. Filter these according to your environment.
+level: medium
+tags:
+    - attack.persistence
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_persistence_amsi_providers/info.yml

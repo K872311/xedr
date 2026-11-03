@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Schtasks Schedule Types
+id: 24c8392b-aa3c-46b7-a545-43f71657fe98
+related:
+    - type: similar
+      id: 7a02e22e-b885-4404-b38b-1ddc7e65258a
+status: test
+description: Detects scheduled task creations or modification on a suspicious schedule type
+references:
+    - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-change
+    - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create
+    - http://blog.talosintelligence.com/2022/09/lazarus-three-rats.html
+date: "2022-09-09"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_*
+    filter_privs:
+        CommandLine|contains:
+            - NT AUT
+            - ' SYSTEM'
+            - HIGHEST
+    selection_img:
+        - Image|endswith: \schtasks.exe
+        - OriginalFileName: schtasks.exe
+    selection_time:
+        CommandLine|contains:
+            - ' ONLOGON '
+            - ' ONSTART '
+            - ' ONCE '
+            - ' ONIDLE '
+falsepositives:
+    - Legitimate processes that run at logon. Filter according to your environment
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.execution
+    - attack.t1053.005
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_schtasks_schedule_type/info.yml

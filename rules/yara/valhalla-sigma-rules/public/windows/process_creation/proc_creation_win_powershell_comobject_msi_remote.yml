@@ -1,0 +1,64 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell MSI Install via WindowsInstaller COM From Remote Location
+id: 222720a7-047f-4054-baa5-bab9be757db0
+status: experimental
+description: |
+    Detects the execution of PowerShell commands that attempt to install MSI packages via the
+    Windows Installer COM object (`WindowsInstaller.Installer`) hosted remotely.
+    This could be indication of malicious software deployment or lateral movement attempts using Windows Installer functionality.
+    And the usage of WindowsInstaller COM object rather than msiexec could be an attempt to bypass the detection.
+references:
+    - https://informationsecuritybuzz.com/the-real-danger-behind-a-simple-windows-shortcut/
+    - https://redcanary.com/blog/threat-intelligence/intelligence-insights-may-2025/
+    - https://www.virustotal.com/gui/file/f9710b0ba4de5fa0e7ec27da462d4d2fc6838eba83a19f23f6617a466bbad457
+date: "2025-06-05"
+author: Meroujan Antonyan (vx3r)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_main_*
+    filter_main_localhost:
+        CommandLine|contains:
+            - ://127.0.0.1
+            - ://localhost
+    selection_cli:
+        CommandLine|contains|all:
+            - -ComObject
+            - InstallProduct(
+    selection_img:
+        - Image|endswith:
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+        - OriginalFileName:
+            - PowerShell_ISE.EXE
+            - PowerShell.EXE
+            - pwsh.dll
+    selection_remote:
+        CommandLine|contains:
+            - http
+            - \\\\
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1059.001
+    - attack.t1218
+    - attack.command-and-control
+    - attack.t1105
+customer: 'demo'

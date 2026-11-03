@@ -1,0 +1,64 @@
+{
+  "auto_update": {
+    "system": false,
+    "library": false
+  },
+  "items": [
+    {
+      "id": "test-lib-1",
+      "md5": "2f65e460c39a60222ee07b97d95ca67a",
+      "kind": "library",
+      "source": "manual",
+      "applied": [
+        "updates/library/1786719722_smoke.zip",
+        "rules/_smoke_update_demo.json"
+      ],
+      "filename": "smoke.zip",
+      "description": [
+        "1. demo rule pack",
+        "2. for smoke"
+      ],
+      "installed_at": "2026/08/14 23:02:02"
+    },
+    {
+      "id": "auto-sys-1",
+      "md5": "08c7eba833969ddcbbd30831e42cf2a6",
+      "kind": "system",
+      "source": "auto",
+      "applied": [
+        "updates/system/1786719722_auto_smoke.json",
+        "updates/applied/auto_smoke.json"
+      ],
+      "filename": "auto_smoke.json",
+      "description": [
+        "auto inbox"
+      ],
+      "installed_at": "2026/08/14 23:02:02"
+    },
+    {
+      "id": "1.0.0-lib-init",
+      "md5": "init",
+      "kind": "library",
+      "source": "seed",
+      "filename": "",
+      "description": [
+        "init library baseline"
+      ],
+      "installed_at": "2026/08/14 23:01:12"
+    },
+    {
+      "id": "1.0.0-init",
+      "md5": "init",
+      "kind": "system",
+      "filename": "",
+      "description": [
+        "init update all"
+      ],
+      "installed_at": "2026/08/14 22:56:47"
+    }
+  ],
+  "last_check": {
+    "system": "2026/08/14 23:02:02",
+    "library": ""
+  }
+}

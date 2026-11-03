@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Github Self-Hosted Runner Execution
+id: 5bac7a56-da88-4c27-922e-c81e113b20cb
+status: test
+description: |
+    Detects GitHub self-hosted runners executing workflows on local infrastructure that could be abused for persistence and code execution.
+    Shai-Hulud is an npm supply chain worm targeting CI/CD environments.
+    It installs runners on compromised systems to maintain access after credential theft, leveraging their access to secrets and internal networks.
+references:
+    - https://about.gitlab.com/blog/gitlab-discovers-widespread-npm-supply-chain-attack/
+    - https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/
+date: "2025-11-29"
+author: Daniel Koifman (KoifSec)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_worker_* or all of selection_listener_*
+    selection_listener_cli:
+        CommandLine|contains:
+            - run
+            - configure
+    selection_listener_img:
+        - Image|endswith: \Runner.Listener.exe
+        - OriginalFileName: Runner.Listener.dll
+    selection_worker_cli:
+        CommandLine|contains: spawnclient
+    selection_worker_img:
+        - Image|endswith: \Runner.Worker.exe
+        - OriginalFileName: Runner.Worker.dll
+falsepositives:
+    - Legitimate GitHub self-hosted runner installations on designated CI/CD infrastructure
+    - Authorized runner deployments by DevOps/Platform teams following change management
+    - Scheduled runner updates or reconfigurations on existing build agents
+    - Self-hosted runners that follow expected/known naming patterns
+    - Installation via expected/known configuration management tools (reflected mostly as parent process name)
+level: medium
+tags:
+    - attack.command-and-control
+    - attack.t1102.002
+    - attack.t1071
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_github_self_hosted_runner/info.yml

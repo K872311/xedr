@@ -1,0 +1,9 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+cryptography>=42
+psutil>=5.9
+PyYAML>=6.0
+pymysql>=1.1
+redis>=5.0
+elasticsearch>=8.12

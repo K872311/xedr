@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential WSL Binary Modification from Installed Location
+id: 2f400434-01e1-416b-b52c-bb5bfbb9eb78
+status: experimental
+description: |
+    Detects the modification of the wsl.exe binary from its installed location.
+    Attackers can replace the legitimate wsl.exe binary with a malicious payload in its place, which is then executed when the user runs WSL, acting as a proxy execution and defense evasion technique.
+references:
+    - https://cardinalops.com/blog/bash-and-switch-hijacking-via-windows-subsystem-for-linux/
+    - https://blog.qualys.com/vulnerabilities-threat-research/2022/04/20/implications-of-windows-subsystem-for-linux-for-adversaries-defenders-part-2
+    - https://www.bleepingcomputer.com/news/security/new-malware-uses-windows-subsystem-for-linux-for-stealthy-attacks/
+    - https://thehackernews.com/2021/09/new-malware-targets-windows-subsystem.html
+    - https://learn.microsoft.com/en-us/windows/wsl/
+date: "2026-05-05"
+author: Liran Ravich, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_main_*
+    filter_main_msiexec:
+        Image:
+            - C:\Windows\System32\msiexec.exe
+            - C:\Windows\SysWOW64\msiexec.exe
+    filter_main_svchost:
+        Image: C:\Windows\System32\svchost.exe
+        TargetFilename|contains: \WindowsApps\
+    selection_wsl_exe:
+        TargetFilename|endswith: \wsl.exe
+    selection_wsl_folder:
+        - TargetFilename|contains:
+            - :\Program files\wsl\
+            - :\Program files\WindowsApps\MicrosoftCorporationII.WindowsSubsystemForLinux_
+        - TargetFilename|contains|all:
+            - :\Users\
+            - \AppData\Local\Microsoft\WindowsApps\
+falsepositives:
+    - Unlikely
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1036.005
+    - attack.t1218
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/file/file_event/file_event_win_wsl_binary_modification/info.yml

@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows Defender Context Menu Removed
+id: b9e8c7d6-a5f4-4e3d-8b1a-9f0c8d7e6a5b
+related:
+    - type: similar
+      id: 72a0369a-2576-4aaf-bfc9-6bb24a574ac6
+status: experimental
+description: |
+    Detects the use of reg.exe or PowerShell to delete the Windows Defender context menu handler registry keys.
+    This action removes the "Scan with Microsoft Defender" option from the right-click menu for files, directories, and drives.
+    Attackers may use this technique to hinder manual, on-demand scans and reduce the visibility of the security product.
+references:
+    - https://research.splunk.com/endpoint/395ed5fe-ad13-4366-9405-a228427bdd91/
+    - https://winaero.com/how-to-delete-scan-with-windows-defender-from-context-menu-in-windows-10/
+    - https://thedfirreport.com/2021/10/18/icedid-to-xinglocker-ransomware-in-24-hours/
+    - https://blog.malwarebytes.com/malwarebytes-news/2021/02/lazyscripter-from-empire-to-double-rat/
+date: "2025-07-09"
+author: Matt Anderson (Huntress)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_action:
+        CommandLine|contains:
+            - del
+            - Remove-Item
+            - 'ri '
+    selection_img:
+        - Image|endswith:
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+            - \reg.exe
+        - OriginalFileName:
+            - powershell_ise.EXE
+            - PowerShell.EXE
+            - pwsh.dll
+            - reg.exe
+    selection_reg_path:
+        CommandLine|contains: \shellex\ContextMenuHandlers\EPP
+falsepositives:
+    - May be part of a system customization or "debloating" script, but this is highly unusual in a managed corporate environment.
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

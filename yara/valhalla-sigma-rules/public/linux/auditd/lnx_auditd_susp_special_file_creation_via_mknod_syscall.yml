@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Special File Creation via Mknod Syscall
+id: 710bdbce-495d-491d-9a8f-7d0d88d2b41e
+status: experimental
+description: |
+    Detects usage of the `mknod` syscall to create special files (e.g., character or block devices).
+    Attackers or malware might use `mknod` to create fake devices, interact with kernel interfaces,
+    or establish covert channels in Linux systems.
+    Monitoring the use of `mknod` is important because this syscall is rarely used by legitimate applications,
+    and it can be abused to bypass file system restrictions or create backdoors.
+references:
+    - https://man7.org/linux/man-pages/man2/mknod.2.html
+    - https://hopeness.medium.com/master-the-linux-mknod-command-a-comprehensive-guide-1c150a546aa8
+date: "2025-05-31"
+modified: "2025-12-05"
+author: Milad Cheraghi
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: linux
+    service: auditd
+detection:
+    condition: selection
+    selection:
+        SYSCALL: mknod
+        type: SYSCALL
+falsepositives:
+    - Device creation by legitimate scripts or init systems (udevadm, MAKEDEV)
+    - Container runtimes or security tools during initialization
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1543.003
+customer: 'demo'

@@ -1,0 +1,85 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Registry Tampering Of Internal Tools Settings
+id: ccc946a3-f65a-432a-bb6f-efc6acc1fd27
+related:
+    - type: similar
+      id: e2482f8d-3443-4237-b906-cc145d87a076
+status: experimental
+description: Detects registry modifications that tamper with internal Windows tools settings, commonly used by malware to disable security features or system tools
+references:
+    - https://bazaar.abuse.ch/sample/7bde840c7e8c36dce4c3bac937bcf39f36a6f118001b406bfbbc25451ce44fb4/
+    - https://blogs.vmware.com/security/2022/11/batloader-the-evasive-downloader-malware.html
+    - https://www.mandiant.com/resources/unc2165-shifts-to-evade-sanctions
+    - https://www.sentinelone.com/blog/cybervolk-returns-flawed-volklocker-brings-new-features-with-growing-pains/
+date: "2026-10-18"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_currentversion_explorer_system_key:
+        CommandLine|contains:
+            - ConsentPromptBehaviorAdmin
+            - DisableChangePassword
+            - DisableCMD
+            - DisableLockWorkstation
+            - DisableNotificationCenter
+            - DisableRegistryTools
+            - DisableTaskmgr
+            - HideSCAHealth
+            - HideSCANetwork
+            - HideSCAVolume
+            - InactivityTimeoutSecs
+            - NoClose
+            - NoControlPanel
+            - NoDesktop
+            - NoDispBackgroundPage
+            - NoDispCPL
+            - NoDrives
+            - NoFileMenu
+            - NoFind
+            - NoLogOff
+            - NoPropertiesMyDocuments
+            - NoRun
+            - NoSetTaskbar
+            - NoTrayContextMenu
+            - StartMenuLogOff
+            - shutdownwithoutlogon
+    selection_currentversion_explorer_system_root:
+        CommandLine|contains:
+            - SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer
+            - SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+            - SOFTWARE\Policies\Microsoft\Windows\Explorer
+            - SOFTWARE\Policies\Microsoft\Windows\System
+    selection_reg_cli:
+        CommandLine|contains: ' add '
+    selection_reg_img:
+        - Image|endswith: \reg.exe
+        - OriginalFileName: reg.exe
+falsepositives:
+    - Legitimate use of reg.exe to change system settings
+level: medium
+tags:
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1112
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_reg_internal_tools_setting_tampering/info.yml
+simulation:
+    - atomic_guid: 1324796b-d0f6-455a-b4ae-21ffee6aa6b9
+      name: Modify Registry of Current User Profile - cmd
+      technique: T1112
+      type: atomic-red-team

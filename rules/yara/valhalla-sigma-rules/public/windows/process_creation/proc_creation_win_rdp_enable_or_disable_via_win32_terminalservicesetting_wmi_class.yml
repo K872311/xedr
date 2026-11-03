@@ -1,0 +1,59 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: RDP Enable or Disable via Win32_TerminalServiceSetting WMI Class
+id: 4b8f6d3a-9c5e-4f2a-a7d8-6b9c3e5f2a8d
+related:
+    - type: similar
+      id: a2863fbc-d5cb-48d5-83fb-d976d4b1743b
+status: experimental
+description: |
+    Detects enabling or disabling of Remote Desktop Protocol (RDP) using alternate methods such as WMIC or PowerShell.
+    In PowerShell one-liner commands, the "SetAllowTSConnections" method of the "Win32_TerminalServiceSetting" class may be used to enable or disable RDP.
+    In WMIC, the "rdtoggle" alias or "Win32_TerminalServiceSetting" class may be used for the same purpose.
+references:
+    - https://www.trendmicro.com/en_gb/research/22/e/uncovering-a-kingminer-botnet-attack-using-trend-micro-managed-x.html
+    - https://github.com/HackTricks-wiki/hacktricks/blob/72f20a3fa26775b932bd819f1824c6377802a768/src/windows-hardening/basic-cmd-for-pentesters.md#firewall
+    - https://github.com/Lifailon/RSA/blob/rsa/Sources/RSA-1.4.1.ps1#L1468
+date: "2025-11-15"
+author: Daniel Koifman (KoifSec), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_method:
+        CommandLine|contains:
+            - rdtoggle
+            - Win32_TerminalServiceSetting
+    selection_cli_property:
+        CommandLine|contains: SetAllowTSConnections
+    selection_img:
+        - Image|endswith:
+            - \wmic.exe
+            - \powershell.exe
+            - \pwsh.exe
+        - OriginalFileName:
+            - wmic.exe
+            - PowerShell.EXE
+            - pwsh.dll
+falsepositives:
+    - Legitimate system administrators enabling RDP for remote support
+    - System configuration scripts during deployment
+level: medium
+tags:
+    - attack.lateral-movement
+    - attack.t1021.001
+    - attack.execution
+    - attack.t1047
+customer: 'demo'

@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Directory Service Restore Mode(DSRM) Registry Value Tampering
+id: b61e87c0-50db-4b2e-8986-6a2be94b33b0
+related:
+    - type: similar
+      id: 53ad8e36-f573-46bf-97e4-15ba5bf4bb51
+status: test
+description: |
+    Detects changes to "DsrmAdminLogonBehavior" registry value.
+    During a Domain Controller (DC) promotion, administrators create a Directory Services Restore Mode (DSRM) local administrator account with a password that rarely changes. The DSRM account is an “Administrator” account that logs in with the DSRM mode when the server is booting up to restore AD backups or recover the server from a failure.
+    Attackers could abuse DSRM account to maintain their persistence and access to the organization's Active Directory.
+    If the "DsrmAdminLogonBehavior" value is set to "0", the administrator account can only be used if the DC starts in DSRM.
+    If the "DsrmAdminLogonBehavior" value is set to "1", the administrator account can only be used if the local AD DS service is stopped.
+    If the "DsrmAdminLogonBehavior" value is set to "2", the administrator account can always be used.
+references:
+    - https://adsecurity.org/?p=1785
+    - https://www.sentinelone.com/blog/detecting-dsrm-account-misconfigurations/
+    - https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/dsrm-credentials
+date: "2024-07-11"
+author: Nischal Khadgi
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_default_value:
+        Details: DWORD (0x00000000)
+    selection:
+        TargetObject|endswith: \Control\Lsa\DsrmAdminLogonBehavior
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.credential-access
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1556
+customer: 'demo'

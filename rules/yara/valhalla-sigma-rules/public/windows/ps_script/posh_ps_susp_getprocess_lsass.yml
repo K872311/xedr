@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Get-Process LSASS in ScriptBlock
+id: 84c174ab-d3ef-481f-9c86-a50d0b8e3edb
+status: test
+description: Detects a Get-Process command on lsass process, which is in almost all cases a sign of malicious activity
+references:
+    - https://web.archive.org/web/20220205033028/https://twitter.com/PythonResponder/status/1385064506049630211
+date: "2021-04-23"
+modified: "2022-12-25"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: selection
+    selection:
+        ScriptBlockText|contains: Get-Process lsass
+falsepositives:
+    - Legitimate certificate exports invoked by administrators or users (depends on processes in the environment - filter if unusable)
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/powershell/powershell_script/posh_ps_susp_getprocess_lsass/info.yml

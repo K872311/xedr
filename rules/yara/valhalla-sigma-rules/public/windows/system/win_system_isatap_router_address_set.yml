@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: ISATAP Router Address Was Set
+id: d22df9cd-2aee-4089-93c7-9dc4eae77f2c
+status: experimental
+description: |
+    Detects the configuration of a new ISATAP router on a Windows host. While ISATAP is a legitimate Microsoft technology for IPv6 transition, unexpected or unauthorized ISATAP router configurations could indicate a potential IPv6 DNS Takeover attack using tools like mitm6.
+    In such attacks, adversaries advertise themselves as DHCPv6 servers and set malicious ISATAP routers to intercept traffic.
+    This detection should be correlated with network baselines and known legitimate ISATAP deployments in your environment.
+references:
+    - https://www.blackhillsinfosec.com/mitm6-strikes-again-the-dark-side-of-ipv6/
+    - https://redfoxsec.com/blog/ipv6-dns-takeover/
+    - https://www.securityhq.com/blog/malicious-isatap-tunneling-unearthed-on-windows-server/
+    - https://medium.com/@ninnesoturan/detecting-ipv6-dns-takeover-a54a6a88be1f
+date: "2025-10-19"
+author: hamid
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: system
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_localhost:
+        IsatapRouter:
+            - 127.0.0.1
+            - ::1
+    filter_optional_null:
+        IsatapRouter: []
+    selection:
+        EventID: "4100"
+        Provider_Name: Microsoft-Windows-Iphlpsvc
+falsepositives:
+    - Legitimate ISATAP router configuration in enterprise environments
+    - IPv6 transition projects and network infrastructure changes
+    - Network administrators configuring dual-stack networking
+    - Automatic ISATAP configuration in some Windows deployments
+level: medium
+tags:
+    - attack.impact
+    - attack.credential-access
+    - attack.collection
+    - attack.initial-access
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.t1557
+    - attack.t1565.002
+customer: 'demo'

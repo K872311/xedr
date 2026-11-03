@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: QuickAssist Execution
+id: e20b5b14-ce93-4230-88af-981983ef6e74
+status: experimental
+description: |
+    Detects the execution of Microsoft Quick Assist tool "QuickAssist.exe". This utility can be used by attackers to gain remote access.
+references:
+    - https://www.microsoft.com/en-us/security/blog/2024/05/15/threat-actors-misusing-quick-assist-in-social-engineering-attacks-leading-to-ransomware/
+    - https://www.linkedin.com/posts/kevin-beaumont-security_ive-been-assisting-a-few-orgs-hit-with-successful-activity-7268055739116445701-xxjZ/
+    - https://x.com/cyb3rops/status/1862406110365245506
+    - https://learn.microsoft.com/en-us/windows/client-management/client-tools/quick-assist
+date: "2024-12-19"
+author: Muhammad Faisal (@faisalusuf)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \QuickAssist.exe
+falsepositives:
+    - Legitimate use of Quick Assist in the environment.
+level: low
+tags:
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

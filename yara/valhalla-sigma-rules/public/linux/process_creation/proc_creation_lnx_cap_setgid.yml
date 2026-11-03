@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Linux Setgid Capability Set on a Binary via Setcap Utility
+id: 3a716279-c18c-4488-83be-f9ececbfb9fc
+status: experimental
+description: |
+    Detects the use of the 'setcap' utility to set the 'setgid' capability (cap_setgid) on a binary file.
+    This capability allows a non privileged process to make arbitrary manipulations of group IDs (GIDs), including setting its current GID to a value that would otherwise be restricted (i.e. GID 0, the root group).
+    This behavior can be used by adversaries to backdoor a binary in order to escalate privileges again in the future if needed.
+references:
+    - https://man7.org/linux/man-pages/man8/setcap.8.html
+    - https://dfir.ch/posts/linux_capabilities/
+    - https://juggernaut-sec.com/capabilities/#cap_setgid
+date: "2026-01-24"
+author: Luc Génaux
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains: cap_setgid
+        Image|endswith: /setcap
+falsepositives:
+    - Unknown
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1548
+    - attack.t1554
+customer: 'demo'

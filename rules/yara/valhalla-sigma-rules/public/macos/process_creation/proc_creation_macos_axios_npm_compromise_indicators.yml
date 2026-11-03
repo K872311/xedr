@@ -1,0 +1,59 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Axios NPM Compromise Indicators - macOS
+id: a09ee860-31b3-4586-8a68-0ebd74ce0e5f
+status: experimental
+description: |
+    Detects the macOS-specific execution chain of the plain-crypto-js malicious npm dependency in Axios NPM Package, including AppleScript execution via osascript, payload download, permission modification, execution, and cleanup.
+references:
+    - https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan
+    - https://www.derp.ca/research/axios-npm-supply-chain-rat/
+    - https://www.trendmicro.com/zh_hk/research/26/c/axios-npm-package-compromised.html
+    - https://www.elastic.co/security-labs/axios-supply-chain-compromise-detections
+    - https://www.virustotal.com/gui/file/e10b1fa84f1d6481625f741b69892780140d4e0e7769e7491e5f4d894c2e0e09
+date: "2026-04-01"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: macos
+detection:
+    condition: 1 of selection_*
+    selection_cleanup:
+        CommandLine|contains|all:
+            - 'rm '
+            - '-rf '
+            - /tmp/6202033
+    selection_curl_download:
+        CommandLine|contains|all:
+            - 'curl '
+            - packages.npm.org/product
+            - /Library/Caches/com.apple.act.mond
+    selection_osascript:
+        CommandLine|contains|all:
+            - 'nohup '
+            - 'osascript '
+            - /tmp/6202033
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.initial-access
+    - attack.t1195.002
+    - attack.execution
+    - attack.command-and-control
+    - attack.t1059.002
+    - attack.t1059.004
+    - attack.t1105
+    - detection.emerging-threats
+customer: 'demo'

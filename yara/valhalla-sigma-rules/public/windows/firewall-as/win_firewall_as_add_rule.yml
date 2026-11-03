@@ -1,0 +1,86 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon New Firewall Rule Added In Windows Firewall Exception List
+id: cde0a575-7d3d-4a49-9817-b8004a7bf105
+status: test
+description: Detects when a rule has been added to the Windows Firewall exception list
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd364427(v=ws.10)
+date: "2022-02-19"
+modified: "2026-08-27"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: firewall-as
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_block:
+        Action: "2"
+    filter_main_covered_paths:
+        ApplicationPath|contains:
+            - C:\PerfLogs\
+            - C:\Temp\
+            - C:\Tmp\
+            - C:\Users\Public\
+            - C:\Windows\Tasks\
+            - C:\Windows\Temp\
+            - \AppData\Local\Temp\
+    filter_main_ehome:
+        ApplicationPath|startswith: C:\Windows\ehome\
+        ModifyingApplication: C:\Windows\System32\oobe\Setup.exe
+    filter_main_generic:
+        ApplicationPath|startswith:
+            - C:\Program Files (x86)\
+            - C:\Program Files\
+            - C:\Windows\System32\
+            - C:\Windows\SysWOW64\
+            - C:\Windows\WinSxS\
+    filter_main_null:
+        ApplicationPath: []
+    filter_main_system:
+        ApplicationPath: SYSTEM
+        ModifyingApplication:
+            - C:\Windows\System32\dllhost.exe
+            - C:\Windows\System32\oobe\Setup.exe
+            - C:\Windows\System32\svchost.exe
+    filter_main_tiworker:
+        ModifyingApplication|endswith: \TiWorker.exe
+        ModifyingApplication|startswith: C:\Windows\WinSxS\
+    filter_optional_msmpeng:
+        - ModifyingApplication|endswith: \MsMpEng.exe
+          ModifyingApplication|startswith:
+            - C:\ProgramData\Microsoft\Windows Defender\Platform\
+            - C:\Program Files\Windows Defender\
+        - ApplicationPath|endswith: \MsMpEng.exe
+          ApplicationPath|startswith:
+            - C:\ProgramData\Microsoft\Windows Defender\Platform\
+            - C:\Program Files\Windows Defender\
+    filter_optional_no_path:
+        ApplicationPath: ""
+        ModifyingApplication:
+            - C:\Windows\System32\svchost.exe
+            - C:\Windows\System32\dllhost.exe
+    filter_optional_systemApps:
+        ApplicationPath|startswith: C:\Windows\SystemApps\
+        ModifyingApplication: C:\Windows\System32\svchost.exe
+    selection:
+        EventID:
+            - "2004"
+            - "2071"
+            - "2097"
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.003
+customer: 'demo'

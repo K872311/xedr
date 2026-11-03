@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Desktop.INI Created by Uncommon Process
+id: 81315b50-6b60-4d8f-9928-3466e1022515
+status: test
+description: Detects unusual processes accessing desktop.ini, which can be leveraged to alter how Explorer displays a folder's content (i.e. renaming files) without changing them on disk.
+references:
+    - https://isc.sans.edu/forums/diary/Desktopini+as+a+postexploitation+tool/25912/
+date: "2020-03-19"
+modified: "2025-12-09"
+author: Maxime Thiebaut (@0xThiebaut), Tim Shelton (HAWK.IO)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_generic:
+        Image|startswith:
+            - C:\Windows\
+            - C:\Program Files\
+            - C:\Program Files (x86)\
+    filter_main_upgrade:
+        TargetFilename|startswith: C:\$WINDOWS.~BT\NewOS\
+    filter_optional_jetbrains:
+        Image|endswith: \AppData\Local\JetBrains\Toolbox\bin\7z.exe
+        Image|startswith: C:\Users\
+        TargetFilename|contains: \JetBrains\apps\
+    filter_optional_onedrive:
+        Image|contains: \AppData\Local\Microsoft\OneDrive\
+        Image|startswith: C:\Users\
+    selection:
+        TargetFilename|endswith: \desktop.ini
+falsepositives:
+    - Operations performed through Windows SCCM or equivalent
+    - Read only access list authority
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1547.009
+customer: 'demo'

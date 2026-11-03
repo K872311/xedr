@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Space Characters in RunMRU Registry Path - ClickFix
+id: 7a1b4c5e-8f3d-4b9a-7c2e-1f4a5b8c6d9e
+related:
+    - type: similar
+      id: 3ae9974a-eb09-4044-8e70-8980a50c12c8
+status: experimental
+description: |
+    Detects the occurrence of numerous space characters in RunMRU registry paths, which may indicate execution via phishing lures using clickfix techniques to hide malicious commands in the Windows Run dialog box from naked eyes.
+references:
+    - https://expel.com/blog/cache-smuggling-when-a-picture-isnt-a-thousand-words/
+    - https://github.com/JohnHammond/recaptcha-phish
+date: "2025-11-04"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_key:
+        Details|contains: '#'
+        TargetObject|contains: \Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU\
+    selection_space_variation:
+        Details|contains:
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            - '            '
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1204.004
+    - attack.t1027.010
+customer: 'demo'

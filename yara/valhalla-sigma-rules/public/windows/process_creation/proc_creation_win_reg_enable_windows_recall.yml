@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows Recall Feature Enabled Via Reg.EXE
+id: 817f252c-5143-4dae-b418-48c3e9f63728
+related:
+    - type: similar
+      id: 5dfc1465-8f65-4fde-8eb5-6194380c6a62
+    - type: similar
+      id: 75180c5f-4ea1-461a-a4f6-6e4700c065d4
+status: test
+description: |
+    Detects the enabling of the Windows Recall feature via registry manipulation.
+    Windows Recall can be enabled by deleting the existing "DisableAIDataAnalysis" value, or setting it to 0.
+    Adversaries may enable Windows Recall as part of post-exploitation discovery and collection activities.
+    This rule assumes that Recall is already explicitly disabled on the host, and subsequently enabled by the adversary.
+references:
+    - https://learn.microsoft.com/en-us/windows/client-management/manage-recall
+    - https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis
+date: "2024-06-02"
+author: Sajid Nawaz Khan
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_img and selection_value and 1 of selection_action_*
+    selection_action_add:
+        CommandLine|contains:
+            - add
+            - "0"
+    selection_action_delete:
+        CommandLine|contains: delete
+    selection_img:
+        - Image|endswith: \reg.exe
+        - OriginalFileName: reg.exe
+    selection_value:
+        CommandLine|contains|all:
+            - Microsoft\Windows\WindowsAI
+            - DisableAIDataAnalysis
+falsepositives:
+    - Legitimate use/activation of Windows Recall
+level: medium
+tags:
+    - attack.collection
+    - attack.t1113
+customer: 'demo'

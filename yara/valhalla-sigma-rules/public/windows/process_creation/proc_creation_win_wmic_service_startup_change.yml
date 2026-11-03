@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Service Startup Type Change Via Wmic.EXE
+id: c0514f28-fdae-42df-b886-06e2b2bc5b37
+status: experimental
+description: |
+    Detects changes to service startup type to 'disabled' or 'manual' using the WMIC command-line utility.
+references:
+    - https://blog.talosintelligence.com/uncovering-qilin-attack-methods-exposed-through-multiple-cases/
+date: "2026-04-27"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - Manual
+            - Disabled
+        CommandLine|contains|all:
+            - ' service '
+            - ChangeStartMode
+    selection_img:
+        - Image|endswith: \WMIC.exe
+        - OriginalFileName: wmic.exe
+falsepositives:
+    - Legitimate administrative changes to service startup types using WMIC, investigate accordingly.
+level: medium
+tags:
+    - attack.execution
+    - attack.defense-impairment
+    - attack.t1047
+    - attack.t1685
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_wmic_service_startup_change/info.yml

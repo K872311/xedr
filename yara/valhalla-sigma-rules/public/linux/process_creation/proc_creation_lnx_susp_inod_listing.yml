@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Container Discovery Via Inodes Listing
+id: 43e26eb5-cd58-48d1-8ce9-a273f5d298d8
+status: test
+description: Detects listing of the inodes of the "/" directory to determine if the we are running inside of a container.
+references:
+    - https://blog.skyplabs.net/posts/container-detection/
+    - https://stackoverflow.com/questions/20010199/how-to-determine-if-a-process-runs-inside-lxc-docker
+date: "2023-08-23"
+modified: "2025-11-24"
+author: Seth Hanford
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_ls_cli:
+        - CommandLine|endswith: ' /'
+        - CommandLine|contains: ' / '
+    selection_ls_img:
+        Image|endswith: /ls
+    selection_regex_dir:
+        CommandLine|re: (?:\s-[^-\s]{0,20}d|\s--directory\s)
+    selection_regex_inode:
+        CommandLine|re: (?:\s-[^-\s]{0,20}i|\s--inode\s)
+falsepositives:
+    - Legitimate system administrator usage of these commands
+    - Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered
+level: low
+tags:
+    - attack.discovery
+    - attack.t1082
+customer: 'demo'

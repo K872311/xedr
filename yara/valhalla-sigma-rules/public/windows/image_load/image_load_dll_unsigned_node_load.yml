@@ -1,0 +1,66 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Unsigned .node File Loaded
+id: e5f5c693-52d7-4de5-88ae-afbfbce85595
+status: experimental
+description: |
+    Detects the loading of unsigned .node files.
+    Adversaries may abuse a lack of .node integrity checking to execute arbitrary code inside of trusted applications such as Slack.
+    .node files are native add-ons for Electron-based applications, which are commonly used for desktop applications like Slack, Discord, and Visual Studio Code.
+    This technique has been observed in the DripLoader malware, which uses unsigned .node files to load malicious native code into Electron applications.
+references:
+    - https://www.coreycburton.com/blog/driploader-case-study
+    - https://github.com/CoreyCBurton/DripLoaderNG
+    - https://www.electronjs.org/docs/latest/tutorial/native-code-and-electron
+date: "2025-11-22"
+modified: "2026-08-27"
+author: Jonathan Beierle (@hullabrian)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_optional_*
+    filter_optional_evernote:
+        Image|contains:
+            - C:\Program Files (x86)\
+            - C:\Program Files\
+            - \AppData\Local\Programs\
+        Image|endswith: \Evernote\Evernote.exe
+        ImageLoaded|contains: \Evernote\resources\app
+    filter_optional_vscode_core:
+        Image|contains: \Microsoft VS Code\Code.exe
+        ImageLoaded|contains: \Microsoft VS Code\resources\app\node_modules
+    filter_optional_vscode_jupyter:
+        Image|endswith: \Code.exe
+        ImageLoaded|contains: .vscode\extensions\ms-toolsai.jupyter-
+        ImageLoaded|endswith:
+            - \electron.napi.node
+            - \node.napi.glibc.node
+    selection_node_extension:
+        ImageLoaded|endswith: .node
+    selection_status:
+        - Signed: "false"
+        - SignatureStatus: Unavailable
+falsepositives:
+    - VsCode extensions or similar legitimate tools might use unsigned .node files. These should be investigated on a case-by-case basis, and whitelisted if determined to be benign.
+level: medium
+tags:
+    - attack.execution
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.stealth
+    - attack.t1129
+    - attack.t1574.001
+    - attack.t1036.005
+customer: 'demo'

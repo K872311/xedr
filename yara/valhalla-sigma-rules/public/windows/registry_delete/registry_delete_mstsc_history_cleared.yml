@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Terminal Server Client Connection History Cleared - Registry
+id: 07bdd2f5-9c58-4f38-aec8-e101bb79ef8d
+status: test
+description: Detects the deletion of registry keys containing the MSTSC connection history
+references:
+    - https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/remove-entries-from-remote-desktop-connection-computer
+    - http://woshub.com/how-to-clear-rdp-connections-history/
+    - https://www.trendmicro.com/en_us/research/23/a/vice-society-ransomware-group-targets-manufacturing-companies.html
+date: "2021-10-19"
+modified: "2023-02-08"
+author: Christian Burkard (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_delete
+    product: windows
+detection:
+    condition: 1 of selection*
+    selection1:
+        EventType: DeleteValue
+        TargetObject|contains: \Microsoft\Terminal Server Client\Default\MRU
+    selection2:
+        EventType: DeleteKey
+        TargetObject|contains: \Microsoft\Terminal Server Client\Servers\
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.t1070
+    - attack.t1112
+customer: 'demo'

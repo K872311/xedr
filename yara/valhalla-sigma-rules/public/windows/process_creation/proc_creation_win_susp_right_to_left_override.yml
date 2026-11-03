@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Defense Evasion Via Right-to-Left Override
+id: ad691d92-15f2-4181-9aa4-723c74f9ddc3
+related:
+    - type: derived
+      id: e0552b19-5a83-4222-b141-b36184bb8d79
+    - type: derived
+      id: 584bca0f-3608-4402-80fd-4075ff6072e3
+status: test
+description: |
+    Detects the presence of the "u202+E" character, which causes a terminal, browser, or operating system to render text in a right-to-left sequence.
+    This character is used as an obfuscation and masquerading techniques by adversaries to trick users into opening malicious files.
+references:
+    - https://redcanary.com/blog/right-to-left-override/
+    - https://www.malwarebytes.com/blog/news/2014/01/the-rtlo-method
+    - https://unicode-explorer.com/c/202E
+    - https://tria.ge/241015-l98snsyeje/behavioral2
+    - https://unprotect.it/technique/right-to-left-override-rlo-extension-spoofing/
+date: "2023-02-15"
+modified: "2026-03-20"
+author: Micah Babinski, @micahbabinski, Swachchhanda Shrawan Poudel (Nextron Systems), Luc Génaux
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains:
+            - \u202e
+            - '[U+202E]'
+            - ‮
+falsepositives:
+    - Commandlines that contains scriptures such as arabic or hebrew might make use of this character
+level: high
+tags:
+    - attack.stealth
+    - attack.t1036.002
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_susp_right_to_left_override/info.yml

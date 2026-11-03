@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS Bedrock Guardrail Updated
+id: 1c722651-254a-4b04-a9f4-99b62a2d0a1f
+status: experimental
+description: |
+    Detects updates to an Amazon Bedrock guardrail, which may indicate attempts to weaken
+    model safety controls and allow unsafe or unauthorized model responses.
+references:
+    - https://docs.aws.amazon.com/bedrock/latest/APIReference/API_UpdateGuardrail.html
+date: "2026-07-10"
+author: Marco Pedrinazzi (@pedrinazziM) (InTheCyber)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName: UpdateGuardrail
+        eventSource: bedrock.amazonaws.com
+falsepositives:
+    - Legitimate guardrail updates by authorized identities.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

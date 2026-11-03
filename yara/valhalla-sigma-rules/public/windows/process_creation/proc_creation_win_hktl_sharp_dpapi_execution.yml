@@ -1,0 +1,64 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - SharpDPAPI Execution
+id: c7d33b50-f690-4b51-8cfb-0fb912a31e57
+status: test
+description: |
+    Detects the execution of the SharpDPAPI tool based on CommandLine flags and PE metadata.
+    SharpDPAPI is a C# port of some DPAPI functionality from the Mimikatz project.
+references:
+    - https://github.com/GhostPack/SharpDPAPI
+date: "2024-06-26"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_img or (selection_other_cli and 1 of selection_other_options_*)
+    selection_img:
+        - Image|endswith: \SharpDPAPI.exe
+        - OriginalFileName: SharpDPAPI.exe
+    selection_other_cli:
+        CommandLine|contains:
+            - ' backupkey '
+            - ' blob '
+            - ' certificates '
+            - ' credentials '
+            - ' keepass '
+            - ' masterkeys '
+            - ' rdg '
+            - ' vaults '
+    selection_other_options_flags:
+        CommandLine|contains:
+            - ' /file:'
+            - ' /machine'
+            - ' /mkfile:'
+            - ' /password:'
+            - ' /pvk:'
+            - ' /server:'
+            - ' /target:'
+            - ' /unprotect'
+    selection_other_options_guid:
+        CommandLine|contains|all:
+            - ' {'
+            - '}:'
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1134.001
+    - attack.t1134.003
+customer: 'demo'

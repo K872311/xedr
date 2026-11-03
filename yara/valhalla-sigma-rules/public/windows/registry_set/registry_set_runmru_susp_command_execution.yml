@@ -1,0 +1,65 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potentially Suspicious Command Executed Via Run Dialog Box - Registry
+id: a7df0e9e-91a5-459a-a003-4cde67c2ff5d
+related:
+    - type: derived
+      id: f9d091f6-f1c7-4873-a24f-050b4a02b4dd
+status: test
+description: |
+    Detects execution of commands via the run dialog box on Windows by checking values of the "RunMRU" registry key.
+    This technique was seen being abused by threat actors to deceive users into pasting and executing malicious commands, often disguised as CAPTCHA verification steps.
+references:
+    - https://medium.com/@ahmed.moh.farou2/fake-captcha-campaign-on-arabic-pirated-movie-sites-delivers-lumma-stealer-4f203f7adabf
+    - https://medium.com/@shaherzakaria8/downloading-trojan-lumma-infostealer-through-capatcha-1f25255a0e71
+    - https://www.forensafe.com/blogs/runmrukey.html
+    - https://redcanary.com/blog/threat-intelligence/intelligence-insights-october-2024/
+date: "2024-11-01"
+author: Ahmed Farouk, Nasreddine Bencherchali
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection_key and (all of selection_powershell_* or all of selection_wmic_*)
+    selection_key:
+        TargetObject|contains: \Microsoft\Windows\CurrentVersion\Explorer\RunMRU
+    selection_powershell_command:
+        Details|contains:
+            - powershell
+            - pwsh
+    selection_powershell_susp_keywords:
+        Details|contains:
+            - ' -e '
+            - ' -ec '
+            - ' -en '
+            - ' -enc '
+            - ' -enco'
+            - ftp
+            - Hidden
+            - http
+            - iex
+            - Invoke-
+    selection_wmic_command:
+        Details|contains: wmic
+    selection_wmic_susp_keywords:
+        Details|contains:
+            - shadowcopy
+            - process call create
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.001
+customer: 'demo'

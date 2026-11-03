@@ -1,0 +1,31 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: 'LSA 加载非系统认证包'
+description: '审计事件 4610 表示 LSA 加载了认证包。已排除 Windows 自带的 msv1_0 等组件；其余条目可能是恶意认证包（凭据窃取），也可能是厂商的智能卡或单点登录组件，需核对 DLL 路径与签名。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a07
+level: high
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4610
+    filter_builtin:
+        AuthenticationPackageName|contains:
+            - 'msv1_0'
+            - 'MICROSOFT_AUTHENTICATION_PACKAGE_V1_0'
+    condition: selection and not filter_builtin
+falsepositives:
+    - 厂商认证组件（智能卡、单点登录）
+tags:
+    - attack.persistence
+    - attack.credential-access
+    - attack.t1547.002
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4610
+ruletype: Hayabusa

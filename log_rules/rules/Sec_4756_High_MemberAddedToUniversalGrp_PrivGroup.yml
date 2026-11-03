@@ -1,0 +1,31 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '企业管理员 / 架构管理员组新增成员'
+description: '审计事件 4756 表示通用安全组新增成员，且目标组 SID 为 Domain Admins(-512)、Schema Admins(-518) 或 Enterprise Admins(-519)。需确认新增成员与审批记录。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a0b
+level: high
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 4756
+        TargetSid|endswith:
+            - '-512'
+            - '-518'
+            - '-519'
+    condition: selection
+falsepositives:
+    - 授权的域管理员变更
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1098
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4756
+ruletype: Hayabusa

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "id": "yara-hash",
+    "name": "YARA / 内存规则索引",
+    "version": "1.0",
+    "updatedAt": "2026-10-31",
+    "description": "YARA 主库 yara/valhalla-rules.yar；Agent 轻量包 rules/memory-yara/。"
+  },
+  "memory_yara_rev": "2026.10.31.1",
+  "memory_yara_path": "memory-yara",
+  "yara_corpus_path": "yara",
+  "file_hashes": []
+}

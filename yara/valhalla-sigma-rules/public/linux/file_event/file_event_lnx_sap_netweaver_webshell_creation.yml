@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential SAP NetWeaver Webshell Creation - Linux
+id: 5b91409c-cb18-4ab6-ac75-c5759f998409
+status: experimental
+description: |
+    Detects the creation of suspicious files (jsp, java, class) in SAP NetWeaver directories,
+    which may indicate exploitation attempts of vulnerabilities such as CVE-2025-31324.
+references:
+    - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-31324
+    - https://reliaquest.com/blog/threat-spotlight-reliaquest-uncovers-vulnerability-behind-sap-netweaver-compromise/
+    - https://onapsis.com/blog/active-exploitation-of-sap-vulnerability-cve-2025-31324/
+date: "2025-04-28"
+author: Elastic (idea), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_ext:
+        TargetFilename|endswith:
+            - .jsp
+            - .java
+            - .class
+    selection_path:
+        TargetFilename|contains:
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/work/
+            - /j2ee/cluster/apps/sap.com/irj/servlet_jsp/irj/root/
+falsepositives:
+    - Legitimate creation of jsc or java files in these locations
+level: medium
+tags:
+    - attack.execution
+    - attack.initial-access
+    - attack.t1190
+    - attack.persistence
+    - attack.t1059.003
+    - cve.2025-31324
+    - detection.emerging-threats
+customer: 'demo'

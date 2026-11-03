@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - Doppelanger LSASS Dumper Execution
+id: d474c8fe-bb69-4ea0-b7d9-f682b56d52d3
+status: experimental
+description: Detects the execution of the Doppelanger hacktool which is used to dump LSASS memory via process cloning while evading common detection methods
+references:
+    - https://labs.yarix.com/2025/06/doppelganger-an-advanced-lsass-dumper-with-process-cloning/
+    - https://github.com/vari-sh/RedTeamGrimoire/tree/668e0357072546065729ad623f8c02f7be21bb08/Doppelganger
+date: "2025-07-01"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - Image|endswith: \Doppelganger.exe
+        - Hashes|contains:
+            - IMPHASH=AB94D5217896ADCD765A06B2D52F0AEB
+            - IMPHASH=65F0EA61156EE0C2A35421926F0C7F78
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1003.001
+customer: 'demo'

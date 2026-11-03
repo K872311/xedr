@@ -1,0 +1,75 @@
+version: 1
+description: Forensic Agent 集成与运行时规范（对齐 Elastic component spec 思路）
+telemetry:
+  model: hybrid
+  note: |
+    主链路：原生 ETW（类似 Filebeat ETW input 的 provider 子集，但在进程内实现）。
+    辅链路：Winlog 多通道（Security/Sysmon/PowerShell/Defender/TaskScheduler，类似 Winlogbeat）。
+    回退：ETW 不可用时 Sysmon+4688 事件日志订阅；Winlog 与 ETW 并行，不互斥。
+  config: config/agent_windows_telemetry.json
+elastic_parity:
+  defend: "out_of_scope: 无内核防护/篡改保护/Defend 级内存威胁; config/agent_elastic_parity.json"
+  winlogbeat: "multi_channel + detail.ecs; config/agent_winlog_channels.json"
+  filebeat_etw: "builtin etw_native; config/agent_etw_coverage.json"
+  osquery: "live_query tables; config/agent_live_query_tables.json"
+  metricbeat: "health + host_metrics.disks; 非 Beat pipeline 全量"
+  filestream: "FIM + policy log_tail_paths; 非任意 filestream"
+inputs:
+  - name: etw
+    description: 原生 ETW 进程/网络/文件采集
+    platforms:
+      - windows/amd64
+    runtime:
+      preventions:
+        - condition: ${host.os_family} != 'windows'
+          message: 原生 ETW 仅支持 Windows
+  - name: wmi_process
+    description: WMI 进程创建订阅（补全命令行）
+    platforms:
+      - windows/amd64
+    runtime:
+      preventions:
+        - condition: ${host.os_family} != 'windows'
+          message: WMI 进程订阅仅支持 Windows
+        - condition: ${user.admin} == false
+          message: WMI 进程订阅建议以管理员权限运行 Agent
+    composable:
+      - condition: ${host.is_domain_controller} == true
+        enable: true
+        note: 域控默认开启 WMI 进程订阅
+      - condition: ${host.in_high_sensitivity_group} == true
+        enable: true
+        note: 高敏分组终端默认开启
+  - name: memory_scan
+    description: 内存 YARA 扫描
+    runtime:
+      preventions:
+        - condition: ${user.admin} == false
+          message: 内存扫描建议以管理员权限运行 Agent
+    composable:
+      - condition: ${host.in_high_sensitivity_group} == true
+        enable: true
+  - name: evm
+    description: 端上 EVM 实时匹配
+  - name: ptm
+    description: PTM 行为序列
+  - name: amsi
+    description: AMSI 脚本扫描
+  - name: api_etw
+    description: API / Threat Intel ETW
+  - name: winevent
+    description: Windows 事件日志回退
+  - name: fim
+    description: 文件完整性监控
+  - name: registry
+    description: 注册表监控
+  - name: sca
+    description: SCA 合规扫描
+  - name: rootcheck
+    description: Rootcheck
+proxied_actions:
+  - UPGRADE
+  - ROLLBACK_UPGRADE
+  - UNINSTALL
+  - COLLECT_DIAGNOSTICS
+  - RESTART

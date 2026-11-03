@@ -1,0 +1,150 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - LaZagne Execution
+id: c2b86e67-b880-4eec-b045-50bc98ef4844
+status: experimental
+description: |
+    Detects the execution of the LaZagne. A utility used to retrieve multiple types of passwords stored on a local computer.
+    LaZagne has been leveraged multiple times by threat actors in order to dump credentials.
+references:
+    - https://github.com/AlessandroZ/LaZagne/tree/master
+    - https://thedfirreport.com/2022/05/09/seo-poisoning-a-gootloader-story/
+    - https://cloud.google.com/blog/topics/threat-intelligence/alphv-ransomware-backup/
+    - https://securelist.com/defttorero-tactics-techniques-and-procedures/107610/
+    - https://github.com/CyberMonitor/APT_CyberCriminal_Campagin_Collections/raw/800c0e06571993a54e39571cf27fd474dcc5c0bc/2017/2017.11.14.Muddying_the_Water/muddying-the-water-targeted-attacks.pdf
+date: "2024-06-24"
+modified: "2025-10-07"
+author: Nasreddine Bencherchali, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: 1 of selection_img_* or all of selection_cli_*
+    selection_cli_modules:
+        CommandLine|contains:
+            - ' all '
+            - ' browsers '
+            - ' chats '
+            - ' databases '
+            - ' games '
+            - ' mails '
+            - ' maven '
+            - ' memory '
+            - ' multimedia '
+            - ' php '
+            - ' svn '
+            - ' sysadmin '
+            - ' unused '
+            - ' wifi '
+    selection_cli_options:
+        CommandLine|contains:
+            - -1Password
+            - -apachedirectorystudio
+            - -autologon
+            - -ChromiumBased
+            - -coreftp
+            - -credfiles
+            - -credman
+            - -cyberduck
+            - -dbvis
+            - -EyeCon
+            - -filezilla
+            - -filezillaserver
+            - -ftpnavigator
+            - -galconfusion
+            - -gitforwindows
+            - -hashdump
+            - -iisapppool
+            - -IISCentralCertP
+            - -kalypsomedia
+            - -keepass
+            - -keepassconfig
+            - -lsa_secrets
+            - -mavenrepositories
+            - -memory_dump
+            - -Mozilla
+            - -mRemoteNG
+            - -mscache
+            - -opensshforwindows
+            - -openvpn
+            - -outlook
+            - -pidgin
+            - -postgresql
+            - -psi-im
+            - -puttycm
+            - -pypykatz
+            - -Rclone
+            - -rdpmanager
+            - -robomongo
+            - -roguestale
+            - -skype
+            - -SQLDeveloper
+            - -squirrel
+            - -tortoise
+            - -turba
+            - -UCBrowser
+            - -unattended
+            - -vault
+            - -vaultfiles
+            - -vnc
+            - -winscp
+    selection_img_cli:
+        CommandLine|endswith:
+            - .exe all
+            - .exe browsers
+            - .exe chats
+            - .exe databases
+            - .exe games
+            - .exe git
+            - .exe mails
+            - .exe maven
+            - .exe memory
+            - .exe multimedia
+            - .exe sysadmin
+            - .exe unused
+            - .exe wifi
+            - .exe windows
+        Image|contains:
+            - :\PerfLogs\
+            - :\ProgramData\
+            - :\Temp\
+            - :\Tmp\
+            - :\Users\Public\
+            - :\Windows\Temp\
+            - \$Recycle.bin
+            - \AppData\
+            - \Desktop\
+            - \Downloads\
+            - \Favorites\
+            - \Links\
+            - \Music\
+            - \Photos\
+            - \Pictures\
+            - \Saved Games\
+            - \Searches\
+            - \Users\Contacts\
+            - \Users\Default\
+            - \Users\Searches\
+            - \Videos\
+            - \Windows\addins\
+            - \Windows\Fonts\
+            - \Windows\IME\
+    selection_img_metadata:
+        Image|endswith: \lazagne.exe
+falsepositives:
+    - Some false positive is expected from tools with similar command line flags.
+level: medium
+tags:
+    - attack.credential-access
+customer: 'demo'

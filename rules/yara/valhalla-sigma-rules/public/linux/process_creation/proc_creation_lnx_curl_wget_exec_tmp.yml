@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Download and Execute Pattern via Curl/Wget
+id: a2d9e2f3-0f43-4c7a-bcd9-9acfc0d723aa
+status: experimental
+description: |
+    Detects suspicious use of command-line tools such as curl or wget to download remote
+    content - particularly scripts - into temporary directories (e.g., /dev/shm, /tmp), followed by
+    immediate execution, indicating potential malicious activity. This pattern is commonly used
+    by malicious scripts, stagers, or downloaders in fileless or multi-stage Linux attacks.
+references:
+    - https://gtfobins.github.io/gtfobins/wget/
+    - https://gtfobins.github.io/gtfobins/curl/
+date: "2025-06-17"
+author: Aayush Gupta
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_downloader:
+        CommandLine|contains:
+            - /curl
+            - /wget
+    selection_executor:
+        CommandLine|contains: sh -c
+    selection_tmp:
+        CommandLine|contains:
+            - /tmp/
+            - /dev/shm/
+falsepositives:
+    - System update scripts using temporary files
+    - Installer scripts or automated provisioning tools
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1203
+customer: 'demo'

@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Network Communication Initiated To Portmap.IO Domain
+id: 07837ab9-60e1-481f-a74d-c31fb496a94c
+status: test
+description: Detects an executable accessing the portmap.io domain, which could be a sign of forbidden C2 traffic or data exfiltration by malicious actors
+references:
+    - https://portmap.io/
+    - https://github.com/rapid7/metasploit-framework/issues/11337
+    - https://pro.twitter.com/JaromirHorejsi/status/1795001037746761892/photo/2
+date: "2024-05-31"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    condition: selection
+    selection:
+        DestinationHostname|endswith: .portmap.io
+        Initiated: "true"
+falsepositives:
+    - Legitimate use of portmap.io domains
+level: medium
+tags:
+    - attack.t1041
+    - attack.command-and-control
+    - attack.t1090.002
+    - attack.exfiltration
+customer: 'demo'

@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Modification or Deletion of an AWS RDS Cluster
+id: 457cc9ac-d8e6-4d1d-8c0e-251d0f11a74c
+status: experimental
+description: Detects modifications to an RDS cluster or its deletion, which may indicate potential data exfiltration attempts, unauthorized access, or exposure of sensitive information.
+references:
+    - https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBCluster.html
+    - https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DeleteDBCluster.html
+    - https://cloud.hacktricks.xyz/pentesting-cloud/aws-security/aws-privilege-escalation/aws-rds-privesc#rds-modifydbinstance
+date: "2024-12-06"
+author: Ivan Saakov
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName:
+            - ModifyDBCluster
+            - DeleteDBCluster
+        eventSource: rds.amazonaws.com
+falsepositives:
+    - Verify if the modification or deletion was performed by an authorized administrator.
+    - Confirm if the modification or deletion was part of a planned change or maintenance activity.
+level: high
+tags:
+    - attack.exfiltration
+    - attack.t1020
+customer: 'demo'

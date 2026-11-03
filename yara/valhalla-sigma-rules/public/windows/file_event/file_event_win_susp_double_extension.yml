@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Double Extension Files
+id: b4926b47-a9d7-434c-b3a0-adc3fa0bd13e
+related:
+    - type: derived
+      id: 1cdd9a09-06c9-4769-99ff-626e2b3991b8
+    - type: similar
+      id: 3215aa19-f060-4332-86d5-5602511f3ca8
+status: test
+description: Detects dropped files with double extensions, which is often used by malware as a method to abuse the fact that Windows hide default extensions by default.
+references:
+    - https://www.crowdstrike.com/blog/meet-crowdstrikes-adversary-of-the-month-for-june-mustang-panda/
+    - https://www.anomali.com/blog/china-based-apt-mustang-panda-targets-minority-groups-public-and-private-sector-organizations
+    - https://www.cybereason.com/blog/research/a-bazar-of-tricks-following-team9s-development-cycles
+    - https://twitter.com/malwrhunterteam/status/1235135745611960321
+    - https://twitter.com/luc4m/status/1073181154126254080
+    - https://cloud.google.com/blog/topics/threat-intelligence/cybercriminals-weaponize-fake-ai-websites
+    - https://vipre.com/blog/svg-phishing-attacks-the-new-trick-in-the-cybercriminals-playbook/
+date: "2022-06-19"
+modified: "2026-10-16"
+author: Nasreddine Bencherchali (Nextron Systems), frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: 1 of selection_* and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_legitimate_extensions:
+        TargetFilename|endswith:
+            - .svg.svg
+            - .png.svg
+            - .jpg.svg
+            - .jpeg.svg
+    filter_optional_icons_linux:
+        TargetFilename|startswith: /usr/share/icons/
+    selection_exe:
+        TargetFilename|endswith:
+            - .rar.exe
+            - .zip.exe
+    selection_gen:
+        TargetFilename|re|i: \.(docx?|gif|jpe?g|mp3|mp4|pdf|png|pptx?|rtf|svg|txt|xlsx?)\.(bat|exe|iso|rar|svg|vbe|vbs|zip)$
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.stealth
+    - attack.t1036.007
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/file/file_event/file_event_win_susp_double_extension/info.yml

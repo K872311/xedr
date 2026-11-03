@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Usage of For Loop with Recursive Directory Search in CMD
+id: 2782fbd8-b662-4eb5-9962-5bfbfb671e7b
+status: experimental
+description: |
+    Detects suspicious usage of the cmd.exe 'for /f' loop combined with the 'tokens=' parameter and a recursive directory listing.
+    This pattern may indicate an attempt to discover and execute system binaries dynamically, for example powershell, a technique sometimes used by attackers to evade detection.
+    This behavior has been observed in various malicious lnk files.
+references:
+    - https://www.virustotal.com/gui/file/29837d0d3202758063185828c8f8d9e0b7b42b365c8941cc926d2d7c7bae2fb3
+date: "2025-11-12"
+author: Joseliyo Sanchez, @Joseliyo_Jstnk
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: 1 of selection_*
+    selection_tokens:
+        CommandLine|contains|all:
+            - for /f
+            - tokens=
+            - in (
+            - dir
+    selection_tokens_parent:
+        ParentCommandLine|contains|all:
+            - for /f
+            - tokens=
+            - in (
+            - dir
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1059.003
+    - attack.t1027.010
+customer: 'demo'

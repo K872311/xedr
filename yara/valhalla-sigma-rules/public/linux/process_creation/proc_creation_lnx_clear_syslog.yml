@@ -1,0 +1,87 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Syslog Clearing or Removal Via System Utilities
+id: 3fcc9b35-39e4-44c0-a2ad-9e82b6902b31
+status: test
+description: |
+    Detects specific commands commonly used to remove or empty the syslog. Which is a technique often used by attacker as a method to hide their tracks
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.002/T1070.002.md
+    - https://www.virustotal.com/gui/file/54d60fd58d7fa3475fa123985bfc1594df26da25c1f5fbc7dfdba15876dd8ac5/behavior
+date: "2021-10-15"
+modified: "2025-10-15"
+author: Max Altgelt (Nextron Systems), Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: (selection_file and 1 of selection_command_*) or 1 of selection_unique_*
+    selection_command_cp:
+        CommandLine|contains: /dev/null
+        Image|endswith: /cp
+    selection_command_ln:
+        CommandLine|contains:
+            - '-sf '
+            - '-sfn '
+            - '-sfT '
+        CommandLine|contains|all:
+            - '/dev/null '
+            - /var/log/syslog
+        Image|endswith: /ln
+    selection_command_mv:
+        Image|endswith: /mv
+    selection_command_rm:
+        CommandLine|contains:
+            - ' -r '
+            - ' -f '
+            - ' -rf '
+            - /var/log/syslog
+        Image|endswith: /rm
+    selection_command_shred:
+        CommandLine|contains: '-u '
+        Image|endswith: /shred
+    selection_command_truncate:
+        CommandLine|contains:
+            - '-s '
+            - '-c '
+            - --size
+        CommandLine|contains|all:
+            - '0 '
+            - /var/log/syslog
+        Image|endswith: /truncate
+    selection_command_unlink:
+        Image|endswith: /unlink
+    selection_file:
+        CommandLine|contains: /var/log/syslog
+    selection_unique_journalctl:
+        CommandLine|contains:
+            - journalctl --vacuum
+            - journalctl --rotate
+    selection_unique_other:
+        CommandLine|contains:
+            - ' > /var/log/syslog'
+            - ' >/var/log/syslog'
+            - ' >| /var/log/syslog'
+            - ': > /var/log/syslog'
+            - :> /var/log/syslog
+            - :>/var/log/syslog
+            - '>|/var/log/syslog'
+falsepositives:
+    - Log rotation.
+    - Maintenance.
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685.006
+customer: 'demo'

@@ -1,0 +1,58 @@
+{
+  "rev": "2026.11.02.ps-hidden-bat",
+  "rules": [
+    {
+      "id": "mem.reflective_loader",
+      "title": "内存：反射加载特征",
+      "severity": "high",
+      "mitre": ["T1055.001"],
+      "strings": ["ReflectiveLoader", "reflective dll", "Reflective DLL"],
+      "building_block": false
+    },
+    {
+      "id": "mem.cobalt_strike",
+      "title": "内存：Cobalt Strike 常见串",
+      "severity": "critical",
+      "mitre": ["T1055", "T1071"],
+      "strings": ["beacon", "IEX (New-Object Net.WebClient)", "powershell -nop -w hidden"],
+      "building_block": false
+    },
+    {
+      "id": "mem.mimikatz",
+      "title": "内存：Mimikatz 相关",
+      "severity": "critical",
+      "mitre": ["T1003.001"],
+      "strings": ["mimikatz", "sekurlsa::", "gentilkiwi"],
+      "building_block": false
+    },
+    {
+      "id": "mem.amsi_bypass",
+      "title": "内存：AMSI 绕过片段",
+      "severity": "high",
+      "mitre": ["T1562.001"],
+      "strings": ["amsiutils", "AmsiScanBuffer", "amsiInitFailed"],
+      "building_block": true
+    },
+    {
+      "id": "mem.powershell_enc",
+      "title": "内存：编码 PowerShell",
+      "severity": "medium",
+      "mitre": ["T1059.001"],
+      "strings": ["powershell -enc", "frombase64string", "-encodedcommand"],
+      "building_block": true
+    },
+    {
+      "id": "mem.ps_hidden_bat_scriptblock",
+      "title": "内存：隐藏窗口 PowerShell 从 BAT 解出 ScriptBlock",
+      "severity": "high",
+      "mitre": ["T1059.001", "T1027", "T1564.003"],
+      "strings": [
+        "-windowstyle hidden",
+        "[scriptblock]::create",
+        "lastindexof('rem#')",
+        "[io.file]::readalltext"
+      ],
+      "building_block": false
+    }
+  ]
+}

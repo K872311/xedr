@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Hidden Executable In NTFS Alternate Data Stream
+id: b69888d4-380c-45ce-9cf9-d9ce46e67821
+status: test
+description: Detects the creation of an ADS (Alternate Data Stream) that contains an executable by looking at a non-empty Imphash
+references:
+    - https://twitter.com/0xrawsec/status/1002478725605273600?s=21
+date: "2018-06-03"
+modified: "2023-02-10"
+author: Florian Roth (Nextron Systems), @0xrawsec
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: create_stream_hash
+    product: windows
+    definition: 'Requirements: Sysmon or equivalent configured with Imphash logging'
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_null:
+        Hash|contains: IMPHASH=00000000000000000000000000000000
+    selection:
+        Hash|contains: IMPHASH=
+falsepositives:
+    - This rule isn't looking for any particular binary characteristics. As legitimate installers and programs were seen embedding hidden binaries in their ADS. Some false positives are expected from browser processes and similar.
+level: medium
+tags:
+    - attack.stealth
+    - attack.s0139
+    - attack.t1564.004
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/create_stream_hash/create_stream_hash_ads_executable/info.yml

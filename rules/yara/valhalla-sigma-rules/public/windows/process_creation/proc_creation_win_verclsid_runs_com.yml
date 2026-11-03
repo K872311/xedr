@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Verclsid.exe Runs COM Object
+id: d06be4b9-8045-428b-a567-740a26d9db25
+status: test
+description: Detects when verclsid.exe is used to run COM object via GUID
+references:
+    - https://lolbas-project.github.io/lolbas/Binaries/Verclsid/
+    - https://gist.github.com/NickTyrer/0598b60112eaafe6d07789f7964290d5
+    - https://bohops.com/2018/08/18/abusing-the-com-registry-structure-part-2-loading-techniques-for-evasion-and-persistence/
+date: "2020-10-09"
+modified: "2025-10-07"
+author: Victor Sergeev, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_main_*
+    filter_main_runtimebroker:
+        CommandLine|contains|all:
+            - verclsid.exe" /S /C {
+            - '} /I {'
+        ParentImage|endswith: C:\Windows\System32\RuntimeBroker.exe
+    selection_cli:
+        CommandLine|contains|all:
+            - /S
+            - /C
+    selection_img:
+        - Image|endswith: \verclsid.exe
+        - OriginalFileName: verclsid.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'

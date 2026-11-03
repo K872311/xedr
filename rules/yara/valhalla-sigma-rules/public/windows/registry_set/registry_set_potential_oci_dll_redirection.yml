@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Registry Modification for OCI DLL Redirection
+id: c0e0bdec-3e3d-47aa-9974-05539c999c89
+status: experimental
+description: |
+    Detects registry modifications related to 'OracleOciLib' and 'OracleOciLibPath' under 'MSDTC' settings.
+    Threat actors may modify these registry keys to redirect the loading of 'oci.dll' to a malicious DLL, facilitating phantom DLL hijacking via the MSDTC service.
+references:
+    - https://www.crowdstrike.com/en-us/blog/4-ways-adversaries-hijack-dlls/
+date: "2026-01-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: (selection_ocilib and not filter_main_ocilib_file) or (selection_ocilibpath and not filter_main_ocilibpath)
+    filter_main_ocilib_file:
+        Details|contains: oci.dll
+    filter_main_ocilibpath:
+        Details|contains: '%SystemRoot%\System32\'
+    selection_ocilib:
+        TargetObject|endswith: \SOFTWARE\Microsoft\MSDTC\MTxOCI\OracleOciLib
+    selection_ocilibpath:
+        TargetObject|endswith: \SOFTWARE\Microsoft\MSDTC\MTxOCI\OracleOciLibPath
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.t1112
+    - attack.t1574.001
+customer: 'demo'

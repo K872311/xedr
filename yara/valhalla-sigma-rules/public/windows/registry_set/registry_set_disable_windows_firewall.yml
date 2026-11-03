@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Disable Windows Firewall by Registry
+id: e78c408a-e2ea-43cd-b5ea-51975cf358c0
+status: test
+description: Detect set EnableFirewall to 0 to disable the Windows firewall
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1562.004/T1562.004.md
+date: "2022-08-19"
+modified: "2023-08-17"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|endswith:
+            - \SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\EnableFirewall
+            - \SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\EnableFirewall
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.003
+customer: 'demo'
+simulation:
+    - atomic_guid: a4651931-ebbb-4cde-9363-ddf3d66214cb
+      name: LockBit Black - Unusual Windows firewall registry modification -cmd
+      technique: T1686
+      type: atomic-red-team

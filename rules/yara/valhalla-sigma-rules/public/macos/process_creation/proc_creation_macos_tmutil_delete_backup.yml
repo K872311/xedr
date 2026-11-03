@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Time Machine Backup Deletion Attempt Via Tmutil - MacOS
+id: 452df256-da78-427a-866f-49fa04417d74
+status: test
+description: |
+    Detects deletion attempts of MacOS Time Machine backups via the native backup utility "tmutil".
+    An adversary may perform this action before launching a ransonware attack to prevent the victim from restoring their files.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1490/T1490.md#atomic-test-12---disable-time-machine
+    - https://www.loobins.io/binaries/tmutil/
+date: "2024-05-29"
+author: Pratinav Chandra
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: macos
+detection:
+    condition: all of selection_*
+    selection_cmd:
+        CommandLine|contains: delete
+    selection_img:
+        - Image|endswith: /tmutil
+        - CommandLine|contains: tmutil
+falsepositives:
+    - Legitimate activities
+level: medium
+tags:
+    - attack.impact
+    - attack.t1490
+customer: 'demo'

@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Ransomware Activity Using LegalNotice Message
+id: 8b9606c9-28be-4a38-b146-0e313cc232c1
+status: test
+description: Detect changes to the "LegalNoticeCaption" or "LegalNoticeText" registry values where the message set contains keywords often used in ransomware ransom messages
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/5c1e6f1b4fafd01c8d1ece85f510160fc1275fbf/atomics/T1491.001/T1491.001.md
+date: "2022-12-11"
+modified: "2023-08-17"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details|contains:
+            - encrypted
+            - Unlock-Password
+            - paying
+        TargetObject|contains:
+            - \SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LegalNoticeCaption
+            - \SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LegalNoticeText
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.impact
+    - attack.t1491.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_legalnotice_susp_message/info.yml
+simulation:
+    - atomic_guid: ffcbfaab-c9ff-470b-928c-f086b326089b
+      name: Configure LegalNoticeCaption and LegalNoticeText registry keys to display ransom message
+      technique: T1491.001
+      type: atomic-red-team

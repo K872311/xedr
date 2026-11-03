@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
+
+:root {
+  --ink: #152033;
+  --ink-2: #3d4f66;
+  --muted: #6b7a90;
+  --line: #c9d4e3;
+  --line-2: #eef2f7;
+  --bg: #e8eef5;
+  --panel: #ffffff;
+  --rail: #0f1724;
+  --rail-2: #162033;
+  --menu: #ffffff;
+  --accent: #1aa6c8;
+  --accent-soft: #e8f6fb;
+  --orange: #c56a00;
+  --online: #2fbf71;
+  --danger: #e11d2e;
+  --warn: #f79009;
+  --radius: 8px;
+  --shadow: 0 4px 18px rgba(15, 30, 55, 0.07);
+  font-family: "Noto Sans SC", "DM Sans", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; background: var(--bg); }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent); text-decoration: none; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+
+.warn-line { color: var(--warn); }
+.btn-text.warn { color: var(--warn); font-weight: 600; }

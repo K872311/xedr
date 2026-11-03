@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious SignIns From A Non Registered Device
+id: 572b12d4-9062-11ed-a1eb-0242ac120002
+status: test
+description: Detects risky authentication from a non AD registered device without MFA being required.
+references:
+    - https://learn.microsoft.com/en-us/entra/architecture/security-operations-devices#non-compliant-device-sign-in
+date: "2023-01-10"
+modified: "2025-07-02"
+author: Harjot Singh, '@cyb3rjy0t'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: azure
+    service: signinlogs
+detection:
+    condition: selection_main and 1 of selection_empty*
+    selection_empty1:
+        DeviceDetail.trusttype: ""
+    selection_empty2:
+        DeviceDetail.trusttype: []
+    selection_main:
+        AuthenticationRequirement: singleFactorAuthentication
+        RiskState: atRisk
+        Status: Success
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.initial-access
+    - attack.stealth
+    - attack.t1078
+customer: 'demo'

@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Persistence Via Hhctrl.ocx
+id: f10ed525-97fe-4fed-be7c-2feecca941b1
+status: test
+description: Detects when an attacker modifies the registry value of the "hhctrl" to point to a custom binary
+references:
+    - https://persistence-info.github.io/Data/hhctrl.html
+    - https://www.hexacorn.com/blog/2018/04/23/beyond-good-ol-run-key-part-77/
+date: "2022-07-21"
+modified: "2023-08-17"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not filter
+    filter:
+        Details: C:\Windows\System32\hhctrl.ocx
+    selection:
+        TargetObject|contains: \CLSID\{52A2AAAE-085D-4187-97EA-8C30DB990436}\InprocServer32\(Default)
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.persistence
+customer: 'demo'

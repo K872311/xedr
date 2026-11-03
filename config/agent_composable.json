@@ -1,0 +1,25 @@
+{
+  "version": "1",
+  "group_tags": {
+    "high_sensitivity": ["高敏", "high-sensitivity", "high_sensitivity", "域控", "DC"]
+  },
+  "rules": [
+    {
+      "id": "dc_auto_wmi",
+      "when": { "host.is_domain_controller": true },
+      "integrations": { "wmi_process": true },
+      "note": "域控自动开启 WMI 进程订阅"
+    },
+    {
+      "id": "high_sensitivity_wmi",
+      "when": { "host.in_high_sensitivity_group": true },
+      "integrations": { "wmi_process": true, "memory_scan": true },
+      "policy": {
+        "winevent_channel_mode": "high_sens",
+        "winevent_channels": ["bits", "applocker", "firewall", "wmi"],
+        "memory_scan": { "mode": "yara_triggered" }
+      },
+      "note": "高敏分组：加强采集 + Winlog 高敏通道 + 条件内存扫描"
+    }
+  ]
+}

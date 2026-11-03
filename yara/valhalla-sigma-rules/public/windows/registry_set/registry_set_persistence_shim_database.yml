@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Persistence Via Shim Database Modification
+id: dfb5b4e8-91d0-4291-b40a-e3b0d3942c45
+status: test
+description: |
+    Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims.
+    The Microsoft Windows Application Compatibility Infrastructure/Framework (Application Shim) was created to allow for backward compatibility of software as the operating system codebase changes over time
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1546.011/T1546.011.md#atomic-test-3---registry-key-creation-andor-modification-events-for-sdb
+    - https://www.fireeye.com/blog/threat-research/2017/05/fin7-shim-databases-persistence.html
+    - https://andreafortuna.org/2018/11/12/process-injection-and-persistence-using-application-shimming/
+date: "2021-12-30"
+modified: "2025-10-22"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_empty_string:
+        Details: ""
+    filter_main_empty_value:
+        Details: (Empty)
+    filter_main_null:
+        Details: []
+    selection:
+        TargetObject|contains:
+            - \SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\InstalledSDB\
+            - \SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Custom\
+falsepositives:
+    - Legitimate custom SHIM installations will also trigger this rule
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1546.011
+customer: 'demo'
+simulation:
+    - atomic_guid: 9b6a06f9-ab5e-4e8d-8289-1df4289db02f
+      name: Registry key creation and/or modification events for SDB
+      technique: T1546.011
+      type: atomic-red-team

@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - Kernel Driver Utility (KDU) Execution
+id: e76ca062-4de0-4d79-8d90-160a0d335eca
+status: experimental
+description: |
+    Detects execution of the Kernel Driver Utility (KDU) tool.
+    KDU can be used to bypass driver signature enforcement and load unsigned or malicious drivers into the Windows kernel.
+    Potentially allowing for privilege escalation, persistence, or evasion of security controls.
+references:
+    - https://github.com/h4rmy/KDU
+    - https://huntress.com/blog/esxi-vm-escape-exploit
+date: "2026-01-02"
+author: Matt Anderson, Dray Agha, Anna Pham (Huntress)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli_suspicious:
+        CommandLine|contains:
+            - '-map '
+            - '-prv '
+            - '-dse '
+            - '-ps '
+    selection_img:
+        - Image|endswith:
+            - \kdu.exe
+            - \hamakaze.exe
+        - OriginalFileName: hamakaze.exe
+falsepositives:
+    - Legitimate driver development, testing, or administrative troubleshooting (e.g., enabling/disabling hardware)
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1543.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_pua_kdu_driver_tool/info.yml

@@ -1,0 +1,64 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Exploitation of CVE-2025-4427/4428 Ivanti EPMM Pre-Auth RCE
+id: 41956f7c-7a6b-46d6-b6bb-da6eb2e83fbe
+status: experimental
+description: |
+    Detects potential exploitation of a chained vulnerability attack targeting Ivanti EPMM 12.5.0.0.
+    CVE-2025-4427 allows unauthenticated access to protected API endpoints via an authentication bypass,
+    which can then be leveraged to trigger CVE-2025-4428 — a remote code execution vulnerability through
+    template injection. This sequence enables unauthenticated remote code execution, significantly increasing
+    the impact of exploitation.
+references:
+    - https://labs.watchtowr.com/expression-payloads-meet-mayhem-cve-2025-4427-and-cve-2025-4428/?123
+date: "2025-05-20"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: webserver
+detection:
+    condition: selection_uri and 1 of selection_exploit_*
+    selection_exploit_rce:
+        - cs-uri-query|contains|all:
+            - java.lang.Runtime
+            - .getMethod
+            - getRuntime
+            - .exec(
+        - cs-uri-query|contains|all:
+            - java%2elang%2eRuntime
+            - '%2egetMethod'
+            - '%2eexec%28'
+        - cs-uri-query|contains:
+            - '%6a%61%76%61%2e%6c%61%6e%67%2e%52%75%6e%74%69%6d%65%65%28%29'
+            - '%67%65%74%52%75%6e%74%69%6d%65'
+            - '%2e%65%78%65%63%28'
+    selection_exploit_template_injection:
+        cs-uri-query|contains:
+            - '{7*7}'
+            - '%7B7*7%7D'
+            - '%7b7%2a7%7d'
+    selection_uri:
+        cs-uri-query|contains: format=
+        cs-uri-stem|contains: /mifs/rs/api/v2/featureusage
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.execution
+    - attack.t1203
+    - cve.2025-4427
+    - cve.2025-4428
+    - detection.emerging-threats
+customer: 'demo'

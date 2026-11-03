@@ -1,0 +1,421 @@
+{
+  "meta": {
+    "id": "applogs-web",
+    "name": "Web / 中间件应用日志检测",
+    "version": "1.0",
+    "description": "L1 原文规则：IIS/Nginx/Tomcat/通用 access·error 日志。规则目录 log_rules/web_rules。",
+    "updatedAt": "2026-08-21"
+  },
+  "rules": [
+    {
+      "id": "applog.web.path.traversal",
+      "name": "Web访问-路径穿越",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["../", "..\\", "%2e%2e", "%2e%2e%2f", "%2e%2e/"],
+      "reason": "访问日志出现路径穿越特征",
+      "attackStage": "discovery",
+      "score": 75
+    },
+    {
+      "id": "applog.web.sens.git",
+      "name": "Web访问-敏感.git",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/.git/", "/.git?", ".git/config", ".git/HEAD"],
+      "reason": "尝试访问 Git 元数据",
+      "attackStage": "discovery",
+      "score": 80
+    },
+    {
+      "id": "applog.web.sens.env",
+      "name": "Web访问-敏感.env",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/.env", "/.env.", "env.backup", "env.bak"],
+      "reason": "尝试读取环境变量文件",
+      "attackStage": "discovery",
+      "score": 80
+    },
+    {
+      "id": "applog.web.sens.svn",
+      "name": "Web访问-敏感.svn",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/.svn/", "/.svn/entries"],
+      "reason": "尝试访问 SVN 元数据",
+      "attackStage": "discovery",
+      "score": 65
+    },
+    {
+      "id": "applog.web.sens.webconfig",
+      "name": "Web访问-web.config",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/web.config", "web.config~", "web.config.bak"],
+      "reason": "尝试读取 ASP.NET 配置",
+      "attackStage": "discovery",
+      "score": 78
+    },
+    {
+      "id": "applog.web.sens.wp-login",
+      "name": "Web访问-WordPress登录",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["wp-login.php", "xmlrpc.php"],
+      "reason": "WordPress 登录/XML-RPC 访问（常见爆破面）",
+      "attackStage": "credential_access",
+      "score": 55
+    },
+    {
+      "id": "applog.web.sens.phpmyadmin",
+      "name": "Web访问-phpMyAdmin",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/phpmyadmin", "/pma/", "/mysql/admin", "/myadmin/"],
+      "reason": "数据库管理台访问",
+      "attackStage": "discovery",
+      "score": 72
+    },
+    {
+      "id": "applog.web.sens.actuator",
+      "name": "Web访问-Spring Actuator",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/actuator/", "/actuator?", "/env", "/heapdump", "/jolokia"],
+      "textNotContainsAny": ["/actuator/health", "/actuator/info"],
+      "reason": "Spring Boot Actuator 敏感端点",
+      "attackStage": "discovery",
+      "score": 78
+    },
+    {
+      "id": "applog.web.admin.panel",
+      "name": "Web访问-管理后台路径",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/admin/", "/administrator/", "/manager/html", "/console/", "/wp-admin/"],
+      "reason": "管理后台类路径访问",
+      "attackStage": "discovery",
+      "score": 50
+    },
+    {
+      "id": "applog.web.shell.jsp",
+      "name": "Web访问-可疑JSP",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textRegex": "(?i)/(upload|tmp|temp|cache|images?|static)/[^\\s\"']*\\.(jsp|jspx|jsw)(\\?|\\s|\"|$)",
+      "reason": "非常规目录下的 JSP 访问，疑似 WebShell",
+      "attackStage": "execution",
+      "score": 82
+    },
+    {
+      "id": "applog.web.shell.aspx",
+      "name": "Web访问-可疑ASPX",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textRegex": "(?i)/(upload|tmp|temp|cache|aspnet_client|images?)/[^\\s\"']*\\.(aspx|ashx|asmx)(\\?|\\s|\"|$)",
+      "reason": "非常规目录下的 ASPX/ASHX 访问，疑似 WebShell",
+      "attackStage": "execution",
+      "score": 82
+    },
+    {
+      "id": "applog.web.shell.php",
+      "name": "Web访问-可疑PHP一句话特征",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any", "error"],
+      "textContainsAny": ["eval($_", "assert($_", "base64_decode($_", "shell_exec(", "passthru(", "<?php @eval"],
+      "reason": "请求或错误日志含 PHP WebShell 特征",
+      "attackStage": "execution",
+      "score": 88
+    },
+    {
+      "id": "applog.web.sqli.probe",
+      "name": "Web访问-SQL注入探测",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["union select", "union%20select", "' or 1=1", "' or '1'='1", "information_schema", "sleep(", "benchmark(", "waitfor delay"],
+      "reason": "访问串含经典 SQL 注入探测",
+      "attackStage": "exploitation",
+      "score": 80
+    },
+    {
+      "id": "applog.web.xss.probe",
+      "name": "Web访问-XSS探测",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["<script>", "%3cscript", "javascript:alert", "onerror=", "onload="],
+      "reason": "访问串含 XSS 探测特征",
+      "attackStage": "exploitation",
+      "score": 55
+    },
+    {
+      "id": "applog.web.scanner.ua",
+      "name": "Web访问-扫描器UA",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": [
+        "sqlmap", "nikto", "nessus", "nmap", "masscan", "zgrab",
+        "dirbuster", "gobuster", "wfuzz", "acunetix", "appscan",
+        "whatweb", "httpx/", "nuclei"
+      ],
+      "reason": "User-Agent 像自动化扫描器",
+      "attackStage": "discovery",
+      "score": 60
+    },
+    {
+      "id": "applog.web.method.odd",
+      "name": "Web访问-异常HTTP方法",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textRegex": "(?i)\\b(PROPFIND|TRACE|TRACK|DEBUG|CONNECT)\\b\\s+/",
+      "reason": "少见 HTTP 方法，常见于探测",
+      "attackStage": "discovery",
+      "score": 55
+    },
+    {
+      "id": "applog.mw.tomcat.manager",
+      "name": "中间件-Tomcat Manager",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/manager/html", "/manager/status", "/manager/text", "/host-manager/"],
+      "reason": "Tomcat Manager 访问",
+      "attackStage": "credential_access",
+      "score": 75
+    },
+    {
+      "id": "applog.mw.java.deserialize",
+      "name": "中间件-Java反序列化痕迹",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": ["error", "any"],
+      "textContainsAny": [
+        "Invokespecial", "java.io.ObjectInputStream", "ysoserial",
+        "CommonsCollections", "InvokerTransformer", "SerializedLambda"
+      ],
+      "reason": "错误日志出现反序列化相关堆栈/工具特征",
+      "attackStage": "exploitation",
+      "score": 92
+    },
+    {
+      "id": "applog.mw.java.ognl",
+      "name": "中间件-OGNL/Struts特征",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": ["access", "error", "any"],
+      "textContainsAny": ["ognl.OgnlContext", "struts2", "%{(#", "#_memberAccess", "ProcessBuilder"],
+      "reason": "疑似 Struts2/OGNL 利用痕迹",
+      "attackStage": "exploitation",
+      "score": 90
+    },
+    {
+      "id": "applog.mw.log4j.jndi",
+      "name": "中间件-Log4j JNDI",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": ["access", "error", "any"],
+      "textContainsAny": ["${jndi:", "%24%7bjndi", "${lower:${", "${::-j}"],
+      "reason": "Log4Shell / JNDI 注入探测",
+      "attackStage": "exploitation",
+      "score": 95
+    },
+    {
+      "id": "applog.mw.iis.aspnet.error",
+      "name": "中间件-ASP.NET严重错误关键字",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["error", "any"],
+      "textContainsAny": [
+        "System.Web.HttpException", "ViewStateException",
+        "Validation of viewstate", "potentially dangerous Request"
+      ],
+      "reason": "ASP.NET 异常/校验失败（可能被利用探测）",
+      "attackStage": "exploitation",
+      "score": 58
+    },
+    {
+      "id": "applog.mw.nginx.forbidden.conf",
+      "name": "中间件-Nginx配置泄露尝试",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": ["/nginx.conf", "/.htaccess", "/server-status", "/server-info"],
+      "reason": "尝试读取 Web 服务器配置或状态页",
+      "attackStage": "discovery",
+      "score": 70
+    },
+    {
+      "id": "applog.app.sql.exception",
+      "name": "应用错误-SQL异常",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["error", "any"],
+      "textContainsAny": [
+        "SQLException", "SqlException", "ORA-", "mysql_fetch",
+        "syntax error near", "Unclosed quotation mark"
+      ],
+      "reason": "应用抛出 SQL 异常（可能由注入触发）",
+      "attackStage": "exploitation",
+      "score": 62
+    },
+    {
+      "id": "applog.app.auth.fail.burst.keyword",
+      "name": "应用错误-认证失败关键字",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["error", "access", "any"],
+      "textContainsAny": [
+        "authentication failed", "login failed", "invalid password",
+        "bad credentials", "认证失败", "登录失败", "密码错误"
+      ],
+      "reason": "认证失败相关日志（需结合频率人工判断爆破）",
+      "attackStage": "credential_access",
+      "score": 48
+    },
+    {
+      "id": "applog.app.cmd.injection",
+      "name": "应用-命令注入特征",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": ["access", "error", "any"],
+      "textContainsAny": ["|bash", "|sh ", ";wget ", ";curl ", "`id`", "$(whoami)", "/bin/bash -c"],
+      "reason": "请求或错误中出现命令注入常见片段",
+      "attackStage": "execution",
+      "score": 90
+    },
+    {
+      "id": "applog.app.file.include",
+      "name": "应用-文件包含/读取",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": [
+        "php://filter", "php://input", "file:///etc/passwd",
+        "....//....//", "/etc/passwd", "c:\\windows\\win.ini"
+      ],
+      "reason": "LFI/RFI 或本地文件读取探测",
+      "attackStage": "exploitation",
+      "score": 85
+    },
+    {
+      "id": "applog.app.ssrf.probe",
+      "name": "应用-SSRF探测",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": [
+        "169.254.169.254", "metadata.google", "latest/meta-data",
+        "file://", "gopher://", "dict://"
+      ],
+      "reason": "疑似 SSRF / 云元数据探测",
+      "attackStage": "discovery",
+      "score": 82
+    },
+    {
+      "id": "applog.app.webshell.keyword",
+      "name": "应用-WebShell常见文件名",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textContainsAny": [
+        "/shell.", "/cmd.", "/c99.", "/r57.", "/chopper",
+        "/godzilla", "/behinder", "/antsword", "xiaoma.php", "1.asp"
+      ],
+      "reason": "访问路径含常见 WebShell 文件名",
+      "attackStage": "execution",
+      "score": 80
+    },
+    {
+      "id": "applog.app.upload.script",
+      "name": "应用-上传脚本后缀",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["access", "any"],
+      "textRegex": "(?i)(upload|fileupload|upfile)[^\\s\"']*\\.(jsp|aspx|ashx|php|php5|phtml)(\\?|\\s|\"|$)",
+      "reason": "上传接口伴随脚本后缀，高风险",
+      "attackStage": "execution",
+      "score": 85
+    },
+    {
+      "id": "applog.noise.health.exclude-note",
+      "name": "（说明）健康检查默认不单独告警",
+      "severity": "low",
+      "enabled": false,
+      "appliesTo": ["access"],
+      "textContainsAny": ["/health", "/favicon.ico", "/robots.txt"],
+      "reason": "占位：健康检查类路径建议排除，本条默认关闭",
+      "attackStage": "other",
+      "score": 0
+    },
+    {
+      "id": "applog.java.level.error",
+      "name": "应用日志-ERROR/FATAL",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["any", "error"],
+      "textRegex": "(?i)(?:^|\\s)(ERROR|FATAL|SEVERE|CRITICAL)\\b",
+      "reason": "Java/应用日志出现 ERROR 或 FATAL 级别",
+      "attackStage": "impact",
+      "score": 78
+    },
+    {
+      "id": "applog.java.exception",
+      "name": "应用日志-异常堆栈",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": ["any", "error"],
+      "textContainsAny": [
+        "exception", "traceback", "stacktrace", "caused by:",
+        "nullpointerexception", "sql exception", "报错"
+      ],
+      "reason": "日志含异常/堆栈特征",
+      "attackStage": "impact",
+      "score": 70
+    },
+    {
+      "id": "applog.auth.login.success",
+      "name": "应用日志-登录成功",
+      "severity": "low",
+      "enabled": true,
+      "appliesTo": ["any"],
+      "textContainsAny": [
+        "登录成功", "登陆成功", "login success", "login succeeded",
+        "authentication success", "auth success", "签到成功"
+      ],
+      "reason": "账号登录成功（审计/溯源）",
+      "attackStage": "credential_access",
+      "score": 35
+    },
+    {
+      "id": "applog.auth.login.fail",
+      "name": "应用日志-登录失败",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": ["any"],
+      "textContainsAny": [
+        "登录失败", "登陆失败", "login fail", "login failed",
+        "authentication failed", "auth failed", "密码错误", "口令错误",
+        "bad credentials", "invalid password", "invalid username"
+      ],
+      "reason": "登录失败，可能为爆破或凭据滥用",
+      "attackStage": "credential_access",
+      "score": 80
+    }
+  ]
+}

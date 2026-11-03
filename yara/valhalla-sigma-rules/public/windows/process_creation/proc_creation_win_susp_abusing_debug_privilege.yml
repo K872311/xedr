@@ -1,0 +1,61 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Abused Debug Privilege by Arbitrary Parent Processes
+id: d522eca2-2973-4391-a3e0-ef0374321dae
+status: test
+description: Detection of unusual child processes by different system processes
+references:
+    - https://image.slidesharecdn.com/kheirkhabarovoffzonefinal-181117201458/95/hunting-for-privilege-escalation-in-windows-environment-74-638.jpg
+date: "2020-10-28"
+modified: "2022-11-11"
+author: Semanur Guneysu @semanurtg, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not filter
+    filter:
+        CommandLine|contains|all:
+            - ' route '
+            - ' ADD '
+    selection_img:
+        - Image|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+            - \cmd.exe
+        - OriginalFileName:
+            - PowerShell.EXE
+            - pwsh.dll
+            - Cmd.Exe
+    selection_parent:
+        ParentImage|endswith:
+            - \winlogon.exe
+            - \services.exe
+            - \lsass.exe
+            - \csrss.exe
+            - \smss.exe
+            - \wininit.exe
+            - \spoolsv.exe
+            - \searchindexer.exe
+        User|contains:
+            - AUTHORI
+            - AUTORI
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.t1548
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_susp_abusing_debug_privilege/info.yml

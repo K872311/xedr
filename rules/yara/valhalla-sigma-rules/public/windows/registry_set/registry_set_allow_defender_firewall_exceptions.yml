@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Allow Exceptions in Microsoft Defender Firewall via Registry
+id: c69fc6a2-607d-4530-b7d1-75823af1bde4
+status: experimental
+description: |
+    Detects the degradation of the system firewall security by the DoNotAllowExceptions policy value being
+    set to 0 (DWORD 0x00000000), which re-enables application and port exceptions in the Microsoft
+    Defender Firewall and can restore network paths that a hardened profile would block.
+references:
+    - https://www.virustotal.com/gui/file/da209017000b9812e8bc5f4e8db6499430ee2aadc72ef896964cffdfd896f143/behavior
+    - https://app.any.run/tasks/8d4113a8-5403-4367-a79f-4ce4978d9bdb
+    - https://www.zscaler.com/fr/blogs/security-research/malvertising-targeting-european-transit-users
+    - https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/trojan.win32.zbot.e
+date: "2026-10-13"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_svchost:
+        Image:
+            - C:\Windows\System32\svchost.exe
+            - C:\Windows\SysWOW64\svchost.exe
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|contains: \Services\SharedAccess\Parameters\FirewallPolicy\
+        TargetObject|endswith: \DoNotAllowExceptions
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_allow_defender_firewall_exceptions/info.yml

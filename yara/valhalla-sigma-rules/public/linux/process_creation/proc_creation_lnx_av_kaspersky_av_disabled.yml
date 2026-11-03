@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Kaspersky Endpoint Security Stopped Via CommandLine - Linux
+id: 36388120-b3f1-4ce9-b50b-280d9a7f4c04
+status: experimental
+description: |
+    Detects execution of the Kaspersky init.d stop script on Linux systems either directly or via systemctl.
+    This activity may indicate a manual interruption of the antivirus service by an administrator, or it could be a sign of potential tampering or evasion attempts by malicious actors.
+references:
+    - https://support.kaspersky.com/KES4Linux/12.0.0/en-US/197929.htm
+date: "2025-10-18"
+author: Milad Cheraghi
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains|all:
+            - stop
+            - kesl
+        Image|endswith:
+            - /systemctl
+            - /bash
+            - /sh
+falsepositives:
+    - System administrator manually stopping Kaspersky services
+level: high
+tags:
+    - attack.execution
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

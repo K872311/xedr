@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Unsigned or Unencrypted SMB Connection to Share Established
+id: 8d91f6e4-9f3b-4c21-ae41-2c5b7d9f7a12
+status: experimental
+description: |
+    Detects SMB server connections to shares without signing or encryption enabled.
+    This could indicate potential lateral movement activity using unsecured SMB shares.
+references:
+    - https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/overview-server-message-block-signing
+date: "2025-10-19"
+author: Mohamed Abdelghani
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: smbserver-connectivity
+detection:
+    condition: all of selection_* and not 1 of filter_main_*
+    filter_main_local_ips:
+        - ClientAddress|cidr:
+            - 127.0.0.0/8
+            - 169.254.0.0/16
+            - ::1/128
+            - fe80::/10
+            - fc00::/7
+        - ClientAddress|contains:
+            - "00000000000000000000000000000001"
+            - FE80000000000000
+            - FC00000000000000
+            - 0200????7F
+            - 0200????A9FE
+    selection_shares:
+        EventID: "4000"
+        ShareName|contains:
+            - IPC$
+            - ADMIN$
+            - C$
+    selection_status:
+        - SigningUsed: "false"
+        - EncyptionUsed: "false"
+falsepositives:
+    - Connections from local or private IP addresses to SMB shares without signing or encryption enabled for older systems or misconfigured environments. Apply additional tuning as needed.
+level: medium
+tags:
+    - attack.lateral-movement
+    - attack.t1021.002
+customer: 'demo'

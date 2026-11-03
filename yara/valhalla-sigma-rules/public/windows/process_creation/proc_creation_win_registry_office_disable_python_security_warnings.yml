@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Python Function Execution Security Warning Disabled In Excel
+id: 023c654f-8f16-44d9-bb2b-00ff36a62af9
+related:
+    - type: similar
+      id: 17e53739-a1fc-4a62-b1b9-87711c2d5e44
+status: test
+description: |
+    Detects changes to the registry value "PythonFunctionWarnings" that would prevent any warnings or alerts from showing when Python functions are about to be executed.
+    Threat actors could run malicious code through the new Microsoft Excel feature that allows Python to run within the spreadsheet.
+references:
+    - https://support.microsoft.com/en-us/office/data-security-and-python-in-excel-33cc88a4-4a87-485e-9ff9-f35958278327
+date: "2023-08-22"
+author: '@Kostastsale'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains: ' 0'
+        CommandLine|contains|all:
+            - \Microsoft\Office\
+            - \Excel\Security
+            - PythonFunctionWarnings
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

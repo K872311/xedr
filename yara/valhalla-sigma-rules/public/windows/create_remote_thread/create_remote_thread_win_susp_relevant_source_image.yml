@@ -1,0 +1,111 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Rare Remote Thread Creation By Uncommon Source Image
+id: 02d1d718-dd13-41af-989d-ea85c7fab93f
+related:
+    - type: derived
+      id: 66d31e5f-52d6-40a4-9615-002d3789a119
+status: test
+description: Detects uncommon processes creating remote threads.
+references:
+    - Personal research, statistical analysis
+    - https://lolbas-project.github.io
+date: "2019-10-27"
+modified: "2025-12-08"
+author: Perez Diego (@darkquassar), oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: create_remote_thread
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_conhost:
+        SourceImage:
+            - C:\Windows\System32\Defrag.exe
+            - C:\Windows\System32\makecab.exe
+        TargetImage: C:\Windows\System32\conhost.exe
+    filter_main_ms_office:
+        SourceImage|startswith:
+            - C:\Program Files\Microsoft Office\
+            - C:\Program Files (x86)\Microsoft Office\
+        TargetImage: System
+    filter_main_provtol_svchost:
+        SourceImage: C:\Windows\System32\provtool.exe
+        TargetImage: C:\Windows\System32\svchost.exe
+    filter_main_provtool_system:
+        SourceImage: C:\Windows\System32\provtool.exe
+        TargetImage: System
+    filter_main_userinit:
+        SourceImage: C:\Windows\System32\userinit.exe
+        TargetImage: C:\Windows\explorer.exe
+    filter_main_winword:
+        SourceImage|endswith: \WINWORD.EXE
+        TargetImage|startswith:
+            - C:\Program Files (x86)\
+            - C:\Program Files\
+    filter_optional_explorer_vmtools:
+        SourceImage|endswith: \SysWOW64\explorer.exe
+        TargetImage:
+            - C:\Program Files (x86)\VMware\VMware Tools\vmtoolsd.exe
+            - C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
+    selection:
+        SourceImage|endswith:
+            - \bash.exe
+            - \cscript.exe
+            - \cvtres.exe
+            - \defrag.exe
+            - \dialer.exe
+            - \dnx.exe
+            - \esentutl.exe
+            - \excel.exe
+            - \expand.exe
+            - \find.exe
+            - \findstr.exe
+            - \forfiles.exe
+            - \gpupdate.exe
+            - \hh.exe
+            - \installutil.exe
+            - \lync.exe
+            - \makecab.exe
+            - \mDNSResponder.exe
+            - \monitoringhost.exe
+            - \msbuild.exe
+            - \mshta.exe
+            - \mspaint.exe
+            - \outlook.exe
+            - \ping.exe
+            - \provtool.exe
+            - \python.exe
+            - \regsvr32.exe
+            - \robocopy.exe
+            - \runonce.exe
+            - \sapcimc.exe
+            - \smartscreen.exe
+            - \spoolsv.exe
+            - \tstheme.exe
+            - \userinit.exe
+            - \vssadmin.exe
+            - \vssvc.exe
+            - \w3wp.exe
+            - \winscp.exe
+            - \winword.exe
+            - \wmic.exe
+            - \wscript.exe
+falsepositives:
+    - This rule is best put in testing first in order to create a baseline that reflects the data in your environment.
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1055
+customer: 'demo'

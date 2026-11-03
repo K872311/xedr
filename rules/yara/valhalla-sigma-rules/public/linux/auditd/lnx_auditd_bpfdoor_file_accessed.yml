@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: BPFDoor Abnormal Process ID or Lock File Accessed
+id: 808146b2-9332-4d78-9416-d7e47012d83d
+status: test
+description: detects BPFDoor .lock and .pid files access in temporary file storage facility
+references:
+    - https://www.sandflysecurity.com/blog/bpfdoor-an-evasive-linux-backdoor-technical-analysis/
+    - https://www.elastic.co/security-labs/a-peek-behind-the-bpfdoor
+    - https://www.rapid7.com/blog/post/tr-bpfdoor-telecom-networks-sleeper-cells-threat-research-report/
+    - https://github.com/rapid7/Rapid7-Labs/blob/741c7196ec12a0a56b63463d1fd726ff14d3a97a/BPFDoor/rapid7_detect_bpfdoor.sh
+date: "2022-08-10"
+modified: "2026-03-30"
+author: Rafal Piasecki
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: linux
+    service: auditd
+detection:
+    condition: selection
+    selection:
+        name:
+            - /var/run/aepmonend.pid
+            - /var/run/auditd.lock
+            - /var/run/cma.lock
+            - /var/run/console-kit.pid
+            - /var/run/consolekit.pid
+            - /var/run/daemon.pid
+            - /var/run/hald-addon.pid
+            - /var/run/hald-smartd.pid
+            - /var/run/haldrund.pid
+            - /var/run/hp-health.pid
+            - /var/run/hpasmlit.lock
+            - /var/run/hpasmlited.pid
+            - /var/run/kdevrund.pid
+            - /var/run/lldpad.lock
+            - /var/run/mcelog.pid
+            - /var/run/system.pid
+            - /var/run/uvp-srv.pid
+            - /var/run/vmtoolagt.pid
+            - /var/run/xinetd.lock
+        type: PATH
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.execution
+    - attack.t1106
+    - attack.t1059
+customer: 'demo'

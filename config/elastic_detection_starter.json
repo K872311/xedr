@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "description": "EDR 启动导入：仅高精准 Elastic EVM（剔除 Noise:High / 遥测索引 / fim 误映射 / 泛 LOLBin）",
+  "pick": "precision",
+  "precision": {
+    "platform": "windows",
+    "min_score": 100,
+    "max_rules": 20
+  },
+  "explicit_rule_ids": [],
+  "import": {
+    "enable_agent_rules": false,
+    "enable_evm_rules": true,
+    "mode": "evm"
+  }
+}

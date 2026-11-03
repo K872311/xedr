@@ -1,0 +1,65 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potentially Suspicious Powershell Script Execution From Temp Folder
+id: a6a39bdb-935c-4f0a-ab77-35f4bbf44d33
+status: test
+description: Detects a potentially suspicious powershell script executions from temporary folder
+references:
+    - https://www.microsoft.com/security/blog/2021/07/13/microsoft-discovers-threat-actor-targeting-solarwinds-serv-u-software-with-0-day-exploit/
+date: "2021-07-14"
+modified: "2026-02-17"
+author: Florian Roth (Nextron Systems), Max Altgelt (Nextron Systems), Tim Shelton
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_optional_*
+    filter_optional_amazon_ec2:
+        CommandLine|contains: \Windows\system32\config\systemprofile\AppData\Local\Temp\Amazon\EC2-Windows\
+    filter_optional_chocolatey_installer:
+        CommandLine|contains|all:
+            - -NoProfile -ExecutionPolicy Bypass -Command
+            - AppData\Local\Temp\
+            - Install-Chocolatey.ps1
+        Image|endswith: \powershell.exe
+        ParentImage:
+            - C:\Windows\System32\Msiexec.exe
+            - C:\Windows\SysWOW64\Msiexec.exe
+    filter_optional_generic:
+        CommandLine|contains:
+            - ' >'
+            - Out-File
+            - ConvertTo-Json
+    filter_optional_vscode:
+        CommandLine|contains: -WindowStyle hidden -Verb runAs
+    selection:
+        CommandLine|contains:
+            - \Windows\Temp
+            - \Temporary Internet
+            - \AppData\Local\Temp
+            - \AppData\Roaming\Temp
+            - '%TEMP%'
+            - '%TMP%'
+            - '%LocalAppData%\Temp'
+        Image|endswith:
+            - \powershell.exe
+            - \pwsh.exe
+falsepositives:
+    - Administrative scripts
+level: medium
+tags:
+    - attack.execution
+    - attack.t1059.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_powershell_script_exec_from_temp_folder/info.yml

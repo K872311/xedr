@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Remote Access Tool - Potential MeshAgent Execution - Windows
+id: 2fbbe9ff-0afc-470b-bdc0-592198339968
+related:
+    - type: similar
+      id: 22c45af6-f590-4d44-bab3-b5b2d2a2b6d9
+status: experimental
+description: |
+    Detects potential execution of MeshAgent which is a tool used for remote access.
+    Historical data shows that threat actors rename MeshAgent binary to evade detection.
+    Matching command lines with the '--meshServiceName' argument can indicate that the MeshAgent is being used for remote access.
+references:
+    - https://www.huntress.com/blog/know-thy-enemy-a-novel-november-case-on-persistent-remote-access
+    - https://thecyberexpress.com/ukraine-hit-by-meshagent-malware-campaign/
+    - https://wazuh.com/blog/how-to-detect-meshagent-with-wazuh/
+    - https://www.security.com/threat-intelligence/medusa-ransomware-attacks
+date: "2025-05-19"
+author: Norbert Jaśniewicz (AlphaSOC)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains: --meshServiceName
+falsepositives:
+    - Environments that legitimately use MeshAgent
+level: medium
+tags:
+    - attack.command-and-control
+    - attack.t1219.002
+customer: 'demo'

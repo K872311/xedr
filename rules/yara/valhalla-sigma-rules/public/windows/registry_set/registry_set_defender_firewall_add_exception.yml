@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Add Authorized Applications to Microsoft Defender Firewall via Registry
+id: 6648f900-4a7d-47e3-bad6-952b313a1c0e
+status: experimental
+description: |
+    Detects the degradation of the system firewall security by the creation or re-enabling of per-application
+    exceptions via registry writes to the AuthorizedApplications\List keys under FirewallPolicy, which grants
+    the targeted executable network access and can be abused by malware to bypass network restrictions.
+references:
+    - https://www.virustotal.com/gui/file/da209017000b9812e8bc5f4e8db6499430ee2aadc72ef896964cffdfd896f143/behavior
+    - https://app.any.run/tasks/8d4113a8-5403-4367-a79f-4ce4978d9bdb
+    - https://www.trendmicro.com/vinfo/us/threat-encyclopedia/malware/trojan.win32.zbot.e
+    - https://www.greatis.com/appdata/d/q/qykernel.exe.htm
+    - https://www.scanspyware.net/spyware-sub/spyware-removal/MarketScore-RelevantKnowledge
+date: "2026-10-13"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details|contains: ':Enabled:'
+        TargetObject|contains|all:
+            - \Services\SharedAccess\Parameters\FirewallPolicy\
+            - \AuthorizedApplications\List
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_defender_firewall_add_exception/info.yml

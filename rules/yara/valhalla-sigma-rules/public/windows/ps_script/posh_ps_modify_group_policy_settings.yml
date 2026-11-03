@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Modify Group Policy Settings - ScriptBlockLogging
+id: b7216a7d-687e-4c8d-82b1-3080b2ad961f
+related:
+    - type: similar
+      id: ada4b0c4-758b-46ac-9033-9004613a150d
+status: test
+description: Detect malicious GPO modifications can be used to implement many other malicious behaviors.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1484.001/T1484.001.md
+date: "2022-08-19"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: all of selection_*
+    selection_key:
+        ScriptBlockText|contains:
+            - GroupPolicyRefreshTimeDC
+            - GroupPolicyRefreshTimeOffsetDC
+            - GroupPolicyRefreshTime
+            - GroupPolicyRefreshTimeOffset
+            - EnableSmartScreen
+            - ShellSmartScreenLevel
+    selection_path:
+        ScriptBlockText|contains: \SOFTWARE\Policies\Microsoft\Windows\System
+falsepositives:
+    - Legitimate use
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1484.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/powershell/powershell_script/posh_ps_modify_group_policy_settings/info.yml

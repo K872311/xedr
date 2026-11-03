@@ -1,0 +1,85 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious FileFix Execution Pattern
+id: b5b29e4e-31fa-4fdf-b058-296e7a1aa0c2
+related:
+    - type: similar
+      id: 4fee3d51-8069-4a4c-a0f7-924fcaff2c70
+    - type: obsolete
+      id: 4be03877-d5b6-4520-85c9-a5911c0a656c
+status: experimental
+description: |
+    Detects suspicious FileFix execution patterns where users are tricked into running malicious commands through browser file upload dialog manipulation.
+    This attack typically begins when users visit malicious websites impersonating legitimate services or news platforms,
+    which may display fake CAPTCHA challenges or direct instructions to open file explorer and paste clipboard content.
+    The clipboard content usually contains commands that download and execute malware, such as information stealing tools.
+references:
+    - https://mrd0x.com/filefix-clickfix-alternative/
+    - https://expel.com/blog/cache-smuggling-when-a-picture-isnt-a-thousand-words/
+    - https://blog.checkpoint.com/research/filefix-the-new-social-engineering-attack-building-on-clickfix-tested-in-the-wild/
+date: "2025-11-24"
+author: 0xFustang, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection_exec_parent and 1 of selection_cli_*
+    selection_cli_captcha:
+        CommandLine|contains:
+            - account
+            - anti-bot
+            - botcheck
+            - captcha
+            - challenge
+            - confirmation
+            - fraud
+            - human
+            - identification
+            - identificator
+            - identity
+            - robot
+            - validation
+            - verification
+            - verify
+    selection_cli_lolbin:
+        CommandLine|contains:
+            - '%comspec%'
+            - bitsadmin
+            - certutil
+            - cmd
+            - cscript
+            - curl
+            - finger
+            - mshta
+            - powershell
+            - pwsh
+            - regsvr32
+            - rundll32
+            - schtasks
+            - wget
+            - wscript
+    selection_exec_parent:
+        CommandLine|contains: '#'
+        ParentImage|endswith:
+            - \brave.exe
+            - \chrome.exe
+            - \firefox.exe
+            - \msedge.exe
+falsepositives:
+    - Legitimate use of PowerShell or other utilities launched from browser extensions or automation tools
+level: high
+tags:
+    - attack.execution
+    - attack.t1204.004
+customer: 'demo'

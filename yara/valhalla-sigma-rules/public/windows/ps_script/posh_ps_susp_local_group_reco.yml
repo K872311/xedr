@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Get Local Groups Information - PowerShell
+id: fa6a5a45-3ee2-4529-aa14-ee5edc9e29cb
+related:
+    - type: similar
+      id: cef24b90-dddc-4ae1-a09a-8764872f69fc
+status: test
+description: |
+    Detects the use of PowerShell modules and cmdlets to gather local group information.
+    Adversaries may use local system permission groups to determine which groups exist and which users belong to a particular group such as the local administrators group.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1069.001/T1069.001.md
+date: "2021-12-12"
+modified: "2025-08-22"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: selection_localgroup or all of selection_wmi_*
+    selection_localgroup:
+        ScriptBlockText|contains:
+            - 'get-localgroup '
+            - 'get-localgroupmember '
+    selection_wmi_class:
+        ScriptBlockText|contains: win32_group
+    selection_wmi_module:
+        ScriptBlockText|contains:
+            - 'get-wmiobject '
+            - 'gwmi '
+            - 'get-ciminstance '
+            - 'gcim '
+falsepositives:
+    - Inventory scripts or admin tasks
+level: low
+tags:
+    - attack.discovery
+    - attack.t1069.001
+customer: 'demo'

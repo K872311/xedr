@@ -1,0 +1,51 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: IE Change Domain Zone
+id: 45e112d0-7759-4c2a-aa36-9f8fb79d3393
+related:
+    - type: derived
+      id: d88d0ab2-e696-4d40-a2ed-9790064e66b3
+status: test
+description: Hides the file extension through modification of the registry
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1112/T1112.md#atomic-test-4---add-domain-to-trusted-sites-zone
+    - https://learn.microsoft.com/en-us/troubleshoot/developer/browsers/security-privacy/ie-security-zones-registry-entries
+date: "2022-01-22"
+modified: "2023-08-17"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection_domains and not filter
+    filter:
+        Details:
+            - DWORD (0x00000000)
+            - DWORD (0x00000001)
+            - (Empty)
+    selection_domains:
+        TargetObject|contains: \SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\
+falsepositives:
+    - Administrative scripts
+level: medium
+tags:
+    - attack.persistence
+    - attack.t1137
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_change_security_zones/info.yml
+simulation:
+    - atomic_guid: cf447677-5a4e-4937-a82c-e47d254afd57
+      name: Add Domain to Trusted Sites Zone
+      technique: T1112
+      type: atomic-red-team

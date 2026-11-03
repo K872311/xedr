@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - NetExec Execution
+id: 7638e5fe-600c-4289-a968-f49dd537ec7d
+status: experimental
+description: |
+    Detects execution of the hacktool NetExec.
+    NetExec (formerly CrackMapExec) is a widely used post-exploitation tool designed for Active Directory penetration testing and network enumeration
+    In enterprise environments, the use of NetExec is considered suspicious or potentially malicious because it enables attackers to enumerate hosts, exploit network services, and move laterally across systems.
+    Threat actors and red teams commonly use NetExec to identify vulnerable systems, harvest credentials, and execute commands remotely.
+references:
+    - https://thedfirreport.com/2025/12/17/cats-got-your-files-lynx-ransomware/
+    - https://github.com/Pennyw0rth/NetExec
+    - https://www.netexec.wiki/
+date: "2026-03-29"
+author: Chirag Damani
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains:
+            - ' ftp '
+            - ' ldap '
+            - ' mssql '
+            - ' nfs '
+            - ' rdp '
+            - ' smb '
+            - ' ssh '
+            - ' vnc '
+            - ' winrm '
+            - ' wmi '
+        Image|endswith: \nxc.exe
+falsepositives:
+    - Legitimate use of NetExec by security professionals or system administrators for network assessment and management.
+level: high
+tags:
+    - attack.discovery
+    - attack.t1018
+    - attack.lateral-movement
+    - attack.t1021
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_hktl_netexec/info.yml

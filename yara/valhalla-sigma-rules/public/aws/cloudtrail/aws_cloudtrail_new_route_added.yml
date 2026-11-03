@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: New Network Route Added
+id: c803b2ce-c4a2-4836-beae-b112010390b1
+status: test
+description: |
+    Detects the addition of a new network route to a route table in AWS.
+references:
+    - https://www.gorillastack.com/blog/real-time-events/important-aws-cloudtrail-security-events-tracking/
+date: "2024-07-11"
+author: jamesc-grafana
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName: CreateRoute
+        eventSource: ec2.amazonaws.com
+falsepositives:
+    - New VPC Creation requiring setup of a new route table
+    - New subnets added requiring routing setup
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.001
+customer: 'demo'

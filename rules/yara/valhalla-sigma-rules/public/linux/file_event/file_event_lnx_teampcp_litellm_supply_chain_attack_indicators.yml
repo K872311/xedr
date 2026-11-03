@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: TeamPCP LiteLLM Supply Chain Attack Persistence Indicators
+id: 81c0b7f5-81c9-435e-a291-bc32fc2b72cd
+status: experimental
+description: |
+    Detects the creation of specific persistence files as observed in the LiteLLM PyPI supply chain attack.
+    In March 2026, a supply chain attack was discovered involving the popular open-source LLM framework LiteLLM by Threat Actor TeamPCP.
+    The malicious package harvests every credential on the system, encrypts and exfiltrates them, and installs a persistent C2 backdoor.
+references:
+    - https://novasky.io/hunts/hunting-litellm-supply-chain
+    - https://www.virustotal.com/gui/file/71e35aef03099cd1f2d6446734273025a163597de93912df321ef118bf135238/
+    - https://huskyhacks.io/posts/litellm-cred-stealer/
+    - https://www.wiz.io/blog/threes-a-crowd-teampcp-trojanizes-litellm-in-continuation-of-campaign
+date: "2026-03-30"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: linux
+detection:
+    condition: selection
+    selection:
+        Image|contains: /python3
+        TargetFilename|endswith:
+            - /.config/sysmon/sysmon.py
+            - /.config/systemd/user/sysmon.service
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1543.002
+    - attack.initial-access
+    - attack.t1195.002
+    - detection.emerging-threats
+customer: 'demo'

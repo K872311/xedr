@@ -1,0 +1,17 @@
+{
+  "updated_at": "2026-08-19T00:50:00",
+  "note": "yumodqk FP: Defender 5001 fires on engine updates; real tamper still covered by other Defender rules",
+  "titles": [
+    "Admin Logon",
+    "Credential Manager Enumerated",
+    "Explicit Logon Attempt",
+    "Explicit Logon Attempt (Noisy)",
+    "Logoff (User Initiated)",
+    "Logon (Interactive) (Noisy)",
+    "Logon (Interactive) *Creds in memory*",
+    "Logon (Service) (Noisy)",
+    "Logon (System) - Bootup",
+    "Proc Exec",
+    "Windows Defender Real-time Protection Disabled"
+  ]
+}

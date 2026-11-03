@@ -1,0 +1,35 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Added Owner To Application
+id: 74298991-9fc4-460e-a92e-511aa60baec1
+status: test
+description: Detects when a new owner is added to an application. This gives that account privileges to make modifications and configuration changes to the application.
+references:
+    - https://learn.microsoft.com/en-us/entra/architecture/security-operations-applications#new-owner
+date: "2022-06-02"
+author: Mark Morowczynski '@markmorow', Bailey Bercik '@baileybercik'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: azure
+    service: auditlogs
+detection:
+    condition: selection
+    selection:
+        properties.message: Add owner to application
+falsepositives:
+    - When a new application owner is added by an administrator
+level: medium
+tags:
+    - attack.t1552
+    - attack.credential-access
+customer: 'demo'

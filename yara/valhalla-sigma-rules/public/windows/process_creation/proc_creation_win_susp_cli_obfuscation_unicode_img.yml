@@ -1,0 +1,73 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential CommandLine Obfuscation Using Unicode Characters From Suspicious Image
+id: 584bca0f-3608-4402-80fd-4075ff6072e3
+related:
+    - type: similar
+      id: e0552b19-5a83-4222-b141-b36184bb8d79
+    - type: similar
+      id: ad691d92-15f2-4181-9aa4-723c74f9ddc3
+    - type: obsolete
+      id: 2c0d2d7b-30d6-4d14-9751-7b9113042ab9
+status: test
+description: |
+    Detects potential commandline obfuscation using unicode characters.
+    Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit.
+references:
+    - https://www.wietzebeukema.nl/blog/windows-command-line-obfuscation
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1027/T1027.md#atomic-test-6---dlp-evasion-via-sensitive-data-in-vba-macro-over-http
+date: "2024-09-02"
+modified: "2025-05-30"
+author: frack113, Florian Roth (Nextron Systems), Josh Nickels
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_img:
+        Image|endswith:
+            - \cmd.exe
+            - \cscript.exe
+            - \powershell.exe
+            - \powershell_ise.exe
+            - \pwsh.exe
+            - \wscript.exe
+        OriginalFileName:
+            - Cmd.EXE
+            - cscript.exe
+            - PowerShell.EXE
+            - PowerShell_ISE.EXE
+            - pwsh.dll
+            - wscript.exe
+    selection_special_chars:
+        CommandLine|contains:
+            - ˣ
+            - ˪
+            - ˢ
+            - ∕
+            - ⁄
+            - ―
+            - —
+            -  
+            - ¯
+            - ®
+            - ¶
+            - ⠀
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1027
+customer: 'demo'

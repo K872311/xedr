@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: BitLockerTogo.EXE Execution
+id: 7f2376f9-42ee-4dfc-9360-fecff9a88fc8
+status: test
+description: |
+    Detects the execution of "BitLockerToGo.EXE".
+    BitLocker To Go is BitLocker Drive Encryption on removable data drives. This feature includes the encryption of, USB flash drives, SD cards, External hard disk drives, Other drives that are formatted by using the NTFS, FAT16, FAT32, or exFAT file system.
+    This is a rarely used application and usage of it at all is worth investigating.
+    Malware such as Lumma stealer has been seen using this process as a target for process hollowing.
+references:
+    - https://tria.ge/240521-ynezpagf56/behavioral1
+    - https://any.run/report/6eea2773c1b4b5c6fb7c142933e220c96f9a4ec89055bf0cf54accdcde7df535/a407f006-ee45-420d-b576-f259094df091
+    - https://bazaar.abuse.ch/sample/8c75f8e94486f5bbf461505823f5779f328c5b37f1387c18791e0c21f3fdd576/
+    - https://bazaar.abuse.ch/sample/64e6605496919cd76554915cbed88e56fdec10dec6523918a631754664b8c8d3/
+date: "2024-07-11"
+author: Josh Nickels, mttaggart
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \BitLockerToGo.exe
+falsepositives:
+    - Legitimate usage of BitLockerToGo.exe to encrypt portable devices.
+level: low
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'

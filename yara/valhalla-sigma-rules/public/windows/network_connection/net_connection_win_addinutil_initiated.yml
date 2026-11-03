@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Network Connection Initiated By AddinUtil.EXE
+id: 5205613d-2a63-4412-a895-3a2458b587b3
+status: test
+description: |
+    Detects a network connection initiated by the Add-In deployment cache updating utility "AddInutil.exe".
+    This could indicate a potential command and control communication as this tool doesn't usually initiate network activity.
+references:
+    - https://www.blue-prints.blog/content/blog/posts/lolbin/addinutil-lolbas.html
+date: "2023-09-18"
+modified: "2024-07-16"
+author: Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \addinutil.exe
+        Initiated: "true"
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'

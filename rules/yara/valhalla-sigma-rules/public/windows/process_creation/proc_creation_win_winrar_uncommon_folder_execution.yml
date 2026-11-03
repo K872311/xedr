@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: WinRAR Execution in Non-Standard Folder
+id: 4ede543c-e098-43d9-a28f-dd784a13132f
+status: test
+description: Detects a suspicious WinRAR execution in a folder which is not the default installation folder
+references:
+    - https://twitter.com/cyb3rops/status/1460978167628406785
+date: "2021-11-17"
+modified: "2025-07-16"
+author: Florian Roth (Nextron Systems), Tigzy
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_path:
+        Image|contains:
+            - :\Program Files (x86)\WinRAR\
+            - :\Program Files\WinRAR\
+    filter_main_unrar:
+        Image|endswith: \UnRAR.exe
+    filter_optional_temp:
+        Image|contains: :\Windows\Temp\
+    selection:
+        - Image|endswith:
+            - \rar.exe
+            - \winrar.exe
+        - Description:
+            - Command line RAR
+            - WinRAR
+falsepositives:
+    - Legitimate use of WinRAR in a folder of a software that bundles WinRAR
+level: medium
+tags:
+    - attack.collection
+    - attack.t1560.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_winrar_uncommon_folder_execution/info.yml

@@ -1,0 +1,52 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - System Informer Execution
+id: 5722dff1-4bdd-4949-86ab-fbaf707e767a
+related:
+    - type: similar
+      id: 811e0002-b13b-4a15-9d00-a613fce66e42
+status: test
+description: Detects the execution of System Informer, a task manager tool to view and manipulate processes, kernel options and other low level operations
+references:
+    - https://github.com/winsiderss/systeminformer
+date: "2023-05-08"
+modified: "2024-11-23"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - Image|endswith: \SystemInformer.exe
+        - OriginalFileName: SystemInformer.exe
+        - Description: System Informer
+        - Product: System Informer
+        - Hashes|contains:
+            - MD5=19426363A37C03C3ED6FEDF57B6696EC
+            - SHA1=8B12C6DA8FAC0D5E8AB999C31E5EA04AF32D53DC
+            - SHA256=8EE9D84DE50803545937A63C686822388A3338497CDDB660D5D69CF68B68F287
+            - IMPHASH=B68908ADAEB5D662F87F2528AF318F12
+falsepositives:
+    - System Informer is regularly used legitimately by system administrators or developers. Apply additional filters accordingly
+level: medium
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.discovery
+    - attack.stealth
+    - attack.t1082
+    - attack.t1564
+    - attack.t1543
+customer: 'demo'

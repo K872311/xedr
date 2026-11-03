@@ -1,0 +1,56 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potentially Suspicious JWT Token Search Via CLI
+id: 6d3a3952-6530-44a3-8554-cf17c116c615
+status: test
+description: |
+    Detects potentially suspicious search for JWT tokens via CLI by looking for the string "eyJ0eX" or "eyJhbG".
+    JWT tokens are often used for access-tokens across various applications and services like Microsoft 365, Azure, AWS, Google Cloud, and others.
+    Threat actors may search for these tokens to steal them for lateral movement or privilege escalation.
+references:
+    - https://mrd0x.com/stealing-tokens-from-office-applications/
+    - https://www.scip.ch/en/?labs.20240523
+date: "2022-10-25"
+modified: "2025-10-21"
+author: Nasreddine Bencherchali (Nextron Systems), kagebunsher
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_jwt_string:
+        CommandLine|contains:
+            - eyJ0eXAiOi
+            - eyJhbGciOi
+            - ' eyJ0eX'
+            - ' "eyJ0eX"'
+            - ' ''eyJ0eX'''
+            - ' eyJhbG'
+            - ' "eyJhbG"'
+            - ' ''eyJhbG'''
+    selection_tools:
+        CommandLine|contains:
+            - 'find '
+            - find.exe
+            - findstr
+            - 'select-string '
+            - strings
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.credential-access
+    - attack.t1528
+    - attack.t1552.001
+customer: 'demo'

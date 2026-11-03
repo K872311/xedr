@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: User Risk and MFA Registration Policy Updated
+id: d4c7758e-9417-4f2e-9109-6125d66dabef
+status: test
+description: |
+    Detects changes and updates to the user risk and MFA registration policy.
+    Attackers can modified the policies to Bypass MFA, weaken security thresholds, facilitate further attacks, maintain persistence.
+references:
+    - https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-mfa-policy
+    - https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
+date: "2024-08-13"
+author: Harjot Singh (@cyb3rjy0t)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: azure
+    service: auditlogs
+detection:
+    condition: selection
+    selection:
+        Category: Policy
+        LoggedByService: AAD Management UX
+        OperationName: Update User Risk and MFA Registration Policy
+falsepositives:
+    - Known updates by administrators.
+level: high
+tags:
+    - attack.persistence
+customer: 'demo'

@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Change Winevt Channel Access Permission Via Registry
+id: 7d9263bd-dc47-4a58-bc92-5474abab390c
+status: test
+description: Detects tampering with the "ChannelAccess" registry key in order to change access to Windows event channel.
+references:
+    - https://app.any.run/tasks/77b2e328-8f36-46b2-b2e2-8a80398217ab/
+    - https://learn.microsoft.com/en-us/windows/win32/api/winevt/
+    - https://itconnect.uw.edu/tools-services-support/it-systems-infrastructure/msinf/other-help/understanding-sddl-syntax/
+date: "2022-09-17"
+modified: "2024-03-25"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_tiworker:
+        Image|endswith: \TiWorker.exe
+        Image|startswith: C:\Windows\WinSxS\
+    filter_main_trustedinstaller:
+        Image: C:\Windows\servicing\TrustedInstaller.exe
+    selection:
+        Details|contains:
+            - (A;;0x1;;;LA)
+            - (A;;0x1;;;SY)
+            - (A;;0x5;;;BA)
+        TargetObject|contains: \Microsoft\Windows\CurrentVersion\WINEVT\Channels\
+        TargetObject|endswith: \ChannelAccess
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685.001
+customer: 'demo'

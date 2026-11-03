@@ -1,0 +1,63 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Explorer Process with Whitespace Padding - ClickFix/FileFix
+id: 3ae9974a-eb09-4044-8e70-8980a50c12c8
+related:
+    - type: similar
+      id: 8f2a5c3d-9e4b-4a7c-8d1f-2e5a6b9c3d7e
+    - type: similar
+      id: 7a1b4c5e-8f3d-4b9a-7c2e-1f4a5b8c6d9e
+status: experimental
+description: |
+    Detects process creation with suspicious whitespace padding followed by a '#' character, which may indicate ClickFix or FileFix techniques used to conceal malicious commands from visual inspection.
+    ClickFix and FileFix are social engineering attack techniques where adversaries distribute phishing documents or malicious links that deceive users into opening the Windows Run dialog box or File Explorer search bar.
+    The victims are then instructed to paste commands from their clipboard, which contain extensive whitespace padding using various Unicode space characters to push the actual malicious command far to the right, effectively hiding it from immediate view.
+references:
+    - https://expel.com/blog/cache-smuggling-when-a-picture-isnt-a-thousand-words/
+    - https://mrd0x.com/filefix-clickfix-alternative/
+date: "2025-11-04"
+modified: "2025-11-26"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_explorer:
+        CommandLine|contains: '#'
+        ParentImage|endswith: \explorer.exe
+    selection_space_variation:
+        CommandLine|contains:
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            -             
+            - '            '
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1204.004
+    - attack.t1027.010
+customer: 'demo'

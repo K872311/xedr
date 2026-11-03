@@ -1,0 +1,37 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS S3 Bucket Versioning Disable
+id: a136ac98-b2bc-4189-a14d-f0d0388e57a7
+status: test
+description: Detects when S3 bucket versioning is disabled. Threat actors use this technique during AWS ransomware incidents prior to deleting S3 objects.
+references:
+    - https://invictus-ir.medium.com/ransomware-in-the-cloud-7f14805bbe82
+date: "2023-10-28"
+author: Sean Johnstone | Unit 42
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName: PutBucketVersioning
+        eventSource: s3.amazonaws.com
+        requestParameters|contains: Suspended
+falsepositives:
+    - AWS administrator legitimately disabling bucket versioning
+level: medium
+tags:
+    - attack.impact
+    - attack.t1490
+customer: 'demo'

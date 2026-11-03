@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Dynamic Module Invocation Via ExportedCommands Array Index - PS Script
+id: 4ff4ad3e-9fb5-4a70-9962-d6ea58090318
+related:
+    - type: similar
+      id: 0c3ebe9f-df09-4e00-be0f-73d4ca8d62f6
+status: experimental
+description: |
+    Detects obfuscated PowerShell scripts that enumerate Microsoft.PowerShell.Utility exported commands
+    and invoke cmdlets indirectly by array index. This can be used to evade detections
+    that look for explicit strings such as Invoke-RestMethod or Invoke-Expression.
+references:
+    - https://www.linkedin.com/posts/mark-o-halloran1_clickfix-defense-evasion-tactic-today-i-ugcPost-7453463467736408064-snrp/
+date: "2026-10-06"
+author: Norbert Jaśniewicz (AlphaSOC)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requirements: Script Block Logging must be enabled'
+detection:
+    condition: all of selection_*
+    selection_index_used:
+        ScriptBlockText|contains: '[*]'
+    selection_module_export_enum:
+        ScriptBlockText|contains:
+            - 'Get-Module '
+            - 'gmo '
+        ScriptBlockText|contains|all:
+            - ListAvailable
+            - Microsoft.PowerShell.Utility
+            - ExportedCommands
+            - Values
+falsepositives:
+    - Legitimate use of exported commands array indexing in PowerShell scripts (should be rare)
+level: medium
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1027
+    - attack.t1059.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/powershell/powershell_script/posh_ps_cmdlet_invocation_via_exported_commands_array_index/info.yml

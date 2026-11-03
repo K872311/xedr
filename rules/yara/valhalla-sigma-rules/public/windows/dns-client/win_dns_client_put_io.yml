@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DNS Query To Put.io - DNS Client
+id: 8b69fd42-9dad-4674-abef-7fdef43ef92a
+status: test
+description: Detects DNS queries for subdomains related to "Put.io" sharing website.
+references:
+    - https://darkatlas.io/blog/medusa-ransomware-group-opsec-failure
+date: "2024-08-23"
+author: Omar Khaled (@beacon_exe)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: dns-client
+    definition: 'Requirements: Microsoft-Windows-DNS Client Events/Operational Event Log must be enabled/collected in order to receive the events.'
+detection:
+    condition: selection
+    selection:
+        EventID: "3008"
+        QueryName|contains:
+            - api.put.io
+            - upload.put.io
+falsepositives:
+    - Legitimate DNS queries and usage of Put.io
+level: medium
+tags:
+    - attack.command-and-control
+customer: 'demo'

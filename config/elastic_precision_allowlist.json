@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "description": "Agent EVM 高精准 Elastic 子集：min_score 以上 + always_include，exclude 永不要",
+  "min_score": 100,
+  "max_rules": 20,
+  "always_include": [
+    "elastic-00140285",
+    "elastic-02a4576a"
+  ],
+  "exclude": [
+    "elastic-e516bf56",
+    "elastic-5f2f463e",
+    "elastic-4ae94fc1"
+  ]
+}

@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - Defendnot Installation via PowerShell One-Liner
+id: 50b159ba-a147-40f7-9d11-561e724b8a2e
+related:
+    - type: similar
+      id: 0aaa9689-9f38-491d-bd4d-a9af6eb43138
+status: experimental
+description: |
+    Detects execution of Defendnot installation via PowerShell one-liner that downloads and executes the Defendnot script from a remote URL.
+    Defendnot is a hacktool that abuses Microsoft's undocumented WSC API to disable Windows Defender by registering itself as a fake antivirus product.
+references:
+    - https://github.com/es3n1n/defendnot/blob/525176a37721ead27d3f9f77f59b58abfc305988/README.md#one-liner
+date: "2026-10-18"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+detection:
+    condition: selection
+    selection:
+        - ScriptBlockText|contains: https://dnot.sh/
+        - ScriptBlockText|contains|all:
+            - /defendnot
+            - github
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

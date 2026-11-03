@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PowerShell Logging Disabled Via Registry Key Tampering
+id: fecfd1a1-cc78-4313-a1ea-2ee2e8ec27a7
+status: test
+description: Detects changes to the registry for the currently logged-in user. In order to disable PowerShell module logging, script block logging or transcription and script execution logging
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1112/T1112.md#atomic-test-32---windows-powershell-logging-disabled
+date: "2022-04-02"
+modified: "2023-08-17"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|contains:
+            - \Microsoft\Windows\PowerShell\
+            - \Microsoft\PowerShellCore\
+        TargetObject|endswith:
+            - \ModuleLogging\EnableModuleLogging
+            - \ScriptBlockLogging\EnableScriptBlockLogging
+            - \ScriptBlockLogging\EnableScriptBlockInvocationLogging
+            - \Transcription\EnableTranscripting
+            - \Transcription\EnableInvocationHeader
+            - \EnableScripts
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.t1564.001
+    - attack.t1112
+    - attack.persistence
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_powershell_logging_disabled/info.yml
+simulation:
+    - atomic_guid: 95b25212-91a7-42ff-9613-124aca6845a8
+      name: Disable PowerShell Logging via Registry
+      technique: T1112
+      type: atomic-red-team

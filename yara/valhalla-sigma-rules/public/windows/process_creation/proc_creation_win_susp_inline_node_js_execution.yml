@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potentially Suspicious Inline JavaScript Execution via NodeJS Binary
+id: 8537c866-072e-460d-bfff-aaf39cbd73d3
+status: experimental
+description: Detects potentially suspicious inline JavaScript execution using Node.js with specific keywords in the command line.
+references:
+    - https://www.microsoft.com/en-us/security/blog/2025/04/15/threat-actors-misuse-node-js-to-deliver-malware-and-other-malicious-payloads/
+date: "2025-04-21"
+author: Microsoft (idea), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cmd:
+        CommandLine|contains|all:
+            - http
+            - execSync
+            - spawn
+            - fs
+            - path
+            - zlib
+    selection_img:
+        - Image|endswith: \node.exe
+        - OriginalFileName: node.exe
+        - Product: Node.js
+falsepositives:
+    - Legitimate scripts using Node.js with these modules
+level: medium
+tags:
+    - attack.execution
+    - attack.t1059.007
+customer: 'demo'

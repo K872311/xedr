@@ -1,0 +1,235 @@
+{
+  "meta": {
+    "name": "Agent 实时规则",
+    "version": "1.2",
+    "description": "仅用于终端 Agent 快照匹配；另含内置启发式（未签名/可疑父子），见 agent_rules._heuristic_process_hits"
+  },
+  "rules": [
+    {
+      "id": "agent-temp-exe",
+      "title": "临时目录可执行文件",
+      "severity": "high",
+      "modules": [
+        "service",
+        "startup",
+        "file",
+        "task"
+      ],
+      "fields": [
+        "path",
+        "command",
+        "directory"
+      ],
+      "patterns": [
+        "\\temp\\",
+        "\\tmp\\",
+        "\\appdata\\local\\temp\\",
+        "\\Public\\"
+      ],
+      "file_exts": [
+        "exe",
+        "dll",
+        "sys",
+        "vbs",
+        "js",
+        "bat",
+        "cmd",
+        "ps1",
+        "hta",
+        "wsf"
+      ],
+      "match": "regex",
+      "enabled": true,
+      "note": "路径落在临时目录（含 Temp 下脚本）",
+      "updated_at": "2026-11-02T14:10:37"
+    },
+    {
+      "id": "agent-public-drop",
+      "title": "Public 目录投放可执行文件",
+      "severity": "high",
+      "modules": [
+        "file",
+        "process",
+        "task"
+      ],
+      "fields": [
+        "path",
+        "command",
+        "command_line",
+        "directory"
+      ],
+      "patterns": [
+        "\\users\\public\\"
+      ],
+      "file_exts": [
+        "exe",
+        "dll",
+        "sys",
+        "vbs",
+        "js",
+        "bat",
+        "cmd",
+        "ps1",
+        "hta",
+        "wsf"
+      ],
+      "match": "substring",
+      "enabled": true,
+      "note": "Public 目录常见投放（含脚本）",
+      "updated_at": "2026-11-02T14:10:37"
+    },
+    {
+      "id": "agent-b9cbf96140",
+      "title": "磁盘根目录投放可执行文件",
+      "severity": "high",
+      "modules": [
+        "file",
+        "process",
+        "startup",
+        "task",
+        "service"
+      ],
+      "fields": [
+        "path"
+      ],
+      "patterns": [
+        "^[A-Za-z]:\\\\[^\\\\]+\\.(exe|dll|bat|cmd|ps1|scr)$"
+      ],
+      "file_exts": [
+        "exe",
+        "dll",
+        "ps1",
+        "scr",
+        "sys",
+        "hta"
+      ],
+      "signed_filter": "unsigned",
+      "path_prefixes": [
+        "C:\\ProgramData",
+        "C:\\Users\\Administrator\\AppData\\Local",
+        "C:\\Users\\Administrator\\AppData\\Local\\Temp"
+      ],
+      "match": "regex",
+      "enabled": true,
+      "note": "如 C:\\evil.exe",
+      "updated_at": "2026-11-02T14:10:36",
+      "source": "custom",
+      "builtin": false
+    },
+    {
+      "id": "agent-ps-hidden-bat-scriptblock",
+      "title": "隐藏窗口 PowerShell：BAT 内嵌 REM# 后 ScriptBlock 执行",
+      "severity": "high",
+      "modules": [
+        "timeline"
+      ],
+      "fields": [
+        "command_line",
+        "path",
+        "name",
+        "parent_name"
+      ],
+      "patterns": [
+        "lastindexof('rem#')",
+        "[scriptblock]::create",
+        "-windowstyle hidden",
+        "[io.file]::readalltext"
+      ],
+      "file_exts": [],
+      "signed_filter": "",
+      "path_prefixes": [],
+      "match": "substring",
+      "enabled": true,
+      "etype": "process_create_etw",
+      "note": "按命令行 IOC 命中（与 Temp/Public 范围规则分离）；样本链由 wscript 规则 + 本规则共同覆盖。MITRE T1059.001/T1027/T1564.003",
+      "updated_at": "2026-11-02T11:30:00",
+      "source": "custom",
+      "builtin": false,
+      "technique": "T1059.001",
+      "tactic": "execution"
+    },
+    {
+      "id": "agent-temp-public-wscript-vbs",
+      "title": "Temp/Public：WScript 静默执行脚本",
+      "severity": "high",
+      "modules": [
+        "timeline"
+      ],
+      "fields": [
+        "command_line",
+        "path",
+        "name"
+      ],
+      "patterns": [
+        "(//b|//nologo).*\\\\(temp|tmp|users\\\\public|public)\\\\.*\\.vbs"
+      ],
+      "file_exts": [],
+      "signed_filter": "",
+      "path_prefixes": [
+        "\\temp\\",
+        "\\tmp\\",
+        "\\public\\",
+        "\\users\\public\\"
+      ],
+      "match": "regex",
+      "enabled": true,
+      "etype": "process_create_etw",
+      "note": "监控 Temp/Public：如 wscript //B //nologo …\\Temp\\*.vbs",
+      "updated_at": "2026-11-02T11:30:00",
+      "source": "custom",
+      "builtin": false,
+      "technique": "T1059.005",
+      "tactic": "execution"
+    }
+  ],
+  "sensor_overrides": {
+    "sensor-etw-hot-file": {
+      "enabled": true,
+      "severity": "high",
+      "note": "ETW Kernel-File：/Downloads/Public 等目录落地可执行/脚本",
+      "title": "ETW 可疑目录文件创建",
+      "etype": "file_create",
+      "summary_contains": "ETW可疑目录文件创建",
+      "patterns": [
+        "ETW可疑目录文件创建"
+      ],
+      "match": "substring",
+      "fields": [
+        "etype",
+        "summary",
+        "path"
+      ],
+      "file_exts": [
+        "exe",
+        "dll",
+        "sys"
+      ],
+      "path_prefixes": [],
+      "signed_filter": "unsigned"
+    },
+    "sensor-diff-hot-file": {
+      "enabled": true,
+      "severity": "high",
+      "note": "快照差分：文件模块扫到热目录新增（标题不含 ETW 前缀）",
+      "title": "可疑目录文件创建（差分）",
+      "etype": "file_create",
+      "summary_contains": "可疑目录文件创建",
+      "patterns": [
+        "可疑目录文件创建"
+      ],
+      "match": "substring",
+      "fields": [
+        "etype",
+        "summary",
+        "path"
+      ],
+      "file_exts": [
+        "exe",
+        "dll",
+        "sys"
+      ],
+      "path_prefixes": [],
+      "signed_filter": "unsigned"
+    }
+  }
+}

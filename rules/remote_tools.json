@@ -1,0 +1,358 @@
+{
+  "version": 2,
+  "updated": "2026-10-27",
+  "note": "路径/进程名均为排查线索，不保证每个版本一致；需结合数字签名、服务映像路径、哈希与网络行为核验。参考 MITRE ATT&CK T1219 Remote Access Tools、CISA/FBI 远程访问软件安全指南。",
+  "priority_labels": {"high": "高", "medium_high": "中高", "medium": "中"},
+  "tools": [
+    {
+      "id": "sunlogin",
+      "name": "向日葵",
+      "vendor": "贝锐 Oray",
+      "priority": "high",
+      "path_markers": ["\\oray\\awesun", "\\awesun", "\\sunlogin", "\\oray\\"],
+      "exe_names": ["awesun.exe", "oldawesun.exe", "sunloginclient.exe", "awesun_guard.exe"],
+      "service_names": ["awesunservice", "sunloginservice"],
+      "signer_markers": ["贝锐", "shanghai best oray"],
+      "product_markers": ["向日葵", "awesun", "sunlogin"],
+      "config_globs": [
+        "**/Oray/AweSun/config.ini",
+        "**/Program Files/Oray/AweSun/config.ini",
+        "**/ProgramData/Oray/AweSun/sys_config.ini"
+      ],
+      "history_globs": [
+        "**/Oray/AweSun/log/history.log",
+        "**/Program Files/Oray/AweSun/log/history.log"
+      ],
+      "session_log_globs": [
+        "**/Oray/AweSun/log/desktop.agent.*.log",
+        "**/Oray/AweSun/log/awesun_service.*.log"
+      ],
+      "parsers": {
+        "config_client_id": {
+          "ini_keys": ["fastcode", "clientId"]
+        },
+        "history": {
+          "line_regex": "(?P<time>\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2})\\s+(?P<peer>\\S+)\\s+(?P<action>开始|结束)(?P<kind>桌面控制|文件传输|远程协助)?(?:\\((?P<method>[^)]+)\\))?",
+          "start_action": "开始",
+          "end_action": "结束"
+        },
+        "service_session": {
+          "start_regex": "OnReceive\\]\\s*Accept response control request",
+          "p2p_regex": "login p2p server\\s*\\[(?P<relay>[^\\]]+)\\].*?public ip\\s+(?P<public_ip>[\\d.:]+).*?local ip\\s+(?P<local_ip>[\\d.:]+)",
+          "peer_regex": "receive P2P request.*?public\\s+(?P<peer_public>[\\d.:]+)\\s+local\\s+(?P<peer_local>[\\d.:]+)",
+          "account_regex": "\\[control\\]\\[logon\\]\\s*AccountName\\s+(?P<account>\\S+)",
+          "tunnel_regex": "tunnel=MultiChannel\\([^)]*\\).*?ip=\\(forward:(?P<forward>[^,\\)]+)",
+          "stop_regex": "OnPluginStoped\\]\\s*end controlled|mpstream\\]\\s*evt=stop&plugin=desktop"
+        }
+      }
+    },
+    {
+      "id": "todesk",
+      "name": "ToDesk",
+      "vendor": "海南有趣 / Zuler",
+      "priority": "high",
+      "path_markers": ["\\todesk\\", "\\zulercoretools\\"],
+      "exe_names": ["todesk.exe", "coretoolsmgrhelper.exe", "todesk_service.exe"],
+      "service_names": ["todesk_service", "todesk service", "todesk"],
+      "signer_markers": ["hainan youqu", "海南有趣", "zuler"],
+      "product_markers": ["todesk"],
+      "config_globs": [
+        "**/Program Files/ToDesk/config.ini",
+        "**/Program Files (x86)/ToDesk/config.ini"
+      ],
+      "xlog_globs": [
+        "**/ToDesk/Logs/session_*.xlog",
+        "**/ToDesk/Logs/service_*.xlog",
+        "**/ToDesk/Logs/client_*.xlog"
+      ],
+      "mmap_globs": [
+        "**/ToDesk/Logs/cache/session_*.mmap3",
+        "**/ToDesk/Logs/cache/client_*.mmap3"
+      ],
+      "parsers": {
+        "config_client_id": {
+          "ini_key": "clientId"
+        },
+        "xlog_session": {
+          "note": "Mars xlog 正文加密；会话时间取文件 mtime，明文尾部看同名 .mmap3"
+        }
+      }
+    },
+    {
+      "id": "anydesk",
+      "name": "AnyDesk",
+      "vendor": "AnyDesk Software GmbH",
+      "priority": "high",
+      "path_markers": ["\\anydesk\\"],
+      "exe_names": ["anydesk.exe"],
+      "service_names": ["anydesk"],
+      "signer_markers": ["anydesk software", "philandro"],
+      "product_markers": ["anydesk"],
+      "config_globs": ["**/AnyDesk/system.conf", "**/AnyDesk/service.conf"],
+      "history_globs": ["**/AnyDesk/connection_trace.txt"],
+      "parsers": {
+        "connection_trace": {
+          "line_regex": "(?P<time>\\d{4}-\\d{2}-\\d{2},\\s*\\d{2}:\\d{2})\\s+(?P<status>\\w+)\\s+(?P<peer>\\S+)\\s+(?P<user>.*)"
+        }
+      }
+    },
+    {
+      "id": "screenconnect",
+      "name": "ConnectWise ScreenConnect",
+      "vendor": "ConnectWise",
+      "priority": "high",
+      "path_markers": ["\\screenconnect client (", "\\screenconnect\\", "\\connectwise control"],
+      "exe_names": [
+        "screenconnect.clientservice.exe",
+        "screenconnect.windowsclient.exe",
+        "screenconnect.windowsbackstageshell.exe",
+        "screenconnect.windowsfilemanager.exe",
+        "screenconnect.clientsetup.exe"
+      ],
+      "file_name_patterns": ["screenconnect%.exe", "connectwisecontrol%.exe"],
+      "service_names": ["screenconnect client"],
+      "signer_markers": ["connectwise", "screenconnect"],
+      "product_markers": ["screenconnect", "connectwise control"],
+      "notes": ["临时客户端常落在 %TEMP% / 下载目录，安装目录名带随机标识"]
+    },
+    {
+      "id": "teamviewer",
+      "name": "TeamViewer",
+      "vendor": "TeamViewer Germany GmbH",
+      "priority": "high",
+      "path_markers": ["\\teamviewer\\"],
+      "exe_names": ["teamviewer.exe", "teamviewer_service.exe", "tv_w32.exe", "tv_x64.exe"],
+      "service_names": ["teamviewer"],
+      "signer_markers": ["teamviewer germany", "teamviewer gmbh"],
+      "product_markers": ["teamviewer"],
+      "history_globs": [
+        "**/TeamViewer/Connections_incoming.txt",
+        "**/TeamViewer/Connections.txt"
+      ],
+      "parsers": {}
+    },
+    {
+      "id": "atera",
+      "name": "Atera",
+      "vendor": "Atera Networks",
+      "priority": "high",
+      "path_markers": ["\\atera networks\\", "\\ateraagent\\"],
+      "exe_names": ["ateraagent.exe", "atera.agentpackagerunner.exe"],
+      "service_names": ["ateraagent"],
+      "signer_markers": ["atera networks"],
+      "product_markers": ["ateraagent", "atera agent"],
+      "notes": ["Atera 常连带部署 Splashtop / AnyDesk"]
+    },
+    {
+      "id": "splashtop",
+      "name": "Splashtop",
+      "vendor": "Splashtop Inc.",
+      "priority": "high",
+      "path_markers": ["\\splashtop\\"],
+      "exe_names": ["srmanager.exe", "srservice.exe", "srserver.exe", "srapp.exe", "srfeature.exe", "strwinclt.exe"],
+      "service_names": ["splashtopremoteservice", "splashtop"],
+      "signer_markers": ["splashtop"],
+      "product_markers": ["splashtop"]
+    },
+    {
+      "id": "simplehelp",
+      "name": "SimpleHelp",
+      "vendor": "SimpleHelp Ltd",
+      "priority": "high",
+      "path_markers": ["\\simplehelp\\", "\\jwrapper-remote access", "\\jwrapper-simplehelp"],
+      "exe_names": ["simplehelp.exe", "session_win.exe", "remote access.exe", "simplegatewayservice.exe"],
+      "service_names": ["simplehelp", "remote access service"],
+      "signer_markers": ["simplehelp"],
+      "product_markers": ["simplehelp", "jwrapper-remote access"],
+      "notes": ["客户端基于 JWrapper（Java），常见 ProgramData\\JWrapper-Remote Access"]
+    },
+    {
+      "id": "netsupport",
+      "name": "NetSupport Manager",
+      "vendor": "NetSupport Ltd",
+      "priority": "high",
+      "path_markers": ["\\netsupport\\", "\\netsupport manager\\", "\\netsupport school\\"],
+      "exe_names": ["client32.exe", "pcicfgui.exe", "pcictlui.exe", "nsm_vpro.exe"],
+      "file_name_patterns": ["client32.ini", "nsm.lic"],
+      "service_names": ["client32"],
+      "signer_markers": ["netsupport"],
+      "product_markers": ["netsupport"],
+      "notes": ["NetSupport RAT 常把 client32.exe 放在 AppData / ProgramData 随机目录"]
+    },
+    {
+      "id": "remoteutilities",
+      "name": "Remote Utilities",
+      "vendor": "Usoris Systems",
+      "priority": "high",
+      "path_markers": ["\\remote utilities - host\\", "\\remote utilities - agent\\", "\\remote utilities\\"],
+      "exe_names": ["rutserv.exe", "rfusclient.exe", "rutview.exe"],
+      "service_names": ["rmanservice"],
+      "signer_markers": ["usoris", "remote utilities"],
+      "product_markers": ["remote utilities"]
+    },
+    {
+      "id": "rustdesk",
+      "name": "RustDesk",
+      "vendor": "RustDesk",
+      "priority": "medium_high",
+      "path_markers": ["\\rustdesk\\"],
+      "exe_names": ["rustdesk.exe"],
+      "service_names": ["rustdesk"],
+      "signer_markers": ["purslane"],
+      "product_markers": ["rustdesk"],
+      "config_globs": ["**/RustDesk/RustDesk2.toml", "**/RustDesk/RustDesk.toml"],
+      "parsers": {
+        "custom_server": {
+          "toml_keys": ["rendezvous_server", "relay_server", "api_server"]
+        }
+      }
+    },
+    {
+      "id": "logmein",
+      "name": "LogMeIn / GoTo",
+      "vendor": "GoTo (LogMeIn)",
+      "priority": "medium_high",
+      "path_markers": ["\\logmein\\", "\\logmein rescue", "\\goto\\", "\\gotoassist", "\\goto resolve"],
+      "exe_names": ["logmein.exe", "lmiguardiansvc.exe", "lmiignition.exe", "logmeinsystray.exe", "lmi_rescue.exe", "gotoassist.exe"],
+      "service_names": ["logmein", "lmiguardian", "lmiignition"],
+      "signer_markers": ["logmein", "goto technologies"],
+      "product_markers": ["logmein", "gotoassist", "goto resolve"]
+    },
+    {
+      "id": "zohoassist",
+      "name": "Zoho Assist",
+      "vendor": "Zoho Corporation",
+      "priority": "medium_high",
+      "path_markers": ["\\zoho\\assist", "\\zohoassist", "\\zoho assist", "\\zohomeeting\\", "\\zohours"],
+      "exe_names": ["zohoassist.exe", "zaservice.exe", "zohours.exe", "zohoursservice.exe", "zohotray.exe", "zamainapp.exe"],
+      "service_names": ["zohoassist", "zohours", "zaservice"],
+      "signer_markers": [],
+      "product_markers": ["zoho assist", "zohoassist", "zohours"]
+    },
+    {
+      "id": "remotepc",
+      "name": "RemotePC",
+      "vendor": "IDrive Inc.",
+      "priority": "medium_high",
+      "path_markers": ["\\remotepc\\"],
+      "exe_names": ["remotepc.exe", "remotepcservice.exe", "rpcsuite.exe", "remotepchost.exe"],
+      "service_names": ["remotepcservice", "remotepc"],
+      "signer_markers": [],
+      "product_markers": ["remotepc"]
+    },
+    {
+      "id": "takecontrol",
+      "name": "N-able Take Control",
+      "vendor": "N-able / SolarWinds MSP",
+      "priority": "medium",
+      "path_markers": ["\\beanywhere support express\\", "\\take control agent", "\\n-able technologies\\", "\\solarwinds msp\\"],
+      "exe_names": ["basupsrvc.exe", "basupsrvcupdater.exe", "basuptshelper.exe", "basupsysinf.exe"],
+      "service_names": ["basupportexpresssrvc", "basupportexpressupdater"],
+      "signer_markers": ["n-able", "solarwinds msp", "beanywhere"],
+      "product_markers": ["take control", "beanywhere"]
+    },
+    {
+      "id": "bomgar",
+      "name": "BeyondTrust / Bomgar",
+      "vendor": "BeyondTrust",
+      "priority": "medium",
+      "path_markers": ["\\bomgar\\", "\\beyondtrust remote support"],
+      "exe_names": ["bomgar-scc.exe", "bomgar-pac.exe", "bomgar-rdp.exe"],
+      "file_name_patterns": ["bomgar-%.exe"],
+      "service_names": ["bomgar"],
+      "signer_markers": ["bomgar", "beyondtrust"],
+      "product_markers": ["bomgar", "beyondtrust remote support"]
+    },
+    {
+      "id": "ninjaone",
+      "name": "NinjaOne (NinjaRMM)",
+      "vendor": "NinjaOne",
+      "priority": "medium",
+      "path_markers": ["\\ninjarmmagent\\", "\\ninjarmm", "\\ninjaone\\"],
+      "exe_names": ["ninjarmmagent.exe", "ninjarmmagentpatcher.exe", "ncstreamer.exe"],
+      "service_names": ["ninjarmmagent"],
+      "signer_markers": ["ninjarmm", "ninjaone"],
+      "product_markers": ["ninjarmm", "ninjaone"]
+    },
+    {
+      "id": "action1",
+      "name": "Action1",
+      "vendor": "Action1 Corporation",
+      "priority": "medium",
+      "path_markers": ["\\action1\\"],
+      "exe_names": ["action1_agent.exe", "action1_remote.exe", "action1_connector.exe"],
+      "service_names": ["a1agent"],
+      "signer_markers": ["action1"],
+      "product_markers": ["action1"]
+    },
+    {
+      "id": "levelio",
+      "name": "Level.io",
+      "vendor": "Level Software",
+      "priority": "medium",
+      "path_markers": ["\\program files\\level\\", "\\program files (x86)\\level\\"],
+      "exe_names": ["level-windows-amd64.exe", "level-windows-386.exe"],
+      "service_names": [],
+      "signer_markers": ["level software"],
+      "product_markers": ["level.io"],
+      "notes": ["进程名 Level.exe 过于通用，仅按安装目录识别"]
+    },
+    {
+      "id": "pdq",
+      "name": "PDQ Connect / Deploy",
+      "vendor": "PDQ.com",
+      "priority": "medium",
+      "path_markers": ["\\pdq\\", "\\admin arsenal\\pdq", "\\pdqconnectagent"],
+      "exe_names": ["pdqconnectagent.exe", "pdqdeploy.exe", "pdqdeployrunner.exe", "pdqdeployconsole.exe", "pdqinventory.exe"],
+      "file_name_patterns": ["pdqdeployrunner%.exe"],
+      "service_names": ["pdqconnectagent", "pdqdeploy", "pdqinventory"],
+      "signer_markers": ["pdq.com", "admin arsenal"],
+      "product_markers": ["pdq connect", "pdq deploy", "pdqconnect"]
+    },
+    {
+      "id": "pulseway",
+      "name": "Pulseway",
+      "vendor": "MMSOFT Design",
+      "priority": "medium",
+      "path_markers": ["\\pulseway\\", "\\mmsoft design\\"],
+      "exe_names": ["pcmonitor.exe", "pcmonitorsrv.exe", "pcmonitormanager.exe", "pcmontask.exe"],
+      "service_names": ["pc monitor", "pcmonitor"],
+      "signer_markers": ["mmsoft design", "pulseway"],
+      "product_markers": ["pulseway"]
+    },
+    {
+      "id": "msp360",
+      "name": "MSP360 RMM / Connect",
+      "vendor": "MSP360 (CloudBerry Lab)",
+      "priority": "medium",
+      "path_markers": ["\\msp360\\", "\\cloudberrylab\\", "\\msp360 connect"],
+      "exe_names": ["msp360connect.exe", "cloudberry.connect.exe", "rmmagent.exe"],
+      "service_names": ["msp360", "cloudberry"],
+      "signer_markers": ["cloudberry lab", "msp360"],
+      "product_markers": ["msp360", "cloudberry connect"]
+    },
+    {
+      "id": "acronis",
+      "name": "Acronis Cyber Protect (RMM)",
+      "vendor": "Acronis",
+      "priority": "medium",
+      "path_markers": ["\\acronis\\", "\\backupclient\\remotemanagement"],
+      "exe_names": ["aakore.exe", "acroniscyberprotectionservice.exe", "remote-desktop-agent.exe"],
+      "service_names": ["aakore", "acronis managed machine service"],
+      "signer_markers": ["acronis"],
+      "product_markers": ["acronis cyber protect", "acronis agent"],
+      "notes": ["备份类产品，带远程管理/远程桌面能力，需结合是否授权判断"]
+    },
+    {
+      "id": "vnc",
+      "name": "VNC（RealVNC / TightVNC / UltraVNC / TigerVNC）",
+      "vendor": "多厂商",
+      "priority": "medium",
+      "path_markers": ["\\realvnc\\", "\\tightvnc\\", "\\ultravnc\\", "\\uvnc bvba\\", "\\tigervnc\\"],
+      "exe_names": ["winvnc.exe", "winvnc4.exe", "tvnserver.exe", "vncserver.exe", "vncviewer.exe", "tvnviewer.exe"],
+      "service_names": ["uvnc_service", "tvnserver", "vncserver", "winvnc"],
+      "signer_markers": ["realvnc", "glavsoft", "uvnc bvba"],
+      "product_markers": ["realvnc", "tightvnc", "ultravnc", "tigervnc"]
+    }
+  ]
+}

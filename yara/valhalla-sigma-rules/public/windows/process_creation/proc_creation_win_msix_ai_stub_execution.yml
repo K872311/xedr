@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows MSIX Package Support Framework AI_STUBS Execution
+id: af5732ed-764e-489d-826d-0447c8b36242
+status: experimental
+description: |
+    Detects execution of Advanced Installer MSIX Package Support Framework (PSF) components, specifically AI_STUBS executables with original filename 'popupwrapper.exe'.
+    This activity may indicate malicious MSIX packages build with Advanced Installer leveraging the Package Support Framework to bypass application control restrictions.
+references:
+    - https://redcanary.com/blog/threat-intelligence/msix-installers/
+    - https://redcanary.com/threat-detection-report/techniques/installer-packages/
+    - https://learn.microsoft.com/en-us/windows/msix/package/package-support-framework
+    - https://www.splunk.com/en_us/blog/security/msix-weaponization-threat-detection-splunk.html
+date: "2025-11-03"
+author: Michael Haag, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \AI_STUBS\AiStubX64Elevated.exe
+            - \AI_STUBS\AiStubX86Elevated.exe
+            - \AI_STUBS\AiStubX64.exe
+            - \AI_STUBS\AiStubX86.exe
+        OriginalFileName: popupwrapper.exe
+falsepositives:
+    - Legitimate applications packaged with Advanced Installer using Package Support Framework
+level: low
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.defense-impairment
+    - attack.t1218
+    - attack.t1553.005
+    - attack.t1204.002
+customer: 'demo'

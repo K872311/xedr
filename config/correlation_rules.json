@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-10-31",
+  "rules": [
+    {
+      "id": "corr.proc.lsass_access_burst",
+      "type": "frequency",
+      "title": "短时间内多次访问 LSASS",
+      "severity": "high",
+      "window_sec": 120,
+      "min_count": 3,
+      "group_by": ["agent_id"],
+      "match": {
+        "etype_in": ["process_access"],
+        "detail_regex": "(?i)lsass"
+      },
+      "mitre": ["T1003.001"],
+      "note": "Sysmon 10 / 进程打开 LSASS，短时间多次多为凭据窃取。"
+    },
+    {
+      "id": "corr.proc.office_script_burst",
+      "type": "frequency",
+      "title": "办公进程多次拉起脚本解释器",
+      "severity": "high",
+      "window_sec": 300,
+      "min_count": 2,
+      "group_by": ["agent_id", "parent_name"],
+      "match": {
+        "etype_contains": "process",
+        "parent_regex": "(?i)(winword|excel|powerpnt|outlook)\\.exe",
+        "name_regex": "(?i)(powershell|pwsh|cmd|wscript|cscript|mshta)\\.exe"
+      },
+      "mitre": ["T1566.001", "T1059"],
+      "note": "宏/钓鱼常见链。"
+    },
+    {
+      "id": "corr.net.lolbin_connect_burst",
+      "type": "frequency",
+      "title": "LOLBin 多次外联",
+      "severity": "medium",
+      "window_sec": 180,
+      "min_count": 3,
+      "group_by": ["agent_id", "process_name"],
+      "match": {
+        "etype_contains": "network",
+        "detail_regex": "(?i)(rundll32|regsvr32|mshta|certutil|msbuild|installutil)\\.exe"
+      },
+      "mitre": ["T1071", "T1218"],
+      "building_block": true,
+      "note": "积木：单条外联可能为更新；多次外联再与其他阶段叠加升级。"
+    },
+    {
+      "id": "corr.task.temp_create_delete",
+      "type": "sequence",
+      "title": "计划任务创建后快速删除",
+      "severity": "high",
+      "window_sec": 300,
+      "steps": [
+        { "etype": "win_task_create" },
+        { "etype": "win_task_update", "summary_contains": "删除" }
+      ],
+      "mitre": ["T1053.005"],
+      "note": "临时任务持久化；若 Agent 未上报删除事件则依赖 4699 扩展。"
+    },
+    {
+      "id": "corr.first_seen.users_unsigned_exe",
+      "type": "first_seen",
+      "title": "首次出现：用户目录未签名可执行文件执行",
+      "severity": "medium",
+      "history_days": 30,
+      "dedupe_key_fields": ["path"],
+      "match": {
+        "etype_contains": "process",
+        "detail_regex": "(?i)\\\\Users\\\\.*\\.(exe|dll)$",
+        "signed_not": ["valid", "signed"]
+      },
+      "mitre": ["T1204"],
+      "building_block": true,
+      "note": "30 天内首次见到的路径+进程组合。"
+    }
+  ]
+}

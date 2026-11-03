@@ -1,0 +1,69 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential Kerberos Coercion by Spoofing SPNs via DNS Manipulation
+id: b07e58cf-cacc-4135-8473-ccb2eba63dd2
+related:
+    - type: similar
+      id: e7a21b5f-d8c4-4ae5-b8d9-93c5d3f28e1c
+    - type: similar
+      id: 5588576c-5898-4fac-bcdd-7475a60e8f43
+    - type: similar
+      id: 0ed99dda-6a35-11ef-8c99-0242ac120002
+status: experimental
+description: |
+    Detects modifications to DNS records in Active Directory where the Distinguished Name (DN) contains a base64-encoded blob
+    matching the pattern "1UWhRCAAAAA...BAAAA". This pattern corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure,
+    commonly used in Kerberos coercion attacks. Adversaries may exploit this to coerce victim systems into authenticating to
+    attacker-controlled hosts by spoofing SPNs via DNS. It is one of the strong indicators of a Kerberos coercion attack,.
+    where adversaries manipulate DNS records to spoof Service Principal Names (SPNs) and redirect authentication requests like CVE-2025-33073.
+    Please investigate the user account that made the changes, as it is likely a low-privileged account that has been compromised.
+references:
+    - https://googleprojectzero.blogspot.com/2021/10/using-kerberos-for-authentication-relay.html
+    - https://www.synacktiv.com/publications/ntlm-reflection-is-dead-long-live-ntlm-reflection-an-in-depth-analysis-of-cve-2025
+date: "2025-06-20"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+    definition: |
+        By default these events are not logged by default for MicrosoftDNS objects in Active Directory.
+        To enable detection, configure an AuditRule on the DNS object container with the "CreateChild" permission for the "Everyone" principal.
+        This can be accomplished using tools such as Set-AuditRule (see https://github.com/OTRF/Set-AuditRule).
+detection:
+    condition: 1 of selection_*
+    selection_directory_service_access:
+        AdditionalInfo|contains|all:
+            - UWhRCA
+            - BAAAA
+            - CN=MicrosoftDNS
+        EventID: "4662"
+    selection_directory_service_changes:
+        EventID:
+            - "5136"
+            - "5137"
+        ObjectClass: dnsNode
+        ObjectDN|contains|all:
+            - UWhRCA
+            - BAAAA
+            - CN=MicrosoftDNS
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.collection
+    - attack.credential-access
+    - attack.t1557.003
+    - attack.persistence
+    - attack.privilege-escalation
+customer: 'demo'

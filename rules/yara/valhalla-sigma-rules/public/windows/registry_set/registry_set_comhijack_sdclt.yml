@@ -1,0 +1,39 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: COM Hijack via Sdclt
+id: 07743f65-7ec9-404a-a519-913db7118a8d
+status: test
+description: Detects changes to 'HKCU\Software\Classes\Folder\shell\open\command\DelegateExecute'
+references:
+    - http://blog.sevagas.com/?Yet-another-sdclt-UAC-bypass
+    - https://www.exploit-db.com/exploits/47696
+date: "2020-09-27"
+modified: "2023-09-28"
+author: Omkar Gudhate
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetObject|contains: \Software\Classes\Folder\shell\open\command\DelegateExecute
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1546
+    - attack.t1548
+customer: 'demo'

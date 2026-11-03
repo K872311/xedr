@@ -1,0 +1,16 @@
+{
+  "last_ok": true,
+  "last_error": "",
+  "indexed": 0,
+  "added": 0,
+  "skipped": 418423,
+  "scanned": 418423,
+  "total": 418423,
+  "mode": "incremental",
+  "started_at": "2026-08-14T10:19:23",
+  "finished_at": "2026-08-14T10:19:27",
+  "elapsed_ms": 4128,
+  "errors": 0,
+  "es_count_before": 418097,
+  "es_count_after": 418097
+}

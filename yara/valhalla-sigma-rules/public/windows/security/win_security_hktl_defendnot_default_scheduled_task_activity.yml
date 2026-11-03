@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - Defendnot Default Scheduled Task Activity
+id: 015ff932-4156-41ae-9d4c-1443995611fd
+status: experimental
+description: |
+    Detects the default scheduled task activity of the hacktool Defendnot, which is used to disable Windows Defender Security.
+    It abuses Microsoft's undocumented WSC API to register itself as a fake antivirus product, allowing it to disable Windows Defender.
+    During installation, Defendnot creates a scheduled task named 'defendnot' with the argument '--from-autorun' for persistence.
+references:
+    - https://github.com/es3n1n/defendnot/blob/525176a37721ead27d3f9f77f59b58abfc305988/README.md
+    - https://www.huntress.com/blog/defendnot-detecting-malicious-security-product-bypass-techniques
+date: "2026-10-18"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+detection:
+    condition: all of selection_*
+    selection_eid:
+        EventID:
+            - "4698"
+            - "4702"
+    selection_task:
+        - TaskName: \defendnot
+        - TaskContent|contains:
+            - defendnot
+            - <Arguments>--from-autorun</Arguments>
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1053.005
+    - attack.t1685
+customer: 'demo'

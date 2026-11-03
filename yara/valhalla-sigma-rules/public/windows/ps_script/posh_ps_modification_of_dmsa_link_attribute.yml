@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DMSA Link Attributes Modified
+id: 9b111d8e-92e0-4153-88bc-daefc1333aba
+related:
+    - type: similar
+      id: 6c9eb492-e477-4df9-b0f4-571fc9db29cd
+status: experimental
+description: |
+    Detects modification of dMSA link attributes (msDS-ManagedAccountPrecededByLink) via PowerShell scripts.
+    This command line pattern could be an indicator an attempt to exploit the BadSuccessor privilege escalation vulnerability in Windows Server 2025.
+references:
+    - https://www.akamai.com/blog/security-research/abusing-bad-successor-for-privilege-escalation-in-active-directory
+date: "2025-05-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: ps_script
+    product: windows
+detection:
+    condition: selection
+    selection:
+        ScriptBlockText|contains|all:
+            - .Put("msDS-ManagedAccountPrecededByLink
+            - CN=
+falsepositives:
+    - Legitimate administrative tasks modifying these attributes.
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.initial-access
+    - attack.stealth
+    - attack.t1078.002
+    - attack.t1098
+customer: 'demo'

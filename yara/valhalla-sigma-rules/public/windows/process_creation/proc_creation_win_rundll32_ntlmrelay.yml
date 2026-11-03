@@ -1,0 +1,47 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious NTLM Authentication on the Printer Spooler Service
+id: bb76d96b-821c-47cf-944b-7ce377864492
+status: test
+description: Detects a privilege elevation attempt by coercing NTLM authentication on the Printer Spooler service
+references:
+    - https://twitter.com/med0x2e/status/1520402518685200384
+    - https://github.com/elastic/detection-rules/blob/dd224fb3f81d0b4bf8593c5f02a029d647ba2b2d/rules/windows/credential_access_relay_ntlm_auth_via_http_spoolss.toml
+date: "2022-05-04"
+modified: "2023-02-09"
+author: Elastic (idea), Tobias Michalski (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - spoolss
+            - srvsvc
+            - /print/pipe/
+        CommandLine|contains|all:
+            - C:\windows\system32\davclnt.dll,DavSetCookie
+            - http
+    selection_img:
+        - Image|endswith: \rundll32.exe
+        - OriginalFileName: RUNDLL32.EXE
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.credential-access
+    - attack.t1212
+customer: 'demo'

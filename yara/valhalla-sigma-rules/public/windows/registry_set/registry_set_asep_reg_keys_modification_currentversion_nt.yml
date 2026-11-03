@@ -1,0 +1,117 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: CurrentVersion NT Autorun Keys Modification
+id: cbf93e5d-ca6c-4722-8bea-e9119007c248
+related:
+    - type: obsolete
+      id: 17f878b8-9968-4578-b814-c4217fc5768c
+status: test
+description: Detects modification of autostart extensibility point (ASEP) in registry.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1547.001/T1547.001.md
+    - https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns
+    - https://gist.github.com/GlebSukhodolskiy/0fc5fa5f482903064b448890db1eaf9d
+date: "2019-10-25"
+modified: "2025-10-22"
+author: Victor Sergeev, Daniil Yugoslavskiy, Gleb Sukhodolskiy, Timur Zinniatullin, oscd.community, Tim Shelton, frack113 (split)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_empty:
+        Details: (Empty)
+    filter_main_legitimate_subkey:
+        TargetObject|contains: \Image File Execution Options\
+        TargetObject|endswith:
+            - \DisableExceptionChainValidation
+            - \MitigationOptions
+    filter_main_null:
+        Details: []
+    filter_main_poqexec:
+        Image: C:\Windows\System32\poqexec.exe
+    filter_main_runtimebroker:
+        Image: C:\Windows\System32\RuntimeBroker.exe
+        TargetObject|contains: \runtimebroker.exe\Microsoft.Windows.ShellExperienceHost
+    filter_main_security_extension_dc:
+        Details:
+            - DWORD (0x00000001)
+            - DWORD (0x00000009)
+            - DWORD (0x000003c0)
+        Image: C:\Windows\system32\svchost.exe
+        TargetObject|contains:
+            - \Winlogon\GPExtensions\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}\PreviousPolicyAreas
+            - \Winlogon\GPExtensions\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}\MaxNoGPOListChangesInterval
+    filter_optional_avguard:
+        Details:
+            - explorer.exe
+            - C:\Windows\system32\userinit.exe,
+        Image|startswith:
+            - C:\Program Files (x86)\Avira\Antivirus\avguard.exe
+            - C:\Program Files\Avira\Antivirus\avguard.exe
+        TargetObject|contains: SOFTWARE\WOW6432Node\Avira\Antivirus\Overwrite_Keys\HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\
+        TargetObject|endswith:
+            - \userinit\UseAsDefault
+            - \shell\UseAsDefault
+    filter_optional_edge:
+        Image|endswith: \MicrosoftEdgeUpdate.exe
+        Image|startswith: C:\Program Files (x86)\Microsoft\Temp\
+    filter_optional_msoffice:
+        - TargetObject|contains:
+            - \ClickToRunStore\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\
+            - \ClickToRun\REGISTRY\MACHINE\Software\Microsoft\Windows NT\CurrentVersion\
+        - Image:
+            - C:\Program Files\Microsoft Office\root\integration\integrator.exe
+            - C:\Program Files (x86)\Microsoft Office\root\integration\integrator.exe
+    filter_optional_ngen:
+        Image|endswith: \ngen.exe
+        Image|startswith: C:\Windows\Microsoft.NET\Framework
+    filter_optional_officeclicktorun:
+        Image|endswith: \OfficeClickToRun.exe
+        Image|startswith:
+            - C:\Program Files\Common Files\Microsoft Shared\ClickToRun\
+            - C:\Program Files\Common Files\Microsoft Shared\ClickToRun\Updates\
+    filter_optional_onedrive:
+        Details|endswith: \AppData\Local\Microsoft\OneDrive\Update\OneDriveSetup.exe"
+        Details|startswith: C:\Windows\system32\cmd.exe /q /c del /q "C:\Users\
+        Image|endswith: \AppData\Local\Microsoft\OneDrive\StandaloneUpdater\OneDriveSetup.exe
+        TargetObject|endswith: \Microsoft\Windows\CurrentVersion\RunOnce\Delete Cached Update Binary
+    selection_nt_current_version:
+        TargetObject|contains:
+            - \Winlogon\VmApplet
+            - \Winlogon\Userinit
+            - \Winlogon\Taskman
+            - \Winlogon\Shell
+            - \Winlogon\GpExtensions
+            - \Winlogon\AppSetup
+            - \Winlogon\AlternateShells\AvailableShells
+            - \Windows\IconServiceLib
+            - \Windows\Appinit_Dlls
+            - \Image File Execution Options
+            - \Font Drivers
+            - \Drivers32
+            - \Windows\Run
+            - \Windows\Load
+    selection_nt_current_version_base:
+        TargetObject|contains: \SOFTWARE\Microsoft\Windows NT\CurrentVersion
+falsepositives:
+    - Legitimate software automatically (mostly, during installation) sets up autorun keys for legitimate reason
+    - Legitimate administrator sets up autorun keys for legitimate reason
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.t1547.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_asep_reg_keys_modification_currentversion_nt/info.yml

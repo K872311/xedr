@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious File Created in Outlook Temporary Directory
+id: fabb0e80-030c-4e3e-a104-d09676991ac3
+related:
+    - type: obsolete
+      id: f748c45a-f8d3-4e6f-b617-fe176f695b8f
+status: experimental
+description: |
+    Detects the creation of files with suspicious file extensions in the temporary directory that Outlook uses when opening attachments.
+    This can be used to detect spear-phishing campaigns that use suspicious files as attachments, which may contain malicious code.
+references:
+    - https://vipre.com/blog/svg-phishing-attacks-the-new-trick-in-the-cybercriminals-playbook/
+    - https://thecyberexpress.com/rogue-rdp-files-used-in-ukraine-cyberattacks/
+    - https://www.microsoft.com/en-us/security/blog/2024/10/29/midnight-blizzard-conducts-large-scale-spear-phishing-campaign-using-rdp-files/
+date: "2025-07-22"
+author: Florian Roth (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_extension:
+        TargetFilename|endswith:
+            - .cpl
+            - .hta
+            - .iso
+            - .rdp
+            - .svg
+            - .vba
+            - .vbe
+            - .vbs
+    selection_location:
+        - TargetFilename|contains:
+            - \AppData\Local\Packages\Microsoft.Outlook_
+            - \AppData\Local\Microsoft\Olk\Attachments\
+        - TargetFilename|contains|all:
+            - \AppData\Local\Microsoft\Windows\
+            - \Content.Outlook\
+falsepositives:
+    - Opening of headers or footers in email signatures that include SVG images or legitimate SVG attachments
+level: high
+tags:
+    - attack.initial-access
+    - attack.t1566.001
+customer: 'demo'

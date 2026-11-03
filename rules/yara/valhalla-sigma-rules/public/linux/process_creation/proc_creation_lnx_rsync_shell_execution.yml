@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Shell Execution via Rsync - Linux
+id: e2326866-609f-4015-aea9-7ec634e8aa04
+status: experimental
+description: |
+    Detects the use of the "rsync" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.
+references:
+    - https://gtfobins.github.io/gtfobins/rsync/#shell
+date: "2024-09-02"
+modified: "2025-01-18"
+author: Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.), Florian Roth
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|contains:
+            - '/ash '
+            - '/bash '
+            - '/dash '
+            - '/csh '
+            - '/sh '
+            - '/zsh '
+            - '/tcsh '
+            - '/ksh '
+            - '''ash '
+            - '''bash '
+            - '''dash '
+            - '''csh '
+            - '''sh '
+            - '''zsh '
+            - '''tcsh '
+            - '''ksh '
+    selection_img:
+        CommandLine|contains: ' -e '
+        Image|endswith:
+            - /rsync
+            - /rsyncd
+falsepositives:
+    - Legitimate cases in which "rsync" is used to execute a shell
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+customer: 'demo'

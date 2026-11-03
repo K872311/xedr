@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious ArcSOC.exe Child Process
+id: 8e95e73e-ba02-4a87-b4d7-0929b8053038
+status: experimental
+description: |
+    Detects script interpreters, command-line tools, and similar suspicious child processes of ArcSOC.exe.
+    ArcSOC.exe is the process name which hosts ArcGIS Server REST services. If an attacker compromises an ArcGIS
+    Server system and uploads a malicious Server Object Extension (SOE), they can send crafted requests to the corresponding
+    service endpoint and remotely execute code from the ArcSOC.exe process.
+references:
+    - https://reliaquest.com/blog/threat-spotlight-inside-flax-typhoons-arcgis-compromise/
+    - https://enterprise.arcgis.com/en/server/12.0/administer/windows/inside-an-arcgis-server-site.htm
+date: "2025-11-25"
+author: Micah Babinski
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_cmd:
+        CommandLine: cmd.exe /c "ver"
+        Image|endswith: \cmd.exe
+    selection:
+        Image|endswith:
+            - \cmd.exe
+            - \cscript.exe
+            - \mshta.exe
+            - \powershell.exe
+            - \pwsh.exe
+            - \regsvr32.exe
+            - \rundll32.exe
+            - \wmic.exe
+            - \wscript.exe
+        ParentImage|endswith: \ArcSOC.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+    - attack.t1203
+customer: 'demo'

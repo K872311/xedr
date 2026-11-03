@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: FortiGate - VPN SSL Settings Modified
+id: 8b5dacf2-aeb7-459d-b133-678eb696d410
+status: experimental
+description: |
+    Detects the modification of VPN SSL Settings (for example, the modification of authentication rules).
+    This behavior was observed in pair with the addition of a VPN SSL Web Portal.
+references:
+    - https://www.fortiguard.com/psirt/FG-IR-24-535
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/398/event
+    - https://docs.fortinet.com/document/fortigate/7.6.4/cli-reference/114404382/config-vpn-ssl-settings
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/44546/44546-logid-event-config-attr
+date: "2025-11-01"
+author: Marco Pedrinazzi (@pedrinazziM) (InTheCyber)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: fortigate
+    service: event
+detection:
+    condition: selection
+    selection:
+        action: Edit
+        cfgpath: vpn.ssl.settings
+falsepositives:
+    - VPN SSL settings can be changed for legitimate purposes.
+level: medium
+tags:
+    - attack.persistence
+    - attack.initial-access
+    - attack.t1133
+customer: 'demo'

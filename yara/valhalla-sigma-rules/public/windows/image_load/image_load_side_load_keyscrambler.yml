@@ -1,0 +1,60 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential DLL Sideloading Of KeyScramblerIE.DLL Via KeyScrambler.EXE
+id: d2451be2-b582-4e15-8701-4196ac180260
+related:
+    - type: similar
+      id: ca5583e9-8f80-46ac-ab91-7f314d13b984
+status: test
+description: |
+    Detects potential DLL side loading of "KeyScramblerIE.dll" by "KeyScrambler.exe".
+    Various threat actors and malware have been found side loading a masqueraded "KeyScramblerIE.dll" through "KeyScrambler.exe".
+references:
+    - https://thehackernews.com/2024/03/two-chinese-apt-groups-ramp-up-cyber.html
+    - https://csirt-cti.net/2024/02/01/stately-taurus-continued-new-information-on-cyberespionage-attacks-against-myanmar-military-junta/
+    - https://bazaar.abuse.ch/sample/5cb9876681f78d3ee8a01a5aaa5d38b05ec81edc48b09e3865b75c49a2187831/
+    - https://twitter.com/Max_Mal_/status/1775222576639291859
+    - https://twitter.com/DTCERT/status/1712785426895839339
+date: "2024-04-15"
+author: Swachchhanda Shrawan Poudel
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_legitimate_path:
+        Image|contains:
+            - C:\Program Files (x86)\KeyScrambler\
+            - C:\Program Files\KeyScrambler\
+        ImageLoaded|contains:
+            - C:\Program Files (x86)\KeyScrambler\
+            - C:\Program Files\KeyScrambler\
+    filter_main_signature:
+        Signature: QFX Software Corporation
+        SignatureStatus: Valid
+    selection:
+        Image|endswith:
+            - \KeyScrambler.exe
+            - \KeyScramblerLogon.exe
+        ImageLoaded|endswith: \KeyScramblerIE.dll
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'

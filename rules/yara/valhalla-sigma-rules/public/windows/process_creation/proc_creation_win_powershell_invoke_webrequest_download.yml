@@ -1,0 +1,68 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Invoke-WebRequest Execution
+id: 5e3cc4d8-3e68-43db-8656-eaaeefdec9cc
+related:
+    - type: derived
+      id: e218595b-bbe7-4ee5-8a96-f32a24ad3468
+status: test
+description: Detects a suspicious call to Invoke-WebRequest cmdlet where the and output is located in a suspicious location
+references:
+    - https://www.sentinelone.com/blog/living-off-windows-defender-lockbit-ransomware-sideloads-cobalt-strike-through-microsoft-security-tool/
+date: "2022-08-02"
+modified: "2025-07-18"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_commands:
+        CommandLine|contains:
+            - 'curl '
+            - Invoke-WebRequest
+            - 'iwr '
+            - 'wget '
+    selection_flags:
+        CommandLine|contains:
+            - ' -ur'
+            - ' -o'
+    selection_img:
+        - Image|endswith:
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \pwsh.exe
+        - OriginalFileName:
+            - powershell_ise.EXE
+            - PowerShell.EXE
+            - pwsh.dll
+    selection_susp_locations:
+        CommandLine|contains:
+            - \AppData\
+            - \Desktop\
+            - \Temp\
+            - \Users\Public\
+            - '%AppData%'
+            - '%Public%'
+            - '%Temp%'
+            - '%tmp%'
+            - :\Windows\
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.command-and-control
+    - attack.t1105
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_powershell_invoke_webrequest_download/info.yml

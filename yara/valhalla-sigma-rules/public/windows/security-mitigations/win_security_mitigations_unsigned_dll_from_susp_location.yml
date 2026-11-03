@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Unsigned Binary Loaded From Suspicious Location
+id: 8289bf8c-4aca-4f5a-9db3-dc3d7afe5c10
+status: test
+description: Detects Code Integrity (CI) engine blocking processes from loading unsigned DLLs residing in suspicious locations
+references:
+    - https://github.com/nasbench/EVTX-ETW-Resources/blob/45fd5be71a51aa518b1b36d4e1f36af498084e27/ETWEventsList/CSV/Windows11/21H2/W11_21H2_Pro_20220719_22000.795/Providers/Microsoft-Windows-Security-Mitigations.csv
+date: "2022-08-03"
+modified: "2022-09-28"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security-mitigations
+detection:
+    condition: selection
+    selection:
+        EventID:
+            - "11"
+            - "12"
+        ImageName|contains:
+            - \Users\Public\
+            - \PerfLogs\
+            - \Desktop\
+            - \Downloads\
+            - \AppData\Local\Temp\
+            - C:\Windows\TEMP\
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.001
+customer: 'demo'

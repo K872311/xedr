@@ -1,0 +1,17 @@
+forensic.example.com {
+    encode zstd gzip
+
+    request_body {
+        max_size 1GB
+    }
+
+    reverse_proxy 127.0.0.1:8000 {
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Request-ID {http.request.uuid}
+        transport http {
+            keepalive 30s
+            read_timeout 300s
+        }
+    }
+}

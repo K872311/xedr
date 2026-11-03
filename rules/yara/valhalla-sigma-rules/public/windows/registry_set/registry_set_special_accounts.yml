@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Hiding User Account Via SpecialAccounts Registry Key
+id: f8aebc67-a56d-4ec9-9fbe-7b0e8b7b4efd
+related:
+    - type: obsolete
+      id: 8a58209c-7ae6-4027-afb0-307a78e4589a
+    - type: similar
+      id: 9ec9fb1b-e059-4489-9642-f270c207923d
+status: test
+description: Detects modifications to the registry key "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\Userlist" where the value is set to "0" in order to hide user account from being listed on the logon screen.
+references:
+    - https://thedfirreport.com/2022/07/11/select-xmrig-from-sqlserver/
+    - https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1564.002/T1564.002.md#atomic-test-3---create-hidden-user-in-registry
+date: "2022-07-12"
+modified: "2023-01-26"
+author: Nasreddine Bencherchali (Nextron Systems), frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Details: DWORD (0x00000000)
+        TargetObject|contains: \SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1564.002
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_set/registry_set_special_accounts/info.yml
+simulation:
+    - atomic_guid: 173126b7-afe4-45eb-8680-fa9f6400431c
+      name: Create Hidden User in Registry
+      technique: T1564.002
+      type: atomic-red-team

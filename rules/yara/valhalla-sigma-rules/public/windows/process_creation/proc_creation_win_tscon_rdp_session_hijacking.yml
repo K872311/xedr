@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Potential RDP Session Hijacking Activity
+id: 224f140f-3553-4cd1-af78-13d81bf9f7cc
+status: test
+description: Detects potential RDP Session Hijacking activity on Windows systems
+references:
+    - https://twitter.com/Moti_B/status/909449115477659651
+date: "2022-12-27"
+modified: "2024-12-01"
+author: '@juju4'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_img:
+        - Image|endswith: \tscon.exe
+        - OriginalFileName: tscon.exe
+    selection_integrity:
+        IntegrityLevel:
+            - System
+            - S-1-16-16384
+falsepositives:
+    - Administrative activity
+level: medium
+tags:
+    - attack.execution
+customer: 'demo'

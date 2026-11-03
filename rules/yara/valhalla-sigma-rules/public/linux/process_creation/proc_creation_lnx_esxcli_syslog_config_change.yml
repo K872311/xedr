@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: ESXi Syslog Configuration Change Via ESXCLI
+id: 38eb1dbb-011f-40b1-a126-cf03a0210563
+status: test
+description: Detects changes to the ESXi syslog configuration via "esxcli"
+references:
+    - https://support.solarwinds.com/SuccessCenter/s/article/Configure-ESXi-Syslog-to-LEM?language=en_US
+    - https://developer.broadcom.com/xapis/esxcli-command-reference/7.0.0/namespace/esxcli_system.html
+date: "2023-09-04"
+author: Cedric Maurugeon
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains: ' set'
+        CommandLine|contains|all:
+            - system
+            - syslog
+            - config
+        Image|endswith: /esxcli
+falsepositives:
+    - Legitimate administrative activities
+level: medium
+tags:
+    - attack.execution
+    - attack.defense-impairment
+    - attack.t1685
+    - attack.t1690
+    - attack.t1059.012
+customer: 'demo'

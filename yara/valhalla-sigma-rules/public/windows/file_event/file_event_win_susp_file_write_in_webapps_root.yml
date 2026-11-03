@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious File Write to Webapps Root Directory
+id: 89c42960-f244-4dad-9151-ae9b1a3287a2
+status: experimental
+description: |
+    Detects suspicious file writes to the root directory of web applications, particularly Apache web servers or Tomcat servers.
+    This may indicate an attempt to deploy malicious files such as web shells or other unauthorized scripts.
+references:
+    - https://labs.watchtowr.com/guess-who-would-be-stupid-enough-to-rob-the-same-vault-twice-pre-auth-rce-chains-in-commvault/
+date: "2025-10-20"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_path:
+        TargetFilename|contains: \webapps\ROOT\
+    selection_servers:
+        TargetFilename|contains:
+            - \apache
+            - \tomcat
+    selection_susp_extensions:
+        TargetFilename|endswith: .jsp
+    selection_susp_img:
+        Image|endswith:
+            - \dotnet.exe
+            - \w3wp.exe
+            - \java.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.persistence
+    - attack.t1505.003
+    - attack.initial-access
+    - attack.t1190
+customer: 'demo'

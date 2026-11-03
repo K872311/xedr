@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Wannacry Killswitch Domain
+id: 3eaf6218-3bed-4d8a-8707-274096f12a18
+status: test
+description: Detects wannacry killswitch domain dns queries
+references:
+    - https://www.mandiant.com/resources/blog/wannacry-ransomware-campaign
+date: "2020-09-16"
+modified: "2022-03-24"
+author: Mike Wade
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: dns
+detection:
+    condition: selection
+    selection:
+        query:
+            - ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.testing
+            - ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.test
+            - ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.com
+            - ayylmaotjhsstasdfasdfasdfasdfasdfasdfasdf.com
+            - iuqssfsodp9ifjaposdfjhgosurijfaewrwergwea.com
+falsepositives:
+    - Analyst testing
+level: high
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+customer: 'demo'

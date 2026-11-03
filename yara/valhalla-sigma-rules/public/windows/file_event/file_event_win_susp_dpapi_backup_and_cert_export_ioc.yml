@@ -1,0 +1,46 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: DPAPI Backup Keys And Certificate Export Activity IOC
+id: 7892ec59-c5bb-496d-8968-e5d210ca3ac4
+status: test
+description: |
+    Detects file names with specific patterns seen generated and used by tools such as Mimikatz and DSInternals related to exported or stolen DPAPI backup keys and certificates.
+references:
+    - https://www.dsinternals.com/en/dpapi-backup-key-theft-auditing/
+    - https://github.com/MichaelGrafnetter/DSInternals/blob/39ee8a69bbdc1cfd12c9afdd7513b4788c4895d4/Src/DSInternals.Common/Data/DPAPI/DPAPIBackupKey.cs#L28-L32
+date: "2024-06-26"
+author: Nounou Mbeiri, Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetFilename|contains:
+            - ntds_capi_
+            - ntds_legacy_
+            - ntds_unknown_
+        TargetFilename|endswith:
+            - .cer
+            - .key
+            - .pfx
+            - .pvk
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.credential-access
+    - attack.t1555
+    - attack.t1552.004
+customer: 'demo'

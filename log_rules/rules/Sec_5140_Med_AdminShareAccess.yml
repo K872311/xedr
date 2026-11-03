@@ -1,0 +1,31 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '访问管理共享 ADMIN$ / C$'
+description: '审计事件 5140 表示访问 ADMIN$ 或 C$ 管理共享，常见于 PsExec 等横向移动工具投放文件。已排除计算机账号；需核对来源地址与远程运维授权。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a0a
+level: medium
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        Channel: Security
+        EventID: 5140
+        ShareName|endswith:
+            - '\ADMIN$'
+            - '\C$'
+    filter_machine:
+        SubjectUserName|endswith: '$'
+    condition: selection and not filter_machine
+falsepositives:
+    - 授权的远程运维、软件分发
+tags:
+    - attack.lateral-movement
+    - attack.t1021.002
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-5140
+ruletype: Hayabusa

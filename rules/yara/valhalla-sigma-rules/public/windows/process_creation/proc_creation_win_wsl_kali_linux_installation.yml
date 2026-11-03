@@ -1,0 +1,45 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Installation of WSL Kali-Linux
+id: eca8ae39-5c3c-4321-b538-9e64fe25822e
+status: experimental
+description: |
+    Detects installation of Kali Linux distribution through Windows Subsystem for Linux (WSL).
+    Attackers may use Kali Linux WSL to leverage its penetration testing tools and capabilities for malicious purposes.
+references:
+    - https://medium.com/@redfanatic7/running-kali-linux-on-windows-51ad95166e6e
+    - https://learn.microsoft.com/en-us/windows/wsl/install
+date: "2025-10-10"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_wsl_*
+    selection_wsl_img:
+        - Image|endswith: \wsl.exe
+        - OriginalFileName: wsl
+    selection_wsl_install:
+        CommandLine|contains:
+            - ' --install '
+            - ' -i '
+    selection_wsl_kali:
+        CommandLine|contains: kali
+falsepositives:
+    - Legitimate installation or usage of Kali Linux WSL by administrators or security teams
+level: high
+tags:
+    - attack.execution
+    - attack.t1059
+customer: 'demo'

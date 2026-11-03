@@ -1,0 +1,210 @@
+{
+  "T1003": {
+    "name_en": "OS Credential Dumping",
+    "name_cn": "操作系统凭据转储"
+  },
+  "T1003.001": {
+    "name_en": "LSASS Memory",
+    "name_cn": "LSASS Memory"
+  },
+  "T1003.003": {
+    "name_en": "NTDS",
+    "name_cn": "NTDS"
+  },
+  "T1027": {
+    "name_en": "Obfuscated Files or Information",
+    "name_cn": "混淆文件或信息"
+  },
+  "T1036": {
+    "name_en": "Masquerading",
+    "name_cn": "伪装"
+  },
+  "T1036.005": {
+    "name_en": "Match Legitimate Resource Name or Location",
+    "name_cn": "Match Legitimate Resource Name or Location"
+  },
+  "T1037": {
+    "name_en": "Boot or Logon Initialization Scripts",
+    "name_cn": "启动或登录初始化脚本"
+  },
+  "T1037.001": {
+    "name_en": "Logon Script (Windows)",
+    "name_cn": "Logon Script (Windows)"
+  },
+  "T1047": {
+    "name_en": "Windows Management Instrumentation",
+    "name_cn": "Windows管理工具"
+  },
+  "T1053": {
+    "name_en": "Scheduled Task/Job",
+    "name_cn": "计划任务/作业"
+  },
+  "T1053.005": {
+    "name_en": "Scheduled Task",
+    "name_cn": "计划任务"
+  },
+  "T1055": {
+    "name_en": "Process Injection",
+    "name_cn": "进程注入"
+  },
+  "T1059": {
+    "name_en": "Command and Scripting Interpreter",
+    "name_cn": "命令和脚本解释器"
+  },
+  "T1059.001": {
+    "name_en": "PowerShell",
+    "name_cn": "PowerShell脚本"
+  },
+  "T1059.005": {
+    "name_en": "Visual Basic",
+    "name_cn": "Visual Basic脚本"
+  },
+  "T1059.007": {
+    "name_en": "JavaScript",
+    "name_cn": "JavaScript脚本"
+  },
+  "T1082": {
+    "name_en": "System Information Discovery",
+    "name_cn": "系统信息发现"
+  },
+  "T1105": {
+    "name_en": "Ingress Tool Transfer",
+    "name_cn": "入站工具传输"
+  },
+  "T1112": {
+    "name_en": "Modify Registry",
+    "name_cn": "修改注册表"
+  },
+  "T1127": {
+    "name_en": "Trusted Developer Utilities Proxy Execution",
+    "name_cn": "可信开发者工具代理执行"
+  },
+  "T1127.001": {
+    "name_en": "MSBuild",
+    "name_cn": "MSBuild"
+  },
+  "T1140": {
+    "name_en": "Deobfuscate/Decode Files or Information",
+    "name_cn": "反混淆/解码文件或信息"
+  },
+  "T1197": {
+    "name_en": "BITS Jobs",
+    "name_cn": "BITS作业"
+  },
+  "T1204": {
+    "name_en": "User Execution",
+    "name_cn": "用户执行"
+  },
+  "T1204.002": {
+    "name_en": "Malicious File",
+    "name_cn": "Malicious File"
+  },
+  "T1218": {
+    "name_en": "System Binary Proxy Execution",
+    "name_cn": "系统二进制代理执行"
+  },
+  "T1218.003": {
+    "name_en": "CMSTP",
+    "name_cn": "CMSTP工具"
+  },
+  "T1218.004": {
+    "name_en": "InstallUtil",
+    "name_cn": "InstallUtil工具"
+  },
+  "T1218.005": {
+    "name_en": "Mshta",
+    "name_cn": "Mshta工具"
+  },
+  "T1218.010": {
+    "name_en": "Regsvr32",
+    "name_cn": "Regsvr32工具"
+  },
+  "T1218.011": {
+    "name_en": "Rundll32",
+    "name_cn": "Rundll32程序执行"
+  },
+  "T1220": {
+    "name_en": "XSL Script Processing",
+    "name_cn": "XSL脚本处理"
+  },
+  "T1490": {
+    "name_en": "Inhibit System Recovery",
+    "name_cn": "抑制系统恢复"
+  },
+  "T1505": {
+    "name_en": "Server Software Component",
+    "name_cn": "服务器软件组件"
+  },
+  "T1505.003": {
+    "name_en": "Web Shell",
+    "name_cn": "Web Shell"
+  },
+  "T1543": {
+    "name_en": "Create or Modify System Process",
+    "name_cn": "创建或修改系统进程"
+  },
+  "T1543.003": {
+    "name_en": "Windows Service",
+    "name_cn": "Windows Service"
+  },
+  "T1546": {
+    "name_en": "Event Triggered Execution",
+    "name_cn": "事件触发执行"
+  },
+  "T1546.001": {
+    "name_en": "Change Default File Association",
+    "name_cn": "更改默认文件关联"
+  },
+  "T1546.010": {
+    "name_en": "AppInit DLLs",
+    "name_cn": "AppInit动态链接库"
+  },
+  "T1546.015": {
+    "name_en": "Component Object Model Hijacking",
+    "name_cn": "组件对象模型劫持"
+  },
+  "T1547": {
+    "name_en": "Boot or Logon Autostart Execution",
+    "name_cn": "启动或登录自启动执行"
+  },
+  "T1547.001": {
+    "name_en": "Registry Run Keys / Startup Folder",
+    "name_cn": "注册表运行键/启动文件夹"
+  },
+  "T1547.004": {
+    "name_en": "Winlogon Helper DLL",
+    "name_cn": "Winlogon助手DLL"
+  },
+  "T1547.008": {
+    "name_en": "LSASS Driver",
+    "name_cn": "LSASS Driver"
+  },
+  "T1558": {
+    "name_en": "Steal or Forge Kerberos Tickets",
+    "name_cn": "窃取或伪造Kerberos票据"
+  },
+  "T1562": {
+    "name_en": "Impair Defenses",
+    "name_cn": "削弱防御"
+  },
+  "T1562.001": {
+    "name_en": "Disable or Modify Tools",
+    "name_cn": "Disable or Modify Tools"
+  },
+  "T1562.004": {
+    "name_en": "Disable or Modify System Firewall",
+    "name_cn": "Disable or Modify System Firewall"
+  },
+  "T1574": {
+    "name_en": "Hijack Execution Flow",
+    "name_cn": "劫持执行流"
+  },
+  "T1574.001": {
+    "name_en": "DLL",
+    "name_cn": "DLL"
+  },
+  "T1574.002": {
+    "name_en": "DLL Side-Loading",
+    "name_cn": "DLL侧加载"
+  }
+}

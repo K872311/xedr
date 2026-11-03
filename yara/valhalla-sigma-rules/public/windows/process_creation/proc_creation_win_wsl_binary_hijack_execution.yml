@@ -1,0 +1,58 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious WSL Binary Hijack via Proxy Execution
+id: 88d306e9-8e2d-4025-9768-28757d2732db
+status: experimental
+description: |
+    Detects C:\Windows\System32\wsl.exe spawning a child wsl.exe process from outside the legitimate WSL install locations.
+    When WSL or bash is invoked, the System32 stub (wsl.exe) looks up the InstallLocation registry key and executes the wsl.exe found there.
+    An attacker who modifies InstallLocation to a controlled path causes the stub to transparently proxy execution to a malicious payload,
+    which then appears as a wsl.exe child of the legitimate System32 stub.
+references:
+    - https://cardinalops.com/blog/bash-and-switch-hijacking-via-windows-subsystem-for-linux/
+    - https://blog.qualys.com/vulnerabilities-threat-research/2022/04/20/implications-of-windows-subsystem-for-linux-for-adversaries-defenders-part-2
+    - https://www.bleepingcomputer.com/news/security/new-malware-uses-windows-subsystem-for-linux-for-stealthy-attacks/
+    - https://thehackernews.com/2021/09/new-malware-targets-windows-subsystem.html
+    - https://learn.microsoft.com/en-us/windows/wsl/
+date: "2026-05-05"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_legit_paths_1:
+        Image:
+            - C:\Windows\System32\wsl.exe
+            - C:\Program Files\WSL\wsl.exe
+    filter_main_legit_paths_2:
+        Image|startswith:
+            - C:\Windows\WinSxS\amd64_microsoft-windows-lxss-wsl_
+            - C:\Windows\WinSxS\arm64_microsoft-windows-lxss-wsl_
+            - C:\Program Files\WindowsApps\MicrosoftCorporationII.WindowsSubsystemForLinux
+    filter_main_legit_paths_3:
+        Image|contains: \AppData\Local\Microsoft\WindowsApps\
+        Image|startswith: C:\Users\
+    selection:
+        Image|endswith: \wsl.exe
+        ParentImage: C:\Windows\System32\wsl.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.stealth
+    - attack.t1036.005
+    - attack.t1218
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_wsl_binary_hijack_execution/info.yml

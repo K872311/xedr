@@ -1,0 +1,36 @@
+author: CNPC platform
+date: 2026-10-20
+modified: 2026-10-20
+
+title: '防火墙规则被新增、修改或删除'
+description: 'Windows 防火墙例外规则发生变更（安全日志 4946/4947/4948，或防火墙日志 2004/2005/2006/2097）。软件安装也会产生；重点看是否放开 RDP、SMB 等入站端口。'
+
+id: 6c0e2f4a-9b1d-4e57-8a3c-1f2b7d4e9a0d
+level: low
+status: experimental
+logsource:
+    product: windows
+    service: security
+detection:
+    selection_security:
+        Channel: Security
+        EventID:
+            - 4946
+            - 4947
+            - 4948
+    selection_firewall:
+        Channel: 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall'
+        EventID:
+            - 2004
+            - 2005
+            - 2006
+            - 2097
+    condition: selection_security or selection_firewall
+falsepositives:
+    - 软件安装或更新自动添加例外
+tags:
+    - attack.defense-evasion
+    - attack.t1562.004
+references:
+    - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4946
+ruletype: Hayabusa

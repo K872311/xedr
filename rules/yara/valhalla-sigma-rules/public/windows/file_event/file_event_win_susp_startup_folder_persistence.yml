@@ -1,0 +1,65 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious Startup Folder Persistence
+id: 28208707-fe31-437f-9a7f-4b1108b94d2e
+related:
+    - type: similar
+      id: 2aa0a6b4-a865-495b-ab51-c28249537b75
+status: test
+description: |
+    Detects the creation of potentially malicious script and executable files in Windows startup folders, which is a common persistence technique used by threat actors.
+    These files (.ps1, .vbs, .js, .bat, etc.) are automatically executed when a user logs in, making the Startup folder an attractive target for attackers.
+    This technique is frequently observed in malvertising campaigns and malware distribution where attackers attempt to maintain long-term access to compromised systems.
+references:
+    - https://github.com/last-byte/PersistenceSniper
+    - https://www.microsoft.com/en-us/security/blog/2025/03/06/malvertising-campaign-leads-to-info-stealers-hosted-on-github/
+    - https://github.com/redcanaryco/atomic-red-team/blob/5ede8f21e42ebe37e0a6eff757dba60bcfa85859/atomics/T1547.001/T1547.001.md
+date: "2022-08-10"
+modified: "2025-10-12"
+author: Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetFilename|contains: \Windows\Start Menu\Programs\Startup\
+        TargetFilename|endswith:
+            - .bat
+            - .cmd
+            - .dll
+            - .hta
+            - .jar
+            - .js
+            - .jse
+            - .msi
+            - .ps1
+            - .psd1
+            - .psm1
+            - .scr
+            - .url
+            - .vba
+            - .vbe
+            - .vbs
+            - .wsf
+falsepositives:
+    - Rare legitimate usage of some of the extensions mentioned in the rule
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.execution
+    - attack.t1204.002
+    - attack.persistence
+    - attack.t1547.001
+customer: 'demo'

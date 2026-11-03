@@ -1,0 +1,78 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: FileFix - Command Evidence in TypedPaths
+id: 4fee3d51-8069-4a4c-a0f7-924fcaff2c70
+related:
+    - type: similar
+      id: 4be03877-d5b6-4520-85c9-a5911c0a656c
+status: experimental
+description: |
+    Detects commonly-used chained commands and strings in the most recent 'url' value of the 'TypedPaths' key, which could be indicative of a user being targeted by the FileFix technique.
+references:
+    - https://x.com/russianpanda9xx/status/1940831134759506029
+    - https://mrd0x.com/filefix-clickfix-alternative/
+    - https://www.scpx.com.au/2025/11/16/decades-old-finger-protocol-abused-in-clickfix-malware-attacks/
+date: "2025-07-05"
+modified: "2025-11-19"
+author: Alfie Champion (delivr.to), Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_base:
+        Details|contains|all:
+            - '#'
+            - http
+        TargetObject|endswith: \Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths\url1
+    selection_cmd:
+        - Details|contains:
+            - account
+            - anti-bot
+            - botcheck
+            - captcha
+            - challenge
+            - confirmation
+            - fraud
+            - human
+            - identification
+            - identificator
+            - identity
+            - robot
+            - validation
+            - verification
+            - verify
+        - Details|contains:
+            - '%comspec%'
+            - bitsadmin
+            - certutil
+            - cmd
+            - cscript
+            - curl
+            - finger
+            - mshta
+            - powershell
+            - pwsh
+            - regsvr32
+            - rundll32
+            - schtasks
+            - wget
+            - wscript
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.t1204.004
+customer: 'demo'

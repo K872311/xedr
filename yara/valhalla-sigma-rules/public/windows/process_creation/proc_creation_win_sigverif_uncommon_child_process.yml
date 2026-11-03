@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon Sigverif.EXE Child Process
+id: 7d4aaec2-08ed-4430-8b96-28420e030e04
+status: test
+description: |
+    Detects uncommon child processes spawning from "sigverif.exe", which could indicate potential abuse of the latter as a living of the land binary in order to proxy execution.
+references:
+    - https://www.hexacorn.com/blog/2018/04/27/i-shot-the-sigverif-exe-the-gui-based-lolbin/
+    - https://twitter.com/0gtweet/status/1457676633809330184
+date: "2022-08-19"
+modified: "2024-08-27"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_werfault:
+        Image:
+            - C:\Windows\System32\WerFault.exe
+            - C:\Windows\SysWOW64\WerFault.exe
+    selection:
+        ParentImage|endswith: \sigverif.exe
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1216
+customer: 'demo'

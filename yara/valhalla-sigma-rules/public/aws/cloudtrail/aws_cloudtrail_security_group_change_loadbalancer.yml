@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: LoadBalancer Security Group Modification
+id: 7a4409fc-f8ca-45f6-8006-127d779eaad9
+status: test
+description: |
+    Detects changes to the security groups associated with an Elastic Load Balancer (ELB) or Application Load Balancer (ALB).
+    This can indicate that a misconfiguration allowing more traffic into the system than required, or could indicate that an attacker is attempting to enable new connections into a VPC or subnet controlled by the account.
+references:
+    - https://www.gorillastack.com/blog/real-time-events/important-aws-cloudtrail-security-events-tracking/
+date: "2024-07-11"
+author: jamesc-grafana
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection
+    selection:
+        eventName:
+            - ApplySecurityGroupsToLoadBalancer
+            - SetSecurityGroups
+        eventSource: elasticloadbalancing.amazonaws.com
+falsepositives:
+    - Repurposing of an ELB or ALB to serve a different or additional application
+    - Changes to security groups to allow for new services to be deployed
+level: medium
+tags:
+    - attack.initial-access
+    - attack.t1190
+customer: 'demo'

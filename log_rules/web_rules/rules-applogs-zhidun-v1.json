@@ -1,0 +1,824 @@
+{
+  "meta": {
+    "id": "applogs-zhidun",
+    "name": "星川智盾内置规则（移植）",
+    "version": "1.0",
+    "description": "从本机 星川智盾 analysis-core 的 BUILT_IN_RULES 提取，转为应用日志 L1 检测规则。",
+    "sourcePath": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\zhidun\\resources\\app\\dist\\assets\\analysis-core-D6sx_3PT.js",
+    "updatedAt": "2026-08-21",
+    "extracted": 45,
+    "ruleCount": 45
+  },
+  "rules": [
+    {
+      "id": "applog.zhidun.sql_001",
+      "name": "智盾-UNION SELECT 注入",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bunion\\b.{0,30}\\bselect\\b)|(?i:\\bunion\\b.{0,20}\\b(all|distinct)\\b.{0,10}\\bselect\\b)",
+      "reason": "检测到 UNION SELECT 联合查询注入攻击",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-001",
+      "remediation": "使用参数化查询，部署 WAF 规则拦截 UNION SELECT"
+    },
+    {
+      "id": "applog.zhidun.sql_002",
+      "name": "智盾-布尔盲注",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:'\\s*(or|and)\\s+'[^']*'\\s*=\\s*'[^']*')|(?i:'\\s*(or|and)\\s+\\d+\\s*=\\s*\\d+)|(?i:\\b(or|and)\\b\\s+\\d+\\s*=\\s*\\d+\\s*(--|#|\\/\\*))|(?i:'\\s*(or|and)\\s+true\\b)|(?i:'\\s*;\\s*(or|and)\\s+)",
+      "reason": "检测到布尔盲注攻击特征",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-002",
+      "remediation": "使用参数化查询，过滤特殊字符"
+    },
+    {
+      "id": "applog.zhidun.sql_003",
+      "name": "智盾-时间盲注",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bsleep\\s*\\(\\s*\\d+\\s*\\))|(?i:\\bbenchmark\\s*\\(\\s*\\d+)|(?i:\\bwaitfor\\s+delay\\b)|(?i:\\bpg_sleep\\s*\\()|(?i:\\bdbms_lock\\.sleep\\s*\\()|(?i:\\bselect\\b.*\\bfrom\\b.*\\bsleep\\b)",
+      "reason": "检测到时间盲注攻击",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-003",
+      "remediation": "限制数据库查询超时时间，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_004",
+      "name": "智盾-报错注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bextractvalue\\s*\\()|(?i:\\bupdatexml\\s*\\()|(?i:\\bfloor\\s*\\(\\s*\\brand\\s*\\()|(?i:\\bexp\\s*\\(\\s*~)|(?i:\\bcount\\s*\\(\\s*\\*\\s*\\).{0,30}\\bgroup\\s+by\\b)",
+      "reason": "检测到报错注入攻击",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-004",
+      "remediation": "关闭数据库错误回显，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_005",
+      "name": "智盾-堆叠注入",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:;\\s*(drop|truncate)\\s+(table|database)\\b)|(?i:;\\s*delete\\s+from\\b)|(?i:;\\s*insert\\s+into\\b)|(?i:;\\s*update\\b.*\\bset\\b)|(?i:;\\s*exec\\s*\\()|(?i:;\\s*create\\s+(table|user|procedure)\\b)",
+      "reason": "检测到堆叠注入攻击",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-005",
+      "remediation": "禁止多语句执行，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_006",
+      "name": "智盾-注释绕过注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\/\\*!?\\s*(union|select|insert|update|delete|drop|alter)\\b)|(?i:\\bunion\\b.{0,30}\\/\\*\\*\\/)|(?i:'\\s*(or|and)\\s+.{0,30}\\/\\*\\/)",
+      "reason": "检测到 SQL 注释绕过攻击",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-006",
+      "remediation": "过滤注释符号，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_007",
+      "name": "智盾-系统存储过程注入",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bxp_cmdshell\\b)|(?i:\\bsp_executesql\\b)|(?i:\\binformation_schema\\b)|(?i:\\bload_file\\s*\\()|(?i:\\binto\\s+(outfile|dumpfile)\\b)|(?i:\\bunhex\\s*\\()|(?i:\\bchar\\s*\\(\\s*\\d+(\\s*,\\s*\\d+){3,}\\s*\\))",
+      "reason": "检测到系统存储过程/函数注入",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-007",
+      "remediation": "过滤 SQL 关键字，限制数据库权限"
+    },
+    {
+      "id": "applog.zhidun.sql_008",
+      "name": "智盾-自动化注入工具",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bsqlmap\\b)|(?i:\\bhavij\\b)|(?i:\\bnetsparker\\b)",
+      "reason": "检测到自动化 SQL 注入工具",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-008",
+      "remediation": "封禁来源 IP，部署 WAF"
+    },
+    {
+      "id": "applog.zhidun.sql_009",
+      "name": "智盾-注释符绕过注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?:'\\s*(or|and)\\s+.{0,30}--)|(?:'\\s*(or|and)\\s+.{0,30}#)|(?i:\\/\\*\\*\\/.{0,30}\\b(union|select|insert|update|delete)\\b)|(?i:\\b(union|select)\\b.{0,30}\\/\\*\\*\\/)",
+      "reason": "检测到注释符绕过 SQL 注入",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-009",
+      "remediation": "过滤注释符号，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_010",
+      "name": "智盾-Hex编码注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\b0x[0-9a-f]{8,}\\b)|(?i:\\bhex\\s*\\(\\s*['\"])|(?i:\\bunhex\\s*\\(\\s*['\"])|(?i:\\\\x[0-9a-f]{2}\\\\x[0-9a-f]{2})",
+      "reason": "检测到 Hex 编码 SQL 注入",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-010",
+      "remediation": "解码后再过滤，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_011",
+      "name": "智盾-HQL/ORM注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bfrom\\s+\\w+\\s+where\\s+.*['\"]\\s*(or|and)\\s+)|(?i:\\bselect\\s+.*\\bfrom\\s+.*\\bwhere\\b.*\\blike\\b)|(?i:\\bhql\\b.*\\bselect\\b)|(?i:\\bcreatequery\\s*\\(\\s*[\"'])",
+      "reason": "检测到 HQL/ORM 注入攻击",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-011",
+      "remediation": "使用参数化查询，避免字符串拼接 HQL"
+    },
+    {
+      "id": "applog.zhidun.sql_012",
+      "name": "智盾-认证绕过注入",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:'\\s*or\\s*['\"]\\s*=\\s*['\"])|(?i:'\\s*or\\s+1\\s*=\\s*1\\s*--)|(?i:'\\s*or\\s+true\\s*--)|(?i:admin['\"]\\s*or\\s*['\"])|(?:'\\s*;\\s*--)",
+      "reason": "检测到认证绕过 SQL 注入攻击",
+      "attackStage": "SQL注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-012",
+      "remediation": "使用参数化查询，实施强认证机制"
+    },
+    {
+      "id": "applog.zhidun.sql_013",
+      "name": "智盾-条件执行注入",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bif\\s*\\(\\s*exists\\s*\\()|(?i:\\bif\\s*\\(\\s*\\d+\\s*,\\s*\\d+)|(?i:\\bcase\\s+when\\b.*\\bthen\\b)|(?i:\\bsleep\\s*\\(\\s*if\\s*\\()",
+      "reason": "检测到条件执行 SQL 注入",
+      "attackStage": "SQL注入",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-013",
+      "remediation": "使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_014",
+      "name": "智盾-SQLite注入",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bsqlite_master\\b)|(?i:\\bglob\\s+['\"][^'\"]*['\"])|(?i:\\bsqlite_version\\s*\\()|(?i:\\bsql_compileoption_get\\s*\\()",
+      "reason": "检测到 SQLite 特有注入攻击",
+      "attackStage": "SQL注入",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-014",
+      "remediation": "使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_015",
+      "name": "智盾-PostgreSQL注入",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bcopy\\s+.*\\bfrom\\s+program\\b)|(?i:\\bpg_sleep\\s*\\(\\s*\\d+)|(?i:\\barray\\s*\\[.*\\]\\s*@>\\s*array)|(?i:\\bpg_read_file\\s*\\()|(?i:\\bcurrent_setting\\s*\\(\\s*['\"])",
+      "reason": "检测到 PostgreSQL 特有注入攻击",
+      "attackStage": "SQL注入",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-015",
+      "remediation": "使用参数化查询，限制数据库权限"
+    },
+    {
+      "id": "applog.zhidun.sql_016",
+      "name": "智盾-WAF绕过注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bunion\\b\\s+all\\s+select\\s+null)|(?i:\\bselect\\b.{0,40}\\bfrom\\b.{0,40}\\bwhere\\b.{0,20}\\blike\\b.{0,20}['\"]?\\s*(or|and)\\b)|(?i:\\bselect\\b.{0,40}\\bfrom\\b.{0,40}\\border\\s+by\\b.{0,15}['\"]?\\s*--)|(?i:\\bgroup\\s+by\\b.{0,20}\\bhaving\\b.{0,20}(char|concat|floor)\\b)",
+      "reason": "检测到 WAF 绕过型 SQL 注入",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-016",
+      "remediation": "更新 WAF 规则，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_017",
+      "name": "智盾-MySQL特有注入",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bmysql\\b.*\\bversion\\s*\\()|(?i:\\b@@(version|datadir|basedir|hostname)\\b)|(?i:\\binformation_schema\\.(tables|columns|schemata)\\b)|(?i:\\bgroup_concat\\s*\\()|(?i:\\bload_file\\s*\\(\\s*['\"])",
+      "reason": "检测到 MySQL 特有注入攻击",
+      "attackStage": "SQL注入",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-017",
+      "remediation": "使用参数化查询，限制数据库权限"
+    },
+    {
+      "id": "applog.zhidun.sql_018",
+      "name": "智盾-MSSQL特有注入",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bxp_cmdshell\\b)|(?i:\\bxp_regread\\b)|(?i:\\bsp_makewebtask\\b)|(?i:\\bopenrowset\\b)|(?i:\\bopendatasource\\b)",
+      "reason": "检测到 MSSQL 特有注入攻击",
+      "attackStage": "SQL注入",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-018",
+      "remediation": "禁用危险存储过程，使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_019",
+      "name": "智盾-盲注特征探测",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:'\\s*(and|or)\\s+\\d+\\s*=\\s*\\d+)|(?i:'\\s*(and|or)\\s+['\"][^'\"]*['\"]\\s*=\\s*['\"])|(?i:'\\s*(and|or)\\s+\\d+\\s*[<>]\\s*\\d+)",
+      "reason": "检测到 SQL 盲注探测特征",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-019",
+      "remediation": "使用参数化查询"
+    },
+    {
+      "id": "applog.zhidun.sql_020",
+      "name": "智盾-联合查询探测",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\border\\s+by\\s+\\d{2,})|(?i:\\bunion\\b.*\\bselect\\b.*\\bnull\\b.*\\bnull\\b)|(?i:\\binto\\s+(outfile|dumpfile)\\b)",
+      "reason": "检测到联合查询探测攻击",
+      "attackStage": "SQL注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "SQL-020",
+      "remediation": "使用参数化查询，限制数据库文件操作"
+    },
+    {
+      "id": "applog.zhidun.xss_001",
+      "name": "智盾-Script 标签注入",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:<script[\\s>])|(?i:<script\\b[^>]*\\bsrc\\s*=)|(?i:<\\/script\\s*>)",
+      "reason": "检测到 Script 标签 XSS 注入",
+      "attackStage": "XSS攻击",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-001",
+      "remediation": "对输出进行 HTML 编码，设置 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.xss_002",
+      "name": "智盾-事件处理器 XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bon(error|load|click|focus|blur|mouse\\w+|key\\w+|abort|resize|scroll|submit|reset|select|change|input|invalid|search|touch\\w+|pointer\\w+)\\s*=\\s*[^>\\s])|(?i:\\bon\\w+\\s*=\\s*[\"']?[^\"'>\\s]{3,})",
+      "reason": "检测到事件处理器型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-002",
+      "remediation": "过滤事件属性，设置 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.xss_003",
+      "name": "智盾-URL 编码 XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:%3[cC]\\s*script)|(?i:%3[cC]\\s*img)|(?i:%3[cC]\\s*iframe)|(?i:%3[cC]\\s*svg)|(?i:%3[cC]\\s*body)|(?i:%3[cC]\\s*embed)|(?i:javascript\\s*:)|(?i:vbscript\\s*:)",
+      "reason": "检测到 URL 编码型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-003",
+      "remediation": "多层解码后再过滤"
+    },
+    {
+      "id": "applog.zhidun.xss_004",
+      "name": "智盾-DOM 操作 XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:document\\s*\\.\\s*(cookie|location|write|domain)\\b)|(?i:\\.innerHTML\\s*=)|(?i:\\beval\\s*\\(\\s*document)|(?i:\\bdocument\\s*\\.\\s*createElement\\s*\\(\\s*['\"]script)",
+      "reason": "检测到 DOM 型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-004",
+      "remediation": "避免使用 innerHTML，使用 textContent"
+    },
+    {
+      "id": "applog.zhidun.xss_005",
+      "name": "智盾-SVG/Img 标签 XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:<svg\\b[^>]*\\bon\\w+\\s*=)|(?i:<svg\\b[^>]*>.*?<script)|(?i:<img\\b[^>]*\\bonerror\\s*=)|(?i:<iframe\\b[^>]*\\bsrc\\s*=\\s*[\"']?javascript)|(?i:<details\\b[^>]*\\bon\\w+\\s*=)",
+      "reason": "检测到 SVG/HTML 标签型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-005",
+      "remediation": "过滤 HTML 标签，设置 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.xss_006",
+      "name": "智盾-data: 协议 XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:data\\s*:\\s*text\\/html)|(?i:data\\s*:\\s*text\\/html;\\s*base64)",
+      "reason": "检测到 data: 协议 XSS",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-006",
+      "remediation": "过滤 data: 协议"
+    },
+    {
+      "id": "applog.zhidun.xss_007",
+      "name": "智盾-CSS表达式注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:expression\\s*\\(\\s*)|(?i:-moz-binding\\s*:)|(?i:\\bbehavior\\s*:\\s*url\\s*\\()",
+      "reason": "检测到 CSS 表达式型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-007",
+      "remediation": "过滤 CSS 表达式，使用 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.xss_008",
+      "name": "智盾-HTML实体编码绕过",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:&#x3[cC];?\\s*script)|(?i:&#60;\\s*script)|(?i:&#x3[cC];?\\s*img)|(?i:&#x3[cC];?\\s*iframe)|(?i:&#x3[cC];?\\s*svg)",
+      "reason": "检测到 HTML 实体编码绕过 XSS",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-008",
+      "remediation": "多层解码后再过滤"
+    },
+    {
+      "id": "applog.zhidun.xss_009",
+      "name": "智盾-javascript: URI增强",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:javascript\\s*:\\s*alert\\s*\\()|(?i:javascript\\s*:\\s*document\\.)|(?i:javascript\\s*:\\s*eval\\s*\\()|(?i:javascript\\s*:\\s*window\\.)|(?i:vbscript\\s*:\\s*msgbox\\s*\\()",
+      "reason": "检测到 javascript: URI XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-009",
+      "remediation": "过滤 javascript: 协议"
+    },
+    {
+      "id": "applog.zhidun.xss_010",
+      "name": "智盾-SVG/Math标签增强",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:<math\\b[^>]*>)|(?i:<marquee\\b[^>]*\\bon\\w+\\s*=)|(?i:<video\\b[^>]*\\bon\\w+\\s*=)|(?i:<audio\\b[^>]*\\bon\\w+\\s*=)|(?i:<source\\b[^>]*\\bon\\w+\\s*=)",
+      "reason": "检测到 SVG/Math/HTML5 标签型 XSS",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-010",
+      "remediation": "过滤 HTML 标签和事件属性"
+    },
+    {
+      "id": "applog.zhidun.xss_011",
+      "name": "智盾-mutation XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:<noscript\\b[^>]*>.*?<\\/noscript>)|(?i:<textarea\\b[^>]*>.*?<\\/textarea>)|(?i:<title\\b[^>]*>.*?<\\/title>)|(?i:<xmp\\b[^>]*>)|(?i:<listing\\b[^>]*>)",
+      "reason": "检测到 mutation XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-011",
+      "remediation": "对输出进行 HTML 编码"
+    },
+    {
+      "id": "applog.zhidun.xss_012",
+      "name": "智盾-编码混淆XSS",
+      "severity": "medium",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\\\x3[cC]\\s*script)|(?i:\\\\u003[cC]\\s*script)|(?i:\\+ADw-script)|(?i:\\+ADw-img)",
+      "reason": "检测到编码混淆型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 55,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-012",
+      "remediation": "多层解码后再过滤"
+    },
+    {
+      "id": "applog.zhidun.xss_013",
+      "name": "智盾-Cookie窃取XSS",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:document\\.cookie)|(?i:window\\.location\\s*=\\s*['\"]https?:\\/\\/)|(?i:new\\s+Image\\s*\\(\\s*\\)\\s*\\.\\s*src\\s*=)|(?i:fetch\\s*\\(\\s*['\"]https?:\\/\\/)",
+      "reason": "检测到 Cookie 窃取型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-013",
+      "remediation": "设置 HttpOnly 标志，过滤输出内容"
+    },
+    {
+      "id": "applog.zhidun.xss_014",
+      "name": "智盾-键盘记录XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:addEventListener\\s*\\(\\s*['\"]key(down|up|press))|(?i:onkey(down|up|press)\\s*=)|(?i:document\\.onkey(down|up|press)\\s*=)",
+      "reason": "检测到键盘记录型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-014",
+      "remediation": "过滤事件属性，使用 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.xss_015",
+      "name": "智盾-钓鱼页面XSS",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:document\\.write\\s*\\(\\s*['\"]<form)|(?i:innerHTML\\s*=.*<form)|(?i:\\.src\\s*=\\s*['\"]data:text\\/html)",
+      "reason": "检测到钓鱼页面型 XSS 攻击",
+      "attackStage": "XSS攻击",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "XSS-015",
+      "remediation": "过滤输出内容，使用 CSP 策略"
+    },
+    {
+      "id": "applog.zhidun.cmd_001",
+      "name": "智盾-Shell 命令执行",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:;\\s*(cat|ls|whoami|id|pwd|uname|ifconfig|netstat|ip\\s+addr|hostname)\\s)|(?i:\\|\\s*(cat|ls|whoami|id|pwd|uname)\\b)|(?:`[^`]{3,}`)|(?:\\$\\([^)]{3,}\\))",
+      "reason": "检测到系统命令注入",
+      "attackStage": "命令注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-001",
+      "remediation": "禁止调用系统命令，使用白名单校验"
+    },
+    {
+      "id": "applog.zhidun.cmd_002",
+      "name": "智盾-反弹 Shell",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\/dev\\/tcp\\/)|(?i:\\bnc\\s+-[elv])|(?i:\\bmkfifo\\b)|(?i:\\bbash\\s+-i\\b)|(?i:\\bpython\\b.*\\bsocket\\b)|(?i:\\bperl\\b.*\\bsocket\\b)|(?i:\\bphp\\b.*\\bfsockopen\\b)",
+      "reason": "检测到反弹 Shell 攻击",
+      "attackStage": "命令注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-002",
+      "remediation": "封禁外连端口，限制网络访问"
+    },
+    {
+      "id": "applog.zhidun.cmd_003",
+      "name": "智盾-命令注入工具",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bcommix\\b)|(?i:\\breGeorg\\b)|(?i:\\breDuh\\b)",
+      "reason": "检测到命令注入工具",
+      "attackStage": "命令注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-003",
+      "remediation": "封禁来源 IP"
+    },
+    {
+      "id": "applog.zhidun.cmd_004",
+      "name": "智盾-DNSLog 外带",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:dnslog\\.cn)|(?i:\\bceye\\.io\\b)|(?i:\\boast\\.(fun|pro|site|online|live)\\b)|(?i:\\binteract\\.sh\\b)|(?i:\\bburpcollaborator\\b)",
+      "reason": "检测到 DNSlog/带外数据外带攻击",
+      "attackStage": "命令注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-004",
+      "remediation": "限制出站 DNS 请求，监控异常域名解析"
+    },
+    {
+      "id": "applog.zhidun.cmd_005",
+      "name": "智盾-环境变量注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?:\\$\\{.*\\$\\{)|(?i:\\$\\{IFS\\})|(?i:\\$\\{PATH\\})",
+      "reason": "检测到环境变量注入",
+      "attackStage": "命令注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-005",
+      "remediation": "过滤环境变量引用"
+    },
+    {
+      "id": "applog.zhidun.cmd_006",
+      "name": "智盾-Windows命令执行",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bcmd\\.exe\\s*\\/[ci]\\s+)|(?i:\\bpowershell\\s+(-[cCwWnN]|bypass|hidden|enc))|(?i:\\bcertutil\\s+(-urlcache|-decode|-encode)\\b)|(?i:\\bbitsadmin\\s+\\/(transfer|create|addfile)\\b)|(?i:\\bwmic\\s+(process|os|useraccount)\\b)",
+      "reason": "检测到 Windows 命令执行攻击",
+      "attackStage": "命令注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-006",
+      "remediation": "限制命令执行权限，监控异常进程"
+    },
+    {
+      "id": "applog.zhidun.cmd_007",
+      "name": "智盾-Unix高级命令",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\bwget\\s+.*(-O|--output-document)\\s*[\\|;])|(?i:\\bcurl\\s+.*\\|\\s*(bash|sh|python|perl)\\b)|(?i:\\bnc\\s+-[elvp]+\\s+\\d+)|(?i:\\bncat\\s+.*-e\\s+)|(?i:\\bsocat\\s+.*exec)|(?i:\\bpython[23]?\\s+-c\\s+['\"]import)|(?i:\\bperl\\s+-e\\s+['\"])|(?i:\\bruby\\s+-e\\s+['\"])|(?i:\\bphp\\s+-r\\s+['\"])",
+      "reason": "检测到 Unix 高级命令注入",
+      "attackStage": "命令注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-007",
+      "remediation": "限制命令执行，使用白名单"
+    },
+    {
+      "id": "applog.zhidun.cmd_008",
+      "name": "智盾-命令链接注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:[;&|`]\\s*(rm\\s+-rf|chmod\\s+777|chown\\s+root|mkfs|dd\\s+if=))|(?i:[;&|`]\\s*(cat\\s+\\/etc|whoami|id\\b|uname\\s+-a))|(?i:\\|\\s*(bash|sh|zsh|csh|tcsh|ksh)\\b)|(?i:&&\\s*(curl|wget|nc|python|perl|ruby)\\b)",
+      "reason": "检测到命令链接注入攻击",
+      "attackStage": "命令注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-008",
+      "remediation": "过滤命令分隔符，使用白名单校验"
+    },
+    {
+      "id": "applog.zhidun.cmd_009",
+      "name": "智盾-Shellshock CVE-2014-6271",
+      "severity": "critical",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\(\\)\\s*\\{.*:\\s*;\\s*\\};)|(?i:\\(\\)\\s*\\{.*\\})",
+      "reason": "检测到 Shellshock (CVE-2014-6271) 攻击",
+      "attackStage": "命令注入",
+      "score": 90,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-009",
+      "remediation": "升级 Bash 至最新版本"
+    },
+    {
+      "id": "applog.zhidun.cmd_010",
+      "name": "智盾-高级环境变量注入",
+      "severity": "high",
+      "enabled": true,
+      "appliesTo": [
+        "any",
+        "access",
+        "error"
+      ],
+      "textRegex": "(?i:\\$\\{IFS\\})|(?i:\\$\\{PATH:0:\\})|(?i:\\$\\{HOME\\})|(?i:\\$\\{SHELL\\})|(?i:\\$\\(whoami\\))|(?i:\\$\\(id\\))",
+      "reason": "检测到高级环境变量注入",
+      "attackStage": "命令注入",
+      "score": 75,
+      "source": "xingchuan-zhidun BUILT_IN_RULES",
+      "sourceId": "CMD-010",
+      "remediation": "过滤环境变量引用和命令替换"
+    }
+  ]
+}

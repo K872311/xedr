@@ -1,0 +1,38 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Cisco Denial of Service
+id: d94a35f0-7a29-45f6-90a0-80df6159967c
+status: test
+description: Detect a system being shutdown or put into different boot mode
+date: "2019-08-15"
+modified: "2023-01-04"
+author: Austin Clark
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: cisco
+    service: aaa
+detection:
+    condition: keywords
+    keywords:
+        - shutdown
+        - config-register 0x2100
+        - config-register 0x2142
+falsepositives:
+    - Legitimate administrators may run these commands, though rarely.
+level: medium
+tags:
+    - attack.impact
+    - attack.t1495
+    - attack.t1529
+    - attack.t1565.001
+customer: 'demo'

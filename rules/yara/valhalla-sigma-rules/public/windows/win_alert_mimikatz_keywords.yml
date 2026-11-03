@@ -1,0 +1,66 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Mimikatz Use
+id: 06d71506-7beb-4f22-8888-e2e5e2ca7fd8
+status: test
+description: This method detects mimikatz keywords in different Eventlogs (some of them only appear in older Mimikatz version that are however still used by different threat groups)
+references:
+    - https://tools.thehacker.recipes/mimikatz/modules
+date: "2017-01-10"
+modified: "2022-01-05"
+author: Florian Roth (Nextron Systems), David ANDRE (additional keywords)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+detection:
+    condition: keywords and not filter
+    filter:
+        EventID: "15"
+    keywords:
+        - dpapi::masterkey
+        - eo.oe.kiwi
+        - event::clear
+        - event::drop
+        - gentilkiwi.com
+        - kerberos::golden
+        - kerberos::ptc
+        - kerberos::ptt
+        - kerberos::tgt
+        - Kiwi Legit Printer
+        - 'lsadump::'
+        - mimidrv.sys
+        - \mimilib.dll
+        - misc::printnightmare
+        - misc::shadowcopies
+        - misc::skeleton
+        - privilege::backup
+        - privilege::debug
+        - privilege::driver
+        - 'sekurlsa::'
+falsepositives:
+    - Naughty administrators
+    - AV Signature updates
+    - Files with Mimikatz in their filename
+level: high
+tags:
+    - attack.s0002
+    - attack.lateral-movement
+    - attack.credential-access
+    - car.2013-07-001
+    - car.2019-04-004
+    - attack.t1003.002
+    - attack.t1003.004
+    - attack.t1003.001
+    - attack.t1003.006
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/builtin/win_alert_mimikatz_keywords/info.yml

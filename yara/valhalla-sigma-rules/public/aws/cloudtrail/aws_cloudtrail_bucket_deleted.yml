@@ -1,0 +1,41 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: AWS Bucket Deleted
+id: 39c9f26d-6e3b-4dbb-9c7a-4154b0281112
+status: experimental
+description: |
+    Detects the deletion of S3 buckets in AWS CloudTrail logs.
+    Monitoring the deletion of S3 buckets is critical for security and data integrity, as it may indicate potential data loss or unauthorized access attempts.
+references:
+    - https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html
+    - https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/delete-bucket.html
+date: "2025-10-19"
+author: Ivan Saakov, Nasreddine Bencherchali
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: aws
+    service: cloudtrail
+detection:
+    condition: selection_event_name and 1 of selection_status_*
+    selection_event_name:
+        eventName: DeleteBucket
+    selection_status_null:
+        errorCode: []
+    selection_status_success:
+        errorCode: Success
+falsepositives:
+    - During maintenance operations or testing, authorized administrators may delete S3 buckets as part of routine data management or cleanup activities.
+level: medium
+tags:
+    - attack.stealth
+customer: 'demo'

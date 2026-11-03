@@ -1,0 +1,55 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Arbitrary DLL or Csproj Code Execution Via Dotnet.EXE
+id: d80d5c81-04ba-45b4-84e4-92eba40e0ad3
+status: test
+description: Detects execution of arbitrary DLLs or unsigned code via a ".csproj" files via Dotnet.EXE.
+references:
+    - https://lolbas-project.github.io/lolbas/OtherMSBinaries/Dotnet/
+    - https://twitter.com/_felamos/status/1204705548668555264
+    - https://bohops.com/2019/08/19/dotnet-core-a-vector-for-awl-bypass-defense-evasion/
+date: "2020-10-18"
+modified: "2025-10-08"
+author: Beyu Denis, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_* and not 1 of filter_optional_*
+    filter_optional_notepadplus_plus:
+        CommandLine|contains|all:
+            - C:\ProgramData\CSScriptNpp\
+            - '-cscs_path:'
+            - \cs-script\cscs.dll
+        ParentImage:
+            - C:\Program Files (x86)\Notepad++\notepad++.exe
+            - C:\Program Files\Notepad++\notepad++.exe
+    selection_cli:
+        CommandLine|endswith:
+            - .csproj
+            - .csproj"
+            - .dll
+            - .dll"
+            - .csproj'
+            - .dll'
+    selection_img:
+        - Image|endswith: \dotnet.exe
+        - OriginalFileName: .NET Host
+falsepositives:
+    - Legitimate administrator usage
+level: medium
+tags:
+    - attack.stealth
+    - attack.t1218
+customer: 'demo'

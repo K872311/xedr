@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: FortiGate - New Firewall Policy Added
+id: f24ab7a8-f09a-4319-82c1-915586aa642b
+status: experimental
+description: Detects the addition of a new firewall policy on a Fortinet FortiGate Firewall.
+references:
+    - https://www.fortiguard.com/psirt/FG-IR-24-535
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/398/event
+    - https://docs.fortinet.com/document/fortigate/7.6.4/cli-reference/333889629/config-firewall-policy
+    - https://docs.fortinet.com/document/fortigate/7.6.4/fortios-log-message-reference/44547/44547-logid-event-config-objattr
+date: "2025-11-01"
+modified: "2026-05-04"
+author: Marco Pedrinazzi (@pedrinazziM) (InTheCyber)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: fortigate
+    service: event
+detection:
+    condition: selection
+    selection:
+        action: Add
+        cfgpath: firewall.policy
+falsepositives:
+    - A firewall policy can be added for legitimate purposes.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686.002
+customer: 'demo'

@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: MMC Loading Script Engines DLLs
+id: a9c73e8b-3b2d-4c45-8ef2-5f9a9c9998ad
+status: experimental
+description: |
+    Detects when the Microsoft Management Console (MMC) loads the DLL libraries like vbscript, jscript etc which might indicate an attempt
+    to execute malicious scripts within a trusted system process for bypassing application whitelisting or defense evasion.
+references:
+    - https://tria.ge/241015-l98snsyeje/behavioral2
+    - https://www.elastic.co/security-labs/grimresource
+date: "2025-02-05"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith: \mmc.exe
+        ImageLoaded|endswith:
+            - \vbscript.dll
+            - \jscript.dll
+            - \jscript9.dll
+falsepositives:
+    - Legitimate MMC operations or extensions loading these libraries
+level: medium
+tags:
+    - attack.execution
+    - attack.stealth
+    - attack.t1059.005
+    - attack.t1218.014
+customer: 'demo'

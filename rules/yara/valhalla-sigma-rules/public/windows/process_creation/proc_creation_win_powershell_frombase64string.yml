@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Base64 Encoded PowerShell Command Detected
+id: e32d4572-9826-4738-b651-95fa63747e8a
+status: test
+description: Detects usage of the "FromBase64String" function in the commandline which is used to decode a base64 encoded string
+references:
+    - https://gist.github.com/Neo23x0/6af876ee72b51676c82a2db8d2cd3639
+date: "2020-01-29"
+modified: "2023-01-26"
+author: Florian Roth (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains: ::FromBase64String(
+falsepositives:
+    - Administrative script libraries
+level: high
+tags:
+    - attack.stealth
+    - attack.t1027
+    - attack.execution
+    - attack.t1140
+    - attack.t1059.001
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_powershell_frombase64string/info.yml

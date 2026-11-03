@@ -1,0 +1,54 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Suspicious BitLocker Access Agent Update Utility Execution
+id: 9f38c1db-e2ae-40bf-81d0-5b68f73fb512
+related:
+    - type: similar
+      id: 6e8fe0a8-ba0b-4a93-8f9e-82657e7a5984
+status: experimental
+description: |
+    Detects the execution of the BitLocker Access Agent Update Utility (baaupdate.exe) which is not a common parent process for other processes.
+    Suspicious child processes spawned by baaupdate.exe could indicate an attempt at lateral movement via BitLocker DCOM & COM Hijacking.
+references:
+    - https://github.com/rtecCyberSec/BitlockMove
+date: "2025-10-18"
+author: andrewdanis, Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \bitsadmin.exe
+            - \cmd.exe
+            - \cscript.exe
+            - \mshta.exe
+            - \powershell_ise.exe
+            - \powershell.exe
+            - \regsvr32.exe
+            - \rundll32.exe
+            - \schtasks.exe
+            - \wmic.exe
+            - \wscript.exe
+        ParentImage|endswith: \baaupdate.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1218
+    - attack.lateral-movement
+    - attack.t1021.003
+customer: 'demo'

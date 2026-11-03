@@ -1,0 +1,24 @@
+{
+  "version": "1",
+  "defaults": {
+    "etw": true,
+    "winevent": true,
+    "wmi_process": true,
+    "fim": true,
+    "registry": true,
+    "persist": true,
+    "kernel_user": true,
+    "memory_scan": true,
+    "inventory": true,
+    "rootcheck": true,
+    "sca": true,
+    "evm": true,
+    "ptm": true,
+    "amsi": true,
+    "api_etw": true
+  },
+  "updated_at": "2026-11-02T11:00:40",
+  "server": {
+    "lolbin_ingest": true
+  }
+}

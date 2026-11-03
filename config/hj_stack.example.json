@@ -1,0 +1,18 @@
+{
+  "install_root": "C:\\elastic",
+  "elasticsearch": {
+    "home": "C:\\elastic\\elasticsearch-9.5.0",
+    "script": "C:\\elastic\\elasticsearch-9.5.0\\bin\\elasticsearch.bat",
+    "url": "https://127.0.0.1:9200"
+  },
+  "kibana": {
+    "home": "C:\\elastic\\kibana-9.5.0",
+    "script": "C:\\elastic\\kibana-9.5.0\\bin\\kibana.bat",
+    "url": "http://127.0.0.1:5601"
+  },
+  "edr_es_indices": {
+    "events": "cnpc_edr_events",
+    "detection_rules": "cnpc_edr_detection_rules"
+  },
+  "note": "与 config/db_config.json elasticsearch 及 config/stack_paths.json 对齐；EDR 检测读 db_config。"
+}

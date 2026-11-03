@@ -1,0 +1,72 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon File Created by Notepad++ Updater Gup.EXE
+id: 3b8f4c92-6a51-4d7e-9c3a-8e2d1f5a7b09
+status: experimental
+description: |
+    Detects when the Notepad++ updater (gup.exe) creates files in suspicious or uncommon locations.
+    This could indicate potential exploitation of the updater component to deliver unwanted malware or unwarranted files.
+references:
+    - https://notepad-plus-plus.org/news/v889-released/
+    - https://www.heise.de/en/news/Notepad-updater-installed-malware-11109726.html
+    - https://www.rapid7.com/blog/post/tr-chrysalis-backdoor-dive-into-lotus-blossoms-toolkit/
+    - https://www.validin.com/blog/exploring_notepad_plus_plus_network_indicators/
+    - https://securelist.com/notepad-supply-chain-attack/118708/
+date: "2026-02-03"
+modified: "2026-03-16"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_legit_paths:
+        TargetFilename|startswith:
+            - C:\Program Files\Notepad++\
+            - C:\Program Files (x86)\Notepad++\
+    filter_main_plugins:
+        - TargetFilename|contains:
+            - \plugins\JsonTools\testfiles\
+            - \Notepad++\plugins\ComparePlugin\
+        - TargetFilename|contains|all:
+            - npp.
+            - .portable.
+            - \plugins\
+    filter_main_recycle_bin:
+        TargetFilename|startswith: C:\$Recycle.Bin\S-1-5-21
+    filter_main_temp_generic_zip:
+        TargetFilename|contains|all:
+            - \AppData\Local\Temp\
+            - .zip
+        TargetFilename|startswith: C:\Users\
+    filter_main_temp_update_installer:
+        TargetFilename|contains|all:
+            - \AppData\Local\Temp\
+            - npp.
+            - .Installer.
+            - .exe
+        TargetFilename|startswith: C:\Users\
+    selection:
+        Image|endswith: \gup.exe
+falsepositives:
+    - Custom or portable Notepad++ installations in non-standard directories.
+    - Legitimate update processes creating temporary files in unexpected locations.
+level: high
+tags:
+    - attack.collection
+    - attack.credential-access
+    - attack.t1195.002
+    - attack.initial-access
+    - attack.t1557
+customer: 'demo'

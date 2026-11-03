@@ -1,0 +1,49 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: UFW Disable Attempt
+id: 84c9e83c-599a-458a-a0cb-0ecce44e807a
+status: test
+description: |
+    Detects attempts to disable the Uncomplicated Firewall (UFW) on Linux systems.
+    UFW is a popular firewall management tool that provides an easy-to-use interface for configuring firewall rules.
+    Disabling UFW can leave a system vulnerable to attacks, as it may allow unauthorized access to network services and resources.
+references:
+    - https://twitter.com/Joseliyo_Jstnk/status/1620131033474822144
+    - https://manpages.debian.org/unstable/ufw/ufw-framework.8.en.html
+    - https://www.cyberciti.biz/faq/linux-disable-firewall-command/
+date: "2023-01-18"
+modified: "2026-05-04"
+author: Joseliyo Sanchez, @Joseliyo_Jstnk
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: 1 of selection_*
+    selection_ufw_disable:
+        CommandLine|contains|all:
+            - 'ufw '
+            - disable
+    selection_ufw_init:
+        CommandLine|contains:
+            - ' force-stop'
+            - ' stop'
+            - ' flush'
+        Image|endswith: /ufw-init
+falsepositives:
+    - Legitimate actions by system administrators to disable UFW.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1686
+customer: 'demo'

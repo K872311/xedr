@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: HackTool - SharpWSUS/WSUSpendu Execution
+id: b0ce780f-10bd-496d-9067-066d23dc3aa5
+status: test
+description: |
+    Detects the execution of SharpWSUS or WSUSpendu, utilities that allow for lateral movement through WSUS.
+    Windows Server Update Services (WSUS) is a critical component of Windows systems and is frequently configured in a way that allows an attacker to circumvent internal networking limitations.
+references:
+    - https://labs.nettitude.com/blog/introducing-sharpwsus/
+    - https://github.com/nettitude/SharpWSUS
+    - https://web.archive.org/web/20210512154016/https://github.com/AlsidOfficial/WSUSpendu/blob/master/WSUSpendu.ps1
+date: "2022-10-07"
+modified: "2024-08-23"
+author: '@Kostastsale, Nasreddine Bencherchali (Nextron Systems)'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_wsuspendu_* or all of selection_sharpwsus_*
+    selection_sharpwsus_commands:
+        CommandLine|contains:
+            - ' approve '
+            - ' create '
+            - ' check '
+            - ' delete '
+    selection_sharpwsus_flags:
+        CommandLine|contains:
+            - ' /payload:'
+            - ' /payload='
+            - ' /updateid:'
+            - ' /updateid='
+    selection_wsuspendu_inject:
+        CommandLine|contains: ' -Inject '
+    selection_wsuspendu_payload:
+        CommandLine|contains:
+            - ' -PayloadArgs '
+            - ' -PayloadFile '
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.lateral-movement
+    - attack.t1210
+customer: 'demo'

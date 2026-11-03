@@ -1,0 +1,1584 @@
+file	sigma.cd6386fabb9a.f0	Axios NPM Compromise File Creation Indicators - Windows
+file	sigma.cd6386fabb9a.f1	Axios NPM Compromise File Creation Indicators - Windows
+file	sigma.cd6386fabb9a.f2	Axios NPM Compromise File Creation Indicators - Windows
+kw	sigma.f6c27eccd890	cscript	Axios NPM Compromise Indicators - Windows
+kw	sigma.f6c27eccd890	//nologo && del	Axios NPM Compromise Indicators - Windows
+kw	sigma.f6c27eccd890	6202033.vbs	Axios NPM Compromise Indicators - Windows
+kw	sigma.f6c27eccd890	http://sfrclak.com	Axios NPM Compromise Indicators - Windows
+kw	sigma.9b4f3d2e6e8c	tanstack_runner.js	TanStack Supply-Chain Attack Execution Indicators - Windows
+kw	sigma.7c3a5b1d9e2f	ms-screensketch:edit?&filePath=\\\\	Potential CVE-2026-33829 Exploitation - Windows Snipping Tool Remote File Path URI
+kw	sigma.7c3a5b1d9e2f	ms-screensketch:edit?&filePath=%%5C	Potential CVE-2026-33829 Exploitation - Windows Snipping Tool Remote File Path URI
+kw	sigma.7c3a5b1d9e2f	ms-screensketch:edit?&filePath=%5C	Potential CVE-2026-33829 Exploitation - Windows Snipping Tool Remote File Path URI
+kw	sigma.7c3a5b1d9e2f	ms-screensketch:edit?&filePath=http	Potential CVE-2026-33829 Exploitation - Windows Snipping Tool Remote File Path URI
+file	sigma.f2e4b7d95c3a.f0	RedSun - TieringEngineService.exe Staged in RS-Prefixed Temp Dir
+kw	sigma.2ad784736978	tieringengineservice.exe	RedSun - Conhost.exe Spawned by TieringEngineService.exe
+file	sigma.2c76a22b702d.f0	FunkLocker Ransomware File Creation
+kw	sigma.e99375eb3ee0	socks5h://	Kalambur Backdoor Curl TOR SOCKS Proxy Execution
+kw	sigma.e99375eb3ee0	socks5://	Kalambur Backdoor Curl TOR SOCKS Proxy Execution
+kw	sigma.e99375eb3ee0	socks4a://	Kalambur Backdoor Curl TOR SOCKS Proxy Execution
+kw	sigma.e99375eb3ee0	.onion	Kalambur Backdoor Curl TOR SOCKS Proxy Execution
+kw	sigma.af688c764ce4	-mode:	Grixba Malware Reconnaissance Activity
+kw	sigma.af688c764ce4	-input	Grixba Malware Reconnaissance Activity
+kw	sigma.af688c764ce4	-input:	Grixba Malware Reconnaissance Activity
+kw	sigma.af688c764ce4	scanall	Grixba Malware Reconnaissance Activity
+kw	sigma.540703fba874	Shai-Hulud	Shai-Hulud Malware Indicators - Windows
+kw	sigma.540703fba874	SHA1HULUD	Shai-Hulud Malware Indicators - Windows
+kw	sigma.5299fadff228	bun_environment.js	Shai-Hulud Malicious Bun Execution
+kw	sigma.5299fadff228	https://github.com/actions/runner/releases/download/v2.330.0	Shai-Hulud Malicious Bun Execution
+kw	sigma.bae7c70b8569	install	Shai-Hulud 2.0 Malicious NPM Package Installation
+kw	sigma.bae7c70b8569	02-echo@0.0.7	Shai-Hulud 2.0 Malicious NPM Package Installation
+kw	sigma.bae7c70b8569	@accordproject/concerto-analysis@3.24.1	Shai-Hulud 2.0 Malicious NPM Package Installation
+kw	sigma.bae7c70b8569	@accordproject/concerto-linter@3.24.1	Shai-Hulud 2.0 Malicious NPM Package Installation
+kw	sigma.6c76b3d0afe4	Hidden	Potential Exploitation of GoAnywhere MFT Vulnerability
+kw	sigma.6c76b3d0afe4	bypass	Potential Exploitation of GoAnywhere MFT Vulnerability
+kw	sigma.6c76b3d0afe4	net\s+user	Potential Exploitation of GoAnywhere MFT Vulnerability
+kw	sigma.6c76b3d0afe4	net\s+group	Potential Exploitation of GoAnywhere MFT Vulnerability
+kw	sigma.2d79e3712a27	\portal\portal.config	Suspicious Process Spawned by CentreStack Portal AppPool
+kw	sigma.abe06362a5b9	iediagcmd.exe	Potential Exploitation of RCE Vulnerability CVE-2025-33053
+kw	sigma.abe06362a5b9	customshellhost.exe	Potential Exploitation of RCE Vulnerability CVE-2025-33053
+kw	sigma.abe06362a5b9	route.exe	Potential Exploitation of RCE Vulnerability CVE-2025-33053
+kw	sigma.abe06362a5b9	netsh.exe	Potential Exploitation of RCE Vulnerability CVE-2025-33053
+kw	sigma.8c7f4a2d3b9e	tomcat	Suspicious Child Process of SolarWinds WebHelpDesk
+kw	sigma.8c7f4a2d3b9e	base64	Suspicious Child Process of SolarWinds WebHelpDesk
+kw	sigma.8c7f4a2d3b9e	bitsadmin	Suspicious Child Process of SolarWinds WebHelpDesk
+kw	sigma.8c7f4a2d3b9e	certutil	Suspicious Child Process of SolarWinds WebHelpDesk
+kw	sigma.933f0bb50681	regsvr32 /s	Potential Notepad++ CVE-2025-49144 Exploitation
+kw	sigma.933f0bb50681	\contextMenu\NppShell.dll	Potential Notepad++ CVE-2025-49144 Exploitation
+file	sigma.ba479447721f.f0	Potential SharePoint ToolShell CVE-2025-53770 Exploitation - File Create
+file	sigma.ba479447721f.f1	Potential SharePoint ToolShell CVE-2025-53770 Exploitation - File Create
+file	sigma.ba479447721f.f2	Potential SharePoint ToolShell CVE-2025-53770 Exploitation - File Create
+kw	sigma.7477881cec3b	spinstall0.aspx	Potential SharePoint ToolShell CVE-2025-53770 Exploitation Indicators
+kw	sigma.7477881cec3b	:\PROGRA~1\COMMON~1\MICROS~1\WEBSER~1\15\TEMPLATE\LAYOUTS	Potential SharePoint ToolShell CVE-2025-53770 Exploitation Indicators
+kw	sigma.7477881cec3b	:\PROGRA~1\COMMON~1\MICROS~1\WEBSER~1\16\TEMPLATE\LAYOUTS	Potential SharePoint ToolShell CVE-2025-53770 Exploitation Indicators
+kw	sigma.7477881cec3b	:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\15\TEMPLATE\LAYOUTS	Potential SharePoint ToolShell CVE-2025-53770 Exploitation Indicators
+kw	sigma.0fdc7c7fc690	/c powershell	Potential Exploitation of CrushFTP RCE Vulnerability (CVE-2025-54309)
+kw	sigma.0fdc7c7fc690	whoami	Potential Exploitation of CrushFTP RCE Vulnerability (CVE-2025-54309)
+kw	sigma.271de298cc0e	--experimental-https	Windows Suspicious Child Process from Node.js - React2Shell
+kw	sigma.271de298cc0e	--experimental-next-config-strip-types	Windows Suspicious Child Process from Node.js - React2Shell
+kw	sigma.271de298cc0e	\node_modules\next	Windows Suspicious Child Process from Node.js - React2Shell
+kw	sigma.271de298cc0e	next dev	Windows Suspicious Child Process from Node.js - React2Shell
+kw	sigma.bd3b3fffa018	qoperation	Commvault QOperation Path Traversal Webshell Drop (CVE-2025-57790)
+kw	sigma.bd3b3fffa018	\Apache\webapps\ROOT\	Commvault QOperation Path Traversal Webshell Drop (CVE-2025-57790)
+kw	sigma.ff0225a01d9a	qlogin	Commvault QLogin Argument Injection Authentication Bypass (CVE-2025-57791)
+kw	sigma.ff0225a01d9a	-localadmin	Commvault QLogin Argument Injection Authentication Bypass (CVE-2025-57791)
+kw	sigma.ff0225a01d9a	_localadmin__	Commvault QLogin Argument Injection Authentication Bypass (CVE-2025-57791)
+kw	sigma.43259cc41b80	WsusPool	Exploitation Activity of CVE-2025-59287 - WSUS Suspicious Child Process
+kw	sigma.43259cc41b80	wsusservice.exe	Exploitation Activity of CVE-2025-59287 - WSUS Suspicious Child Process
+drv	sigma.67add0519ee7	PUA - Process Hacker Driver Load
+drv	sigma.295c9289acee	Vulnerable HackSys Extreme Vulnerable Driver Load
+drv	sigma.1a42dfa66cb2	Vulnerable WinRing0 Driver Load
+drv	sigma.679085d5f427	WinDivert Driver Load
+kw	sigma.631b22a470f4	-AddInRoot:	Suspicious AddinUtil.EXE CommandLine Execution
+kw	sigma.631b22a470f4	-PipelineRoot:	Suspicious AddinUtil.EXE CommandLine Execution
+kw	sigma.631b22a470f4	\AppData\Local\Temp\	Suspicious AddinUtil.EXE CommandLine Execution
+kw	sigma.631b22a470f4	\Desktop\	Suspicious AddinUtil.EXE CommandLine Execution
+kw	sigma.2f869d597f6a	adplus.exe	Potential Adplus.EXE Abuse
+kw	sigma.c0b40568b1e9	-powershell	Suspicious AgentExecutor PowerShell Execution
+kw	sigma.c0b40568b1e9	-remediationScript	Suspicious AgentExecutor PowerShell Execution
+kw	sigma.c0b40568b1e9	agentexecutor.exe	Suspicious AgentExecutor PowerShell Execution
+kw	sigma.7dbbcac257a0	\Software\Microsoft\Windows Script\Settings	Windows AMSI Related Registry Tampering Via CommandLine
+kw	sigma.7dbbcac257a0	AmsiEnable	Windows AMSI Related Registry Tampering Via CommandLine
+kw	sigma.7dbbcac257a0	Set-ItemProperty	Windows AMSI Related Registry Tampering Via CommandLine
+kw	sigma.7dbbcac257a0	New-ItemProperty	Windows AMSI Related Registry Tampering Via CommandLine
+kw	sigma.8e95e73eba02	arcsoc.exe	Suspicious ArcSOC.exe Child Process
+kw	sigma.8e95e73eba02	wmic.exe	Suspicious ArcSOC.exe Child Process
+kw	sigma.9ccba5147cb6	aspnet_compiler.exe	Suspicious Child Process of AspNetCompiler
+kw	sigma.9ccba5147cb6	calc.exe	Suspicious Child Process of AspNetCompiler
+kw	sigma.9ccba5147cb6	notepad.exe	Suspicious Child Process of AspNetCompiler
+kw	sigma.9f50fe98fe5c	\Users\Public\	Potentially Suspicious ASP.NET Compilation Via AspNetCompiler
+kw	sigma.9f50fe98fe5c	\AppData\Local\Roaming\	Potentially Suspicious ASP.NET Compilation Via AspNetCompiler
+kw	sigma.9f50fe98fe5c	:\Temp\	Potentially Suspicious ASP.NET Compilation Via AspNetCompiler
+kw	sigma.efec536f72e8	\AppData\Local\	Set Suspicious Files as System Files Using Attrib.EXE
+kw	sigma.efec536f72e8	\ProgramData\	Set Suspicious Files as System Files Using Attrib.EXE
+kw	sigma.efec536f72e8	\Downloads\	Set Suspicious Files as System Files Using Attrib.EXE
+kw	sigma.60fc936d2eb0	interactive	Interactive AT Job
+kw	sigma.60fc936d2eb0	at.exe	Interactive AT Job
+kw	sigma.c6c56ada612b	/logon:none	Audit Policy Tampering Via NT Resource Kit Auditpol
+kw	sigma.c6c56ada612b	/system:none	Audit Policy Tampering Via NT Resource Kit Auditpol
+kw	sigma.c6c56ada612b	/sam:none	Audit Policy Tampering Via NT Resource Kit Auditpol
+kw	sigma.c6c56ada612b	/privilege:none	Audit Policy Tampering Via NT Resource Kit Auditpol
+kw	sigma.0a13e132651d	disable	Audit Policy Tampering Via Auditpol
+kw	sigma.0a13e132651d	remove	Audit Policy Tampering Via Auditpol
+kw	sigma.0a13e132651d	restore	Audit Policy Tampering Via Auditpol
+kw	sigma.0a13e132651d	auditpol.exe	Audit Policy Tampering Via Auditpol
+kw	sigma.d7b81144b866	\Control\WMI\Autologger\	Windows EventLog Autologger Session Registry Modification Via CommandLine
+kw	sigma.d7b81144b866	Enabled	Windows EventLog Autologger Session Registry Modification Via CommandLine
+kw	sigma.c80e66d81780	\Software\Microsoft\Windows\CurrentVersion\Run	Suspicious Autorun Registry Modified via WMI
+kw	sigma.c80e66d81780	\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run	Suspicious Autorun Registry Modified via WMI
+kw	sigma.c80e66d81780	\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run	Suspicious Autorun Registry Modified via WMI
+kw	sigma.c80e66d81780	:\Perflogs	Suspicious Autorun Registry Modified via WMI
+kw	sigma.9f38c1dbe2ae	baaupdate.exe	Suspicious BitLocker Access Agent Update Utility Execution
+kw	sigma.9f38c1dbe2ae	bitsadmin.exe	Suspicious BitLocker Access Agent Update Utility Execution
+kw	sigma.9f38c1dbe2ae	schtasks.exe	Suspicious BitLocker Access Agent Update Utility Execution
+kw	sigma.1444443e6757	bootstatuspolicy	Boot Configuration Tampering Via Bcdedit.EXE
+kw	sigma.1444443e6757	ignoreallfailures	Boot Configuration Tampering Via Bcdedit.EXE
+kw	sigma.1444443e6757	recoveryenabled	Boot Configuration Tampering Via Bcdedit.EXE
+kw	sigma.1444443e6757	bcdedit.exe	Boot Configuration Tampering Via Bcdedit.EXE
+kw	sigma.811f459f9231	bginfo.exe	Suspicious Child Process Of BgInfo.EXE
+kw	sigma.811f459f9231	bginfo64.exe	Suspicious Child Process Of BgInfo.EXE
+kw	sigma.99c840f22012	/transfer	Suspicious Download From Direct IP Via Bitsadmin
+kw	sigma.99c840f22012	/create	Suspicious Download From Direct IP Via Bitsadmin
+kw	sigma.99c840f22012	/addfile	Suspicious Download From Direct IP Via Bitsadmin
+kw	sigma.8518ed3df7c9	.githubusercontent.com	Suspicious Download From File-Sharing Website Via Bitsadmin
+kw	sigma.3e8207c5fcd2	--remote-debugging-	Potential Data Stealing Via Chromium Headless Debugging
+kw	sigma.3e8207c5fcd2	--user-data-dir	Potential Data Stealing Via Chromium Headless Debugging
+kw	sigma.3e8207c5fcd2	--headless	Potential Data Stealing Via Chromium Headless Debugging
+kw	sigma.0e8cfe0802c9	dump-dom	File Download with Headless Browser
+kw	sigma.0e8cfe0802c9	brave.exe	File Download with Headless Browser
+kw	sigma.0e8cfe0802c9	opera.exe	File Download with Headless Browser
+kw	sigma.1c5267880abe	://run.mocky	Chromium Browser Headless Execution To Mockbin Like Site
+kw	sigma.1c5267880abe	://mockbin	Chromium Browser Headless Execution To Mockbin Like Site
+kw	sigma.27ba3207dd30	--load-extension=	Suspicious Chromium Browser Instance Executed With Custom Extension
+kw	sigma.27ba3207dd30	vivaldi.exe	Suspicious Chromium Browser Instance Executed With Custom Extension
+kw	sigma.62f7c9bf9135	tor.exe	Tor Client/Browser Execution
+kw	sigma.737e618aa410	\calc.exe	Suspicious Calculator Usage
+kw	sigma.b86f6dea0b2f	-GetCACAPS	File Download From IP Based URL Via CertOC.EXE
+kw	sigma.b86f6dea0b2f	certoc.exe	File Download From IP Based URL Via CertOC.EXE
+kw	sigma.84232095ecca	-LoadDLL	Suspicious DLL Loaded via CertOC.EXE
+kw	sigma.4480827a9799	-config	Suspicious CertReq Command to Download
+kw	sigma.4480827a9799	certreq.exe	Suspicious CertReq Command to Download
+kw	sigma.cc9cbe827bc0	-decode	File Decoded From Base64/Hex Via Certutil.EXE
+kw	sigma.cc9cbe827bc0	-decodehex	File Decoded From Base64/Hex Via Certutil.EXE
+kw	sigma.cc9cbe827bc0	certutil.exe	File Decoded From Base64/Hex Via Certutil.EXE
+kw	sigma.13e6fe51d478	urlcache	Suspicious File Downloaded From Direct IP Via Certutil.EXE
+kw	sigma.13e6fe51d478	verifyctl	Suspicious File Downloaded From Direct IP Via Certutil.EXE
+kw	sigma.42a5f1e79603	0x0.st	Suspicious File Downloaded From File-Sharing Website Via Certutil.EXE
+kw	sigma.ea0cdc3e2239	-encode	Suspicious File Encoded To Base64 Via Certutil.EXE
+kw	sigma.82a6714f4899	\AppData\Roaming\	File In Suspicious Location Encoded To Base64 Via Certutil.EXE
+kw	sigma.82a6714f4899	\Local\Temp\	File In Suspicious Location Encoded To Base64 Via Certutil.EXE
+kw	sigma.6c6d9280e6d0	-syncwithWU	Potential NTLM Coercion Via Certutil.EXE
+kw	sigma.4c0aaedc154c	\TrolleyExpress 7	Process Access via TrolleyExpress Exclusion
+kw	sigma.4c0aaedc154c	\TrolleyExpress 8	Process Access via TrolleyExpress Exclusion
+kw	sigma.4c0aaedc154c	\TrolleyExpress 9	Process Access via TrolleyExpress Exclusion
+kw	sigma.4c0aaedc154c	\TrolleyExpress.exe 7	Process Access via TrolleyExpress Exclusion
+kw	sigma.07f8bdc2c9b3	cmdkey.exe	Potential Reconnaissance For Cached Credentials Via Cmdkey.EXE
+kw	sigma.ae6f14e614de	exefile	Change Default File Association To Executable Via Assoc
+kw	sigma.e9b61244893f	mklink	Potential Privilege Escalation Using Symlink Between Osk and Cmd
+kw	sigma.e9b61244893f	\osk.exe	Potential Privilege Escalation Using Symlink Between Osk and Cmd
+kw	sigma.e9b61244893f	\cmd.exe	Potential Privilege Escalation Using Symlink Between Osk and Cmd
+kw	sigma.40b19fa6d835	HarddiskVolumeShadowCopy	VolumeShadowCopy Symlink Creation Via Mklink
+kw	sigma.f0507c0fa3a2	net use http	Suspicious File Execution From Internet Hosted WebDav Share
+kw	sigma.f0507c0fa3a2	& start /b	Suspicious File Execution From Internet Hosted WebDav Share
+kw	sigma.f0507c0fa3a2	\DavWWWRoot\	Suspicious File Execution From Internet Hosted WebDav Share
+kw	sigma.a16980c20c56	cmd.exe/c	Cmd.EXE Missing Space Characters Execution Anomaly
+kw	sigma.a16980c20c56	\cmd/c	Cmd.EXE Missing Space Characters Execution Anomaly
+kw	sigma.a16980c20c56	cmd.exe/k	Cmd.EXE Missing Space Characters Execution Anomaly
+kw	sigma.a16980c20c56	\cmd/k	Cmd.EXE Missing Space Characters Execution Anomaly
+kw	sigma.bbc865e47fcd	type %windir%\system32\ntdll.dll	NtdllPipe Like Activity Execution
+kw	sigma.bbc865e47fcd	type %systemroot%\system32\ntdll.dll	NtdllPipe Like Activity Execution
+kw	sigma.bbc865e47fcd	type c:\windows\system32\ntdll.dll	NtdllPipe Like Activity Execution
+kw	sigma.bbc865e47fcd	\\ntdll.dll > \\\\.\\pipe\\	NtdllPipe Like Activity Execution
+kw	sigma.087790e33287	/../../	Potential CommandLine Path Traversal Via Cmd.EXE
+kw	sigma.c73124a73e89	\\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy	Copy From VolumeShadowCopy Via Cmd.EXE
+kw	sigma.1070db9a3e5d	C:\windows\system32\cmd.exe C:\windows\system32\sethc.exe	Persistence Via Sticky Key Backdoor
+kw	sigma.2fdefcb3dbda	sethc.exe	Sticky Key Like Backdoor Execution
+kw	sigma.2fdefcb3dbda	utilman.exe	Sticky Key Like Backdoor Execution
+kw	sigma.2fdefcb3dbda	osk.exe	Sticky Key Like Backdoor Execution
+kw	sigma.2fdefcb3dbda	Magnify.exe	Sticky Key Like Backdoor Execution
+kw	sigma.7d4cdc5a0076	cmstp.exe	CMSTP Execution Process Creation
+kw	sigma.ee5e119b1f75	conhost	Conhost.exe CommandLine Path Traversal
+kw	sigma.dfa03a098b92	pwsh.dll	Potentially Suspicious Child Processes Spawned by ConHost
+kw	sigma.0ba863e6def5	CurrentVersion\Control Panel\CPLs	Control Panel Items
+kw	sigma.0ba863e6def5	reg.exe	Control Panel Items
+kw	sigma.515c8be5e5df	--full	CreateDump Process Dump
+kw	sigma.515c8be5e5df	--name	CreateDump Process Dump
+kw	sigma.515c8be5e5df	createdump.exe	CreateDump Process Dump
+kw	sigma.515c8be5e5df	fx_ver_internalname_str	CreateDump Process Dump
+kw	sigma.c17d47b7dcd6	delete	Windows Credential Guard Registry Tampering Via CommandLine
+kw	sigma.c17d47b7dcd6	Remove-ItemProperty	Windows Credential Guard Registry Tampering Via CommandLine
+kw	sigma.b730a2766b63	-Encoded	Csc.EXE Execution Form Potentially Suspicious Parent
+kw	sigma.b730a2766b63	FromBase64String	Csc.EXE Execution Form Potentially Suspicious Parent
+kw	sigma.b730a2766b63	:\PerfLogs\	Csc.EXE Execution Form Potentially Suspicious Parent
+kw	sigma.b730a2766b63	:\Users\Public\	Csc.EXE Execution Form Potentially Suspicious Parent
+kw	sigma.a9e416a8e613	csi.exe	Suspicious Use of CSharp Interactive Console
+kw	sigma.5cb299fc5fb1	--remote-name	Suspicious File Download From IP Via Curl.EXE
+kw	sigma.5cb299fc5fb1	--output	Suspicious File Download From IP Via Curl.EXE
+kw	sigma.56454143524f	anonfiles.com	Suspicious File Download From File Sharing Domain Via Curl.EXE
+kw	sigma.56454143524f	bashupload.com	Suspicious File Download From File Sharing Domain Via Curl.EXE
+kw	sigma.916eb839895e	--ntlm	NTLM Hash Leak Via Curl NTLM Authentication
+kw	sigma.916eb839895e	(?i)\s(-u|--user)\s*:	NTLM Hash Leak Via Curl NTLM Authentication
+kw	sigma.e218595bbbe7	%AppData%	Suspicious Curl.EXE Download
+kw	sigma.e218595bbbe7	%Public%	Suspicious Curl.EXE Download
+kw	sigma.e218595bbbe7	%Temp%	Suspicious Curl.EXE Download
+kw	sigma.e218595bbbe7	\AppData\	Suspicious Curl.EXE Download
+kw	sigma.e328cc73f92a	chunk.io	Curl File Upload To File Sharing Websites
+kw	sigma.e328cc73f92a	file.io	Curl File Upload To File Sharing Websites
+kw	sigma.6345b0488441	executecmd64	ManageEngine Endpoint Central Dctask64.EXE Potential Abuse
+kw	sigma.6345b0488441	invokeexe	ManageEngine Endpoint Central Dctask64.EXE Potential Abuse
+kw	sigma.6345b0488441	injectDll	ManageEngine Endpoint Central Dctask64.EXE Potential Abuse
+kw	sigma.6345b0488441	dctask64.exe	ManageEngine Endpoint Central Dctask64.EXE Potential Abuse
+kw	sigma.1e8a9b4d3c2a	Set-MpPreference	PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'
+kw	sigma.1e8a9b4d3c2a	-LowThreatDefaultAction	PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'
+kw	sigma.1e8a9b4d3c2a	-ModerateThreatDefaultAction	PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'
+kw	sigma.1e8a9b4d3c2a	-HighThreatDefaultAction	PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'
+kw	sigma.b9e8c7d6a5f4	Remove-Item	Windows Defender Context Menu Removed
+kw	sigma.b9e8c7d6a5f4	\shellex\ContextMenuHandlers\EPP	Windows Defender Context Menu Removed
+kw	sigma.bb58aa4ab80b	/lockscreenurl:	Suspicious Desktopimgdownldr Command
+kw	sigma.bb58aa4ab80b	reg delete	Suspicious Desktopimgdownldr Command
+kw	sigma.bb58aa4ab80b	\PersonalizationCSP	Suspicious Desktopimgdownldr Command
+kw	sigma.85f520e76f5e	15AD&DEV_0740	Devcon Execution Disabling VMware VMCI Device
+kw	sigma.85f520e76f5e	VMWVMCIHOSTDEV	Devcon Execution Disabling VMware VMCI Device
+kw	sigma.85f520e76f5e	devcon.exe	Devcon Execution Disabling VMware VMCI Device
+kw	sigma.7e8f2d3b9c1a	WindowsPowerShellWebAccess	PowerShell Web Access Feature Enabled Via DISM
+kw	sigma.7e8f2d3b9c1a	/online	PowerShell Web Access Feature Enabled Via DISM
+kw	sigma.7e8f2d3b9c1a	/enable-feature	PowerShell Web Access Feature Enabled Via DISM
+kw	sigma.7e8f2d3b9c1a	dism.exe	PowerShell Web Access Feature Enabled Via DISM
+kw	sigma.e7888eb113b0	dllhost	Dllhost.EXE Execution Anomaly
+kw	sigma.ebea773ca8f1	vmwarexferlogs.exe	DLL Sideloading by VMware Xfer Utility
+kw	sigma.f63b56ee3f79	/config	New DNS ServerLevelPluginDll Installed Via Dnscmd.EXE
+kw	sigma.f63b56ee3f79	/serverlevelplugindll	New DNS ServerLevelPluginDll Installed Via Dnscmd.EXE
+kw	sigma.f63b56ee3f79	dnscmd.exe	New DNS ServerLevelPluginDll Installed Via Dnscmd.EXE
+kw	sigma.98a96a5a64a0	iodine.exe	DNS Exfiltration and Tunneling Tools Execution
+kw	sigma.a4e3d776f12e	dns.exe	Unusual Child Process of dns.exe
+kw	sigma.9fc3072cdc8f	driverquery.exe	Potential Recon Activity Using DriverQuery.EXE
+kw	sigma.9fc3072cdc8f	drvqry.exe	Potential Recon Activity Using DriverQuery.EXE
+kw	sigma.7124aebe4cd7	lkd(0)	Suspicious Kernel Dump Using Dtrace
+kw	sigma.7124aebe4cd7	syscall:::return	Suspicious Kernel Dump Using Dtrace
+kw	sigma.7124aebe4cd7	dtrace.exe	Suspicious Kernel Dump Using Dtrace
+kw	sigma.129966c9de17	dump64.exe	Potential Windows Defender AV Bypass Via Dump64.EXE Rename
+kw	sigma.129966c9de17	procdump	Potential Windows Defender AV Bypass Via Dump64.EXE Rename
+kw	sigma.eb1c42251c23	WithHeap	Suspicious DumpMinitool Execution
+kw	sigma.eb1c42251c23	dumpminitool.exe	Suspicious DumpMinitool Execution
+kw	sigma.eb1c42251c23	dumpminitool.x86.exe	Suspicious DumpMinitool Execution
+kw	sigma.eb1c42251c23	dumpminitool.arm64.exe	Suspicious DumpMinitool Execution
+kw	sigma.e7be6119fc37	\config\RegBack\sam	Copying Sensitive Files with Credential Data
+kw	sigma.e7be6119fc37	\config\RegBack\security	Copying Sensitive Files with Credential Data
+kw	sigma.e7be6119fc37	\config\RegBack\system	Copying Sensitive Files with Credential Data
+kw	sigma.e7be6119fc37	\config\sam	Copying Sensitive Files with Credential Data
+kw	sigma.be344333921d	eventvwr.exe	Potentially Suspicious Event Viewer Child Process
+kw	sigma.1a4bd6af99ac	\SYSTEM\CurrentControlSet\Control\MiniNt	Security Event Logging Disabled via MiniNt Registry Key - Process
+kw	sigma.1a4bd6af99ac	New-Item	Security Event Logging Disabled via MiniNt Registry Key - Process
+kw	sigma.c3d76afc93df	shell:mycomputerfolder	File Explorer Folder Opened Using Explorer Folder Shortcut Via Shell
+kw	sigma.534f2ef7e8a2	/NOUACCHECK	Explorer NOUACCHECK Flag
+kw	sigma.91a2c3159ee6	cpassword	Findstr GPP Passwords
+kw	sigma.91a2c3159ee6	\sysvol\	Findstr GPP Passwords
+kw	sigma.91a2c3159ee6	find.exe	Findstr GPP Passwords
+kw	sigma.91a2c3159ee6	findstr.exe	Findstr GPP Passwords
+kw	sigma.fe63010f8823	/i "lsass	LSASS Process Reconnaissance Via Findstr.EXE
+kw	sigma.fe63010f8823	/i lsass.exe	LSASS Process Reconnaissance Via Findstr.EXE
+kw	sigma.fe63010f8823	findstr "lsass	LSASS Process Reconnaissance Via Findstr.EXE
+kw	sigma.fe63010f8823	findstr lsass	LSASS Process Reconnaissance Via Findstr.EXE
+kw	sigma.37db85d1b089	385201	Sysmon Discovery Via Default Driver Altitude Using Findstr.EXE
+kw	sigma.af491bcae752	finger.exe	Finger.EXE Execution
+kw	sigma.4d7cda181b12	unload	Sysmon Driver Unloaded Via Fltmc.EXE
+kw	sigma.4d7cda181b12	sysmon	Sysmon Driver Unloaded Via Fltmc.EXE
+kw	sigma.4d7cda181b12	fltmc.exe	Sysmon Driver Unloaded Via Fltmc.EXE
+kw	sigma.f53714ec5077	/c echo 	Forfiles.EXE Child Process Masquerading
+kw	sigma.9fb6b26e7f9e	format.com	Uncommon FileSystem Load Attempt By Format.com
+kw	sigma.add6413662e5	deletejournal	Fsutil Suspicious Invocation
+kw	sigma.add6413662e5	createjournal	Fsutil Suspicious Invocation
+kw	sigma.add6413662e5	setZeroData	Fsutil Suspicious Invocation
+kw	sigma.add6413662e5	fsutil.exe	Fsutil Suspicious Invocation
+kw	sigma.84b1ecf96eff	googleupdate.exe	Potentially Suspicious GoogleUpdate Child Process
+kw	sigma.e1e0b7d7e10b	-passphrase	File Encryption/Decryption Via Gpg4win From Suspicious Locations
+kw	sigma.441438440631	-unzipTo	File Download Using Notepad++ GUP Utility
+kw	sigma.441438440631	gup.exe	File Download Using Notepad++ GUP Utility
+kw	sigma.bb0e87cec89f	finger	Suspicious Child Process of Notepad++ Updater - GUP.Exe
+kw	sigma.bb0e87cec89f	forfiles	Suspicious Child Process of Notepad++ Updater - GUP.Exe
+kw	sigma.f57c58b3ee69	http://	Remote CHM File Download/Execution Via HH.EXE
+kw	sigma.f57c58b3ee69	https://	Remote CHM File Download/Execution Via HH.EXE
+kw	sigma.f57c58b3ee69	hh.exe	Remote CHM File Download/Execution Via HH.EXE
+kw	sigma.52cad0280ff0	installutil.exe	HTML Help HH.EXE Suspicious Child Process
+kw	sigma.e8a95b5ec891	.application	Suspicious HH.EXE Execution
+kw	sigma.e8a95b5ec891	\Content.Outlook\	Suspicious HH.EXE Execution
+kw	sigma.cd8c163ea19b	--adcs	HackTool - ADCSPwn Execution
+kw	sigma.cd8c163ea19b	--port	HackTool - ADCSPwn Execution
+kw	sigma.f376c8a7a2d0	-CollectionMethod All	HackTool - Bloodhound/Sharphound Execution
+kw	sigma.f376c8a7a2d0	--CollectionMethods Session	HackTool - Bloodhound/Sharphound Execution
+kw	sigma.f376c8a7a2d0	--Loop --Loopduration	HackTool - Bloodhound/Sharphound Execution
+kw	sigma.f376c8a7a2d0	--PortScanTimeout	HackTool - Bloodhound/Sharphound Execution
+kw	sigma.b18c9d4cfac9	StartNodeRelay	HackTool - F-Secure C3 Load by Rundll32
+kw	sigma.762f2482ff21	.exe cas	HackTool - Certify Execution
+kw	sigma.762f2482ff21	.exe find	HackTool - Certify Execution
+kw	sigma.762f2482ff21	.exe pkiobjects	HackTool - Certify Execution
+kw	sigma.762f2482ff21	.exe request	HackTool - Certify Execution
+kw	sigma.6938366d8954	account	HackTool - Certipy Execution
+kw	sigma.6938366d8954	shadow	HackTool - Certipy Execution
+kw	sigma.6938366d8954	template	HackTool - Certipy Execution
+kw	sigma.6938366d8954	-bloodhound	HackTool - Certipy Execution
+kw	sigma.647c7b9ed784	c:\windows\system32\cmd.exe	Operator Bloopers Cobalt Strike Commands
+kw	sigma.647c7b9ed784	psinject	Operator Bloopers Cobalt Strike Commands
+kw	sigma.647c7b9ed784	spawnas	Operator Bloopers Cobalt Strike Commands
+kw	sigma.4f154fb627d1	Invoke-UserHunter	Operator Bloopers Cobalt Strike Modules
+kw	sigma.4f154fb627d1	Invoke-ShareFinder	Operator Bloopers Cobalt Strike Modules
+kw	sigma.4f154fb627d1	Invoke-Kerberoast	Operator Bloopers Cobalt Strike Modules
+kw	sigma.4f154fb627d1	Invoke-SMBAutoBrute	Operator Bloopers Cobalt Strike Modules
+kw	sigma.ae9c6a7c9521	rundll32	CobaltStrike Load by Rundll32
+kw	sigma.ae9c6a7c9521	StartW	CobaltStrike Load by Rundll32
+kw	sigma.ae9c6a7c9521	,StartW	CobaltStrike Load by Rundll32
+kw	sigma.f35c5d71b489	cmd.exe /C whoami	Potential CobaltStrike Process Patterns
+kw	sigma.f35c5d71b489	cmd.exe /c echo	Potential CobaltStrike Process Patterns
+kw	sigma.f35c5d71b489	> \\\\.\\pipe	Potential CobaltStrike Process Patterns
+kw	sigma.f35c5d71b489	conhost.exe 0xffffffff -ForceV1	Potential CobaltStrike Process Patterns
+kw	sigma.e8d3472986a4	--exploitId	HackTool - CoercedPotato Execution
+kw	sigma.e8d3472986a4	coercedpotato.exe	HackTool - CoercedPotato Execution
+kw	sigma.c260b6db48ba	-Window	HackTool - Covenant PowerShell Launcher
+kw	sigma.c260b6db48ba	-Command	HackTool - Covenant PowerShell Launcher
+kw	sigma.c260b6db48ba	-EncodedCommand	HackTool - Covenant PowerShell Launcher
+kw	sigma.42a993ddbb3e	-M pe_inject	HackTool - CrackMapExec Execution
+kw	sigma.42a993ddbb3e	--local-auth	HackTool - CrackMapExec Execution
+kw	sigma.42a993ddbb3e	-H 'NTHASH'	HackTool - CrackMapExec Execution
+kw	sigma.42a993ddbb3e	192.168.	HackTool - CrackMapExec Execution
+kw	sigma.058f4380962d	cmd.exe /Q /c * 1> \\\\*\\*\\* 2>&1	HackTool - CrackMapExec Execution Patterns
+kw	sigma.058f4380962d	cmd.exe /C * > \\\\*\\*\\* 2>&1	HackTool - CrackMapExec Execution Patterns
+kw	sigma.058f4380962d	cmd.exe /C * > *\\Temp\\* 2>&1	HackTool - CrackMapExec Execution Patterns
+kw	sigma.058f4380962d	powershell.exe -exec bypass -noni -nop -w 1 -C 	HackTool - CrackMapExec Execution Patterns
+kw	sigma.f26307d814cd	tasklist /fi	HackTool - CrackMapExec Process Patterns
+kw	sigma.f26307d814cd	Imagename eq lsass.exe	HackTool - CrackMapExec Process Patterns
+kw	sigma.f26307d814cd	cmd.exe /c	HackTool - CrackMapExec Process Patterns
+kw	sigma.f26307d814cd	cmd.exe /r	HackTool - CrackMapExec Process Patterns
+kw	sigma.6f8b3439a203	join*split	HackTool - CrackMapExec PowerShell Obfuscation
+kw	sigma.36d884941d43	createminidump.exe	HackTool - CreateMiniDump Execution
+kw	sigma.d78b5d61187d	/password	HackTool - DInjector PowerShell Cradle Execution
+kw	sigma.d474c8febb69	doppelganger.exe	HackTool - Doppelanger LSASS Dumper Execution
+kw	sigma.2704ab9eafe2	Dumpert.dll	HackTool - Dumpert Process Dumper Execution
+kw	sigma.eb2d07d449cb	edrsilencer.exe	HackTool - EDRSilencer Execution
+kw	sigma.79f4ede3402e	-NoP -sta -NonI -W Hidden -Enc	HackTool - Empire PowerShell Launch Parameters
+kw	sigma.79f4ede3402e	-noP -sta -w 1 -enc	HackTool - Empire PowerShell Launch Parameters
+kw	sigma.79f4ede3402e	-NoP -NonI -W Hidden -enc	HackTool - Empire PowerShell Launch Parameters
+kw	sigma.79f4ede3402e	-enc  SQB	HackTool - Empire PowerShell Launch Parameters
+kw	sigma.3268b74688d8	-NoP -NonI -w Hidden -c $x=$((gp HKCU:Software\Microsoft\Windows Update).Update)	HackTool - Empire PowerShell UAC Bypass
+kw	sigma.3268b74688d8	-NoP -NonI -c $x=$((gp HKCU:Software\Microsoft\Windows Update).Update);	HackTool - Empire PowerShell UAC Bypass
+kw	sigma.9082ff1f88ab	gmer.exe	HackTool - GMER Rootkit Detector and Remover Execution
+kw	sigma.ca621ba554ab	--pid:	HackTool - HandleKatz LSASS Dumper Execution
+kw	sigma.ca621ba554ab	--outfile:	HackTool - HandleKatz LSASS Dumper Execution
+kw	sigma.ca621ba554ab	loader.exe	HackTool - HandleKatz LSASS Dumper Execution
+kw	sigma.39b31e815f5f	-m 1000	HackTool - Hashcat Password Cracker Execution
+kw	sigma.39b31e815f5f	hashcat.exe	HackTool - Hashcat Password Cracker Execution
+kw	sigma.85d23b429a9d	hollowreaper.exe	HackTool - HollowReaper Execution
+kw	sigma.f5e3b62fe577	.exe -tran	HackTool - Htran/NATBypass Execution
+kw	sigma.f5e3b62fe577	.exe -slave	HackTool - Htran/NATBypass Execution
+kw	sigma.f5e3b62fe577	htran.exe	HackTool - Htran/NATBypass Execution
+kw	sigma.f5e3b62fe577	lcx.exe	HackTool - Htran/NATBypass Execution
+kw	sigma.aaafa146074c	^USER^	HackTool - Hydra Password Bruteforce Execution
+kw	sigma.aaafa146074c	^PASS^	HackTool - Hydra Password Bruteforce Execution
+kw	sigma.10c1472361c7	\\\\127.0.0.1\\	HackTool - Potential Impacket Lateral Movement Activity
+kw	sigma.10c1472361c7	svchost.exe -k netsvcs	HackTool - Potential Impacket Lateral Movement Activity
+kw	sigma.10c1472361c7	taskeng.exe	HackTool - Potential Impacket Lateral Movement Activity
+kw	sigma.4627c6ae6899	atexec_windows.exe	HackTool - Impacket Tools Execution
+kw	sigma.4627c6ae6899	dcomexec_windows.exe	HackTool - Impacket Tools Execution
+kw	sigma.4627c6ae6899	dpapi_windows.exe	HackTool - Impacket Tools Execution
+kw	sigma.4627c6ae6899	finddelegation_windows.exe	HackTool - Impacket Tools Execution
+kw	sigma.b99a15181ad5	-SpooferIP	HackTool - Inveigh Execution
+kw	sigma.b99a15181ad5	-ReplyToIPs	HackTool - Inveigh Execution
+kw	sigma.b99a15181ad5	-ReplyToDomains	HackTool - Inveigh Execution
+kw	sigma.b99a15181ad5	-ReplyToMACs	HackTool - Inveigh Execution
+kw	sigma.b222df080e07	clipboard]::	Invoke-Obfuscation CLIP+ Launcher
+kw	sigma.4bf943c65146	\*mdr\*\W\s*\)\.Name	Invoke-Obfuscation Obfuscated IEX Invocation
+kw	sigma.4bf943c65146	\$VerbosePreference\.ToString\(	Invoke-Obfuscation Obfuscated IEX Invocation
+kw	sigma.e1561947b4e3	(?i)echo.*clip.*&&.*(?:Clipboard|i`?n`?v`?o`?k`?e`?)	Invoke-Obfuscation Via Use Clip
+kw	sigma.ac20ae828758	vbscript:createobject	Invoke-Obfuscation Via Use MSHTA
+kw	sigma.ac20ae828758	(window.close)	Invoke-Obfuscation Via Use MSHTA
+kw	sigma.e96253b86b3b	-clsid	HackTool - KrbRelay Execution
+kw	sigma.e96253b86b3b	shadowcred	HackTool - KrbRelay Execution
+kw	sigma.e96253b86b3b	session	HackTool - KrbRelay Execution
+kw	sigma.e96253b86b3b	krbrelay.exe	HackTool - KrbRelay Execution
+kw	sigma.12827a5661a4	-Domain	HackTool - KrbRelayUp Execution
+kw	sigma.12827a5661a4	-ComputerName	HackTool - KrbRelayUp Execution
+kw	sigma.12827a5661a4	krbscm	HackTool - KrbRelayUp Execution
+kw	sigma.12827a5661a4	krbrelayup.exe	HackTool - KrbRelayUp Execution
+kw	sigma.a7664b1475fb	-target	HackTool - RemoteKrbRelay Execution
+kw	sigma.a7664b1475fb	-victim	HackTool - RemoteKrbRelay Execution
+kw	sigma.a7664b1475fb	--smbkeyword	HackTool - RemoteKrbRelay Execution
+kw	sigma.6bd759939888	.exe -i C:\	HackTool - LocalPotato Execution
+kw	sigma.6bd759939888	-o Windows\	HackTool - LocalPotato Execution
+kw	sigma.6bd759939888	localpotato.exe	HackTool - LocalPotato Execution
+kw	sigma.15619216e993	\pipe\	Potential Meterpreter/CobaltStrike Activity
+kw	sigma.15619216e993	%COMSPEC%	Potential Meterpreter/CobaltStrike Activity
+kw	sigma.15619216e993	.dll,a	Potential Meterpreter/CobaltStrike Activity
+kw	sigma.a642964ebead	DumpCreds	HackTool - Mimikatz Execution
+kw	sigma.a642964ebead	mimikatz	HackTool - Mimikatz Execution
+kw	sigma.a642964ebead	::aadcookie	HackTool - Mimikatz Execution
+kw	sigma.a642964ebead	::detours	HackTool - Mimikatz Execution
+kw	sigma.7638e5fe600c	nxc.exe	HackTool - NetExec Execution
+kw	sigma.fca949cc79ca	pchunter64.exe	HackTool - PCHunter Execution
+kw	sigma.fca949cc79ca	pchunter32.exe	HackTool - PCHunter Execution
+kw	sigma.fca949cc79ca	pchunter.exe	HackTool - PCHunter Execution
+kw	sigma.56c217c32de2	powershell.exe -NonI	HackTool - Default PowerSploit/Empire Scheduled Task Creation
+kw	sigma.56c217c32de2	/TN Updater /TR	HackTool - Default PowerSploit/Empire Scheduled Task Creation
+kw	sigma.56c217c32de2	/SC ONLOGON	HackTool - Default PowerSploit/Empire Scheduled Task Creation
+kw	sigma.a34f79a38e5f	powertool.exe	HackTool - PowerTool Execution
+kw	sigma.a34f79a38e5f	powertool64.exe	HackTool - PowerTool Execution
+kw	sigma.ff23ffbc3378	xyz123456.exe	HackTool - PurpleSharp Execution
+kw	sigma.ff23ffbc3378	PurpleSharp	HackTool - PurpleSharp Execution
+kw	sigma.ff23ffbc3378	purplesharp.exe	HackTool - PurpleSharp Execution
+kw	sigma.a29808fdef50	registry	HackTool - Pypykatz Credentials Dumping Activity
+kw	sigma.a29808fdef50	pypykatz.exe	HackTool - Pypykatz Credentials Dumping Activity
+kw	sigma.0685b176c816	--dump-hash-local	HackTool - Quarks PwDump Execution
+kw	sigma.0685b176c816	--dump-hash-domain-cached	HackTool - Quarks PwDump Execution
+kw	sigma.0685b176c816	--dump-bitlocker	HackTool - Quarks PwDump Execution
+kw	sigma.0685b176c816	--dump-hash-domain	HackTool - Quarks PwDump Execution
+kw	sigma.95022b85ff2a	gthread-3.6.dll	HackTool - RedMimicry Winnti Playbook Execution
+kw	sigma.95022b85ff2a	\Windows\Temp\tmp.bat	HackTool - RedMimicry Winnti Playbook Execution
+kw	sigma.95022b85ff2a	sigcmm-2.4.dll	HackTool - RedMimicry Winnti Playbook Execution
+kw	sigma.5589ab4fa767	Invoke-Tater	Potential SMB Relay Attack Tool Execution
+kw	sigma.5589ab4fa767	smbrelay	Potential SMB Relay Attack Tool Execution
+kw	sigma.5589ab4fa767	ntlmrelay	Potential SMB Relay Attack Tool Execution
+kw	sigma.5589ab4fa767	cme smb	Potential SMB Relay Attack Tool Execution
+kw	sigma.7ec2c172dceb	asreproast	HackTool - Rubeus Execution
+kw	sigma.7ec2c172dceb	dump /service:krbtgt	HackTool - Rubeus Execution
+kw	sigma.7ec2c172dceb	dump /luid:0x	HackTool - Rubeus Execution
+kw	sigma.7ec2c172dceb	kerberoast	HackTool - Rubeus Execution
+kw	sigma.b18765334ed5	safetykatz.exe	HackTool - SafetyKatz Execution
+kw	sigma.7679d4644f74	passworddump.exe	HackTool - SecurityXploded Execution
+kw	sigma.52ff79418211	PPID-spoof	HackTool - PPID Spoofing SelectMyParent Tool Execution
+kw	sigma.52ff79418211	ppid_spoof	HackTool - PPID Spoofing SelectMyParent Tool Execution
+kw	sigma.52ff79418211	spoof-ppid	HackTool - PPID Spoofing SelectMyParent Tool Execution
+kw	sigma.52ff79418211	spoof_ppid	HackTool - PPID Spoofing SelectMyParent Tool Execution
+kw	sigma.26488ad0f9fd	-t schtask -c	HackTool - SharPersist Execution
+kw	sigma.26488ad0f9fd	-t startupfolder -c	HackTool - SharPersist Execution
+kw	sigma.26488ad0f9fd	-t reg -c	HackTool - SharPersist Execution
+kw	sigma.26488ad0f9fd	-m add	HackTool - SharPersist Execution
+kw	sigma.bedfc8add1c7	--Filter "rule	HackTool - SharpEvtMute Execution
+kw	sigma.bedfc8add1c7	--Encoded --Filter \	HackTool - SharpEvtMute Execution
+kw	sigma.bedfc8add1c7	sharpevtmute.exe	HackTool - SharpEvtMute Execution
+kw	sigma.d9367cbbc2e0	/method:ntlm	HackTool - SharpLdapWhoami Execution
+kw	sigma.d9367cbbc2e0	/method:kerb	HackTool - SharpLdapWhoami Execution
+kw	sigma.d9367cbbc2e0	/method:nego	HackTool - SharpLdapWhoami Execution
+kw	sigma.d9367cbbc2e0	/m:nego	HackTool - SharpLdapWhoami Execution
+kw	sigma.055fb54ca8f4	computername=	HackTool - SharpMove Tool Execution
+kw	sigma.055fb54ca8f4	action=create	HackTool - SharpMove Tool Execution
+kw	sigma.055fb54ca8f4	action=dcom	HackTool - SharpMove Tool Execution
+kw	sigma.055fb54ca8f4	action=executevbs	HackTool - SharpMove Tool Execution
+kw	sigma.38a1ac5f9c74	SharpSuccessor	HKTL - SharpSuccessor Privilege Escalation Tool Execution
+kw	sigma.38a1ac5f9c74	/impersonate	HKTL - SharpSuccessor Privilege Escalation Tool Execution
+kw	sigma.38a1ac5f9c74	/account	HKTL - SharpSuccessor Privilege Escalation Tool Execution
+kw	sigma.38a1ac5f9c74	sharpsuccessor.exe	HKTL - SharpSuccessor Privilege Escalation Tool Execution
+kw	sigma.c484e533ee16	HijackablePaths	HackTool - SharpUp PrivEsc Tool Execution
+kw	sigma.c484e533ee16	UnquotedServicePath	HackTool - SharpUp PrivEsc Tool Execution
+kw	sigma.c484e533ee16	ProcessDLLHijack	HackTool - SharpUp PrivEsc Tool Execution
+kw	sigma.c484e533ee16	ModifiableServiceBinaries	HackTool - SharpUp PrivEsc Tool Execution
+kw	sigma.b2317cfa4a47	Add-RemoteConnection	HackTool - SharpView Execution
+kw	sigma.b2317cfa4a47	Convert-ADName	HackTool - SharpView Execution
+kw	sigma.b2317cfa4a47	ConvertFrom-SID	HackTool - SharpView Execution
+kw	sigma.b2317cfa4a47	ConvertFrom-UACValue	HackTool - SharpView Execution
+kw	sigma.b0ce780f10bd	-Inject	HackTool - SharpWSUS/WSUSpendu Execution
+kw	sigma.b0ce780f10bd	-PayloadArgs	HackTool - SharpWSUS/WSUSpendu Execution
+kw	sigma.b0ce780f10bd	-PayloadFile	HackTool - SharpWSUS/WSUSpendu Execution
+kw	sigma.b0ce780f10bd	approve	HackTool - SharpWSUS/WSUSpendu Execution
+kw	sigma.cf93e05ed798	sharpchisel.exe	HackTool - SharpChisel Execution
+kw	sigma.c7d33b50f690	backupkey	HackTool - SharpDPAPI Execution
+kw	sigma.c7d33b50f690	certificates	HackTool - SharpDPAPI Execution
+kw	sigma.c7d33b50f690	credentials	HackTool - SharpDPAPI Execution
+kw	sigma.c7d33b50f690	keepass	HackTool - SharpDPAPI Execution
+kw	sigma.f89b08d077ad	binary:	HackTool - SharpImpersonation Execution
+kw	sigma.f89b08d077ad	shellcode:	HackTool - SharpImpersonation Execution
+kw	sigma.f89b08d077ad	technique:CreateProcessAsUserW	HackTool - SharpImpersonation Execution
+kw	sigma.f89b08d077ad	technique:ImpersonateLoggedOnuser	HackTool - SharpImpersonation Execution
+kw	sigma.e92a4287e072	--buildcache	HackTool - SOAPHound Execution
+kw	sigma.e92a4287e072	--bhdump	HackTool - SOAPHound Execution
+kw	sigma.e92a4287e072	--certdump	HackTool - SOAPHound Execution
+kw	sigma.e92a4287e072	--dnsdump	HackTool - SOAPHound Execution
+kw	sigma.7a4d923292fc	stracciatella.exe	HackTool - Stracciatella Execution
+kw	sigma.8a7e90c5fe6e	sysmoneop.exe	HackTool - SysmonEOP Execution
+kw	sigma.69ca006db9a9	trufflesnout.exe	HackTool - TruffleSnout Execution
+kw	sigma.d38d2fa498e6	akagi.exe	HackTool - UACMe Akagi Execution
+kw	sigma.d38d2fa498e6	akagi64.exe	HackTool - UACMe Akagi Execution
+kw	sigma.7aa7009a28b9	wce.exe	HackTool - Windows Credential Editor (WCE) Execution
+kw	sigma.7aa7009a28b9	wce64.exe	HackTool - Windows Credential Editor (WCE) Execution
+kw	sigma.98b53e78ebaf	applicationsinfo	HackTool - winPEAS Execution
+kw	sigma.98b53e78ebaf	browserinfo	HackTool - winPEAS Execution
+kw	sigma.98b53e78ebaf	eventsinfo	HackTool - winPEAS Execution
+kw	sigma.98b53e78ebaf	fileanalysis	HackTool - winPEAS Execution
+kw	sigma.d557dc0662e8	Offline_Winpwn	HackTool - WinPwn Execution
+kw	sigma.d557dc0662e8	WinPwn	HackTool - WinPwn Execution
+kw	sigma.d557dc0662e8	WinPwn.exe	HackTool - WinPwn Execution
+kw	sigma.d557dc0662e8	WinPwn.ps1	HackTool - WinPwn Execution
+kw	sigma.022eaba8f0bf	-NoP -NoL -sta -NonI -W Hidden -Exec Bypass -Enc	HackTool - Wmiexec Default Powershell Command
+kw	sigma.589ac73f8e12	wsass.exe	HackTool - WSASS Execution
+kw	sigma.66e563f91cbd	-process lsass.exe	HackTool - XORDump Execution
+kw	sigma.66e563f91cbd	-m comsvcs	HackTool - XORDump Execution
+kw	sigma.66e563f91cbd	-m dbghelp	HackTool - XORDump Execution
+kw	sigma.66e563f91cbd	-m dbgcore	HackTool - XORDump Execution
+kw	sigma.6225c53aa96e	\DeviceGuard	Hypervisor-protected Code Integrity (HVCI) Related Registry Tampering Via CommandLine
+kw	sigma.6225c53aa96e	EnableVirtualizationBasedSecurity	Hypervisor-protected Code Integrity (HVCI) Related Registry Tampering Via CommandLine
+kw	sigma.023394c429d5	hwp.exe	Suspicious HWP Sub Processes
+kw	sigma.023394c429d5	gbb.exe	Suspicious HWP Sub Processes
+kw	sigma.9801abb8e297	ieexec.exe	File Download And Execution Via IEExec.EXE
+kw	sigma.b2b048b07857	:\ProgramData\	Self Extracting Package Creation Via Iexpress.EXE From Potentially Suspicious Location
+kw	sigma.b2b048b07857	:\Windows\System32\Tasks\	Self Extracting Package Creation Via Iexpress.EXE From Potentially Suspicious Location
+kw	sigma.b2b048b07857	:\Windows\Tasks\	Self Extracting Package Creation Via Iexpress.EXE From Potentially Suspicious Location
+kw	sigma.e4ed6030ffe5	config	Disable Windows IIS HTTP Logging
+kw	sigma.e4ed6030ffe5	section:httplogging	Disable Windows IIS HTTP Logging
+kw	sigma.e4ed6030ffe5	dontLog:true	Disable Windows IIS HTTP Logging
+kw	sigma.e4ed6030ffe5	appcmd.exe	Disable Windows IIS HTTP Logging
+kw	sigma.2d3cdeecc0db	password	Microsoft IIS Service Account Password Dumped
+kw	sigma.97dbf6e2e436	connectionStrings	Microsoft IIS Connection Strings Decryption
+kw	sigma.97dbf6e2e436	aspnet_regiis.exe	Microsoft IIS Connection Strings Decryption
+kw	sigma.043c4b8b3a54	appcmd.exe add module	Suspicious IIS Module Registration
+kw	sigma.043c4b8b3a54	system.enterpriseservices.internal.publish	Suspicious IIS Module Registration
+kw	sigma.043c4b8b3a54	gacutil	Suspicious IIS Module Registration
+kw	sigma.f11f2808adb4	wmiprvse.exe	ImagingDevices Unusual Parent/Child Processes
+kw	sigma.f11f2808adb4	imagingdevices.exe	ImagingDevices Unusual Parent/Child Processes
+kw	sigma.863218bdc7d0	imewdbld.exe	Arbitrary File Download Via IMEWDBLD.EXE
+kw	sigma.90fb5e62ca1f	keytool.exe	Suspicious Shells Spawn by Java Utility Keytool
+kw	sigma.90fb5e62ca1f	sh.exe	Suspicious Shells Spawn by Java Utility Keytool
+kw	sigma.90fb5e62ca1f	bash.exe	Suspicious Shells Spawn by Java Utility Keytool
+kw	sigma.cea2b7ea792b	java.exe	Suspicious Child Process Of Manage Engine ServiceDesk
+kw	sigma.cea2b7ea792b	appvlp.exe	Suspicious Child Process Of Manage Engine ServiceDesk
+kw	sigma.d047726bc71c	run run-cmd	Kavremover Dropped Binary LOLBIN Usage
+kw	sigma.0ed99dda6a35	UWhRCA	Attempts of Kerberos Coercion Via DNS SPN Spoofing
+kw	sigma.cd1f961e0b96	Circular Kernel Context Logger	Suspicious Windows Trace ETW Session Tamper Via Logman.EXE
+kw	sigma.cd1f961e0b96	EventLog-	Suspicious Windows Trace ETW Session Tamper Via Logman.EXE
+kw	sigma.cd1f961e0b96	SYSMON TRACE	Suspicious Windows Trace ETW Session Tamper Via Logman.EXE
+kw	sigma.cc268ac142d9	LaunchForDeploy	Devtoolslauncher.exe Executes Specified Binary
+kw	sigma.cc268ac142d9	devtoolslauncher.exe	Devtoolslauncher.exe Executes Specified Binary
+kw	sigma.c363385cf75d	manage-bde.wsf	Potential Manage-bde.wsf Abuse To Proxy Execution
+kw	sigma.4f73421b5a0b	/INJECTRUNNING	Mavinject Inject DLL Into Running Process
+kw	sigma.729ce0ea5d8f	mpiexec.exe	MpiExec Lolbin
+kw	sigma.cec8e91830f7	openwith.exe	OpenWith.exe Executes Specified Binary
+kw	sigma.6004abd0afa4	pcwrun.exe	Execute Pcwrun.EXE To Leverage Follina
+kw	sigma.cafeeba301da	printbrm.exe	PrintBrm ZIP Creation of Extraction
+kw	sigma.b2ddd389f676	RoamDiag.cmd	Using SettingSyncHost.exe as LOLBin
+kw	sigma.b2ddd389f676	-outputpath	Using SettingSyncHost.exe as LOLBin
+kw	sigma.f14e169e9978	grpconv.exe -o	Suspicious GrpConv Execution
+kw	sigma.f14e169e9978	grpconv -o	Suspicious GrpConv Execution
+kw	sigma.0b4ae0272a2d	tttracer.exe	Time Travel Debugging Utility Usage
+kw	sigma.7b10f1717f04	vbc.exe	Visual Basic Command Line Compiler Usage
+kw	sigma.7b10f1717f04	cvtres.exe	Visual Basic Command Line Compiler Usage
+kw	sigma.f1f3bf22deb2	-Embedding	MMC20 Lateral Movement
+kw	sigma.f1f3bf22deb2	mmc.exe	MMC20 Lateral Movement
+kw	sigma.9cfe4b271e56	cod.msc	MMC Executing Files with Reversed Extensions Using RTLO Abuse
+kw	sigma.9cfe4b271e56	fdp.msc	MMC Executing Files with Reversed Extensions Using RTLO Abuse
+kw	sigma.9cfe4b271e56	ftr.msc	MMC Executing Files with Reversed Extensions Using RTLO Abuse
+kw	sigma.9cfe4b271e56	lmth.msc	MMC Executing Files with Reversed Extensions Using RTLO Abuse
+kw	sigma.1dd05363104e	\AppData\Local\Temp	Potential Suspicious Mofcomp Execution
+kw	sigma.1dd05363104e	\WINDOWS\Temp\	Potential Suspicious Mofcomp Execution
+kw	sigma.7002aa10b8d4	mpcmdrun.exe	Potential Mpclient.DLL Sideloading Via Defender Binaries
+kw	sigma.7002aa10b8d4	nissrv.exe	Potential Mpclient.DLL Sideloading Via Defender Binaries
+kw	sigma.461231291024	DownloadFile	File Download Via Windows Defender MpCmpRun.EXE
+kw	sigma.9719a8aa401c	-RemoveDefinitions	Windows Defender Definition Files Removed
+kw	sigma.9c8c70003065	\WINDOWS\diagnostics\index\PCWDiagnostic.xml	MSDT Execution Via Answer File
+kw	sigma.9c8c70003065	msdt.exe	MSDT Execution Via Answer File
+kw	sigma.258fc8ce8352	IT_BrowseForFile=	Potential Arbitrary Command Execution Using Msdt.EXE
+kw	sigma.258fc8ce8352	PCWDiagnostic	Potential Arbitrary Command Execution Using Msdt.EXE
+kw	sigma.7a74da6bea76	wsl.exe	Suspicious MSDT Parent Process
+kw	sigma.b98d0db6511d	ftp://	Remotely Hosted HTA File Executed Via Mshta.EXE
+kw	sigma.67f113fae23d	javascript	Suspicious JavaScript Execution Via Mshta.EXE
+kw	sigma.cc7abbd0762b	vbscript	MSHTA Execution with Suspicious File Extensions
+kw	sigma.e32f92d1523e	C:\ProgramData\	Suspicious Mshta.EXE Execution Patterns
+kw	sigma.e32f92d1523e	C:\Users\Public\	Suspicious Mshta.EXE Execution Patterns
+kw	sigma.e32f92d1523e	C:\Windows\Temp\	Suspicious Mshta.EXE Execution Patterns
+kw	sigma.e22a6eb2f8a5	msiexec.exe	Potential MsiExec Masquerading
+kw	sigma.744a188b0415	msra.exe	Potential Process Injection Via Msra.EXE
+kw	sigma.744a188b0415	arp.exe	Potential Process Injection Via Msra.EXE
+kw	sigma.744a188b0415	net.exe	Potential Process Injection Via Msra.EXE
+kw	sigma.744a188b0415	netstat.exe	Potential Process Injection Via Msra.EXE
+kw	sigma.869b9ca79ea2	sqlservr.exe	Suspicious Child Process Of SQL Server
+kw	sigma.d55b793df847	VEEAMSQL	Suspicious Child Process Of Veeam Dabatase
+kw	sigma.d55b793df847	DownloadString	Suspicious Child Process Of Veeam Dabatase
+kw	sigma.6ba5a05fb095	noconsentprompt	Potential MSTSC Shadowing Activity
+kw	sigma.6ba5a05fb095	shadow:	Potential MSTSC Shadowing Activity
+kw	sigma.6e22722bdfb1	:\Windows\System32\spool\drivers\color	Suspicious Mstsc.EXE Execution With Local RDP File
+kw	sigma.6e22722bdfb1	:\Windows\System32\Tasks_Migrated	Suspicious Mstsc.EXE Execution With Local RDP File
+kw	sigma.ff3b6b39e765	ccleanerbrowser.exe	Mstsc.EXE Execution From Uncommon Parent
+kw	sigma.ff3b6b39e765	chromium.exe	Mstsc.EXE Execution From Uncommon Parent
+kw	sigma.ff3b6b39e765	iexplore.exe	Mstsc.EXE Execution From Uncommon Parent
+kw	sigma.75d0a94e6252	msxsl.exe	Remote XSL Execution Via Msxsl.EXE
+kw	sigma.a35f5a72f347	firewall	Suspicious Program Location Whitelisted In Firewall Via Netsh.EXE
+kw	sigma.a35f5a72f347	allowedprogram	Suspicious Program Location Whitelisted In Firewall Via Netsh.EXE
+kw	sigma.a35f5a72f347	advfirewall	Suspicious Program Location Whitelisted In Firewall Via Netsh.EXE
+kw	sigma.a35f5a72f347	action=allow	Suspicious Program Location Whitelisted In Firewall Via Netsh.EXE
+kw	sigma.01aeb693138d	portopening	RDP Connection Allowed Via Netsh.EXE
+kw	sigma.b9f0e6f509b4	expires:never	New User Created Via Net.EXE With Never Expire Option
+kw	sigma.b9f0e6f509b4	net1.exe	New User Created Via Net.EXE With Never Expire Option
+kw	sigma.5b768e7186f2	Järjestelmänvalvoja	Suspicious Manipulation Of Default Accounts Via Net.EXE
+kw	sigma.5b768e7186f2	Rendszergazda	Suspicious Manipulation Of Default Accounts Via Net.EXE
+kw	sigma.5b768e7186f2	Администратор	Suspicious Manipulation Of Default Accounts Via Net.EXE
+kw	sigma.5b768e7186f2	Administrateur	Suspicious Manipulation Of Default Accounts Via Net.EXE
+kw	sigma.6640f31c01ad	--eval	Potential Arbitrary Code Execution Via Node.EXE
+kw	sigma.6640f31c01ad	.exec(	Potential Arbitrary Code Execution Via Node.EXE
+kw	sigma.6640f31c01ad	net.socket	Potential Arbitrary Code Execution Via Node.EXE
+kw	sigma.6640f31c01ad	.connect	Potential Arbitrary Code Execution Via Node.EXE
+kw	sigma.e6313acd208c	nslookup	Network Reconnaissance Activity
+kw	sigma.e6313acd208c	_ldap._tcp.dc._msdcs.	Network Reconnaissance Activity
+kw	sigma.cb0fe7c5f3a3	INSTALLDRIVER	Suspicious Driver/DLL Installation Via Odbcconf.EXE
+kw	sigma.cb0fe7c5f3a3	odbcconf.exe	Suspicious Driver/DLL Installation Via Odbcconf.EXE
+kw	sigma.ba4cfc11d0fa	REGSVR	Potentially Suspicious DLL Registered Via Odbcconf.EXE
+kw	sigma.4ae3e30bb03f	excel.exe	Potential Arbitrary File Download Using Office Application
+kw	sigma.4ae3e30bb03f	powerpnt.exe	Potential Arbitrary File Download Using Office Application
+kw	sigma.551d9c1f816c	foxprow.exe	Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp
+kw	sigma.551d9c1f816c	schdplus.exe	Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp
+kw	sigma.551d9c1f816c	winproj.exe	Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp
+kw	sigma.f99abdf06283	\AppData\Roaming\Microsoft\Templates	Potentially Suspicious Office Document Executed From Trusted Location
+kw	sigma.f99abdf06283	\AppData\Roaming\Microsoft\Word\Startup\	Potentially Suspicious Office Document Executed From Trusted Location
+kw	sigma.f99abdf06283	\Microsoft Office\root\Templates\	Potentially Suspicious Office Document Executed From Trusted Location
+kw	sigma.f99abdf06283	\Microsoft Office\Templates\	Potentially Suspicious Office Document Executed From Trusted Location
+kw	sigma.84b1706c932a	\exported\	OneNote.EXE Execution of Malicious Embedded Scripts
+kw	sigma.84b1706c932a	\onenoteofflinecache_files\	OneNote.EXE Execution of Malicious Embedded Scripts
+kw	sigma.84b1706c932a	onenote.exe	OneNote.EXE Execution of Malicious Embedded Scripts
+kw	sigma.55f0a3a1846e	\Outlook\Security\EnableUnsafeClientMailRules	Outlook EnableUnsafeClientMailRules Setting Enabled
+kw	sigma.208748f7881d	outlook.exe	Suspicious Outlook Child Process
+kw	sigma.208748f7881d	forfiles.exe	Suspicious Outlook Child Process
+kw	sigma.aa3a6f94890e	winword.exe	Suspicious Binary In User Directory Spawned From Office Application
+kw	sigma.aa3a6f94890e	mspub.exe	Suspicious Binary In User Directory Spawned From Office Application
+kw	sigma.438025f95856	eqnedt32.exe	Suspicious Microsoft Office Child Process
+kw	sigma.438025f95856	msaccess.exe	Suspicious Microsoft Office Child Process
+kw	sigma.1a0d4aba7668	ping.exe	Ping Hex IP
+kw	sigma.f38ce0b95e97	:127.0.0.1:3389	Potential RDP Tunneling Via Plink
+kw	sigma.f38ce0b95e97	-P 443	Potential RDP Tunneling Via Plink
+kw	sigma.f38ce0b95e97	plink.exe	Potential RDP Tunneling Via Plink
+kw	sigma.c86500e9a645	Add-AADInt	AADInternals PowerShell Cmdlets Execution - ProccessCreation
+kw	sigma.c86500e9a645	ConvertTo-AADInt	AADInternals PowerShell Cmdlets Execution - ProccessCreation
+kw	sigma.c86500e9a645	Disable-AADInt	AADInternals PowerShell Cmdlets Execution - ProccessCreation
+kw	sigma.c86500e9a645	Enable-AADInt	AADInternals PowerShell Cmdlets Execution - ProccessCreation
+kw	sigma.30edb182aa75	System.Management.Automation.AmsiUtils	Potential AMSI Bypass Via .NET Reflection
+kw	sigma.30edb182aa75	amsiInitFailed	Potential AMSI Bypass Via .NET Reflection
+kw	sigma.30edb182aa75	SetValue($null,$true)	Potential AMSI Bypass Via .NET Reflection
+kw	sigma.30edb182aa75	NonPublic,Static	Potential AMSI Bypass Via .NET Reflection
+kw	sigma.ca2092a1c273	SQBFAFgA	Suspicious Encoded PowerShell Command Line
+kw	sigma.ca2092a1c273	aQBlAHgA	Suspicious Encoded PowerShell Command Line
+kw	sigma.ca2092a1c273	.exe -ENCOD	Suspicious Encoded PowerShell Command Line
+kw	sigma.ca2092a1c273	BA^J e-	Suspicious Encoded PowerShell Command Line
+kw	sigma.8d01b53f456f	IAAtAGIAeABvAHIAIAAwAHgA	Suspicious Obfuscated PowerShell Code
+kw	sigma.8d01b53f456f	AALQBiAHgAbwByACAAMAB4A	Suspicious Obfuscated PowerShell Code
+kw	sigma.8d01b53f456f	gAC0AYgB4AG8AcgAgADAAeA	Suspicious Obfuscated PowerShell Code
+kw	sigma.8d01b53f456f	AC4ASQBuAHYAbwBrAGUAKAApACAAfAAg	Suspicious Obfuscated PowerShell Code
+kw	sigma.fdb62a139a81	::FromBase64String	PowerShell Base64 Encoded FromBase64String Cmdlet
+kw	sigma.fdb62a139a81	OgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcA	PowerShell Base64 Encoded FromBase64String Cmdlet
+kw	sigma.fdb62a139a81	oAOgBGAHIAbwBtAEIAYQBzAGUANgA0AFMAdAByAGkAbgBnA	PowerShell Base64 Encoded FromBase64String Cmdlet
+kw	sigma.fdb62a139a81	6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZw	PowerShell Base64 Encoded FromBase64String Cmdlet
+kw	sigma.f26c60936f14	AGkAdABzAGEAZABtAGkAbgAgAC8AdAByAGEAbgBzAGYAZQByA	Malicious Base64 Encoded PowerShell Keywords in Command Lines
+kw	sigma.f26c60936f14	aXRzYWRtaW4gL3RyYW5zZmVy	Malicious Base64 Encoded PowerShell Keywords in Command Lines
+kw	sigma.f26c60936f14	IAaQB0AHMAYQBkAG0AaQBuACAALwB0AHIAYQBuAHMAZgBlAHIA	Malicious Base64 Encoded PowerShell Keywords in Command Lines
+kw	sigma.88f680b8070e	iex (New	PowerShell Base64 Encoded IEX Cmdlet
+kw	sigma.88f680b8070e	iex(New	PowerShell Base64 Encoded IEX Cmdlet
+kw	sigma.88f680b8070e	SQBFAFgAIAAoAFsA	PowerShell Base64 Encoded IEX Cmdlet
+kw	sigma.88f680b8070e	kARQBYACAAKABbA	PowerShell Base64 Encoded IEX Cmdlet
+kw	sigma.6385697e9f1b	SQBuAHYAbwBrAGUALQ	PowerShell Base64 Encoded Invoke Keyword
+kw	sigma.6385697e9f1b	kAbgB2AG8AawBlAC0A	PowerShell Base64 Encoded Invoke Keyword
+kw	sigma.6385697e9f1b	JAG4AdgBvAGsAZQAtA	PowerShell Base64 Encoded Invoke Keyword
+kw	sigma.6385697e9f1b	SW52b2tlL	PowerShell Base64 Encoded Invoke Keyword
+kw	sigma.c6fb44c671f5	Add-MpPreference	Powershell Base64 Encoded MpPreference Cmdlet
+kw	sigma.c6fb44c671f5	QQBkAGQALQBNAHAAUAByAGUAZgBlAHIAZQBuAGMAZQAgA	Powershell Base64 Encoded MpPreference Cmdlet
+kw	sigma.c6fb44c671f5	EAZABkAC0ATQBwAFAAcgBlAGYAZQByAGUAbgBjAGUAIA	Powershell Base64 Encoded MpPreference Cmdlet
+kw	sigma.62b7ccc923b4	WwBSAGUAZgBsAGUAYwB0AGkAbwBuAC4AQQBzAHMAZQBtAGIAbAB5AF0AOgA6AEwAbwBhAGQAKA	PowerShell Base64 Encoded Reflective Assembly Load
+kw	sigma.62b7ccc923b4	sAUgBlAGYAbABlAGMAdABpAG8AbgAuAEEAcwBzAGUAbQBiAGwAeQBdADoAOgBMAG8AYQBkACgA	PowerShell Base64 Encoded Reflective Assembly Load
+kw	sigma.62b7ccc923b4	bAFIAZQBmAGwAZQBjAHQAaQBvAG4ALgBBAHMAcwBlAG0AYgBsAHkAXQA6ADoATABvAGEAZAAoA	PowerShell Base64 Encoded Reflective Assembly Load
+kw	sigma.62b7ccc923b4	AFsAcgBlAGYAbABlAGMAdABpAG8AbgAuAGEAcwBzAGUAbQBiAGwAeQBdADoAOgAoACIATABvAGEAZAAiAC	PowerShell Base64 Encoded Reflective Assembly Load
+kw	sigma.9c0295ced60d	OgA6ACgAIgBMACIAKwAiAG8AYQBkACIAKQ	Suspicious Encoded And Obfuscated Reflection Assembly Load Function Call
+kw	sigma.9c0295ced60d	oAOgAoACIATAAiACsAIgBvAGEAZAAiACkA	Suspicious Encoded And Obfuscated Reflection Assembly Load Function Call
+kw	sigma.9c0295ced60d	6ADoAKAAiAEwAIgArACIAbwBhAGQAIgApA	Suspicious Encoded And Obfuscated Reflection Assembly Load Function Call
+kw	sigma.9c0295ced60d	OgA6ACgAIgBMAG8AIgArACIAYQBkACIAKQ	Suspicious Encoded And Obfuscated Reflection Assembly Load Function Call
+kw	sigma.1816994b42e1	VwBpAG4AMwAyAF8AUwBoAGEAZABvAHcAYwBvAHAAeQ	PowerShell Base64 Encoded WMI Classes
+kw	sigma.1816994b42e1	cAaQBuADMAMgBfAFMAaABhAGQAbwB3AGMAbwBwAHkA	PowerShell Base64 Encoded WMI Classes
+kw	sigma.1816994b42e1	XAGkAbgAzADIAXwBTAGgAYQBkAG8AdwBjAG8AcAB5A	PowerShell Base64 Encoded WMI Classes
+kw	sigma.1816994b42e1	V2luMzJfU2hhZG93Y29we	PowerShell Base64 Encoded WMI Classes
+kw	sigma.b6b49cd134d6	dnammoc	Potential PowerShell Obfuscation Via Reversed Commands
+kw	sigma.b6b49cd134d6	tninon	Potential PowerShell Obfuscation Via Reversed Commands
+kw	sigma.b6b49cd134d6	tpircS	Potential PowerShell Obfuscation Via Reversed Commands
+kw	sigma.b6b49cd134d6	ssecorp	Potential PowerShell Obfuscation Via Reversed Commands
+kw	sigma.d7bcd677645d	\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+.*\+	Potential PowerShell Command Line Obfuscation
+kw	sigma.d7bcd677645d	\^.*\^.*\^.*\^.*\^	Potential PowerShell Command Line Obfuscation
+kw	sigma.d7bcd677645d	`.*`.*`.*`.*`	Potential PowerShell Command Line Obfuscation
+kw	sigma.7b6a74183afc	-ComObject	Obfuscated PowerShell MSI Install via WindowsInstaller COM
+kw	sigma.7b6a74183afc	InstallProduct(	Obfuscated PowerShell MSI Install via WindowsInstaller COM
+kw	sigma.7b6a74183afc	.Insert(	Obfuscated PowerShell MSI Install via WindowsInstaller COM
+kw	sigma.7b6a74183afc	UILevel	Obfuscated PowerShell MSI Install via WindowsInstaller COM
+kw	sigma.434c08ba8406	Get-ChildItem	PowerShell Execution With Potential Decryption Capabilities
+kw	sigma.434c08ba8406	Get-Content	PowerShell Execution With Potential Decryption Capabilities
+kw	sigma.434c08ba8406	ReadAllBytes	PowerShell Execution With Potential Decryption Capabilities
+kw	sigma.434c08ba8406	\*.lnk	PowerShell Execution With Potential Decryption Capabilities
+kw	sigma.1ec65a5f9473	DisableArchiveScanning	Powershell Defender Disable Scan Feature
+kw	sigma.1ec65a5f9473	DisableRealtimeMonitoring	Powershell Defender Disable Scan Feature
+kw	sigma.a7ee1722c3c5	-DisableBehaviorMonitoring $true	Disable Windows Defender AV Security Monitoring
+kw	sigma.a7ee1722c3c5	-DisableRuntimeMonitoring $true	Disable Windows Defender AV Security Monitoring
+kw	sigma.a7ee1722c3c5	WinDefend	Disable Windows Defender AV Security Monitoring
+kw	sigma.fb50eb7a5ab1	-name IEHarden	Disabled IE Security Features
+kw	sigma.fb50eb7a5ab1	-value 0	Disabled IE Security Features
+kw	sigma.fb50eb7a5ab1	-name DEPOff	Disabled IE Security Features
+kw	sigma.fb50eb7a5ab1	-value 1	Disabled IE Security Features
+kw	sigma.44e244816202	http://127.0.0.1	Obfuscated PowerShell OneLiner Execution
+kw	sigma.44e244816202	Invoke	Obfuscated PowerShell OneLiner Execution
+kw	sigma.85b0b087eddf	.DownloadString(	PowerShell Download and Execution Cradles
+kw	sigma.85b0b087eddf	.DownloadFile(	PowerShell Download and Execution Cradles
+kw	sigma.85b0b087eddf	Invoke-WebRequest	PowerShell Download and Execution Cradles
+kw	sigma.85b0b087eddf	Invoke-RestMethod	PowerShell Download and Execution Cradles
+kw	sigma.b6e0478829e1	cdn.discordapp.com	Potentially Suspicious File Download From File Sharing Domain Via PowerShell.EXE
+kw	sigma.43d91656a9b2	Add-ADDBSidHistory	DSInternals Suspicious PowerShell Cmdlets
+kw	sigma.43d91656a9b2	Add-ADNgcKey	DSInternals Suspicious PowerShell Cmdlets
+kw	sigma.43d91656a9b2	Add-ADReplNgcKey	DSInternals Suspicious PowerShell Cmdlets
+kw	sigma.43d91656a9b2	ConvertFrom-ADManagedPasswordBlob	DSInternals Suspicious PowerShell Cmdlets
+kw	sigma.312d0384401c	Add-PSSnapin	Email Exifiltration Via Powershell
+kw	sigma.312d0384401c	Get-Recipient	Email Exifiltration Via Powershell
+kw	sigma.312d0384401c	-ExpandProperty	Email Exifiltration Via Powershell
+kw	sigma.312d0384401c	EmailAddresses	Email Exifiltration Via Powershell
+kw	sigma.e32d45729826	::FromBase64String(	Base64 Encoded PowerShell Command Detected
+kw	sigma.b2815d0d7481	Get-Process lsas	PowerShell Get-Process LSASS
+kw	sigma.b2815d0d7481	ps lsas	PowerShell Get-Process LSASS
+kw	sigma.b2815d0d7481	gps lsas	PowerShell Get-Process LSASS
+kw	sigma.514e4c3ac77d	Set-Service	Abuse of Service Permissions to Hide Services Via Set-Service
+kw	sigma.514e4c3ac77d	DCLCWPDTSD	Abuse of Service Permissions to Hide Services Via Set-Service
+kw	sigma.514e4c3ac77d	-SecurityDescriptorSddl	Abuse of Service Permissions to Hide Services Via Set-Service
+kw	sigma.095768047a05	| iex;	Suspicious PowerShell IEX Execution Patterns
+kw	sigma.095768047a05	| iex}	Suspicious PowerShell IEX Execution Patterns
+kw	sigma.095768047a05	| IEX ;	Suspicious PowerShell IEX Execution Patterns
+kw	sigma.095768047a05	| IEX -Error	Suspicious PowerShell IEX Execution Patterns
+kw	sigma.5f6a601c2ecb	Import-Certificate	Root Certificate Installed From Susp Locations
+kw	sigma.5f6a601c2ecb	-FilePath	Root Certificate Installed From Susp Locations
+kw	sigma.5f6a601c2ecb	Cert:\LocalMachine\Root	Root Certificate Installed From Susp Locations
+kw	sigma.5e3cc4d83e68	\Temp\	Suspicious Invoke-WebRequest Execution
+kw	sigma.caa9a8028bd8	System.IdentityModel.Tokens.KerberosRequestorSecurityToken	Suspicious Kerberos Ticket Request via CLI
+kw	sigma.caa9a8028bd8	.GetRequest()	Suspicious Kerberos Ticket Request via CLI
+kw	sigma.889719efdd62	New-MailboxExportRequest	Suspicious PowerShell Mailbox Export to Share
+kw	sigma.889719efdd62	-Mailbox	Suspicious PowerShell Mailbox Export to Share
+kw	sigma.889719efdd62	-FilePath \\\\	Suspicious PowerShell Mailbox Export to Share
+kw	sigma.02030f2f6199	Add-Exfiltration	Malicious PowerShell Commandlets - ProcessCreation
+kw	sigma.02030f2f6199	Add-Persistence	Malicious PowerShell Commandlets - ProcessCreation
+kw	sigma.02030f2f6199	Add-RegBackdoor	Malicious PowerShell Commandlets - ProcessCreation
+kw	sigma.02030f2f6199	Add-RemoteRegBackdoor	Malicious PowerShell Commandlets - ProcessCreation
+kw	sigma.e312efd035a1	(WCHAR)0x	Potential PowerShell Obfuscation Via WCHAR/CHAR
+kw	sigma.fb9d3ff77348	-f C:\Users\Public	Execution of Powershell Script in Public Folder
+kw	sigma.fb9d3ff77348	-f "C:\Users\Public	Execution of Powershell Script in Public Folder
+kw	sigma.fb9d3ff77348	-f %Public%	Execution of Powershell Script in Public Folder
+kw	sigma.fb9d3ff77348	-fi C:\Users\Public	Execution of Powershell Script in Public Folder
+kw	sigma.a6fc3c4623b8	Invoke-ATHRemoteFXvGPUDisablementCommand	RemoteFXvGPUDisablement Abuse Via AtomicTestHarnesses
+kw	sigma.a6fc3c4623b8	Invoke-ATHRemoteFXvGPUDisableme	RemoteFXvGPUDisablement Abuse Via AtomicTestHarnesses
+kw	sigma.07e3cb2c0608	Remove-MpPreference	Tamper Windows Defender Remove-MpPreference
+kw	sigma.07e3cb2c0608	-ControlledFolderAccessProtectedFolders	Tamper Windows Defender Remove-MpPreference
+kw	sigma.07e3cb2c0608	-AttackSurfaceReductionRules_Ids	Tamper Windows Defender Remove-MpPreference
+kw	sigma.07e3cb2c0608	-AttackSurfaceReductionRules_Actions	Tamper Windows Defender Remove-MpPreference
+kw	sigma.edc2f8ae2412	Net.Sockets.TCPClient	Potential Powershell ReverseShell Connection
+kw	sigma.edc2f8ae2412	.GetStream(	Potential Powershell ReverseShell Connection
+kw	sigma.edc2f8ae2412	.Write(	Potential Powershell ReverseShell Connection
+kw	sigma.45a594aa1fbd	-Stream	Run PowerShell Script from ADS
+kw	sigma.c83bf4b5cdf0	\s-\s*<	Run PowerShell Script from Redirected Input Stream
+kw	sigma.1af57a4b460a	\HarddiskVolumeShadowCopy	PowerShell SAM Copy
+kw	sigma.1af57a4b460a	System32\config\sam	PowerShell SAM Copy
+kw	sigma.1af57a4b460a	Copy-Item	PowerShell SAM Copy
+kw	sigma.1af57a4b460a	cp $_.	PowerShell SAM Copy
+kw	sigma.bdeb2cffaf74	Set-Acl	PowerShell Script Change Permission Via Set-Acl
+kw	sigma.bdeb2cffaf74	-AclObject	PowerShell Script Change Permission Via Set-Acl
+kw	sigma.0944e002e3f6	-Path "C:\Windows	PowerShell Set-Acl On Windows Folder
+kw	sigma.0944e002e3f6	-Path 'C:\Windows	PowerShell Set-Acl On Windows Folder
+kw	sigma.21ff4ca9f13a	Get-WmiObject	Deletion of Volume Shadow Copies via WMI with PowerShell
+kw	sigma.21ff4ca9f13a	Get-CimInstance	Deletion of Volume Shadow Copies via WMI with PowerShell
+kw	sigma.21ff4ca9f13a	Win32_ShadowCopy	Deletion of Volume Shadow Copies via WMI with PowerShell
+kw	sigma.21ff4ca9f13a	.Delete()	Deletion of Volume Shadow Copies via WMI with PowerShell
+kw	sigma.25676e102121	Microsoft.Exchange.Powershell.Snapin	Exchange PowerShell Snap-Ins Usage
+kw	sigma.25676e102121	Microsoft.Exchange.Management.PowerShell.SnapIn	Exchange PowerShell Snap-Ins Usage
+kw	sigma.e6c54d94498c	IEX ((New-Object Net.WebClient).DownloadString	Suspicious PowerShell Download and Execute Pattern
+kw	sigma.e6c54d94498c	IEX (New-Object Net.WebClient).DownloadString	Suspicious PowerShell Download and Execute Pattern
+kw	sigma.e6c54d94498c	IEX((New-Object Net.WebClient).DownloadString	Suspicious PowerShell Download and Execute Pattern
+kw	sigma.e6c54d94498c	IEX(New-Object Net.WebClient).DownloadString	Suspicious PowerShell Download and Execute Pattern
+kw	sigma.36210e0d5b19	-windowstyle h	Suspicious PowerShell Parameter Substring
+kw	sigma.36210e0d5b19	-windowstyl h	Suspicious PowerShell Parameter Substring
+kw	sigma.36210e0d5b19	-windowsty h	Suspicious PowerShell Parameter Substring
+kw	sigma.36210e0d5b19	-windowst h	Suspicious PowerShell Parameter Substring
+kw	sigma.754ed792634f	/c pwsh	Suspicious PowerShell Parent Process
+kw	sigma.754ed792634f	amigo.exe	Suspicious PowerShell Parent Process
+kw	sigma.754ed792634f	browser.exe	Suspicious PowerShell Parent Process
+kw	sigma.c443012c7928	Uninstall-WindowsFeature	Suspicious Uninstall of Windows Defender Feature via PowerShell
+kw	sigma.c443012c7928	Remove-WindowsFeature	Suspicious Uninstall of Windows Defender Feature via PowerShell
+kw	sigma.c443012c7928	Windows-Defender	Suspicious Uninstall of Windows Defender Feature via PowerShell
+kw	sigma.c86133ad4725	TgBlAFQALgB3AEUAQg	Net WebClient Casing Anomalies
+kw	sigma.c86133ad4725	4AZQBUAC4AdwBFAEIA	Net WebClient Casing Anomalies
+kw	sigma.c86133ad4725	OAGUAVAAuAHcARQBCA	Net WebClient Casing Anomalies
+kw	sigma.c86133ad4725	bgBFAHQALgB3AGUAYg	Net WebClient Casing Anomalies
+kw	sigma.2fcda7e28c57	\config\SECURITY	Sensitive File Dump Via Print.EXE
+kw	sigma.2fcda7e28c57	\config\SYSTEM	Sensitive File Dump Via Print.EXE
+kw	sigma.2fcda7e28c57	\windows\ntds\ntds.dit	Sensitive File Dump Via Print.EXE
+kw	sigma.f99995901f94	provlaunch.exe	Suspicious Provlaunch.EXE Child Process
+kw	sigma.f38a82d2fba3	.exe -i127.0.0.1 -p	PUA - 3Proxy Execution
+kw	sigma.f38a82d2fba3	3proxy.exe	PUA - 3Proxy Execution
+kw	sigma.455b9d5015a1	lockoutduration	PUA - Suspicious ActiveDirectory Enumeration Via AdFind.EXE
+kw	sigma.455b9d5015a1	lockoutthreshold	PUA - Suspicious ActiveDirectory Enumeration Via AdFind.EXE
+kw	sigma.455b9d5015a1	lockoutobservationwindow	PUA - Suspicious ActiveDirectory Enumeration Via AdFind.EXE
+kw	sigma.455b9d5015a1	maxpwdage	PUA - Suspicious ActiveDirectory Enumeration Via AdFind.EXE
+kw	sigma.9a132afa654e	domainlist	PUA - AdFind Suspicious Execution
+kw	sigma.9a132afa654e	trustdmp	PUA - AdFind Suspicious Execution
+kw	sigma.9a132afa654e	dcmodes	PUA - AdFind Suspicious Execution
+kw	sigma.9a132afa654e	adinfo	PUA - AdFind Suspicious Execution
+kw	sigma.fa00b70144c6	/EXEFilename	PUA - AdvancedRun Suspicious Execution
+kw	sigma.fa00b70144c6	/CommandLine	PUA - AdvancedRun Suspicious Execution
+kw	sigma.fa00b70144c6	/RunAs 8	PUA - AdvancedRun Suspicious Execution
+kw	sigma.fa00b70144c6	/RunAs 4	PUA - AdvancedRun Suspicious Execution
+kw	sigma.8b0e12dad3c3	exe client	PUA - Chisel Tunneling Tool Execution
+kw	sigma.8b0e12dad3c3	exe server	PUA - Chisel Tunneling Tool Execution
+kw	sigma.8b0e12dad3c3	-socks5	PUA - Chisel Tunneling Tool Execution
+kw	sigma.8b0e12dad3c3	-reverse	PUA - Chisel Tunneling Tool Execution
+kw	sigma.f44800ac38ec	--uninstall	PUA - CleanWipe Execution
+kw	sigma.f44800ac38ec	/uninstall	PUA - CleanWipe Execution
+kw	sigma.f44800ac38ec	/enterprise	PUA - CleanWipe Execution
+kw	sigma.f44800ac38ec	sepremovaltoolnative_x64.exe	PUA - CleanWipe Execution
+kw	sigma.2c32b5431058	crassus.exe	PUA - Crassus Execution
+kw	sigma.d08a2711ee8b	csexec.exe	PUA - CsExec Execution
+kw	sigma.f0ca6c243225	defendercheck.exe	PUA - DefenderCheck Execution
+kw	sigma.d3b70aad097e	ditsnap.exe	PUA - DIT Snapshot Viewer
+kw	sigma.32410e295f94	\frpc.ini	PUA - Fast Reverse Proxy (FRP) Execution
+kw	sigma.32410e295f94	frpc.exe	PUA - Fast Reverse Proxy (FRP) Execution
+kw	sigma.32410e295f94	frps.exe	PUA - Fast Reverse Proxy (FRP) Execution
+kw	sigma.d7654f02e04b	.exe fwd -l	PUA- IOX Tunneling Tool Execution
+kw	sigma.d7654f02e04b	.exe fwd -r	PUA- IOX Tunneling Tool Execution
+kw	sigma.d7654f02e04b	.exe proxy -l	PUA- IOX Tunneling Tool Execution
+kw	sigma.d7654f02e04b	.exe proxy -r	PUA- IOX Tunneling Tool Execution
+kw	sigma.e76ca0624de0	kdu.exe	PUA - Kernel Driver Utility (KDU) Execution
+kw	sigma.e76ca0624de0	hamakaze.exe	PUA - Kernel Driver Utility (KDU) Execution
+kw	sigma.8a1b2c3d4e5f	-device	PUA - Memory Dump Mount Via MemProcFS
+kw	sigma.8a1b2c3d4e5f	memprocfs.exe	PUA - Memory Dump Mount Via MemProcFS
+kw	sigma.e31033fc33f0	-l -v -p	PUA - Netcat Suspicious Execution
+kw	sigma.e31033fc33f0	-lv -p	PUA - Netcat Suspicious Execution
+kw	sigma.e31033fc33f0	-l --proxy-type http	PUA - Netcat Suspicious Execution
+kw	sigma.e31033fc33f0	-vnl --exec	PUA - Netcat Suspicious Execution
+kw	sigma.ee37eb7ca4e7	tcp 139	PUA - Ngrok Execution
+kw	sigma.ee37eb7ca4e7	tcp 445	PUA - Ngrok Execution
+kw	sigma.ee37eb7ca4e7	tcp 3389	PUA - Ngrok Execution
+kw	sigma.ee37eb7ca4e7	tcp 5985	PUA - Ngrok Execution
+kw	sigma.74a12f18505c	nimgrab.exe	PUA - Nimgrab Execution
+kw	sigma.d90474770359	runassystem	PUA - NirCmd Execution As LOCAL SYSTEM
+kw	sigma.68d3777661db	-server=	PUA - NPS Tunneling Tool Execution
+kw	sigma.68d3777661db	-vkey=	PUA - NPS Tunneling Tool Execution
+kw	sigma.68d3777661db	-password=	PUA - NPS Tunneling Tool Execution
+kw	sigma.68d3777661db	-config=npc	PUA - NPS Tunneling Tool Execution
+kw	sigma.771d1eb59587	-ShowWindowMode:Hide	PUA - NSudo Execution
+kw	sigma.771d1eb59587	nsudo.exe	PUA - NSudo Execution
+kw	sigma.771d1eb59587	nsudolc.exe	PUA - NSudo Execution
+kw	sigma.771d1eb59587	nsudolg.exe	PUA - NSudo Execution
+kw	sigma.b37998dea70b	:\Windows\Temp\	PUA - PingCastle Execution From Potentially Suspicious Parent
+kw	sigma.e37db05dd1f9	--config	PUA - Rclone Execution
+kw	sigma.e37db05dd1f9	--no-check-certificate	PUA - Rclone Execution
+kw	sigma.e37db05dd1f9	remote	PUA - Rclone Execution
+kw	sigma.6ddff2e8ea1a	--password-file	PUA - Restic Backup Tool Execution
+kw	sigma.6ddff2e8ea1a	--use-fs-snapshot	PUA - Restic Backup Tool Execution
+kw	sigma.6ddff2e8ea1a	backup	PUA - Restic Backup Tool Execution
+kw	sigma.6ddff2e8ea1a	rest:http	PUA - Restic Backup Tool Execution
+kw	sigma.93199800b52a	/account=system	PUA - RunXCmd Execution
+kw	sigma.93199800b52a	/account=ti	PUA - RunXCmd Execution
+kw	sigma.93199800b52a	/exec=	PUA - RunXCmd Execution
+kw	sigma.38646daae78f	DpapiMasterKeys	PUA - Seatbelt Execution
+kw	sigma.38646daae78f	InterestingProcesses	PUA - Seatbelt Execution
+kw	sigma.38646daae78f	InterestingFiles	PUA - Seatbelt Execution
+kw	sigma.38646daae78f	CertificateThumbprints	PUA - Seatbelt Execution
+kw	sigma.bdeeabc9ff2a	-u System	PUA - Wsudo Suspicious Execution
+kw	sigma.bdeeabc9ff2a	-uSystem	PUA - Wsudo Suspicious Execution
+kw	sigma.bdeeabc9ff2a	-u TrustedInstaller	PUA - Wsudo Suspicious Execution
+kw	sigma.bdeeabc9ff2a	-uTrustedInstaller	PUA - Wsudo Suspicious Execution
+kw	sigma.50a0aa3dab16	import	Python One-Liners with Base64 Decoding
+kw	sigma.50a0aa3dab16	.decode	Python One-Liners with Base64 Decoding
+kw	sigma.50a0aa3dab16	b16decode	Python One-Liners with Base64 Decoding
+kw	sigma.480e7e51e797	import pty	Python Spawning Pretty TTY on Windows
+kw	sigma.480e7e51e797	.spawn(	Python Spawning Pretty TTY on Windows
+kw	sigma.480e7e51e797	from pty import spawn	Python Spawning Pretty TTY on Windows
+kw	sigma.480e7e51e797	python3.exe	Python Spawning Pretty TTY on Windows
+kw	sigma.afe52666401e	.exe a	Suspicious Greedy Compression Using Rar.EXE
+kw	sigma.afe52666401e	?:\\\*.	Suspicious Greedy Compression Using Rar.EXE
+kw	sigma.afe52666401e	?:\\\\\*.	Suspicious Greedy Compression Using Rar.EXE
+kw	sigma.afe52666401e	?:\$Recycle.bin\	Suspicious Greedy Compression Using Rar.EXE
+kw	sigma.edadb1e55919	/memdmp	Process Memory Dump via RdrLeakDiag.EXE
+kw	sigma.edadb1e55919	fullmemdmp	Process Memory Dump via RdrLeakDiag.EXE
+kw	sigma.edadb1e55919	rdrleakdiag.exe	Process Memory Dump via RdrLeakDiag.EXE
+kw	sigma.82880171b475	hkey_local_machine	Exports Critical Registry Keys To a File
+kw	sigma.82880171b475	\system	Exports Critical Registry Keys To a File
+kw	sigma.82880171b475	\security	Exports Critical Registry Keys To a File
+kw	sigma.82880171b475	regedit.exe	Exports Critical Registry Keys To a File
+kw	sigma.883835a7df45	trustedinstaller.exe	Regedit as Trusted Installer
+kw	sigma.883835a7df45	processhacker.exe	Regedit as Trusted Installer
+kw	sigma.77946e7997f1	regini.exe	Suspicious Registry Modification From ADS Via Regini.EXE
+kw	sigma.cc1abf2778a3	export	Registry Export of Third-Party Credentials
+kw	sigma.cc1abf2778a3	\Software\Aerofox\Foxmail\V3.1	Registry Export of Third-Party Credentials
+kw	sigma.cc1abf2778a3	\Software\Aerofox\FoxmailPreview	Registry Export of Third-Party Credentials
+kw	sigma.cc1abf2778a3	\Software\DownloadManager\Passwords	Registry Export of Third-Party Credentials
+kw	sigma.10344bb37f65	\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\ProtocolDefaults	IE ZoneMap Setting Downgraded To MyComputer Zone For HTTP Protocols Via CLI
+kw	sigma.ae215552081e	\CurrentVersion\Image File Execution Options\	Suspicious Debugger Registration Cmdline
+kw	sigma.21d856f99281	UserInitMprLogonScript	Potential Persistence Via Logon Scripts - CommandLine
+kw	sigma.baef1ec62ca9	\System\CurrentControlSet\Services\	Potential Credential Dumping Attempt Using New NetworkProvider - CLI
+kw	sigma.baef1ec62ca9	\NetworkProvider	Potential Credential Dumping Attempt Using New NetworkProvider - CLI
+kw	sigma.023c654f8f16	\Microsoft\Office\	Python Function Execution Security Warning Disabled In Excel
+kw	sigma.023c654f8f16	\Excel\Security	Python Function Execution Security Warning Disabled In Excel
+kw	sigma.023c654f8f16	PythonFunctionWarnings	Python Function Execution Security Warning Disabled In Excel
+kw	sigma.0f9c21f16a73	ControlSet	Potential Privilege Escalation via Service Permissions Weakness
+kw	sigma.0f9c21f16a73	services	Potential Privilege Escalation via Service Permissions Weakness
+kw	sigma.0f9c21f16a73	\ImagePath	Potential Privilege Escalation via Service Permissions Weakness
+kw	sigma.0f9c21f16a73	\FailureCommand	Potential Privilege Escalation via Service Permissions Weakness
+kw	sigma.2a4b3e619d22	SOFTWARE\Microsoft\Provisioning\Commands\	Potential Provisioning Registry Key Abuse For Binary Proxy Execution
+kw	sigma.cf2e938e9a3e	\ShellIds\Microsoft.PowerShell\ExecutionPolicy	Potential PowerShell Execution Policy Tampering - ProcCreation
+kw	sigma.cf2e938e9a3e	\Policies\Microsoft\Windows\PowerShell\ExecutionPolicy	Potential PowerShell Execution Policy Tampering - ProcCreation
+kw	sigma.cf2e938e9a3e	RemoteSigned	Potential PowerShell Execution Policy Tampering - ProcCreation
+kw	sigma.2dd2c217bf68	/i:http://1	Potentially Suspicious Regsvr32 HTTP IP Pattern
+kw	sigma.2dd2c217bf68	/i:http://2	Potentially Suspicious Regsvr32 HTTP IP Pattern
+kw	sigma.2dd2c217bf68	/i:http://3	Potentially Suspicious Regsvr32 HTTP IP Pattern
+kw	sigma.2dd2c217bf68	/i:http://4	Potentially Suspicious Regsvr32 HTTP IP Pattern
+kw	sigma.6f0947a41c5e	nltest.exe	Potentially Suspicious Child Process Of Regsvr32
+kw	sigma.327ff23594eb	\Windows\Registration\CRMLog	Regsvr32 Execution From Highly Suspicious Location
+kw	sigma.327ff23594eb	\Windows\System32\com\dmp\	Regsvr32 Execution From Highly Suspicious Location
+kw	sigma.d7662ff69e97	\SYSTEM\CurrentControlSet\Control\SafeBoot	Add SafeBoot Keys Via Reg Utility
+kw	sigma.0e0255bf2548	\SOFTWARE\Policies\Microsoft\FVE	Suspicious Reg Add BitLocker
+kw	sigma.0e0255bf2548	EnableBDEWithNoTPM	Suspicious Reg Add BitLocker
+kw	sigma.0e0255bf2548	UseAdvancedStartup	Suspicious Reg Add BitLocker
+kw	sigma.0e0255bf2548	UseTPM	Suspicious Reg Add BitLocker
+kw	sigma.c11aecef9c37	\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU	RunMRU Registry Key Deletion
+kw	sigma.a1b2c3d4e5f6	\Control\WMI\Autologger\DefenderApiLogger\Start	Disabling Windows Defender WMI Autologger Session via Reg.exe
+kw	sigma.a1b2c3d4e5f6	\Control\WMI\Autologger\DefenderAuditLogger\Start	Disabling Windows Defender WMI Autologger Session via Reg.exe
+kw	sigma.5e95028c5229	v Start	Security Service Disabled Via Reg.EXE
+kw	sigma.5e95028c5229	\AppIDSvc	Security Service Disabled Via Reg.EXE
+kw	sigma.5e95028c5229	\MsMpSvc	Security Service Disabled Via Reg.EXE
+kw	sigma.5e95028c5229	\NisSrv	Security Service Disabled Via Reg.EXE
+kw	sigma.fd877b949bb5	eˣport	Dumping of Sensitive Hives Via Reg.EXE
+kw	sigma.fd877b949bb5	hkey_˪ocal_machine	Dumping of Sensitive Hives Via Reg.EXE
+kw	sigma.28ac00d622d9	\System\CurrentControlSet\Control\Lsa	RestrictedAdminMode Registry Value Tampering - ProcCreation
+kw	sigma.28ac00d622d9	DisableRestrictedAdmin	RestrictedAdminMode Registry Value Tampering - ProcCreation
+kw	sigma.98dedfdd8333	NoLMHash	Enable LM Hash Storage - ProcCreation
+kw	sigma.0d5675bebc88	\CurrentControlSet\Control\Terminal Server	Potential Tampering With RDP Related Registry Keys Via Reg.EXE
+kw	sigma.0d5675bebc88	REG_DWORD	Potential Tampering With RDP Related Registry Keys Via Reg.EXE
+kw	sigma.0d5675bebc88	Licensing Core	Potential Tampering With RDP Related Registry Keys Via Reg.EXE
+kw	sigma.0d5675bebc88	EnableConcurrentSessions	Potential Tampering With RDP Related Registry Keys Via Reg.EXE
+kw	sigma.b7e2a8d474bb	\AppDataLow\Software\Microsoft\	Reg Add Suspicious Paths
+kw	sigma.b7e2a8d474bb	\Policies\Microsoft\Windows\OOBE	Reg Add Suspicious Paths
+kw	sigma.b7e2a8d474bb	\Policies\Microsoft\Windows NT\CurrentVersion\Winlogon	Reg Add Suspicious Paths
+kw	sigma.b7e2a8d474bb	\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon	Reg Add Suspicious Paths
+kw	sigma.7c06ab9bb1d2	\SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore	System Restore Registry Modification via CommandLine
+kw	sigma.7c06ab9bb1d2	\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore	System Restore Registry Modification via CommandLine
+kw	sigma.dee4af551f22	\Services\VSS\Diag	Disabled Volume Snapshots
+kw	sigma.dee4af551f22	/d Disabled	Disabled Volume Snapshots
+kw	sigma.452bce906fb0	SOFTWARE\Microsoft\Windows Defender\	Suspicious Windows Defender Registry Key Tampering Via Reg.EXE
+kw	sigma.452bce906fb0	SOFTWARE\Policies\Microsoft\Windows Defender Security Center	Suspicious Windows Defender Registry Key Tampering Via Reg.EXE
+kw	sigma.452bce906fb0	SOFTWARE\Policies\Microsoft\Windows Defender\	Suspicious Windows Defender Registry Key Tampering Via Reg.EXE
+kw	sigma.452bce906fb0	DisallowExploitProtectionOverride	Suspicious Windows Defender Registry Key Tampering Via Reg.EXE
+kw	sigma.114e7f1cf137	--install	Remote Access Tool - AnyDesk Silent Installation
+kw	sigma.114e7f1cf137	--start-with-win	Remote Access Tool - AnyDesk Silent Installation
+kw	sigma.114e7f1cf137	--silent	Remote Access Tool - AnyDesk Silent Installation
+kw	sigma.065b00ca5d5c	anydesk.exe	Remote Access Tool - Anydesk Execution From Suspicious Folder
+kw	sigma.065b00ca5d5c	anydeskmsi.exe	Remote Access Tool - Anydesk Execution From Suspicious Folder
+kw	sigma.b471f462eb0d	--meshServiceName	Remote Access Tool - Renamed MeshAgent Execution - Windows
+kw	sigma.b471f462eb0d	meshagent	Remote Access Tool - Renamed MeshAgent Execution - Windows
+kw	sigma.b19146a325d4	screenconnect.service.exe	Remote Access Tool - ScreenConnect Server Web Shell Execution
+kw	sigma.b19146a325d4	csc.exe	Remote Access Tool - ScreenConnect Server Web Shell Execution
+kw	sigma.f4264e47f522	/AutoIt3ExecuteScript	Renamed AutoIt Execution
+kw	sigma.f4264e47f522	/ErrorStdOut	Renamed AutoIt Execution
+kw	sigma.f4264e47f522	autoit3.exe	Renamed AutoIt Execution
+kw	sigma.f4264e47f522	autoit2.exe	Renamed AutoIt Execution
+kw	sigma.0ba1da6db6ce	ie4uinit.exe	Potential Defense Evasion Via Rename Of Highly Relevant Binaries
+kw	sigma.8a4519e8e64a	browsercore.exe	Renamed BrowserCore.EXE Execution
+kw	sigma.e0c69ebdb54f	tunnel	Renamed Cloudflared.EXE Execution
+kw	sigma.e0c69ebdb54f	cleanup	Renamed Cloudflared.EXE Execution
+kw	sigma.e0c69ebdb54f	-connector-id	Renamed Cloudflared.EXE Execution
+kw	sigma.ec0722a3eb5c	gpg.exe	Renamed Gpg.EXE Execution
+kw	sigma.e6474a1b5390	mavinject32.exe	Renamed Mavinject.EXE Execution
+kw	sigma.e6474a1b5390	mavinject64.exe	Renamed Mavinject.EXE Execution
+kw	sigma.643bdcac8b82	megasync.exe	Renamed MegaSync Execution
+kw	sigma.0afbd410de03	client32.exe	Renamed NetSupport RAT Execution
+kw	sigma.264982dcdbad	nircmd.exe	Renamed NirCmd.EXE Execution
+kw	sigma.c4e498311496	paexec.exe	Renamed PAExec Execution
+kw	sigma.2433a154bb3d	--scanner aclcheck	Renamed PingCastle Binary Execution
+kw	sigma.2433a154bb3d	--scanner antivirus	Renamed PingCastle Binary Execution
+kw	sigma.2433a154bb3d	--scanner computerversion	Renamed PingCastle Binary Execution
+kw	sigma.2433a154bb3d	--scanner foreignusers	Renamed PingCastle Binary Execution
+kw	sigma.1c12727d02bf	-l forward	Renamed Plink Execution
+kw	sigma.1c12727d02bf	plink	Renamed Plink Execution
+kw	sigma.2569ed8c1147	DllRegisterServer	Potential Renamed Rundll32 Execution
+kw	sigma.f91e51c9f344	/delete	Renamed Schtasks Execution
+kw	sigma.f91e51c9f344	/query	Renamed Schtasks Execution
+kw	sigma.f91e51c9f344	/change	Renamed Schtasks Execution
+kw	sigma.4a0b2c7e7cb2	/accepteula	Renamed ProcDump Execution
+kw	sigma.51ae86a2e2e1	psexesvc.exe	Renamed PsExec Service Execution
+kw	sigma.c1d867fe8d95	sdelete.exe	Renamed Sysinternals Sdelete Execution
+kw	sigma.7b4f794b590a	vmnat.exe	Renamed Vmnat.exe Execution
+kw	sigma.f1086bf7a0c4	whoami.exe	Renamed Whoami Execution
+kw	sigma.a1473adb5338	advpack	Suspicious Advpack Call Via Rundll32.EXE
+kw	sigma.1cc50f3f1fc8	Execute	Suspicious Rundll32 Invoking Inline VBScript
+kw	sigma.1cc50f3f1fc8	RegRead	Suspicious Rundll32 Invoking Inline VBScript
+kw	sigma.1cc50f3f1fc8	window.close	Suspicious Rundll32 Invoking Inline VBScript
+kw	sigma.a469426359a8	keymgr	Suspicious Key Manager Access
+kw	sigma.a469426359a8	KRShowKeyMgr	Suspicious Key Manager Access
+kw	sigma.4782eb5aa513	mshtml	Mshtml.DLL RunHTMLApplication Suspicious Usage
+kw	sigma.4782eb5aa513	RunHTMLApplication	Mshtml.DLL RunHTMLApplication Suspicious Usage
+kw	sigma.1775e15eb61b	\rundll32.exe	Rundll32 Execution Without CommandLine Parameters
+kw	sigma.1775e15eb61b	\rundll32	Rundll32 Execution Without CommandLine Parameters
+kw	sigma.bb76d96b821c	C:\windows\system32\davclnt.dll,DavSetCookie	Suspicious NTLM Authentication on the Printer Spooler Service
+kw	sigma.bb76d96b821c	spoolss	Suspicious NTLM Authentication on the Printer Spooler Service
+kw	sigma.bb76d96b821c	srvsvc	Suspicious NTLM Authentication on the Printer Spooler Service
+kw	sigma.bb76d96b821c	/print/pipe/	Suspicious NTLM Authentication on the Printer Spooler Service
+kw	sigma.646ea171dded	comsvcs	Process Memory Dump Via Comsvcs.DLL
+kw	sigma.646ea171dded	MiniDump	Process Memory Dump Via Comsvcs.DLL
+kw	sigma.646ea171dded	#65560	Process Memory Dump Via Comsvcs.DLL
+kw	sigma.f1edd23330b5	-localserver	Rundll32 Registered COM Objects
+kw	sigma.32b960127892	shell32.dll	Shell32 DLL Execution in Suspicious Directory
+kw	sigma.32b960127892	Control_RunDLL	Shell32 DLL Execution in Suspicious Directory
+kw	sigma.32b960127892	%LocalAppData%	Shell32 DLL Execution in Suspicious Directory
+kw	sigma.d7eb979bc2b5	control.exe	Suspicious Control Panel DLL Load
+kw	sigma.d87bd4526da1	ShellExec_RunDLL	Suspicious Usage Of ShellExec_RunDLL
+kw	sigma.8823e85d31d8	comspec	Suspicious ShellExec_RunDLL Call Via Ordinal
+kw	sigma.8823e85d31d8	Invoke-	Suspicious ShellExec_RunDLL Call Via Ordinal
+kw	sigma.8823e85d31d8	msiexec	Suspicious ShellExec_RunDLL Call Via Ordinal
+kw	sigma.b052445119af	apphelp.dll	ShimCache Flush
+kw	sigma.b052445119af	ShimFlushCache	ShimCache Flush
+kw	sigma.b052445119af	kernel32.dll	ShimCache Flush
+kw	sigma.982e9f2d1a85	-s WebClient	Suspicious WebDav Client Execution Via Rundll32.EXE
+kw	sigma.c5c00f49b3f9	C:\Users\	Suspicious Schtasks Execution AppData Folder
+kw	sigma.c5c00f49b3f9	NT AUT	Suspicious Schtasks Execution AppData Folder
+kw	sigma.39019a4e317f	/sc once	Suspicious Scheduled Task Creation Involving Temp Folder
+kw	sigma.dbc1f8000fe0	\Windows\BitLocker	Delete Important Scheduled Task
+kw	sigma.dbc1f8000fe0	\Windows\ExploitGuard	Delete Important Scheduled Task
+kw	sigma.dbc1f8000fe0	\Windows\SystemRestore\SR	Delete Important Scheduled Task
+kw	sigma.220457c11c9f	/tn \*	Delete All Scheduled Tasks
+kw	sigma.9ac94dc89042	/disable	Disable Important Scheduled Task
+kw	sigma.9ac94dc89042	\Windows\ExploitGuard\ExploitGuard MDM policy Refresh	Disable Important Scheduled Task
+kw	sigma.8a8379b8780b	powershell	Schtasks From Suspicious Folders
+kw	sigma.8a8379b8780b	cmd /c	Schtasks From Suspicious Folders
+kw	sigma.8a8379b8780b	cmd /k	Schtasks From Suspicious Folders
+kw	sigma.970823b7273b	wscript	Uncommon One Time Only Scheduled Task At 00:00
+kw	sigma.2daa93a0a5fb	sshd.exe	Potential SSH Tunnel Persistence Install Using A Scheduled Task
+kw	sigma.2daa93a0a5fb	ssh.exe	Potential SSH Tunnel Persistence Install Using A Scheduled Task
+kw	sigma.b66474aabd92	-k netsvcs	Potential Persistence Via Powershell Search Order Hijacking - Task
+kw	sigma.b66474aabd92	-s Schedule	Potential Persistence Via Powershell Search Order Hijacking - Task
+kw	sigma.b66474aabd92	-windowstyle hidden	Potential Persistence Via Powershell Search Order Hijacking - Task
+kw	sigma.b66474aabd92	-w hidden	Potential Persistence Via Powershell Search Order Hijacking - Task
+kw	sigma.c4eeeeae89f4	encodedcommand	Scheduled Task Executing Encoded Payload from Registry
+kw	sigma.c4eeeeae89f4	Get-ItemProperty	Scheduled Task Executing Encoded Payload from Registry
+kw	sigma.24c8392baa3c	ONLOGON	Suspicious Schtasks Schedule Types
+kw	sigma.24c8392baa3c	ONSTART	Suspicious Schtasks Schedule Types
+kw	sigma.24c8392baa3c	ONIDLE	Suspicious Schtasks Schedule Types
+kw	sigma.f2c64357b1d2	/sc minute	Suspicious Command Patterns In Scheduled Task Creation
+kw	sigma.f2c64357b1d2	/ru system	Suspicious Command Patterns In Scheduled Task Creation
+kw	sigma.9f8573c922b4	audiodg	Scheduled Task Creation Masquerading as System Processes
+kw	sigma.9f8573c922b4	dwm.exe	Scheduled Task Creation Masquerading as System Processes
+kw	sigma.f6d1dd2fb8ce	scrcons.exe	Script Event Consumer Spawning Process
+kw	sigma.f6d1dd2fb8ce	msbuild.exe	Script Event Consumer Spawning Process
+kw	sigma.d937b75fa665	binPath	Possible Privilege Escalation via Weak Service Permissions
+kw	sigma.d937b75fa665	failure	Possible Privilege Escalation via Weak Service Permissions
+kw	sigma.d937b75fa665	command	Possible Privilege Escalation via Weak Service Permissions
+kw	sigma.6c8fbee5dee8	sc.exe	Allow Service Access Using Security Descriptor Tampering Via Sc.EXE
+kw	sigma.f3d39c45de1a	sdiagnhost.exe	Sdiagnhost Calling Suspicious Child Process
+kw	sigma.f3d39c45de1a	taskkill.exe	Sdiagnhost Calling Suspicious Child Process
+kw	sigma.58f4ea090fc2	serv-u.exe	Suspicious Serv-U Process Pattern
+kw	sigma.835e75bf4bfd	setres.exe	Uncommon Child Process Of Setres.EXE
+kw	sigma.78f10490f2f4	speechruntime.exe	Suspicious Speech Runtime Binary Child Process
+kw	sigma.1f1a85092cbb	splwow64.exe	Suspicious Splwow64 Without Params
+kw	sigma.dcdbc9400bff	route add	Suspicious Spool Service Child Process
+kw	sigma.dcdbc9400bff	program files	Suspicious Spool Service Child Process
+kw	sigma.dcdbc9400bff	add portopening	Suspicious Spool Service Child Process
+kw	sigma.dcdbc9400bff	rule name	Suspicious Spool Service Child Process
+kw	sigma.b57ba453b384	SELECT	VeeamBackup Database Credentials Dump Via Sqlcmd.EXE
+kw	sigma.b57ba453b384	sqlcmd.exe	VeeamBackup Database Credentials Dump Via Sqlcmd.EXE
+kw	sigma.24c77512782b	\User Data\	SQLite Chromium Profile Data DB Access
+kw	sigma.24c77512782b	\Opera Software\	SQLite Chromium Profile Data DB Access
+kw	sigma.24c77512782b	\ChromiumViewer\	SQLite Chromium Profile Data DB Access
+kw	sigma.24c77512782b	Login Data	SQLite Chromium Profile Data DB Access
+kw	sigma.4833155a4053	cookies.sqlite	SQLite Firefox Profile Data DB Access
+kw	sigma.4833155a4053	places.sqlite	SQLite Firefox Profile Data DB Access
+kw	sigma.4833155a4053	sqlite.exe	SQLite Firefox Profile Data DB Access
+kw	sigma.4833155a4053	sqlite3.exe	SQLite Firefox Profile Data DB Access
+kw	sigma.961e0abb1b1e	stordiag.exe	Execution via stordiag.exe
+kw	sigma.961e0abb1b1e	systeminfo.exe	Execution via stordiag.exe
+kw	sigma.d522eca22973	wininit.exe	Abused Debug Privilege by Arbitrary Parent Processes
+kw	sigma.d522eca22973	spoolsv.exe	Abused Debug Privilege by Arbitrary Parent Processes
+kw	sigma.10fb649c3600	localgroup	User Added To Highly Privileged Group
+kw	sigma.10fb649c3600	Add-LocalGroupMember	User Added To Highly Privileged Group
+kw	sigma.10fb649c3600	-Group	User Added To Highly Privileged Group
+kw	sigma.10fb649c3600	Group Policy Creator Owners	User Added To Highly Privileged Group
+kw	sigma.ffa28e60bdb1	Remote Desktop Users	User Added to Remote Desktop Users Group
+kw	sigma.fcdf69e5a3d3	winrar.exe	Phishing Pattern ISO in Archive
+kw	sigma.fcdf69e5a3d3	7zfm.exe	Phishing Pattern ISO in Archive
+kw	sigma.fcdf69e5a3d3	peazip.exe	Phishing Pattern ISO in Archive
+kw	sigma.fcdf69e5a3d3	isoburn.exe	Phishing Pattern ISO in Archive
+kw	sigma.a7c3d773caef	WerFault.exe	Bad Opsec Defaults Sacrificial Processes With Improper Arguments
+kw	sigma.a7c3d773caef	regsvcs.exe	Bad Opsec Defaults Sacrificial Processes With Improper Arguments
+kw	sigma.a7c3d773caef	regasm.exe	Bad Opsec Defaults Sacrificial Processes With Improper Arguments
+kw	sigma.d487ed4afd24	anti-bot	Suspicious ClickFix/FileFix Execution Pattern
+kw	sigma.d487ed4afd24	botcheck	Suspicious ClickFix/FileFix Execution Pattern
+kw	sigma.d487ed4afd24	captcha	Suspicious ClickFix/FileFix Execution Pattern
+kw	sigma.f5d1983841b5	\System32	LOL-Binary Copied From System Directory
+kw	sigma.f5d1983841b5	\SysWOW64	LOL-Binary Copied From System Directory
+kw	sigma.f5d1983841b5	\WinSxS	LOL-Binary Copied From System Directory
+kw	sigma.66c3b2049f88	--cpu-priority=	Potential Crypto Mining Activity
+kw	sigma.66c3b2049f88	--donate-level=0	Potential Crypto Mining Activity
+kw	sigma.66c3b2049f88	-o pool.	Potential Crypto Mining Activity
+kw	sigma.66c3b2049f88	--nicehash	Potential Crypto Mining Activity
+kw	sigma.7d1aaf3d4304	--data	Potential Data Exfiltration Activity Via CommandLine Tools
+kw	sigma.7d1aaf3d4304	--post-data	Potential Data Exfiltration Activity Via CommandLine Tools
+kw	sigma.a31eeaed3fd5	taskkill	Raccine Uninstall
+kw	sigma.a31eeaed3fd5	RaccineSettings.exe	Raccine Uninstall
+kw	sigma.1cdd9a0906c9	______.exe	Suspicious Double Extension File Execution
+kw	sigma.1cdd9a0906c9	.doc.exe	Suspicious Double Extension File Execution
+kw	sigma.1cdd9a0906c9	.doc.js	Suspicious Double Extension File Execution
+kw	sigma.1cdd9a0906c9	.docx.exe	Suspicious Double Extension File Execution
+kw	sigma.5e6a80c82d45	.doc.lnk	Suspicious Parent Double Extension File Execution
+kw	sigma.5e6a80c82d45	.docx.lnk	Suspicious Parent Double Extension File Execution
+kw	sigma.5e6a80c82d45	.xls.lnk	Suspicious Parent Double Extension File Execution
+kw	sigma.5e6a80c82d45	.xlsx.lnk	Suspicious Parent Double Extension File Execution
+kw	sigma.00d49ed54491	Start-BitsTransfer	Suspicious Download from Office Domain
+kw	sigma.4f647cfab598	-o DumpStack.log	DumpStack.log Defender Evasion
+kw	sigma.4f647cfab598	dumpstack.log	DumpStack.log Defender Evasion
+kw	sigma.4a30ac0cb9d6	👩‍❤️‍👩	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 1
+kw	sigma.4a30ac0cb9d6	👨‍❤️‍👨	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 1
+kw	sigma.4a30ac0cb9d6	👩‍❤️‍👨	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 1
+kw	sigma.4a30ac0cb9d6	👩‍❤️‍💋‍👩	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 1
+kw	sigma.c98f2a0de1b8	🧑🏼‍🤝‍🧑🏼	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 2
+kw	sigma.c98f2a0de1b8	🧑🏽‍🤝‍🧑🏽	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 2
+kw	sigma.c98f2a0de1b8	🧑🏾‍🤝‍🧑🏾	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 2
+kw	sigma.c98f2a0de1b8	🧑🏿‍🤝‍🧑🏿	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 2
+kw	sigma.225274c48dd1	🏴󠁧󠁢󠁥󠁮󠁧󠁿	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 4
+kw	sigma.225274c48dd1	🏴󠁧󠁢󠁳󠁣󠁴󠁿	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 4
+kw	sigma.225274c48dd1	🏴󠁧󠁢󠁷󠁬󠁳󠁿	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 4
+kw	sigma.225274c48dd1	👨🏻‍❤️‍👨🏻	Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 4
+kw	sigma.41421f4458f9	COMPlus_ETWEnabled	ETW Logging Tamper In .NET Processes Via CommandLine
+kw	sigma.41421f4458f9	COMPlus_ETWFlags	ETW Logging Tamper In .NET Processes Via CommandLine
+kw	sigma.a238b5d0ce2d	/Trace	ETW Trace Evasion Activity
+kw	sigma.a238b5d0ce2d	clear-log	ETW Trace Evasion Activity
+kw	sigma.a238b5d0ce2d	/e:false	ETW Trace Evasion Activity
+kw	sigma.a238b5d0ce2d	set-log	ETW Trace Evasion Activity
+kw	sigma.cc36992a4671	Clear-EventLog	Suspicious Eventlog Clearing or Configuration Change Activity
+kw	sigma.cc36992a4671	Remove-EventLog	Suspicious Eventlog Clearing or Configuration Change Activity
+kw	sigma.07aa184a870d	gatherNetworkInfo.vbs	Suspicious Reconnaissance Activity Via GatherNetworkInfo.VBS
+kw	sigma.22e587434ac8	TVqQAAMAAAAEAAAA	Base64 MZ Header In CommandLine
+kw	sigma.22e587434ac8	TVpQAAIAAAAEAA8A	Base64 MZ Header In CommandLine
+kw	sigma.22e587434ac8	TVqAAAEAAAAEABAA	Base64 MZ Header In CommandLine
+kw	sigma.22e587434ac8	TVoAAAAAAAAAAAAA	Base64 MZ Header In CommandLine
+kw	sigma.ba3f5c1b6272	AddSecurityPackage	Potential WinAPI Calls Via CommandLine
+kw	sigma.ba3f5c1b6272	AdjustTokenPrivileges	Potential WinAPI Calls Via CommandLine
+kw	sigma.ba3f5c1b6272	Advapi32	Potential WinAPI Calls Via CommandLine
+kw	sigma.ba3f5c1b6272	CloseHandle	Potential WinAPI Calls Via CommandLine
+kw	sigma.dd8756e7a3a0	\u0009	Suspicious LNK Command-Line Padding with Whitespace Characters
+kw	sigma.dd8756e7a3a0	\u000A	Suspicious LNK Command-Line Padding with Whitespace Characters
+kw	sigma.dd8756e7a3a0	\u0011	Suspicious LNK Command-Line Padding with Whitespace Characters
+kw	sigma.dd8756e7a3a0	\u0012	Suspicious LNK Command-Line Padding with Whitespace Characters
+kw	sigma.ffa6861c4461	lsass.dmp	LSASS Dump Keyword In CommandLine
+kw	sigma.ffa6861c4461	lsass.zip	LSASS Dump Keyword In CommandLine
+kw	sigma.ffa6861c4461	lsass.rar	LSASS Dump Keyword In CommandLine
+kw	sigma.ffa6861c4461	Andrew.dmp	LSASS Dump Keyword In CommandLine
+kw	sigma.8bc640916875	ntds.dit	Suspicious Process Patterns NTDS.DIT Exfil
+kw	sigma.8bc640916875	system.hiv	Suspicious Process Patterns NTDS.DIT Exfil
+kw	sigma.8bc640916875	NTDSgrab.ps1	Suspicious Process Patterns NTDS.DIT Exfil
+kw	sigma.8bc640916875	ac i ntds	Suspicious Process Patterns NTDS.DIT Exfil
+kw	sigma.caf201a9c2ce	Win32_NTEventlogFile	Potentially Suspicious Call To Win32_NTEventlogFile Class
+kw	sigma.caf201a9c2ce	.BackupEventlog(	Potentially Suspicious Call To Win32_NTEventlogFile Class
+kw	sigma.caf201a9c2ce	.ChangeSecurityPermissions(	Potentially Suspicious Call To Win32_NTEventlogFile Class
+kw	sigma.caf201a9c2ce	.ChangeSecurityPermissionsEx(	Potentially Suspicious Call To Win32_NTEventlogFile Class
+kw	sigma.cbec226f63d9	minesweeper.exe	Suspicious Process Parents
+kw	sigma.cbec226f63d9	winver.exe	Suspicious Process Parents
+kw	sigma.6812a10b60ea	Default.GetString	Potential PowerShell Execution Via DLL
+kw	sigma.6812a10b60ea	Invoke-Command	Potential PowerShell Execution Via DLL
+kw	sigma.9bd04a79dabe	\\\\.\\pipe\\	Privilege Escalation via Named Pipe Impersonation
+kw	sigma.efdd8dd5cee8	inject.ps1	Suspicious Program Names
+kw	sigma.efdd8dd5cee8	Invoke-CVE	Suspicious Program Names
+kw	sigma.efdd8dd5cee8	pupy.ps1	Suspicious Program Names
+kw	sigma.efdd8dd5cee8	payload.ps1	Suspicious Program Names
+kw	sigma.ab9e3b400c85	\\\\127.0.0.1\\admin$\\	Suspicious Redirection to Local Admin Share
+kw	sigma.ab9e3b400c85	\\\\localhost\\admin$\\	Suspicious Redirection to Local Admin Share
+kw	sigma.ad691d9215f2	\u202e	Potential Defense Evasion Via Right-to-Left Override
+kw	sigma.1228c958e64e	-ep bypass	Script Interpreter Execution From Suspicious Folder
+kw	sigma.1228c958e64e	-ExecutionPolicy bypass	Script Interpreter Execution From Suspicious Folder
+kw	sigma.1228c958e64e	/e:javascript	Script Interpreter Execution From Suspicious Folder
+kw	sigma.0f60b28c64dd	trufflehog	Script Interpreter Spawning Credential Scanner - Windows
+kw	sigma.0f60b28c64dd	gitleaks	Script Interpreter Spawning Credential Scanner - Windows
+kw	sigma.0f60b28c64dd	trufflehog.exe	Script Interpreter Spawning Credential Scanner - Windows
+kw	sigma.0f60b28c64dd	gitleaks.exe	Script Interpreter Spawning Credential Scanner - Windows
+kw	sigma.f57f8d161f39	\\NTDS.dit	Sensitive File Access Via Volume Shadow Copy Backup
+kw	sigma.f57f8d161f39	\\SYSTEM	Sensitive File Access Via Volume Shadow Copy Backup
+kw	sigma.f57f8d161f39	\\SECURITY	Sensitive File Access Via Volume Shadow Copy Backup
+kw	sigma.17a1be648d88	create	Suspicious New Service Creation
+kw	sigma.17a1be648d88	binPath=	Suspicious New Service Creation
+kw	sigma.17a1be648d88	New-Service	Suspicious New Service Creation
+kw	sigma.17a1be648d88	-BinaryPathName	Suspicious New Service Creation
+kw	sigma.ce72ef9922f1	Stop-Service	Suspicious Windows Service Tampering
+kw	sigma.ce72ef9922f1	Remove-Service	Suspicious Windows Service Tampering
+kw	sigma.c947b1460abc	catalog	Shadow Copies Deletion Using Operating Systems Utilities
+kw	sigma.c947b1460abc	resize	Shadow Copies Deletion Using Operating Systems Utilities
+kw	sigma.3a6586ad127a	nslookup.exe	Windows Shell/Scripting Processes Spawning Suspicious Programs
+kw	sigma.e4a6b2563e47	atbroker.exe	System File Execution Location Anomaly
+kw	sigma.e4a6b2563e47	audiodg.exe	System File Execution Location Anomaly
+kw	sigma.2617e7edadb7	net\s+user\s+	Suspicious SYSTEM User Process Creation
+kw	sigma.2617e7edadb7	/decode	Suspicious SYSTEM User Process Creation
+kw	sigma.cc4e02ba9c06	file createnew	Tasks Folder Evasion
+kw	sigma.cc4e02ba9c06	C:\Windows\System32\Tasks\	Tasks Folder Evasion
+kw	sigma.cc4e02ba9c06	C:\Windows\SysWow64\Tasks\	Tasks Folder Evasion
+kw	sigma.4bc90587e6ca	--accept-server-license-terms	Suspicious Velociraptor Child Process
+kw	sigma.e9142d84fbe0	.exe whoami	WhoAmI as Parameter
+kw	sigma.0bbc636943e3	workfolders.exe	Execution via WorkFolders.exe
+kw	sigma.1012f107b8f1	\svchost.exe	Terminal Service Process Spawn
+kw	sigma.1012f107b8f1	termsvcs	Terminal Service Process Spawn
+kw	sigma.ef61af62bc74	snapshot	Suspicious Active Directory Database Snapshot Via ADExplorer
+kw	sigma.c7746f1c47d3	livekd.exe	Kernel Memory Dump Via LiveKD
+kw	sigma.c7746f1c47d3	livekd64.exe	Kernel Memory Dump Via LiveKD
+kw	sigma.79b06761465f	copy procdump	Potential SysInternals ProcDump Evasion
+kw	sigma.79b06761465f	move procdump	Potential SysInternals ProcDump Evasion
+kw	sigma.79b06761465f	out.dmp	Potential SysInternals ProcDump Evasion
+kw	sigma.79b06761465f	copy lsass.exe_	Potential SysInternals ProcDump Evasion
+kw	sigma.5afee48e67dd	keyiso	Potential LSASS Process Dump Via Procdump
+kw	sigma.8834e2f76b4b	-s cmd	PsExec/PAExec Escalation to LOCAL SYSTEM
+kw	sigma.8834e2f76b4b	-s -i cmd	PsExec/PAExec Escalation to LOCAL SYSTEM
+kw	sigma.8834e2f76b4b	-i -s cmd	PsExec/PAExec Escalation to LOCAL SYSTEM
+kw	sigma.8834e2f76b4b	-s pwsh	PsExec/PAExec Escalation to LOCAL SYSTEM
+kw	sigma.ea0113237045	accepteula	Potential PsExec Remote Execution
+kw	sigma.4beb6ae0f85b	msmpeng.exe	Sysinternals PsSuspend Suspicious Execution
+kw	sigma.4beb6ae0f85b	pssuspend.exe	Sysinternals PsSuspend Suspicious Execution
+kw	sigma.4beb6ae0f85b	pssuspend64.exe	Sysinternals PsSuspend Suspicious Execution
+kw	sigma.4beb6ae0f85b	pssuspend64a.exe	Sysinternals PsSuspend Suspicious Execution
+kw	sigma.6a5f68d1c4b5	sysmon64.exe	Uninstall Sysinternals Sysmon
+kw	sigma.6a5f68d1c4b5	sysmon64a.exe	Uninstall Sysinternals Sysmon
+kw	sigma.6a5f68d1c4b5	sysmon.exe	Uninstall Sysinternals Sysmon
+kw	sigma.da92713fca2d	defender	Windows Defender Disabled Via SystemSettingsAdminFlows.EXE
+kw	sigma.da92713fca2d	RealTimeProtection	Windows Defender Disabled Via SystemSettingsAdminFlows.EXE
+kw	sigma.da92713fca2d	DisableEnhancedNotifications	Windows Defender Disabled Via SystemSettingsAdminFlows.EXE
+kw	sigma.da92713fca2d	SubmitSamplesConsent	Windows Defender Disabled Via SystemSettingsAdminFlows.EXE
+kw	sigma.a383dec4deec	TurnOnDeveloperFeatures	Potential Signing Bypass Via Windows Developer Features
+kw	sigma.a383dec4deec	DeveloperUnlock	Potential Signing Bypass Via Windows Developer Features
+kw	sigma.a383dec4deec	EnableSideloading	Potential Signing Bypass Via Windows Developer Features
+kw	sigma.a383dec4deec	systemsettingsadminflows.exe	Potential Signing Bypass Via Windows Developer Features
+kw	sigma.4a6713f63331	ccSvcHst.exe	Taskkill Symantec Endpoint Protection
+kw	sigma.9fff585cc33e	taskmgr.exe	Taskmgr as LOCAL_SYSTEM
+kw	sigma.9847f2634a81	tscon.exe	Suspicious TSCON Start as SYSTEM
+kw	sigma.f72aa3e849f9	/dest:rdp-tcp#	Suspicious RDP Redirect Using TSCON
+kw	sigma.503d581c7df0	changepk.exe	UAC Bypass Using ChangePK and SLUI
+kw	sigma.503d581c7df0	slui.exe	UAC Bypass Using ChangePK and SLUI
+kw	sigma.b697e69c746f	\system32\cleanmgr.exe /autoclean /d C:	UAC Bypass Using Disk Cleanup
+kw	sigma.b697e69c746f	C:\Windows\system32\svchost.exe -k netsvcs -p -s Schedule	UAC Bypass Using Disk Cleanup
+kw	sigma.3c05e90d7eba	computerdefaults.exe	UAC Bypass Tools Using ComputerDefaults
+kw	sigma.1ca6bd180ba0	consent.exe	UAC Bypass Using Consent and Comctl32 - Process
+kw	sigma.853e74f99392	dismhost.exe	UAC Bypass Using DismHost
+kw	sigma.30fc8de7d833	\Event Viewer\RecentViews	UAC Bypass Using Event Viewer RecentViews
+kw	sigma.30fc8de7d833	\EventV~1\RecentViews	UAC Bypass Using Event Viewer RecentViews
+kw	sigma.7f741dcffc22	fodhelper.exe	Bypass UAC via Fodhelper.exe
+kw	sigma.80fc36aa945e	ieinstal.exe	UAC Bypass Using IEInstal - Process
+kw	sigma.ad92e3f97eb6	C:\Windows\system32\msconfig.exe" -5	UAC Bypass Using MSConfig Token Modification - Process
+kw	sigma.ad92e3f97eb6	pkgmgr.exe	UAC Bypass Using MSConfig Token Modification - Process
+kw	sigma.39ed3c80e6a1	C:\Windows\system32\wusa.exe"  /quiet C:\Users\	UAC Bypass Using NTFS Reparse Point - Process
+kw	sigma.39ed3c80e6a1	\AppData\Local\Temp\update.msu	UAC Bypass Using NTFS Reparse Point - Process
+kw	sigma.39ed3c80e6a1	C:\Windows\system32\dism.exe" /online /quiet /norestart /add-package /packagepath:"C:\Windows\system32\pe386" /ignorecheck	UAC Bypass Using NTFS Reparse Point - Process
+kw	sigma.7a01183d71a2	C:\Windows \system32\winsat.exe	UAC Bypass Abusing Winsat Path Parsing - Process
+kw	sigma.7a01183d71a2	winsat.exe	UAC Bypass Abusing Winsat Path Parsing - Process
+kw	sigma.0058b9e5bcd7	C:\Windows\system32\mmc.exe" "C:\Windows\system32\eventvwr.msc" /s	UAC Bypass Using Windows Media Player - Process
+kw	sigma.d797268e28a9	wsreset.exe	Bypass UAC via WSReset.exe
+kw	sigma.871b955569ca	-autoreconnect	Suspicious UltraVNC Execution
+kw	sigma.871b955569ca	-connect	Suspicious UltraVNC Execution
+kw	sigma.f0f7be619cf5	\WindowsSensor.exe	Uninstall Crowdstrike Falcon Sensor
+kw	sigma.f0f7be619cf5	/quiet	Uninstall Crowdstrike Falcon Sensor
+kw	sigma.0a98a10c685d	userinit.exe	Uncommon Userinit Child Process
+kw	sigma.8f3ab69aaa22	\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders	User Shell Folders Registry Modification via CommandLine
+kw	sigma.8f3ab69aaa22	\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders	User Shell Folders Registry Modification via CommandLine
+kw	sigma.236d8e89ed95	script	Suspicious Persistence Via VMwareToolBoxCmd.EXE VM State Change Script
+kw	sigma.5687f942867b	vmtoolsd.exe	VMToolsd Suspicious Child Process
+kw	sigma.2cf29f11e356	.exe tunnel	Renamed Visual Studio Code Tunnel Execution
+kw	sigma.2cf29f11e356	service	Renamed Visual Studio Code Tunnel Execution
+kw	sigma.22154f0e5132	\Control\CI\Config	Vulnerable Driver Blocklist Registry Tampering Via CommandLine
+kw	sigma.22154f0e5132	VulnerableDriverBlocklistEnable	Vulnerable Driver Blocklist Registry Tampering Via CommandLine
+kw	sigma.6da2c9f57c53	/stripchart	Use of W32tm as Timer
+kw	sigma.6da2c9f57c53	/computer:	Use of W32tm as Timer
+kw	sigma.6da2c9f57c53	/period:	Use of W32tm as Timer
+kw	sigma.6da2c9f57c53	/dataonly	Use of W32tm as Timer
+kw	sigma.395907ee96e5	wab.exe	Wab Execution From Non Default Location
+kw	sigma.395907ee96e5	wabmig.exe	Wab Execution From Non Default Location
+kw	sigma.639c9081f482	keepVersions:0	All Backups Deleted Via Wbadmin.EXE
+kw	sigma.639c9081f482	wbadmin.exe	All Backups Deleted Via Wbadmin.EXE
+kw	sigma.84972c80251c	recovery	Sensitive File Recovery From Backup Via Wbadmin.EXE
+kw	sigma.84972c80251c	recoveryTarget	Sensitive File Recovery From Backup Via Wbadmin.EXE
+kw	sigma.84972c80251c	itemtype:File	Sensitive File Recovery From Backup Via Wbadmin.EXE
+kw	sigma.fa3c117abc0d	&ipconfig&echo	Chopper Webshell Process Pattern
+kw	sigma.fa3c117abc0d	&quser&echo	Chopper Webshell Process Pattern
+kw	sigma.fa3c117abc0d	&whoami&echo	Chopper Webshell Process Pattern
+kw	sigma.fa3c117abc0d	&c:&echo	Chopper Webshell Process Pattern
+kw	sigma.4ebc877f4612	catalina.jar	Webshell Hacking Activity Patterns
+kw	sigma.4ebc877f4612	CATALINA_HOME	Webshell Hacking Activity Patterns
+kw	sigma.bed2a4849348	&cd&echo	Webshell Detection With Command Line Keywords
+kw	sigma.bed2a4849348	/node:	Webshell Detection With Command Line Keywords
+kw	sigma.8202070fedeb	catalina.home	Suspicious Process By Web Server Process
+kw	sigma.8202070fedeb	caddy.exe	Suspicious Process By Web Server Process
+kw	sigma.f64e5c19879c	perl --help	Webshell Tool Reconnaissance Activity
+kw	sigma.f64e5c19879c	perl -h	Webshell Tool Reconnaissance Activity
+kw	sigma.1f0b4cac9c81	/encfile	PPL Tampering Via WerFaultSecure
+kw	sigma.1f0b4cac9c81	/cancel	PPL Tampering Via WerFaultSecure
+kw	sigma.1f0b4cac9c81	268310	PPL Tampering Via WerFaultSecure
+kw	sigma.1f0b4cac9c81	werfaultsecure.exe	PPL Tampering Via WerFaultSecure
+kw	sigma.396f6630f3ac	wermgr.exe	Suspicious Child Process Of Wermgr.EXE
+kw	sigma.396f6630f3ac	ipconfig.exe	Suspicious Child Process Of Wermgr.EXE
+kw	sigma.17f0c0a88bd5	\s-O\s	Suspicious File Download From IP Via Wget.EXE
+kw	sigma.17f0c0a88bd5	--output-document	Suspicious File Download From IP Via Wget.EXE
+kw	sigma.81a0ecb50a41	source	Add Insecure Download Source To Winget
+kw	sigma.81a0ecb50a41	winget.exe	Add Insecure Download Source To Winget
+kw	sigma.5cc2cda8f261	wsmprovhost.exe	Suspicious Processes Spawned by WinRM
+kw	sigma.bcfece3d56fe	/r:localhost	Winrs Local Command Execution
+kw	sigma.bcfece3d56fe	/r:127.0.0.1	Winrs Local Command Execution
+kw	sigma.bcfece3d56fe	/remote:localhost	Winrs Local Command Execution
+kw	sigma.bcfece3d56fe	/remote:127.0.0.1	Winrs Local Command Execution
+kw	sigma.ebef43911a81	ActiveScriptEventConsumer	NewActiveScriptEventConsumer Creation Attempt via Wmic.EXE
+kw	sigma.51cbac1eeee3	/Namespace:\\\\root\\Microsoft\\Windows\\Defender	Potential Windows Defender Tampering Via Wmic.EXE
+kw	sigma.8d63dadfb91b	/format:	Potential Remote SquiblyTwo Technique Execution
+kw	sigma.e1693bc87168	process	Suspicious WMIC Execution Via Office Process
+kw	sigma.e1693bc87168	regsvr32	Suspicious WMIC Execution Via Office Process
+kw	sigma.847d5ff38a31	product	Potential Tampering With Security Products Via WMIC
+kw	sigma.847d5ff38a31	uninstall	Potential Tampering With Security Products Via WMIC
+kw	sigma.847d5ff38a31	/nointeractive	Potential Tampering With Security Products Via WMIC
+kw	sigma.847d5ff38a31	caption like	Potential Tampering With Security Products Via WMIC
+kw	sigma.797011dc44f4	edgetransport.exe	WMI Backdoor Exchange Transport Agent
+kw	sigma.4abc0ec4db5a	wpbbin.exe	UEFI Persistence Via Wpbbin - ProcessCreation
+kw	sigma.6f1a11aa4b8a	Kali.exe	WSL Kali-Linux Usage
+kw	sigma.6f1a11aa4b8a	Kali-linux	WSL Kali-Linux Usage
+kw	sigma.6f1a11aa4b8a	kalilinux	WSL Kali-Linux Usage
+kw	sigma.af77cf95c469	UpdateDeploymentProvider	Proxy Execution Via Wuauclt.EXE
+kw	sigma.af77cf95c469	RunHandlerComServer	Proxy Execution Via Wuauclt.EXE
+kw	sigma.af77cf95c469	wuauclt.exe	Proxy Execution Via Wuauclt.EXE
+kw	sigma.52d097e2063e	Wuauclt	Suspicious Windows Update Agent Empty Cmdline
+kw	sigma.c74c03903e20	/extract:	Cab File Extraction Via Wusa.EXE From Potentially Suspicious Paths
+kw	sigma.ef64fc9ca45e	wusa.exe	Wusa.EXE Executed By Parent Process Located In Suspicious Location
+kw	sigma.193d5ccd6f59	xwizard.exe	Xwizard.EXE Execution From Non-Default Location
+reg	sigma.d645ef862396	Windows Credential Guard Related Registry Value Deleted - Registry
+reg	sigma.272e55a49e6b	Folder Removed From Exploit Guard ProtectedFolders List - Registry
+reg	sigma.07bdd2f59c58	Terminal Server Client Connection History Cleared - Registry
+reg	sigma.3a9b8c1e5b2e	RunMRU Registry Key Deletion - Registry
+reg	sigma.460479f380b7	Creation of a Local Hidden User Account by Registry
+reg	sigma.6ea3bf329680	UAC Bypass Via Wsreset
+reg	sigma.b6d235fc1d38	CMSTP Execution Registry Event
+reg	sigma.5a9e1b2c8f7d	Windows Defender Threat Severity Default Action Modified
+reg	sigma.919f2ef0be2d	Disable Security Events Logging Adding Reg Key MiniNt
+reg	sigma.1a2d6c4775b0	Wdigest CredGuard Registry Modification
+reg	sigma.5aad099546ab	Esentutl Volume Shadow Copy Service Keys
+reg	sigma.a6b33c028305	Windows Credential Editor Registry
+reg	sigma.ac8866c7ce44	HybridConnectionManager Service Installation - Registry
+reg	sigma.1c8e96cd2bed	Potential Qakbot Registry Activity
+reg	sigma.f7f9ab887557	Registry Entries For Azorult Malware
+reg	sigma.f663a6d99d1b	Narrator's Feedback-Hub Persistence
+reg	sigma.d67572a0e2ec	NetNTLM Downgrade Attack - Registry
+reg	sigma.5b175490b652	RedMimicry Winnti Playbook Registry Manipulation
+reg	sigma.b98968aadbc0	WINEKEY Registry Modification
+reg	sigma.152f363077c1	Shell Open Registry Keys Manipulation
+reg	sigma.55e2999575e7	Potential Credential Dumping Via LSASS SilentProcessExit Technique
+reg	sigma.eeb301239fbd	Security Support Provider (SSP) Added to LSA Configuration
+reg	sigma.baca5663583c	Sticky Key Like Backdoor Usage - Registry
+reg	sigma.9c5037d1c568	Suspicious Run Key from Download
+reg	sigma.b350304460ce	DLL Load via LSASS
+reg	sigma.621201486b7a	Suspicious Camera and Microphone Access
+reg	sigma.1547e27c3974	Registry Persistence via Service in Safe Mode
+reg	sigma.aa37cbb0da36	AMSI Disabled via Registry Modification
+reg	sigma.46dd53084572	Bypass UAC Using DelegateExecute
+reg	sigma.724ea2016514	Bypass UAC Using SilentCleanup Task
+reg	sigma.509e84b9a71a	Default RDP Port Changed to Non Standard Port
+reg	sigma.4916a35ebfc4	Sysmon Driver Altitude Change
+reg	sigma.7d9263bddc47	Change Winevt Channel Access Permission Via Registry
+reg	sigma.b64a026b8deb	Running Chrome VPN Extensions via the Registry 2 VPN Extension
+reg	sigma.61a7697ccb79	Potential CobaltStrike Service Installations - Registry
+reg	sigma.07743f657ec9	COM Hijack via Sdclt
+reg	sigma.a07f03594c90	Service Binary in Suspicious Folder
+reg	sigma.73921b9ccafd	Windows Credential Guard Disabled - Registry
+reg	sigma.7530b96fad8e	Custom File Open Handler Executes PowerShell
+reg	sigma.31e124fb5dc4	Antivirus Filter Driver Disallowed On Dev Drive - Registry
+reg	sigma.8b7273a4ba5d	Windows Hypervisor Enforced Code Integrity Disabled
+reg	sigma.7f2954d299c2	Hypervisor Enforced Paging Translation Disabled
+reg	sigma.9d3436ef9476	DHCP Callout DLL Installation
+reg	sigma.fcddca7cb9c0	Disabled Windows Defender Eventlog
+reg	sigma.8ffc540752e3	Disable PUA Protection on Windows Defender
+reg	sigma.f37b4bce49d0	Potential AutoLogger Sessions Tampering
+reg	sigma.ab87145037dc	Disable Macro Runtime Scan Scope
+reg	sigma.5de038715d46	Registry Disable System Restore
+reg	sigma.e1aa95de610a	Windows Defender Service Disabled - Registry
+reg	sigma.ba226dcfd390	Windows Event Log Access Tampering Via Registry
+reg	sigma.2f78da12f7c7	Disable Windows Event Logging Via Registry
+reg	sigma.e61e8a8859a9	New DNS ServerLevelPluginDll Installed
+reg	sigma.bf4fc428dcc3	ETW Logging Disabled In .NET Processes - Sysmon Registry
+reg	sigma.b61e87c050db	Directory Service Restore Mode(DSRM) Registry Value Tampering
+reg	sigma.0cb8d736995d	Potential EventLog File Location Tampering
+reg	sigma.42205c7375c8	Suspicious Application Allowed Through Exploit Guard
+reg	sigma.e3fdf743f05b	Change User Account Associated with the FAX Service
+reg	sigma.9e3357ba09d4	Change the Fax Dll
+reg	sigma.4fee3d518069	FileFix - Command Evidence in TypedPaths
+reg	sigma.833ef470fa01	Add Debugger Entry To Hangs Key For Persistence
+reg	sigma.5b16df718615	Hide Schedule Task Via Index Value Tamper
+reg	sigma.555155a203bf	Driver Added To Disallowed Images In HVCI - Registry
+reg	sigma.3fd4c8d78362	IE ZoneMap Setting Downgraded To MyComputer Zone For HTTP Protocols
+reg	sigma.b888e3f2224d	Uncommon Extension In Keyboard Layout IME File Registry Value
+reg	sigma.8b9606c928be	Potential Ransomware Activity Using LegalNotice Message
+reg	sigma.3aff0be07802	Lolbas OneDriveStandaloneUpdater.exe Proxy Download
+reg	sigma.33efc23c6ea2	Lsass Full Dump Request Via DumpType Registry Settings
+reg	sigma.d6ce7ebd260b	RestrictedAdminMode Registry Value Tampering
+reg	sigma.e7b18879676e	New Netsh Helper DLL Registered From A Suspicious Location
+reg	sigma.2803691804d3	NET NGenAssemblyUsageLog Registry Key Tamper
+reg	sigma.e4d22291f3d5	Potentially Suspicious ODBC Driver Registered
+reg	sigma.1a5c46e9f32f	Trust Access Disable For VBApplications
+reg	sigma.a5c7a43f6009	Microsoft Office Protected View Disabled
+reg	sigma.17e53739a1fc	Python Function Execution Security Warning Disabled In Excel - Registry
+reg	sigma.396ae3eb4174	Potential Persistence Via Outlook LoadMacroProviderOnBoot Setting
+reg	sigma.e3b50fa53c3f	Outlook Macro Execution Without Warning Setting Enabled
+reg	sigma.6763c6c8bd01	Outlook EnableUnsafeClientMailRules Setting Enabled - Registry
+reg	sigma.f742bde79528	Uncommon Microsoft Office Trusted Location Added
+reg	sigma.a166f74ebf44	Macro Enabled In A Potentially Suspicious Document
+reg	sigma.91239011fe3c	Office Macros Warning Disabled
+reg	sigma.707e097ce20f	Potential Persistence Via App Paths Default Property
+reg	sigma.e6fe26eed063	Potential Persistence Via AutodialDLL
+reg	sigma.976dd1f2a484	Potential Persistence Via CHM Helper DLL
+reg	sigma.368039695421	Potential Persistence Via GlobalFlags
+reg	sigma.41f6531daf6e	Potential Persistence Via LSA Extensions
+reg	sigma.92772523d9c1	Potential Persistence Via Mpnotify
+reg	sigma.8fbe98a88f9d	Potential Persistence Via MyComputer Registry Keys
+reg	sigma.a1b1fd539c4a	Potential Persistence Via DLLPathOverride
+reg	sigma.ddd171b52cc6	Potential Persistence Via Outlook Home Page
+reg	sigma.487bb37512ef	Potential Persistence Via Outlook Today Page
+reg	sigma.0cf2e1c68d10	Potential WerFault ReflectDebugger Registry Value Abuse
+reg	sigma.bf344fead947	Suspicious Shim Database Patching Activity
+reg	sigma.6b6976a3b0e6	Potential Persistence Via Shim Database In Uncommon Location
+reg	sigma.086ae9899ca6	Potential Persistence Via TypedPaths
+reg	sigma.961e33d14f86	Potential Persistence Via Excel Add-in - Registry
+reg	sigma.a9b6c011ab69	Potential Attachment Manager Settings Associations Tamper
+reg	sigma.ee77a5dbb0f3	Potential Attachment Manager Settings Attachments Tamper
+reg	sigma.f5fe36cff1ec	Potential ClickFix Execution Pattern - Registry
+reg	sigma.c0e0bdec3e3d	Registry Modification for OCI DLL Redirection
+reg	sigma.fecfd1a1cc78	PowerShell Logging Disabled Via Registry Key Tampering
+reg	sigma.7021255e5db3	Potential Provisioning Registry Key Abuse For Binary Proxy Execution - REG
+reg	sigma.f50f3c09557d	Suspicious Execution Of Renamed Sysinternals Tools - Registry
+reg	sigma.8023f8723f1d	Usage of Renamed Sysinternals Tools - RegistrySet
+reg	sigma.a7df0e9e91a5	Potentially Suspicious Command Executed Via Run Dialog Box - Registry
+reg	sigma.9f4662ac17ca	Tamper With Sophos AV Registry Keys
+reg	sigma.f8aebc67a56d	Hiding User Account Via SpecialAccounts Registry Key
+reg	sigma.966315efc5e1	Suspicious Environment Variable Has Been Registered
+reg	sigma.e08133660407	Suspicious Printer Driver Empty Manufacturer
+reg	sigma.b7916c2afa2f	Registry Persistence via Explorer Run Key
+reg	sigma.9c2268178dc9	Modify User Shell Folders Startup Value
+reg	sigma.c420410fc2d8	Enable LM Hash Storage
+reg	sigma.4720b7df40c3	Scheduled TaskCache Change by Uncommon Program
+reg	sigma.73a883d00348	Potential Registry Persistence Attempt Via Windows Telemetry
+reg	sigma.3f6b7b6261aa	RDP Sensitive Settings Changed
+reg	sigma.e88a6ddc74f7	New TimeProviders Registered With Uncommon DLL Name
+reg	sigma.b110ebaf697f	Potential Signing Bypass Via Windows Developer Features - Registry
+reg	sigma.7c81fec31c1d	UAC Bypass via Event Viewer
+reg	sigma.5b872a463b90	UAC Bypass via Sdclt
+reg	sigma.6597be7bac61	UAC Bypass Abusing Winsat Path Parsing - Registry
+reg	sigma.5f9db380ea57	UAC Bypass Using Windows Media Player - Registry
+reg	sigma.464901931b22	VBScript Payload Stored in Registry
+reg	sigma.d526c60ae236	Windows Vulnerable Driver Blocklist Disabled
+reg	sigma.fc0149225def	Execution DLL of Choice Using WAB.EXE
+reg	sigma.d6a9b252c666	Wdigest Enable UseLogonCredential
+reg	sigma.0eb46774f1ab	Disable Windows Defender Functionalities Via Registry Keys
+reg	sigma.bbf597936efb	Winlogon Notify Key Logon Persistence
+file	sigma.a55349d89588.f0	Exchange PowerShell Cmdlet History Deleted
+file	sigma.0a1f9d296465.f0	Prefetch File Deleted
+file	sigma.2d3674985112.f0	Suspicious Binary Writes Via AnyDesk
+file	sigma.2d3674985112.f1	Suspicious Binary Writes Via AnyDesk
+file	sigma.e890aceed488.f0	Suspicious File Created by ArcSOC.exe
+file	sigma.e890aceed488.f1	Suspicious File Created by ArcSOC.exe
+file	sigma.e890aceed488.f2	Suspicious File Created by ArcSOC.exe
+file	sigma.02773bed83bf.f0	BloodHound Collection Files
+file	sigma.02773bed83bf.f1	BloodHound Collection Files
+file	sigma.02773bed83bf.f2	BloodHound Collection Files
+file	sigma.8c3c76ca8f8b.f0	Creation Exe for Service with Unquoted Path
+file	sigma.8fbf32711ef6.f0	Cred Dump Tools Dropped Files
+file	sigma.8fbf32711ef6.f1	Cred Dump Tools Dropped Files
+file	sigma.8fbf32711ef6.f2	Cred Dump Tools Dropped Files
+file	sigma.002bdb950cf1.f0	WScript or CScript Dropper - File
+file	sigma.002bdb950cf1.f1	WScript or CScript Dropper - File
+file	sigma.002bdb950cf1.f2	WScript or CScript Dropper - File
+file	sigma.2f7979aef82b.f0	Potential DCOM InternetExplorer.Application DLL Hijack
+file	sigma.b6f9128120aa.f0	DLL Search Order Hijackig Via Additional Space in Path
+file	sigma.b6f9128120aa.f1	DLL Search Order Hijackig Via Additional Space in Path
+file	sigma.bd1212e578da.f0	Suspicious ASPX File Drop by Exchange
+file	sigma.bd1212e578da.f1	Suspicious ASPX File Drop by Exchange
+file	sigma.736ffa745f6f.f0	HackTool - CrackMapExec File Indicators
+file	sigma.736ffa745f6f.f1	HackTool - CrackMapExec File Indicators
+file	sigma.736ffa745f6f.f2	HackTool - CrackMapExec File Indicators
+file	sigma.93d94efcd7ad.f0	HackTool - Dumpert Process Dumper Default File
+file	sigma.6ea858a8ba71.f0	HackTool - Typical HiveNightmare SAM File Export
+file	sigma.6ea858a8ba71.f1	HackTool - Typical HiveNightmare SAM File Export
+file	sigma.6ea858a8ba71.f2	HackTool - Typical HiveNightmare SAM File Export
+file	sigma.bb09dd3e2b78.f0	HackTool - Inveigh Execution Artefacts
+file	sigma.bb09dd3e2b78.f1	HackTool - Inveigh Execution Artefacts
+file	sigma.bb09dd3e2b78.f2	HackTool - Inveigh Execution Artefacts
+file	sigma.3ab79e909fab.f0	HackTool - RemoteKrbRelay SMB Relay Secrets Dump Module Indicators
+file	sigma.3ab79e909fab.f1	HackTool - RemoteKrbRelay SMB Relay Secrets Dump Module Indicators
+file	sigma.3ab79e909fab.f2	HackTool - RemoteKrbRelay SMB Relay Secrets Dump Module Indicators
+file	sigma.9e099d9944c2.f0	HackTool - Mimikatz Kirbi File Creation
+file	sigma.9e099d9944c2.f1	HackTool - Mimikatz Kirbi File Creation
+file	sigma.efc214799e83.f0	HackTool - NetExec File Indicators
+file	sigma.efc214799e83.f1	HackTool - NetExec File Indicators
+file	sigma.cad1fe902406.f0	HackTool - NPPSpy Hacktool Usage
+file	sigma.cad1fe902406.f1	HackTool - NPPSpy Hacktool Usage
+file	sigma.602a1f13c640.f0	HackTool - Powerup Write Hijack DLL
+file	sigma.847def9e924d.f0	HackTool - QuarksPwDump Dump File
+file	sigma.e074832aeada.f0	HackTool - SafetyKatz Dump Indicator
+file	sigma.1908fcc11b92.f0	Malicious DLL File Dropped in the Teams or OneDrive Folder
+file	sigma.2f9356aebf43.f0	ISO File Created Within Temp Folders
+file	sigma.2f9356aebf43.f1	ISO File Created Within Temp Folders
+file	sigma.a5a2d3571ab8.f0	LSASS Process Memory Dump Files
+file	sigma.a5a2d3571ab8.f1	LSASS Process Memory Dump Files
+file	sigma.a5a2d3571ab8.f2	LSASS Process Memory Dump Files
+file	sigma.6902955a01b7.f0	LSASS Process Dump Artefact In CrashDumps Folder
+file	sigma.c3e76af54ce0.f0	WerFault LSASS Process Memory Dump
+file	sigma.0bcfabcb7929.f0	Adwind RAT / JRAT File Artifact
+file	sigma.0bcfabcb7929.f1	Adwind RAT / JRAT File Artifact
+file	sigma.805c55d931e6.f0	Octopus Scanner Malware
+file	sigma.805c55d931e6.f1	Octopus Scanner Malware
+file	sigma.318557a5150c.f0	File Creation In Suspicious Directory By Msdt.EXE
+file	sigma.318557a5150c.f1	File Creation In Suspicious Directory By Msdt.EXE
+file	sigma.318557a5150c.f2	File Creation In Suspicious Directory By Msdt.EXE
+file	sigma.c61daa903c1e.f1	Uncommon File Creation By Mysql Daemon Process
+file	sigma.e0b066587d1d.f0	Suspicious DotNET CLR Usage Log Artifact
+file	sigma.e0b066587d1d.f1	Suspicious DotNET CLR Usage Log Artifact
+file	sigma.e0b066587d1d.f2	Suspicious DotNET CLR Usage Log Artifact
+file	sigma.d7b50671d1ad.f1	Suspicious File Creation In Uncommon AppData Folder
+file	sigma.4e7050dde548.f0	NTDS.DIT Creation By Uncommon Parent Process
+file	sigma.3a8da4e036c1.f0	NTDS Exfiltration Filename Patterns
+file	sigma.8e1cb2476cf6.f0	Potential Persistence Via Microsoft Office Add-In
+file	sigma.8e1cb2476cf6.f1	Potential Persistence Via Microsoft Office Add-In
+file	sigma.8e1cb2476cf6.f2	Potential Persistence Via Microsoft Office Add-In
+file	sigma.b1c504871967.f0	Office Macro File Creation From Suspicious Process
+file	sigma.b1c504871967.f1	Office Macro File Creation From Suspicious Process
+file	sigma.b1c504871967.f2	Office Macro File Creation From Suspicious Process
+file	sigma.fcc6d70068d9.f0	Suspicious File Created Via OneNote Application
+file	sigma.c3edc6a5d9d4.f0	Potential Persistence Via Outlook Form
+file	sigma.c3edc6a5d9d4.f1	Potential Persistence Via Outlook Form
+file	sigma.fabb0e80030c.f0	Suspicious File Created in Outlook Temporary Directory
+file	sigma.fabb0e80030c.f1	Suspicious File Created in Outlook Temporary Directory
+file	sigma.fabb0e80030c.f2	Suspicious File Created in Outlook Temporary Directory
+file	sigma.117d3d3a755c.f0	Suspicious Outlook Macro Created
+file	sigma.0e20c89d2264.f0	Potential Persistence Via Microsoft Office Startup Folder
+file	sigma.0e20c89d2264.f1	Potential Persistence Via Microsoft Office Startup Folder
+file	sigma.0e20c89d2264.f2	Potential Persistence Via Microsoft Office Startup Folder
+file	sigma.c7a74c80ba5a.f1	File With Uncommon Extension Created By An Office Application
+file	sigma.c7a74c80ba5a.f2	File With Uncommon Extension Created By An Office Application
+file	sigma.6e90ae7a7cd3.f0	PCRE.NET Package Temp Files
+file	sigma.f331aa1f8c53.f0	Malicious PowerShell Scripts - FileCreation
+file	sigma.f331aa1f8c53.f1	Malicious PowerShell Scripts - FileCreation
+file	sigma.f331aa1f8c53.f2	Malicious PowerShell Scripts - FileCreation
+file	sigma.fccfb43e09a7.f0	.RDP File Created By Uncommon Application
+file	sigma.130c9e5828ac.f0	Potential Winnti Dropper Activity
+file	sigma.130c9e5828ac.f1	Potential Winnti Dropper Activity
+file	sigma.130c9e5828ac.f2	Potential Winnti Dropper Activity
+file	sigma.145095ebe273.f0	PDF File Created By RegEdit.EXE
+file	sigma.a6976974ea6f.f0	Potential RipZip Attack on Startup Folder
+file	sigma.4e87b8e22ee9.f0	Potential SAM Database Dump
+file	sigma.4e87b8e22ee9.f1	Potential SAM Database Dump
+file	sigma.4e87b8e22ee9.f2	Potential SAM Database Dump
+file	sigma.1277f594a7d1.f1	Windows Shell/Scripting Application File Write to Suspicious Folder
+file	sigma.fc4f48170c53.f0	Suspicious Desktopimgdownldr Target File
+file	sigma.b4926b47a9d7.f1	Suspicious Double Extension Files
+file	sigma.b4926b47a9d7.f2	Suspicious Double Extension Files
+file	sigma.7892ec59c5bb.f0	DPAPI Backup Keys And Certificate Export Activity IOC
+file	sigma.7892ec59c5bb.f1	DPAPI Backup Keys And Certificate Export Activity IOC
+file	sigma.7892ec59c5bb.f2	DPAPI Backup Keys And Certificate Export Activity IOC
+file	sigma.7280c9f3a5af.f1	Suspicious MSExchangeMailboxReplication ASPX Write
+file	sigma.74babdd6a758.f0	Suspicious Executable File Creation
+file	sigma.74babdd6a758.f1	Suspicious Executable File Creation
+file	sigma.74babdd6a758.f2	Suspicious Executable File Creation
+file	sigma.0c3fac915627.f0	Suspicious Get-Variable.exe Creation
+file	sigma.654fcc6d840d.f0	Legitimate Application Dropped Archive
+file	sigma.654fcc6d840d.f2	Legitimate Application Dropped Archive
+file	sigma.1cf465a12609.f0	Legitimate Application Writing Files In Uncommon Location
+file	sigma.7d604714e071.f1	Legitimate Application Dropped Script
+file	sigma.7d604714e071.f2	Legitimate Application Dropped Script
+file	sigma.b447f7de1e53.f0	Suspicious Binaries and Scripts in Public Folder
+file	sigma.cd8b36ac8e4a.f0	Suspicious File Creation Activity From Fake Recycle.Bin Folder
+file	sigma.cd8b36ac8e4a.f1	Suspicious File Creation Activity From Fake Recycle.Bin Folder
+file	sigma.979baf41ca44.f0	Potential File Extension Spoofing Using Right-to-Left Override
+file	sigma.28208707fe31.f0	Suspicious Startup Folder Persistence
+file	sigma.5b40a73499b6.f0	Suspicious Interactive PowerShell as SYSTEM
+file	sigma.5b40a73499b6.f1	Suspicious Interactive PowerShell as SYSTEM
+file	sigma.80e1f67a4596.f0	Suspicious Scheduled Task Write to System32 Tasks
+file	sigma.814ddeca3d31.f0	LiveKD Kernel Memory Dump File Created
+file	sigma.059c5af95131.f0	LiveKD Driver Creation By Uncommon Process
+file	sigma.de46c52b0bf8.f0	Process Explorer Driver Creation By Non-Sysinternals Binary
+file	sigma.304afd7355a5.f0	PSEXEC Remote Execution File Artefact
+file	sigma.07a9974456ac.f0	Potential Privilege Escalation Attempt Via .Exe.Local Technique
+file	sigma.07a9974456ac.f1	Potential Privilege Escalation Attempt Via .Exe.Local Technique
+file	sigma.07a9974456ac.f2	Potential Privilege Escalation Attempt Via .Exe.Local Technique
+file	sigma.52753ea4b3a0.f0	Hijack Legit RDP Session to Move Laterally
+file	sigma.62ed5b55f991.f0	UAC Bypass Using Consent and Comctl32 - File
+file	sigma.62ed5b55f991.f1	UAC Bypass Using Consent and Comctl32 - File
+file	sigma.93a19907d4f9.f1	UAC Bypass Using .NET Code Profiler on MMC
+file	sigma.63e4f53065dc.f0	UAC Bypass Using EventVwr
+file	sigma.63e4f53065dc.f1	UAC Bypass Using EventVwr
+file	sigma.48ea844d19b1.f0	UAC Bypass Using IDiagnostic Profile - File
+file	sigma.41bb431f56d8.f1	UAC Bypass Using MSConfig Token Modification - File
+file	sigma.7fff67732baa.f1	UAC Bypass Using NTFS Reparse Point - File
+file	sigma.155dbf56e0a4.f1	UAC Bypass Abusing Winsat Path Parsing - File
+file	sigma.155dbf56e0a4.f2	UAC Bypass Abusing Winsat Path Parsing - File
+file	sigma.68578b4365df.f1	UAC Bypass Using Windows Media Player - File
+file	sigma.68578b4365df.f2	UAC Bypass Using Windows Media Player - File
+file	sigma.d102b8f561dc.f0	Renamed VsCode Code Tunnel Execution - File Indicator
+file	sigma.614a7e175643.f0	Wmiprvse Wbemcomn DLL Hijack - File
+file	sigma.e94b9ddceec5.f0	UEFI Persistence Via Wpbbin - FileCreation

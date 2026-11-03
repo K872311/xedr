@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: PUA - TruffleHog Execution - Linux
+id: d7a650c4-226c-451e-948f-cc490db506aa
+related:
+    - type: similar
+      id: 44030449-b0df-4c94-aae1-502359ab28ee
+status: experimental
+description: |
+    Detects execution of TruffleHog, a tool used to search for secrets in different platforms like Git, Jira, Slack, SharePoint, etc. that could be used maliciously.
+    While it is a legitimate tool, intended for use in CI pipelines and security assessments,
+    It was observed in the Shai-Hulud malware campaign targeting npm packages to steal sensitive information.
+references:
+    - https://github.com/trufflesecurity/trufflehog
+    - https://www.getsafety.com/blog-posts/shai-hulud-npm-attack
+date: "2025-09-24"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection_img or all of selection_cli_*
+    selection_cli_platform:
+        CommandLine|contains:
+            - ' docker --image '
+            - ' Git '
+            - ' GitHub '
+            - ' Jira '
+            - ' Slack '
+            - ' Confluence '
+            - ' SharePoint '
+            - ' s3 '
+            - ' gcs '
+    selection_cli_verified:
+        CommandLine|contains: ' --results=verified'
+    selection_img:
+        Image|endswith: /trufflehog
+falsepositives:
+    - Legitimate use of TruffleHog by security teams or developers.
+level: medium
+tags:
+    - attack.discovery
+    - attack.credential-access
+    - attack.t1083
+    - attack.t1552.001
+customer: 'demo'

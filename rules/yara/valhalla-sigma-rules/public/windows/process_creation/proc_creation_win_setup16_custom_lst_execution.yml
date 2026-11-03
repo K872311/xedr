@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Setup16.EXE Execution With Custom .Lst File
+id: 99c8be4f-3087-4f9f-9c24-8c7e257b442e
+status: test
+description: |
+    Detects the execution of "Setup16.EXE" and old installation utility with a custom ".lst" file.
+    These ".lst" file can contain references to external program that "Setup16.EXE" will execute.
+    Attackers and adversaries might leverage this as a living of the land utility.
+references:
+    - https://www.hexacorn.com/blog/2024/10/12/the-sweet16-the-oldbin-lolbin-called-setup16-exe/
+date: "2024-12-01"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection and not 1 of filter_optional_*
+    filter_optional_valid_path:
+        Image|startswith: C:\~MSSETUP.T\
+    selection:
+        ParentCommandLine|contains: ' -m '
+        ParentImage: C:\Windows\SysWOW64\setup16.exe
+falsepositives:
+    - On modern Windows system, the "Setup16" utility is practically never used, hence false positive should be very rare.
+level: medium
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.execution
+    - attack.stealth
+    - attack.t1574.005
+customer: 'demo'

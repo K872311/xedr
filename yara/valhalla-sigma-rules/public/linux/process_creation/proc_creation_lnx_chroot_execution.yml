@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Linux Sudo Chroot Execution
+id: f2bed782-994e-4f40-9cd5-518198cb3fba
+status: experimental
+description: |
+    Detects the execution of 'sudo' command with '--chroot' option, which is used to change the root directory for command execution.
+    Attackers may use this technique to evade detection and execute commands in a modified environment.
+    This can be part of a privilege escalation strategy, as it allows the execution of commands with elevated privileges in a controlled environment as seen in CVE-2025-32463.
+    While investigating, look out for unusual or unexpected use of 'sudo --chroot' in conjunction with other commands or scripts such as execution from temporary directories or unusual user accounts.
+references:
+    - https://github.com/kh4sh3i/CVE-2025-32463/blob/81bb430f84fa2089224733c3ed4bfa434c197ad4/exploit.sh
+date: "2025-10-02"
+author: Swachchhanda Shrawn Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains:
+            - ' --chroot '
+            - 'sudo -R '
+        Image|endswith: /sudo
+falsepositives:
+    - Legitimate administrative tasks or scripts that use 'sudo --chroot' for containerization, testing, or system management.
+level: low
+tags:
+    - attack.privilege-escalation
+    - attack.t1068
+customer: 'demo'

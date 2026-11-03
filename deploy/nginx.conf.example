@@ -1,0 +1,61 @@
+# Replace forensic.example.com and certificate paths before enabling this server.
+upstream forensic_api {
+    server 127.0.0.1:8000;
+    keepalive 32;
+}
+
+limit_req_zone $binary_remote_addr zone=forensic_api_limit:10m rate=20r/s;
+limit_req_zone $binary_remote_addr zone=forensic_login_limit:10m rate=5r/m;
+
+server {
+    listen 80;
+    server_name forensic.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name forensic.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/forensic.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/forensic.example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    client_max_body_size 100m;
+    keepalive_timeout 65;
+    gzip on;
+    gzip_min_length 800;
+    gzip_comp_level 5;
+    gzip_types application/json text/plain text/css application/javascript text/html;
+
+    location = /api/auth/login {
+        limit_req zone=forensic_login_limit burst=3 nodelay;
+        proxy_pass http://forensic_api;
+        include /etc/nginx/proxy_params;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Request-ID $request_id;
+    }
+
+    location /api/ {
+        limit_req zone=forensic_api_limit burst=60 nodelay;
+        proxy_pass http://forensic_api;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Request-ID $request_id;
+        proxy_read_timeout 300s;
+    }
+
+    location / {
+        proxy_pass http://forensic_api;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Request-ID $request_id;
+    }
+}

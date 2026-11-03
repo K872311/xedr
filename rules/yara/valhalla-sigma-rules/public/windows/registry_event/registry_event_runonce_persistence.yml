@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Run Once Task Configuration in Registry
+id: c74d7efc-8826-45d9-b8bb-f04fac9e4eff
+status: test
+description: Rule to detect the configuration of Run Once registry key. Configured payload can be run by runonce.exe /AlternateShellStartup
+references:
+    - https://twitter.com/pabraeken/status/990717080805789697
+    - https://lolbas-project.github.io/lolbas/Binaries/Runonce/
+date: "2020-11-15"
+modified: "2024-03-25"
+author: Avneet Singh @v3t0_, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_event
+    product: windows
+detection:
+    condition: selection and not 1 of filter_optional_*
+    filter_optional_chrome:
+        Details|contains|all:
+            - C:\Program Files\Google\Chrome\Application\
+            - \Installer\chrmstp.exe" --configure-user-settings --verbose-logging --system-level
+    filter_optional_edge:
+        Details|contains:
+            - C:\Program Files (x86)\Microsoft\Edge\Application\
+            - C:\Program Files\Microsoft\Edge\Application\
+        Details|endswith: \Installer\setup.exe" --configure-user-settings --verbose-logging --system-level --msedge --channel=stable
+    selection:
+        TargetObject|contains: \Microsoft\Active Setup\Installed Components
+        TargetObject|endswith: \StubPath
+falsepositives:
+    - Legitimate modification of the registry key by legitimate program
+level: medium
+tags:
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1112
+customer: 'demo'

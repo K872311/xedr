@@ -1,0 +1,70 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Renamed Schtasks Execution
+id: f91e51c9-f344-4b32-969b-0b6f6b8537d4
+status: experimental
+description: |
+    Detects the execution of renamed schtasks.exe binary, which is a legitimate Windows utility used for scheduling tasks.
+    One of the very common persistence techniques is schedule malicious tasks using schtasks.exe.
+    Since, it is heavily abused, it is also heavily monitored by security products. To evade detection, threat actors may rename the schtasks.exe binary to schedule their malicious tasks.
+references:
+    - https://x.com/JangPr0/status/1932034543026065833
+    - https://ss64.com/nt/schtasks.html
+date: "2025-11-27"
+modified: "2026-10-02"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: (all of selection_cmd_* and not filter_main_cmd and not filter_optional_cmd_openfiles) or (selection_pe and not filter_main_img)
+    filter_main_cmd:
+        CommandLine|contains: schtasks
+    filter_main_img:
+        Image|endswith: \schtasks.exe
+    filter_optional_cmd_openfiles:
+        CommandLine|contains|all:
+            - openfiles
+            - ' /query '
+            - ' /fo'
+    selection_cmd_flags:
+        CommandLine|contains|windash:
+            - ' /tn '
+            - ' /tr '
+            - ' /sc '
+            - ' /st '
+            - ' /ru '
+            - ' /fo '
+    selection_cmd_operation:
+        CommandLine|contains|windash:
+            - ' /create '
+            - ' /delete '
+            - ' /query '
+            - ' /change '
+            - ' /run '
+            - ' /end '
+    selection_pe:
+        OriginalFileName: schtasks.exe
+falsepositives:
+    - Unlikely
+level: high
+tags:
+    - attack.execution
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.stealth
+    - attack.t1036.003
+    - attack.t1053.005
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/process_creation/proc_creation_win_renamed_schtasks_execution/info.yml

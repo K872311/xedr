@@ -1,0 +1,75 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Windows Event Log Access Tampering Via Registry
+id: ba226dcf-d390-4642-b9af-b534872f1156
+status: experimental
+description: |
+    Detects changes to the Windows EventLog channel permission values. It focuses on changes to the Security Descriptor Definition Language (SDDL) string, as modifications to these values can restrict access to specific users or groups, potentially aiding in defense evasion by controlling who can view or modify a event log channel. Upon execution, the user shouldn't be able to access the event log channel via the event viewer or via utilities such as "Get-EventLog" or "wevtutil".
+references:
+    - https://www.atomicredteam.io/atomic-red-team/atomics/T1562.002#atomic-test-8---modify-event-log-channel-access-permissions-via-registry---powershell
+    - https://www.youtube.com/watch?v=uSYvHUVU8xY
+    - https://learn.microsoft.com/en-us/windows/win32/secauthz/security-descriptor-definition-language
+date: "2025-01-16"
+modified: "2025-08-16"
+author: X__Junior
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: 1 of selection_key_* and selection_details and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_tiworker:
+        Image|endswith: \TiWorker.exe
+        Image|startswith: C:\Windows\WinSxS\
+    filter_main_trustedinstaller:
+        Image: C:\Windows\servicing\TrustedInstaller.exe
+    filter_optional_empty:
+        Image: ""
+    filter_optional_null:
+        Image: []
+    selection_details:
+        - Details|contains: D:(D;
+        - Details|contains|all:
+            - D:(
+            - )(D;
+    selection_key_1:
+        TargetObject|contains: \SYSTEM\CurrentControlSet\Services\EventLog\
+        TargetObject|endswith: \CustomSD
+    selection_key_2:
+        TargetObject|contains:
+            - \Policies\Microsoft\Windows\EventLog\
+            - \Microsoft\Windows\CurrentVersion\WINEVT\Channels
+        TargetObject|endswith: \ChannelAccess
+falsepositives:
+    - Administrative activity, still unlikely
+level: high
+tags:
+    - attack.privilege-escalation
+    - attack.persistence
+    - attack.defense-impairment
+    - attack.t1547.001
+    - attack.t1112
+customer: 'demo'
+simulation:
+    - atomic_guid: a0cb81f8-44d0-4ac4-a8f3-c5c7f43a12c1
+      name: Modify Event Log Access Permissions via Registry - PowerShell
+      technique: T1562.002
+      type: atomic-red-team
+    - atomic_guid: 8e81d090-0cd6-4d46-863c-eec11311298f
+      name: Modify Event Log Channel Access Permissions via Registry - PowerShell
+      technique: T1562.002
+      type: atomic-red-team
+    - atomic_guid: 85e6eff8-3ed4-4e03-ae50-aa6a404898a5
+      name: Modify Event Log Channel Access Permissions via Registry 2 - PowerShell
+      technique: T1562.002
+      type: atomic-red-team

@@ -1,0 +1,57 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Startup/Logon Script Added to Group Policy Object
+id: 123e4e6d-b123-48f8-b261-7214938acaf0
+status: test
+description: |
+    Detects the modification of Group Policy Objects (GPO) to add a startup/logon script to users or computer objects.
+references:
+    - https://www.elastic.co/guide/en/security/current/startup-logon-script-added-to-group-policy-object.html
+date: "2024-09-06"
+author: Elastic, Josh Nickels, Marius Rothenbücher
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    product: windows
+    service: security
+    definition: The advanced audit policy setting "Object Access > Audit Detailed File Share" must be configured for Success/Failure
+detection:
+    condition: selection_eventid and (all of selection_attributes_* or selection_share)
+    selection_attributes_main:
+        AttributeLDAPDisplayName:
+            - gPCMachineExtensionNames
+            - gPCUserExtensionNames
+        AttributeValue|contains: 42B5FAAE-6536-11D2-AE5A-0000F87571E3
+    selection_attributes_optional:
+        AttributeValue|contains:
+            - 40B6664F-4972-11D1-A7CA-0000F87571E3
+            - 40B66650-4972-11D1-A7CA-0000F87571E3
+    selection_eventid:
+        EventID:
+            - "5136"
+            - "5145"
+    selection_share:
+        AccessList|contains: '%%4417'
+        RelativeTargetName|endswith:
+            - \scripts.ini
+            - \psscripts.ini
+        ShareName|endswith: \SYSVOL
+falsepositives:
+    - Legitimate execution by system administrators.
+level: medium
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.defense-impairment
+    - attack.t1484.001
+    - attack.t1547
+customer: 'demo'

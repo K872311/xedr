@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: RegAsm.EXE Execution Without CommandLine Flags or Files
+id: 651f87f7-12db-47f9-84c5-f27b081b94b6
+status: experimental
+description: |
+    Detects the execution of "RegAsm.exe" without a commandline flag or file, which might indicate potential process injection activity.
+    Usually "RegAsm.exe" should point to a dedicated DLL file or call the help with the "/?" flag.
+references:
+    - https://www.mcafee.com/blogs/other-blogs/mcafee-labs/agent-teslas-unique-approach-vbs-and-steganography-for-delivery-and-intrusion/
+    - https://www.zscaler.fr/blogs/security-research/threat-actors-exploit-cve-2017-11882-deliver-agent-tesla
+    - https://learn.microsoft.com/en-us/dotnet/framework/tools/regasm-exe-assembly-registration-tool
+    - https://app.any.run/tasks/ea944b89-69d8-49c8-ac1f-5c76ad300db2
+    - https://www.joesandbox.com/analysis/1467354/0/html
+date: "2025-06-04"
+author: frack113
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: all of selection_*
+    selection_cli:
+        CommandLine|endswith:
+            - RegAsm
+            - RegAsm.exe
+            - RegAsm.exe"
+            - RegAsm.exe'
+    selection_img:
+        - Image|endswith: \RegAsm.exe
+        - OriginalFileName: RegAsm.exe
+falsepositives:
+    - Legitimate use of Regasm by developers.
+level: low
+tags:
+    - attack.stealth
+    - attack.t1218.009
+customer: 'demo'

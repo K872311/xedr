@@ -1,0 +1,1198 @@
+{
+  "meta": {
+    "id": "file-scan-rules",
+    "name": "文件扫描规则",
+    "version": "3.0",
+    "description": "原始规则严格降噪修正版：保留Public规则，收紧泛匹配并增强行为链",
+    "optimization": "strict_noise_reduction_behavior_enhanced",
+    "addedFields": [
+      "confidence",
+      "fpRisk",
+      "attackStage",
+      "mitre",
+      "score"
+    ]
+  },
+  "scanPaths": [
+    {
+      "path": "C:\\Program Files (x86)",
+      "category": "程序文件(32位)",
+      "maxDepth": 3,
+      "followSymlinks": false
+    },
+    {
+      "path": "C:\\ProgramData",
+      "category": "程序数据",
+      "maxDepth": 3,
+      "followSymlinks": false
+    },
+    {
+      "path": "C:\\Users",
+      "category": "用户目录",
+      "maxDepth": 4,
+      "followSymlinks": false
+    }
+  ],
+  "excludePatterns": [
+    "node_modules",
+    ".git",
+    ".svn",
+    "__pycache__",
+    ".vs",
+    "packages",
+    "*.log",
+    "*.tmp",
+    "*.bak",
+    "*.dmp",
+    "thumbs.db",
+    "desktop.ini",
+    "*.lnk",
+    ".ds_store",
+    "\\OneDrive\\",
+    "\\WindowsApps\\",
+    "\\INetCache\\",
+    "\\Package Cache\\",
+    "\\Microsoft\\EdgeUpdate\\",
+    "\\Google\\Chrome\\Application\\",
+    "\\Mozilla Firefox\\",
+    "\\VMware\\VMware Tools\\",
+    "\\Huorong\\",
+    "\\Windows Defender\\Definition Updates\\",
+    "\\Microsoft\\WindowsApps\\"
+  ],
+  "fileCategories": {
+    "executable": {
+      "display": "可执行文件",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".sys",
+        ".com",
+        ".scr",
+        ".pif",
+        ".cpl",
+        ".ocx",
+        ".drv"
+      ],
+      "color": "#ef4444",
+      "riskWeight": 3
+    },
+    "script": {
+      "display": "脚本文件",
+      "extensions": [
+        ".ps1",
+        ".bat",
+        ".cmd",
+        ".vbs",
+        ".js",
+        ".py",
+        ".pl",
+        ".rb",
+        ".sh",
+        ".wsf",
+        ".jse",
+        ".vbe"
+      ],
+      "color": "#f59e0b",
+      "riskWeight": 2
+    },
+    "document": {
+      "display": "文档",
+      "extensions": [
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".ppt",
+        ".pptx",
+        ".pdf",
+        ".rtf",
+        ".txt",
+        ".csv",
+        ".odt",
+        ".ods",
+        ".odp"
+      ],
+      "color": "#3b82f6",
+      "riskWeight": 1
+    },
+    "archive": {
+      "display": "压缩包",
+      "extensions": [
+        ".zip",
+        ".rar",
+        ".7z",
+        ".tar",
+        ".gz",
+        ".bz2",
+        ".xz",
+        ".cab",
+        ".arj",
+        ".lzh",
+        ".iso"
+      ],
+      "color": "#8b5cf6",
+      "riskWeight": 2
+    },
+    "image": {
+      "display": "图片",
+      "extensions": [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".bmp",
+        ".tif",
+        ".tiff",
+        ".ico",
+        ".webp",
+        ".svg"
+      ],
+      "color": "#06b6d4",
+      "riskWeight": 0
+    },
+    "database": {
+      "display": "数据库",
+      "extensions": [
+        ".db",
+        ".sqlite",
+        ".sqlite3",
+        ".mdb",
+        ".accdb",
+        ".dbf",
+        ".edb",
+        ".pst",
+        ".ost"
+      ],
+      "color": "#14b8a6",
+      "riskWeight": 3
+    },
+    "config": {
+      "display": "配置文件",
+      "extensions": [
+        ".ini",
+        ".cfg",
+        ".conf",
+        ".config",
+        ".xml",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".reg",
+        ".policy"
+      ],
+      "color": "#64748b",
+      "riskWeight": 1
+    },
+    "certificate": {
+      "display": "证书密钥",
+      "extensions": [
+        ".pfx",
+        ".p12",
+        ".pem",
+        ".crt",
+        ".key",
+        ".der",
+        ".cer",
+        ".p7b",
+        ".jks"
+      ],
+      "color": "#ec4899",
+      "riskWeight": 4
+    },
+    "other": {
+      "display": "其他",
+      "extensions": [],
+      "color": "#94a3b8",
+      "riskWeight": 0
+    }
+  },
+  "suspiciousRules": [
+    {
+      "name": "Temp目录可疑文件",
+      "pathContains": "\\Temp\\",
+      "pathNotContains": [
+        "\\chocolatey\\",
+        "\\nuget\\",
+        "\\pip\\",
+        "\\npm\\",
+        "\\vs\\",
+        "\\msbuild\\",
+        "\\edge\\",
+        "\\chrome\\",
+        "\\winsxs\\"
+      ],
+      "extensions": [
+        ".exe",
+        ".ps1",
+        ".vbs",
+        ".scr"
+      ],
+      "sigStatus": "unsigned",
+      "severity": "medium",
+      "reason": "Temp 下无签名可执行/脚本（已降噪：去掉 bat/js，排除安装器缓存）"
+    },
+    {
+      "id": "file.path.temp_cfg_drop",
+      "name": "Temp 下 .cfg/GUID 目录投放可执行文件",
+      "severity": "critical",
+      "enabled": true,
+      "pathContains": "\\Temp\\",
+      "pathRegex": "(?i)\\\\temp\\\\([^\\\\]+\\.cfg|[0-9a-f]{8}-[0-9a-f-]{20,}|[0-9a-f~]{6,}\\.cfg)\\\\[^\\\\]+\\.(exe|dll|scr)$",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".scr"
+      ],
+      "reason": "AppData\\Local\\Temp 下以 .cfg 或 GUID 目录投放的 PE（银狐/代理马常见；进程退出后仍靠文件侧告警；含 NotTrusted 假签）",
+      "mitre": [
+        "T1036.005",
+        "T1204.002",
+        "T1546"
+      ],
+      "fpRisk": "low",
+      "score": 90,
+      "confidence": 90,
+      "attackStage": "execution"
+    },
+    {
+      "name": "用户目录启动项",
+      "pathContainsAny": [
+        "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\",
+        "\\Start Menu\\Programs\\Startup\\"
+      ],
+      "pathNotContains": [
+        "\\PCManager\\",
+        "\\Huawei\\",
+        "\\WeMeet\\",
+        "\\Tencent\\WeMeet\\",
+        "\\WPS Office\\",
+        "\\Kingsoft\\"
+      ],
+      "severity": "high",
+      "reason": "真实 Windows 启动文件夹中的文件（排除厂商自建 *Startup* 目录误报）"
+    },
+    {
+      "name": "双扩展名",
+      "nameRegex": ".*\\.(.*?)\\.(exe|ps1|vbs|bat)$",
+      "severity": "high",
+      "reason": "双扩展名伪装文件"
+    },
+    {
+      "name": "Public目录可执行文件",
+      "pathContains": "\\Users\\Public\\",
+      "pathNotContains": [
+        "\\Public\\Desktop\\",
+        "\\Public\\Libraries\\"
+      ],
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".vbs",
+        ".ps1",
+        ".scr"
+      ],
+      "sigStatus": "unsigned",
+      "severity": "medium",
+      "reason": "Users\\Public 下无签名可执行/脚本（去掉 bat/cmd 与公共桌面噪声）"
+    },
+    {
+      "id": "custom.public.any.pe",
+      "name": "Public目录及子目录可执行/脚本",
+      "severity": "medium",
+      "enabled": true,
+      "pathContains": "\\Users\\Public\\",
+      "pathNotContains": [
+        "\\Public\\Libraries\\",
+        "\\Public\\Documents\\",
+        "\\OneDrive\\"
+      ],
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".sys",
+        ".scr",
+        ".com",
+        ".bat",
+        ".cmd",
+        ".ps1",
+        ".vbs",
+        ".js"
+      ],
+      "reason": "Users\\Public 及子目录出现可执行/脚本即输出（不要求未签名）"
+    },
+    {
+      "id": "custom.programdata.root.files",
+      "name": "ProgramData根目录文件",
+      "severity": "high",
+      "enabled": true,
+      "pathImmediateUnder": [
+        "C:\\ProgramData"
+      ],
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".sys",
+        ".scr",
+        ".bat",
+        ".cmd",
+        ".ps1",
+        ".vbs",
+        ".js"
+      ],
+      "reason": "C:\\ProgramData 根下直接落盘文件（正常应在厂商子目录）"
+    },
+    {
+      "id": "custom.appdata.local.root.files",
+      "name": "AppData\\Local根目录未签名PE",
+      "severity": "medium",
+      "enabled": true,
+      "pathRegex": "(?i)^[a-z]:\\\\users\\\\[^\\\\]+\\\\appdata\\\\local\\\\[^\\\\]+$",
+      "extensions": [".exe", ".dll"],
+      "requireExplicitUnsigned": true,
+      "reason": "用户 AppData\\Local 根下直接落盘且明确未签名的 exe/dll",
+      "confidence": 72,
+      "fpRisk": "medium",
+      "attackStage": "execution",
+      "mitre": ["T1036", "T1204.002"],
+      "score": 70
+    },
+    {
+      "id": "custom.appdata.roaming.root.unsigned_pe",
+      "name": "AppData\\Roaming根目录未签名PE",
+      "severity": "medium",
+      "enabled": true,
+      "pathRegex": "(?i)^[a-z]:\\\\users\\\\[^\\\\]+\\\\appdata\\\\roaming\\\\[^\\\\]+$",
+      "extensions": [".exe", ".dll"],
+      "requireExplicitUnsigned": true,
+      "reason": "用户 AppData\\Roaming 根下直接落盘且明确未签名的 exe/dll",
+      "confidence": 72,
+      "fpRisk": "medium",
+      "attackStage": "execution",
+      "mitre": ["T1036", "T1204.002"],
+      "score": 70
+    },
+    {
+      "id": "file.windows.bat.tasklist_pid_watchdog",
+      "name": "Windows目录tasklist PID维权脚本",
+      "severity": "high",
+      "enabled": true,
+      "extensions": [".bat", ".cmd"],
+      "pathContains": "\\Windows\\",
+      "pathNotContains": [
+        "\\Windows\\System32\\",
+        "\\Windows\\SysWOW64\\",
+        "\\Windows\\WinSxS\\",
+        "\\Windows\\Servicing\\",
+        "\\Windows\\SoftwareDistribution\\",
+        "\\Windows\\SystemApps\\"
+      ],
+      "stripCarets": true,
+      "contentRegex": "(?is)tasklist\\s+/fi\\s+\"PID\\s+eq\\s+\\d+\"[\\s\\S]{0,400}?\\bnul\\b",
+      "reason": "Windows 目录下 bat/cmd 经 caret 混淆后匹配 tasklist /fi \"PID eq <pid>\" … nul（典型进程维权看门狗）",
+      "confidence": 93,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": ["T1053", "T1036.003", "T1543.003"],
+      "score": 92
+    },
+    {
+      "id": "custom.orphan.sys.dirty",
+      "name": "脏目录驱动文件(.sys)",
+      "severity": "high",
+      "enabled": true,
+      "extensions": [
+        ".sys"
+      ],
+      "pathContainsAny": [
+        "\\Users\\Public\\",
+        "\\Temp\\",
+        "\\tmp\\",
+        "\\AppData\\",
+        "\\ProgramData\\",
+        "\\Downloads\\",
+        "\\PerfLogs\\",
+        "\\Drivers\\"
+      ],
+      "pathNotContains": [
+        "\\Windows\\System32\\drivers\\",
+        "\\Windows\\SysWOW64\\drivers\\",
+        "\\Windows\\WinSxS\\"
+      ],
+      "reason": "非系统驱动目录下的 .sys（含未加载投放），常见于 BYOVD/临时驱动"
+    },
+    {
+      "id": "file.dropper.drivers_dat",
+      "name": "投放树标志-drivers.dat",
+      "severity": "critical",
+      "enabled": true,
+      "nameRegex": "(?i)^drivers\\.dat(\\.[0-9]+)?$",
+      "pathNotContains": [
+        "\\Windows\\",
+        "\\Program Files\\",
+        "\\Program Files (x86)\\"
+      ],
+      "reason": "盘符根投放树标志文件 drivers.dat / drivers.dat.N（目录名不限 Drivers）",
+      "confidence": 92,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1036",
+        "T1204.002"
+      ]
+    },
+    {
+      "id": "file.dropper.drivers_tree_exe",
+      "name": "投放树短随机子目录可执行文件",
+      "severity": "critical",
+      "enabled": true,
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".scr",
+        ".bat",
+        ".cmd"
+      ],
+      "underDriversDatRoot": true,
+      "requireUnsigned": true,
+      "pathRegex": "(?i)^[a-z]:\\\\[^\\\\]+(?:\\\\[a-z0-9]{2,8}){1,8}\\\\[^\\\\]+$",
+      "reason": "投放树根下短随机名子目录内的未签名可执行文件；已签 Valid 不告",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": [
+        "T1036",
+        "T1059.003"
+      ]
+    },
+    {
+      "id": "file.dropper.nested_rand_invalid_sig",
+      "name": "深层随机路径异常签名PE",
+      "severity": "critical",
+      "enabled": true,
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".scr"
+      ],
+      "sigStatus": "invalid",
+      "pathRegex": "(?i)^[a-z]:\\\\[^\\\\]+(?:\\\\[a-z0-9]{2,8}){2,}\\\\[^\\\\]+$",
+      "pathNotContains": [
+        "\\Windows\\",
+        "\\Program Files\\",
+        "\\Program Files (x86)\\",
+        "\\ProgramData\\",
+        "\\Users\\"
+      ],
+      "reason": "盘符根自定义目录下多层短随机子路径 + HashMismatch/NotTrusted 等异常签名 PE（如 C:\\bstlog\\lUgtB\\6T8YE\\bV8C\\x.exe）",
+      "confidence": 93,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": [
+        "T1036",
+        "T1553.002"
+      ]
+    },
+    {
+      "name": "银狐-DeviceSync",
+      "pathContains": "\\ProgramData\\Microsoft\\DeviceSync\\",
+      "severity": "critical",
+      "reason": "银狐(SilverFox)典型落盘目录 DeviceSync"
+    },
+    {
+      "name": "银狐-WindowsData",
+      "pathContains": "\\ProgramData\\WindowsData\\",
+      "severity": "critical",
+      "reason": "银狐伪装 ProgramData\\WindowsData"
+    },
+    {
+      "name": "银狐-dllcache",
+      "pathContains": "\\AppData\\Roaming\\Microsoft\\Windows\\dllcache\\",
+      "severity": "high",
+      "reason": "假 dllcache 路径，正常系统不应出现用户侧 dllcache"
+    },
+    {
+      "name": "银狐-MMC目录",
+      "pathContains": "\\AppData\\Roaming\\Microsoft\\Windows\\mmc\\",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".bat",
+        ".vbs",
+        ".ps1"
+      ],
+      "severity": "high",
+      "reason": "银狐常用 MMC 目录落盘"
+    },
+    {
+      "name": "银狐-浏览器STP名",
+      "nameRegex": "(?i)^(chromestp|edgestp|firefoxstp)\\.exe$",
+      "severity": "high",
+      "reason": "银狐伪装浏览器进程名 IOC"
+    },
+    {
+      "name": "HollowQuill-RoamingDriver",
+      "pathContains": "\\AppData\\Roaming\\Driver\\",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".bat",
+        ".ps1",
+        ".vbs",
+        ".scr"
+      ],
+      "severity": "high",
+      "reason": "AppData\\Roaming\\Driver 非标准子目录（HollowQuill）"
+    },
+    {
+      "name": "双扩展LNK诱饵",
+      "nameRegex": "(?i)\\.(rtf|doc|docx|pdf|xls|xlsx|ppt|pptx|txt|jpg|png)\\.lnk$",
+      "severity": "high",
+      "reason": "文档双扩展 LNK，ISO/VHD 钓鱼链常见"
+    },
+    {
+      "name": "桌面下载磁盘镜像",
+      "pathContains": "\\Users\\",
+      "pathNotContains": [
+        "\\Windows\\",
+        "\\Program Files",
+        "\\OneDrive\\"
+      ],
+      "nameRegex": "(?i)\\.(iso|vhd|vhdx|img)$",
+      "severity": "medium",
+      "reason": "用户目录磁盘镜像，可能为容器钓鱼入口（来源:0707 vhd_iso）"
+    },
+    {
+      "name": "侧加载诱饵DLL-AppData",
+      "pathContains": "\\AppData\\",
+      "pathNotContains": [
+        "\\OneDrive\\",
+        "\\Microsoft\\",
+        "\\Packages\\",
+        "\\WindowsApps\\"
+      ],
+      "nameRegex": "(?i)^(version|dwmapi|winmm|wtsapi32|msimg32|textshaping|profapi|uxtheme|dbghelp|cryptsp|userenv|msctf|winhttp|cryptbase)\\.dll$",
+      "severity": "high",
+      "reason": "用户目录出现系统诱饵 DLL 名，DLL 侧加载高危"
+    },
+    {
+      "name": "NarwhalRat-averwhale",
+      "pathContains": "\\AppData\\Roaming\\averwhale\\",
+      "severity": "high",
+      "reason": "NarwhalRAT 伪装浏览器目录 averwhale"
+    },
+    {
+      "name": "白象-WindowsDebug",
+      "pathContains": "\\Windows\\Debug\\",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".bat",
+        ".ps1"
+      ],
+      "severity": "high",
+      "reason": "Windows\\Debug 下可执行/脚本（白象/Patchwork）"
+    },
+    {
+      "name": "系统名伪装-用户目录",
+      "pathContains": "\\Users\\",
+      "pathNotContains": [
+        "\\windows\\system32\\",
+        "\\windows\\syswow64\\",
+        "\\OneDrive\\"
+      ],
+      "nameRegex": "(?i)^(svchost|lsass|csrss|winlogon|services|smss|dwm|taskmgr|explorer|rundll32|system32|windows|system)\\.exe$",
+      "severity": "high",
+      "reason": "用户目录下系统进程名伪装"
+    },
+    {
+      "name": "CS-Mimikatz工具名",
+      "nameRegex": "(?i)(beacon|artifact)\\.(exe|dll)$|mimikatz|mimilib|mimidrv|sekurlsa",
+      "severity": "high",
+      "reason": "CobaltStrike/Mimikatz 等红队工具落盘特征"
+    },
+    {
+      "name": "Unicode-RLO文件名",
+      "nameRegex": "\\u202e",
+      "severity": "high",
+      "reason": "文件名含 RLO(U+202E) 用于扩展名伪装"
+    },
+    {
+      "name": "APT-C-60载荷文件名",
+      "nameRegex": "(?i)^(WebClassUser\\.dat|WebCacheR\\.tmp\\.dat|datapages\\.txt|datautils\\.txt|glog\\.txt)$",
+      "severity": "high",
+      "reason": "SpyGlace/APT-C-60 已知载荷文件名"
+    },
+    {
+      "id": "file.ioc.astharot_comloader",
+      "name": "Astharot/COMLoader 落地文件名",
+      "nameRegex": "(?i)^(LoaderAstharotDll\\.dll|COMLoaderAstharot\\.exe|rs_beacon\\.bin|DataExchange_orig\\.dll)$",
+      "severity": "critical",
+      "enabled": true,
+      "reason": "DataExchange CLSID 劫持（Astharot）公开落地文件名；优先查 Temp/ProgramData/用户目录",
+      "mitre": ["T1546.015", "T1574"],
+      "score": 96,
+      "confidence": 96,
+      "fpRisk": "low",
+      "attackStage": "persistence"
+    },
+    {
+      "id": "file.ioc.pdfwkrnl_sys",
+      "name": "可疑驱动 pdfwkrnl.sys",
+      "nameRegex": "(?i)^pdfwkrnl\\.sys$",
+      "severity": "critical",
+      "enabled": true,
+      "reason": "浏览器扩展+NMH 木马报告中的恶意驱动文件名；需核对签名与来源",
+      "mitre": ["T1543.003", "T1014"],
+      "score": 95,
+      "confidence": 94,
+      "fpRisk": "low",
+      "attackStage": "persistence"
+    },
+    {
+      "id": "file.windows.root.unsigned_sys",
+      "name": "Windows根目录无签名驱动(.sys)",
+      "severity": "high",
+      "enabled": true,
+      "extensions": [".sys"],
+      "pathImmediateUnder": ["C:\\Windows"],
+      "pathRegex": "(?i)^[a-z]:\\\\windows\\\\[^\\\\]+\\.sys$",
+      "requireExplicitUnsigned": true,
+      "reason": "C:\\Windows\\ 根下直接落盘且无有效签名的 .sys（如 52hb.sys/st2.sys），常见于恶意驱动/BYOVD，非 Drivers 正规目录",
+      "confidence": 92,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": ["T1014", "T1543.003"],
+      "score": 92
+    },
+    {
+      "id": "file.windows.drivers.unsigned_sys",
+      "name": "Drivers目录无有效签名驱动",
+      "severity": "medium",
+      "enabled": true,
+      "extensions": [".sys"],
+      "pathContainsAny": [
+        "\\Windows\\System32\\drivers\\",
+        "\\Windows\\SysWOW64\\drivers\\"
+      ],
+      "pathNotContains": [
+        "\\DriverStore\\",
+        "\\WinSxS\\",
+        "\\Windows\\System32\\DriverState\\"
+      ],
+      "requireExplicitUnsigned": true,
+      "signerNotContainsAny": [
+        "Microsoft Windows",
+        "Microsoft Corporation",
+        "Microsoft Windows Production",
+        "Windows Hardware Compatibility"
+      ],
+      "companyNotContainsAny": [
+        "Microsoft Corporation",
+        "Microsoft Windows"
+      ],
+      "reason": "system32\\DRIVERS 下嵌入签名与目录签名均无效的 .sys（已排除微软/目录签仍有效）；样例 nv3dmp* 类未签驱动",
+      "confidence": 78,
+      "fpRisk": "medium",
+      "attackStage": "persistence",
+      "mitre": ["T1014"],
+      "score": 72
+    },
+    {
+      "id": "file.ioc.wefault_exe",
+      "name": "仿 WerFault 载荷 wefault.exe",
+      "nameRegex": "(?i)^wefault\\.exe$",
+      "severity": "high",
+      "enabled": true,
+      "pathNotContains": [
+        "\\Windows\\System32\\",
+        "\\Windows\\SysWOW64\\"
+      ],
+      "reason": "文件名仿系统 WerFault.exe（少一字母），常见于 ProgramData 嵌入式 Python/窃密套件落盘",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": ["T1036.005"],
+      "score": 90
+    },
+    {
+      "id": "file.apt.sipolicy_wdac_kill",
+      "name": "恶意策略文件 SiPolicy.p7b",
+      "severity": "critical",
+      "enabled": true,
+      "pathContains": "\\System32\\CodeIntegrity\\",
+      "pathRegex": "(?i)^[a-z]:\\\\windows\\\\system32\\\\codeintegrity\\\\sipolicy\\.p7b$",
+      "nameRegex": "(?i)^SiPolicy\\.p7b$",
+      "extensions": [".p7b"],
+      "reason": "C:\\Windows\\System32\\CodeIntegrity\\SiPolicy.p7b 为 WDAC 单策略格式；银狐等黑产常投放该文件拦截杀软/EDR（存在即告）。采集端会尝试还原策略 XML，可在告警详情直接审阅",
+      "confidence": 92,
+      "fpRisk": "medium",
+      "attackStage": "defense-evasion",
+      "mitre": ["T1562.001"],
+      "score": 95
+    },
+    {
+      "id": "file.ioc.lunex_nmh_host",
+      "name": "NMH宿主 IOC com.lunex.explorer",
+      "nameRegex": "(?i)com\\.lunex\\.explorer",
+      "severity": "critical",
+      "enabled": true,
+      "reason": "公开报告：NMH/PowerShell 宿主名 com.lunex.explorer；常与扩展后门共生",
+      "mitre": ["T1176"],
+      "score": 94,
+      "confidence": 94,
+      "fpRisk": "low",
+      "attackStage": "persistence"
+    },
+    {
+      "id": "file.ioc.psychedelicloveutils",
+      "name": "任务/组件名 psychedelicloveutils",
+      "nameRegex": "(?i)psychedelicloveutils",
+      "severity": "critical",
+      "enabled": true,
+      "reason": "浏览器 NMH 木马配套组件/任务名 IOC",
+      "mitre": ["T1053.005", "T1176"],
+      "score": 95,
+      "confidence": 95,
+      "fpRisk": "low",
+      "attackStage": "persistence"
+    },
+    {
+      "id": "file.ioc.appdata_shared_kit_decoy",
+      "name": "AppData\\Local 假shared树-诱饵文件名",
+      "severity": "critical",
+      "enabled": true,
+      "pathContains": "\\AppData\\Local\\",
+      "pathRegex": "(?i)\\\\AppData\\\\Local\\\\[A-Za-z0-9_-]{6,16}\\\\shared\\\\(assets|documents|images|reports|screenshots|fonts)\\\\",
+      "pathNotContains": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Local\\Google\\",
+        "\\AppData\\Local\\Packages\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\AppData\\Local\\Programs\\"
+      ],
+      "nameRegex": "(?i)^(Meeting Notes \\d{4}-\\d{2}-\\d{2}\\.docx|Agreement_\\d{4}-\\d{2}-\\d{2}\\.pdf|screenshot_\\d{8}_\\d{6}\\.png|IMG_\\d{8}_\\d{6}\\.jpe?g|capture_\\d+\\.png|p[a-z0-9]{6,12}\\.ttf)$",
+      "reason": "AppData\\Local\\<随机>\\shared\\ 下诱饵文档/截图/字体命名模板（Meeting Notes/Agreement_/screenshot_/IMG_/capture_）；该生成套件强特征，误报极低",
+      "mitre": ["T1036", "T1204"],
+      "score": 97,
+      "confidence": 97,
+      "fpRisk": "low",
+      "attackStage": "execution"
+    },
+    {
+      "id": "file.ioc.appdata_shared_bin_lone_dll",
+      "name": "AppData\\Local 假shared\\bin 子目录独立DLL",
+      "severity": "critical",
+      "enabled": true,
+      "pathContains": "\\AppData\\Local\\",
+      "pathRegex": "(?i)\\\\AppData\\\\Local\\\\[A-Za-z0-9_-]{6,16}\\\\shared\\\\bin\\\\[A-Za-z0-9_-]{2,20}\\\\[^\\\\]+\\.dll$",
+      "pathNotContains": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Local\\Google\\",
+        "\\AppData\\Local\\Packages\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\AppData\\Local\\Programs\\"
+      ],
+      "extensions": [".dll"],
+      "nameRegex": "(?i)^[a-z]{2,8}\\d{2,8}\\.dll$|^[a-z0-9]{6,14}\\.dll$",
+      "reason": "主特征：AppData\\Local\\<随机>\\shared\\bin\\<子目录>\\ 下单独落一个随机短名 DLL（如 bin\\local\\conc61767.dll、bin\\tmp\\wsng061.dll）；子目录内仅独立 DLL，非正常软件布局",
+      "mitre": ["T1036", "T1574.001", "T1204"],
+      "score": 98,
+      "confidence": 98,
+      "fpRisk": "low",
+      "attackStage": "execution"
+    },
+    {
+      "id": "file.ioc.appdata_shared_kit_payload",
+      "name": "AppData\\Local 假shared树-载荷/安装包",
+      "severity": "critical",
+      "enabled": true,
+      "pathContains": "\\AppData\\Local\\",
+      "pathRegex": "(?i)\\\\AppData\\\\Local\\\\[A-Za-z0-9_-]{6,16}\\\\shared\\\\(modules|packages|setup|updates|cache)\\\\",
+      "pathNotContains": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Local\\Google\\",
+        "\\AppData\\Local\\Packages\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\AppData\\Local\\Programs\\"
+      ],
+      "extensions": [".dll", ".exe", ".msi", ".cab", ".scr"],
+      "nameRegex": "(?i)^(ucrt\\d+\\.dll|update_\\d+\\.cab|package_\\d{8}_\\d{6}\\.msi|patch_\\d+\\.cab|[a-z]{2,6}\\d{2,8}\\.(dll|exe)|[a-z0-9]{6,14}\\.(dll|msi))$",
+      "reason": "同套件辅特征：shared\\modules|setup|updates|cache 下伪装 UCRT/随机 DLL 或 update_/package_/patch_ 安装包；bin 独立 DLL 见 file.ioc.appdata_shared_bin_lone_dll",
+      "mitre": ["T1036", "T1574.001", "T1204"],
+      "score": 96,
+      "confidence": 95,
+      "fpRisk": "low",
+      "attackStage": "execution"
+    },
+    {
+      "id": "custom.public.random.unsigned.pe",
+      "name": "Public目录随机无签名PE",
+      "severity": "high",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": [
+        "T1036",
+        "T1204"
+      ],
+      "score": 85,
+      "pathContains": "C:\\Users\\Public\\",
+      "pathNotContains": [
+        "\\desktop.ini",
+        ".lnk"
+      ],
+      "extensions": [
+        ".exe",
+        ".dll"
+      ],
+      "sigStatus": "unsigned",
+      "nameRegex": "(?i)^[a-z0-9]{6,20}\\.(exe|dll)$",
+      "reason": "Public目录随机命名无签名 exe/dll（不含 desktop.ini / lnk）"
+    },
+    {
+      "id": "custom.system.name.impersonation",
+      "name": "用户目录系统进程名伪装",
+      "severity": "high",
+      "pathContains": "\\Users\\",
+      "pathNotContains": [
+        "\\windows\\system32\\",
+        "\\windows\\syswow64\\",
+        "\\windows\\winsxs\\",
+        "\\onedrive\\"
+      ],
+      "nameRegex": "(?i)^(svchost|lsass|csrss|winlogon|services|smss|dwm|rundll32)\\.exe$",
+      "reason": "非系统目录伪装Windows核心进程"
+    }
+  ],
+  "folderRules": [
+    {
+      "id": "folder.dropper.drivers_dat_root",
+      "name": "盘符根投放树目录",
+      "severity": "critical",
+      "enabled": true,
+      "immediateUnder": "C:\\",
+      "underDriversDatRoot": true,
+      "maxSubtreeFileCount": 500,
+      "reason": "C:\\ 下一级投放树根（含 drivers.dat，或 ≥2 个短随机 PE 子目录；目录名不限 Drivers）",
+      "confidence": 95,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": [
+        "T1036",
+        "T1204.002"
+      ],
+      "score": 95
+    },
+    {
+      "id": "folder.dropper.drivers_random_subdir",
+      "name": "投放树随机子目录",
+      "severity": "critical",
+      "enabled": true,
+      "underDriversDatRoot": true,
+      "dirNameKind": "random_short_alnum_2_8",
+      "requireExtsAny": [
+        ".exe",
+        ".dll",
+        ".scr",
+        ".bat",
+        ".cmd"
+      ],
+      "minUnsignedPe": 1,
+      "maxFileCount": 40,
+      "reason": "投放树下短随机名子目录含未签名可执行文件（如 8oGt\\SKJ.exe）；目录内 PE 全部已签不告",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": [
+        "T1036",
+        "T1059.003"
+      ],
+      "score": 90
+    },
+    {
+      "id": "folder.dropper.drivers_dat_sibling_exe",
+      "name": "投放树同树随机子目录PE",
+      "severity": "critical",
+      "enabled": true,
+      "underDriversDatRoot": true,
+      "dirNameKind": "random_short_alnum_2_8",
+      "requireExtsAny": [
+        ".exe",
+        ".dll",
+        ".scr"
+      ],
+      "minUnsignedPe": 1,
+      "maxFileCount": 40,
+      "reason": "投放树根下短随机子目录含未签名 PE；全部 Valid 已签不告",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": [
+        "T1036"
+      ],
+      "score": 90
+    },
+    {
+      "id": "folder.system32.anomaly_subdir_unsigned",
+      "name": "System32异常子目录含未签名PE",
+      "severity": "critical",
+      "enabled": true,
+      "immediateUnderContains": "\\windows\\system32",
+      "dirNameKind": "random_mixed_alnum_4_20",
+      "minUnsignedPe": 1,
+      "requireExtsAny": [".dll", ".exe", ".sys"],
+      "maxFileCount": 30,
+      "whitelistDirNames": [
+        "drivers", "DriverStore", "wbem", "WindowsPowerShell", "Com", "config",
+        "Tasks", "spool", "CatRoot", "CatRoot2", "CodeIntegrity", "LogFiles",
+        "oobe", "Migration", "Speech", "IME", "Mui", "Microsoft", "Dism"
+      ],
+      "reason": "System32 下随机命名子目录含未签名 PE（白加黑常见落地）",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": ["T1574.002", "T1036"],
+      "score": 90
+    },
+    {
+      "id": "folder.syswow64.anomaly_subdir_unsigned",
+      "name": "SysWOW64异常子目录含未签名PE",
+      "severity": "critical",
+      "enabled": true,
+      "immediateUnderContains": "\\windows\\syswow64",
+      "dirNameKind": "random_mixed_alnum_4_20",
+      "minUnsignedPe": 1,
+      "requireExtsAny": [".dll", ".exe", ".sys"],
+      "maxFileCount": 30,
+      "whitelistDirNames": [
+        "drivers", "DriverStore", "wbem", "WindowsPowerShell", "Com", "config",
+        "Tasks", "spool", "Microsoft", "Dism"
+      ],
+      "reason": "SysWOW64 下随机命名子目录含未签名 PE",
+      "confidence": 90,
+      "fpRisk": "low",
+      "attackStage": "persistence",
+      "mitre": ["T1574.002", "T1036"],
+      "score": 90
+    },
+    {
+      "id": "folder.appdata.shared_bin_lone_dll",
+      "name": "假shared\\bin 子目录仅独立DLL",
+      "severity": "critical",
+      "enabled": true,
+      "parentPathContains": "\\AppData\\Local\\",
+      "immediateUnderContains": "\\shared\\bin",
+      "parentPathNotContains": [
+        "\\AppData\\Local\\Microsoft\\",
+        "\\AppData\\Local\\Google\\",
+        "\\AppData\\Local\\Packages\\",
+        "\\AppData\\Local\\Temp\\",
+        "\\AppData\\Local\\Programs\\"
+      ],
+      "requireOnlyExts": [".dll"],
+      "requireExtsAny": [".dll"],
+      "minFileCount": 1,
+      "maxFileCount": 3,
+      "requireFileNameRegex": "(?i)^([a-z]{2,8}\\d{2,8}|[a-z0-9]{6,14})\\.dll$",
+      "reason": "主结构：AppData\\Local\\…\\shared\\bin\\<local|tmp|…>\\ 目录内只有独立随机短名 DLL（常见仅 1 个），无配套 exe/配置；该套件核心落点",
+      "confidence": 98,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": ["T1036", "T1574.001"],
+      "score": 98
+    },
+    {
+      "id": "folder.appdata.local.sideload_bundle",
+      "name": "AppData\\Local 一级子目录白加黑组件包",
+      "severity": "high",
+      "enabled": true,
+      "immediateUnderContains": "\\appdata\\local",
+      "maxFileCount": 8,
+      "minFileCount": 3,
+      "maxSubdirCount": 2,
+      "requireExtsAll": [".dll", ".exe"],
+      "requireExtsAny": [".sfx", ".dat"],
+      "requireOnlyExts": [".dll", ".exe", ".sfx", ".dat"],
+      "minUnsignedPe": 1,
+      "whitelistDirNames": [
+        "Microsoft", "Packages", "Google", "Mozilla", "Temp", "Temporary Internet Files",
+        "NVIDIA", "NVIDIA Corporation", "AMD", "Discord", "Steam", "Epic Games", "Zoom",
+        "Tencent", "NetEase", "D3DSCache", "VirtualStore", "ConnectedDevicesPlatform",
+        "Comms", "Diagnostics", "DWrite", "IconCache", "OneDrive", "Publishers",
+        "CrashDumps", "CEF", "SquirrelTemp", "pip", "cache", "Cache", "ElevatedDiagnostics"
+      ],
+      "reason": "Users\\*\\AppData\\Local 根下独立文件夹内 ≤8 个文件，且为 dll+exe+(sfx|dat) 组合并含未签名 PE（CloudAdapter/AnyViz 等白加黑常见落地形态）",
+      "confidence": 85,
+      "fpRisk": "medium",
+      "attackStage": "persistence",
+      "mitre": ["T1574.002", "T1547.001"],
+      "score": 88
+    },
+    {
+      "id": "folder.sideload.generic_unsigned",
+      "name": "可疑目录白加黑：含未签名 PE（通用）",
+      "severity": "medium",
+      "enabled": true,
+      "immediateUnderContainsAny": [
+        "\\program files", "\\program files (x86)", "\\programdata",
+        "\\appdata\\local", "\\appdata\\roaming"
+      ],
+      "maxFileCount": 8,
+      "minFileCount": 2,
+      "maxSubdirCount": 2,
+      "requireExtsAll": [".dll"],
+      "minUnsignedPe": 1,
+      "whitelistDirNames": [
+        "Microsoft", "Windows", "Common Files", "Internet Explorer",
+        "Google", "Mozilla", "NVIDIA", "NVIDIA Corporation", "AMD",
+        "Intel", "Realtek", "Broadcom", "Qualcomm",
+        "Discord", "Steam", "Epic Games", "Zoom", "Tencent", "NetEase",
+        "Temp", "Cache", "Logs", "Log"
+      ],
+      "reason": "Program Files/ProgramData/AppData 一级子目录内含未签名 DLL，目录名未知软件（2-8 个文件），白加黑落地通用形态；仅校验一级子目录，不递归子层",
+      "confidence": 65,
+      "fpRisk": "medium",
+      "attackStage": "persistence",
+      "mitre": ["T1574.002"],
+      "score": 65
+    },
+    {
+      "id": "folder.embedded_python.runtime_kit",
+      "name": "嵌入式Python精简运行时套件(app-*)",
+      "severity": "high",
+      "enabled": true,
+      "dirNameRegex": "(?i)^app-\\d",
+      "maxFileCount": 6,
+      "minFileCount": 3,
+      "requireExtsAny": [".dll", ".exe", ".pyd"],
+      "requireFileNameRegexAll": [
+        "(?i)^wefault\\.exe$",
+        "(?i)^python3(\\d+)?\\.dll$"
+      ],
+      "reason": "app-<版本> 目录内文件很少（≤6），同时含 wefault.exe 与 python3*.dll（可含 _ctypes.pyd/libffi/vcruntime）；目录名不限 python，结构优先",
+      "confidence": 94,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": ["T1059.006", "T1036.005"],
+      "score": 94
+    },
+    {
+      "id": "folder.embedded_python.drop_root",
+      "name": "嵌入式Python落盘根(wefault+pyc)",
+      "severity": "high",
+      "enabled": true,
+      "immediateUnderContainsAny": [
+        "\\programdata",
+        "\\users\\public",
+        "\\appdata\\local",
+        "\\appdata\\roaming"
+      ],
+      "maxFileCount": 12,
+      "maxSubdirCount": 4,
+      "minFileCount": 2,
+      "requireExtsAll": [".exe", ".pyc"],
+      "requireFileNameRegex": "(?i)^wefault\\.exe$",
+      "reason": "落盘根目录同时有 wefault.exe 与 *.pyc（旁路 app-* 运行时）；不依赖目录名是否叫 python",
+      "confidence": 91,
+      "fpRisk": "low",
+      "attackStage": "execution",
+      "mitre": ["T1059.006", "T1036.005"],
+      "score": 91
+    },
+    {
+      "id": "folder.appdata.roaming.exe_dll_unsigned",
+      "name": "AppData\\Roaming子目录仅exe+未签dll",
+      "severity": "high",
+      "enabled": true,
+      "immediateUnderContains": "\\appdata\\roaming",
+      "minFileCount": 2,
+      "maxFileCount": 2,
+      "maxSubdirCount": 0,
+      "requireExtsAll": [".exe", ".dll"],
+      "requireOnlyExts": [".exe", ".dll"],
+      "requireUnsignedExts": [".dll"],
+      "reason": "AppData\\Roaming 一级子目录内恰好 exe+dll 两文件且 dll 明确未签名（强特征落地；目录名不加白名单，防伪装规避）",
+      "confidence": 90,
+      "fpRisk": "medium",
+      "attackStage": "persistence",
+      "mitre": ["T1574.002", "T1036"],
+      "score": 88
+    }
+  ],
+  "sizeBuckets": [
+    {
+      "label": "< 10KB",
+      "min": 0,
+      "max": 10240
+    },
+    {
+      "label": "10KB-100KB",
+      "min": 10240,
+      "max": 102400
+    },
+    {
+      "label": "100KB-1MB",
+      "min": 102400,
+      "max": 1048576
+    },
+    {
+      "label": "1MB-10MB",
+      "min": 1048576,
+      "max": 10485760
+    },
+    {
+      "label": "10MB-100MB",
+      "min": 10485760,
+      "max": 104857600
+    },
+    {
+      "label": "100MB-500MB",
+      "min": 104857600,
+      "max": 524288000
+    },
+    {
+      "label": "> 500MB",
+      "min": 524288000,
+      "max": -1
+    }
+  ],
+  "interestingFolders": {
+    "startup": [
+      "\\Startup\\",
+      "\\Programs\\Startup\\"
+    ],
+    "temp": [
+      "\\Temp\\",
+      "\\Temporary Internet Files\\"
+    ],
+    "download": [
+      "\\Downloads\\",
+      "\\Download\\"
+    ],
+    "browserData": [
+      "\\AppData\\Local\\Google\\Chrome\\",
+      "\\AppData\\Local\\Microsoft\\Edge\\",
+      "\\AppData\\Roaming\\Mozilla\\Firefox\\"
+    ],
+    "ssh": [
+      "\\.ssh\\"
+    ],
+    "vpn": [
+      "\\AppData\\Roaming\\OpenVPN\\",
+      "\\ProgramData\\WireGuard\\"
+    ],
+    "remoteAccess": [
+      "\\AppData\\Roaming\\AnyDesk\\",
+      "\\AppData\\Roaming\\TeamViewer\\",
+      "\\AppData\\Local\\rustdesk\\"
+    ],
+    "recycleBin": [
+      "\\$Recycle.Bin\\"
+    ],
+    "driversDrop": [
+      "\\Drivers\\",
+      "drivers.dat"
+    ]
+  }
+}

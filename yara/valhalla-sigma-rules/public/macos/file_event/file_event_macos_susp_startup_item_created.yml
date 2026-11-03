@@ -1,0 +1,44 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Startup Item File Created - MacOS
+id: dfe8b941-4e54-4242-b674-6b613d521962
+status: test
+description: |
+    Detects the creation of a startup item plist file, that automatically get executed at boot initialization to establish persistence.
+    Adversaries may use startup items automatically executed at boot initialization to establish persistence.
+    Startup items execute during the final phase of the boot process and contain shell scripts or other executable files along with configuration information used by the system to determine the execution order for all startup items.
+references:
+    - https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1037.005/T1037.005.md
+    - https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/StartupItems.html
+date: "2020-10-14"
+modified: "2024-08-11"
+author: Alejandro Ortuno, oscd.community
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: macos
+detection:
+    condition: selection
+    selection:
+        TargetFilename|endswith: .plist
+        TargetFilename|startswith:
+            - /Library/StartupItems/
+            - /System/Library/StartupItems
+falsepositives:
+    - Legitimate administration activities
+level: low
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1037.005
+customer: 'demo'

@@ -1,0 +1,832 @@
+{
+  "version": 1,
+  "source": "https://solarert.com/ransomdb",
+  "source_api": "https://admin.solarert.com/api/ransomdb/",
+  "updated": "2026-10-20",
+  "family_count": 47,
+  "ambiguous_extensions": [
+    ".001",
+    ".2700",
+    ".360",
+    ".520",
+    ".888",
+    ".air",
+    ".ako",
+    ".bec",
+    ".eg",
+    ".encrypted",
+    ".fog",
+    ".lo",
+    ".lock",
+    ".locked",
+    ".lr",
+    ".lvt",
+    ".mkp",
+    ".nan",
+    ".nz",
+    ".piz",
+    ".rox",
+    ".rs",
+    ".rw2",
+    ".rx",
+    ".src",
+    ".ths",
+    ".wax",
+    ".wex",
+    ".wxr",
+    ".wxx",
+    ".xor"
+  ],
+  "thresholds": {
+    "specific_min_count": 8,
+    "ambiguous_min_count": 50,
+    "critical_min_count": 120,
+    "min_unique_dirs": 8
+  },
+  "families": [
+    {
+      "id": "46",
+      "slug": "blackout-46",
+      "name": "Blackout",
+      "extensions": [
+        ".auzw7lssp",
+        ".blacked"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2024-02-26",
+      "decrypt": "",
+      "description": "暂无信息",
+      "url": "https://solarert.com/ransomdb/blackout-46"
+    },
+    {
+      "id": "43",
+      "slug": "deadlock-43",
+      "name": "Deadlock",
+      "extensions": [
+        ".dlock"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2025-07-14",
+      "decrypt": "",
+      "description": "暂无信息",
+      "url": "https://solarert.com/ransomdb/deadlock-43"
+    },
+    {
+      "id": "42",
+      "slug": "taps-42",
+      "name": "Taps",
+      "extensions": [
+        ".taps",
+        ".poin"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2021-06-01",
+      "decrypt": "",
+      "description": "暂无信息",
+      "url": "https://solarert.com/ransomdb/taps-42"
+    },
+    {
+      "id": "41",
+      "slug": "888-41",
+      "name": "888",
+      "extensions": [
+        ".888"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2024-10-01",
+      "decrypt": "",
+      "description": "暂无信息",
+      "url": "https://solarert.com/ransomdb/888-41"
+    },
+    {
+      "id": "40",
+      "slug": "tellyouthepass-40",
+      "name": "Tellyouthepass",
+      "extensions": [
+        ".locked",
+        ".sorry",
+        ".sorry1",
+        ".ths"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2019-03-08",
+      "decrypt": "",
+      "description": "“TellYouThePass”勒索病毒家族是一种勒索软件，最早于2019年3月出现，。由于其背后始终是由单一黑客组织运营，因此该黑客组织 也同样被称为TellYouThePass。根据现有线索推断，该组织为国内黑客团伙，其惯于在高危漏洞被披露后的短时间内利用漏洞修补的时间差，对暴露于网络上并存在有漏洞的机器发起攻击。其曾经使用过的代表性漏洞有：“永恒之蓝”系列漏洞、WebLogic应用漏洞、Lo",
+      "url": "https://solarert.com/ransomdb/tellyouthepass-40"
+    },
+    {
+      "id": "35",
+      "slug": "live-35",
+      "name": "Live",
+      "extensions": [
+        ".live"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2023-12-13",
+      "decrypt": "",
+      "description": "LIVE勒索病毒家族最早被曝光是在23年12月份，360的论坛发布了该家族的被加密样本，其加密特征为文件名后直接添加LIVE后缀，这时候还是该家族勒索病毒的1.0版本。之后该家族还发布了1.5版本和2.0版本，其发布版本均已被我司破解，解密工具已发布在微信公众号上，可以关注微信公众号获取解密工具。",
+      "url": "https://solarert.com/ransomdb/live-35"
+    },
+    {
+      "id": "33",
+      "slug": "weaxor-33",
+      "name": "Weaxor",
+      "extensions": [
+        ".rx",
+        ".rox",
+        ".wax",
+        ".001",
+        ".wexor",
+        ".wxr",
+        ".wex",
+        ".xor",
+        ".wxx",
+        ".weax",
+        ".roxaew",
+        ".weaxor"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2024-11-01",
+      "decrypt": "",
+      "description": "Weaxor勒索病毒是一种恶意软件，它通过加密受害者的文件来进行勒索。这种病毒通常会感染计算机系统，加密用户的重要数据文件，并要求支付赎金以获取解密密钥。Weaox勒索病毒的加密算法强度较高，使得解密文件变得非常困难。加密的后缀.rox，勒索信名字为RECOVERY INFO.txt。",
+      "url": "https://solarert.com/ransomdb/weaxor-33"
+    },
+    {
+      "id": "32",
+      "slug": "rast-gang-32",
+      "name": "Rast Gang",
+      "extensions": [
+        ".wstop",
+        ".sstop",
+        ".peng",
+        ".wman"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2023-12-01",
+      "decrypt": "",
+      "description": "Rast Gang勒索病毒是由Rust语言编写的一款勒索软件，自2023年12月起在国内活跃，主要针对政企单位实施攻击。截至2024年9月，该病毒已迭代至第三个版本。攻击手法多采用暴力破解与Nday组合的方式进行入侵。",
+      "url": "https://solarert.com/ransomdb/rast-gang-32"
+    },
+    {
+      "id": "30",
+      "slug": "dispossessor-30",
+      "name": "Dispossessor",
+      "extensions": [
+        ".nan"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2020-02-03",
+      "decrypt": "",
+      "description": "**Dispossessor勒索组织，又称Radar勒索组织，是一个新兴且活跃的勒索软件团伙，自2023年8月以来迅速扩展。该组织主要攻击中小企业，涉及医疗、教育、金融和交通等多个行业，目标遍布全球。他们利用受害者网络中的安全漏洞，例如薄弱的密码和缺乏多因素身份验证，成功入侵网络，提升权限并部署勒索软件锁定数据。随后，Dispossessor以公开泄露数据为要挟，迫使受害者支付赎金，以此增加心理压",
+      "url": "https://solarert.com/ransomdb/dispossessor-30"
+    },
+    {
+      "id": "29",
+      "slug": "medusa-29",
+      "name": "medusa",
+      "extensions": [
+        ".medusa"
+      ],
+      "activity": "低活跃",
+      "risk": "高",
+      "first_seen": "2023-01-11",
+      "decrypt": "",
+      "description": "Medusa勒索病毒是一种由犯罪分子操作的恶意软件，它通过加密受害者的文件来锁定系统，并要求支付赎金以换取解密密钥。这种勒索软件通常会在加密文件后附加特定的文件扩展名，并留下勒索信，指示受害者如何支付赎金。\r\n\r\nMedusa 管理着一个勒索软件即服务 （RaaS） 操作，该操作采用利润分享模式，其中附属公司获得很大一部分赎金，而运营商保留较小的分成。\r\n\r\nMedusa 以攻击医疗保健、制造和教",
+      "url": "https://solarert.com/ransomdb/medusa-29"
+    },
+    {
+      "id": "28",
+      "slug": "ransomhub-28",
+      "name": "Ransomhub",
+      "extensions": [
+        ".f910ba"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2024-02-10",
+      "decrypt": "",
+      "description": "该组织于 2024 年 2 月中旬出现，采用勒索软件即服务（RaaS）模式运营，截至2024年10月14日，该组织所使用的信息发布站点共有392名受害者信息，实际受害者数量会更多，这些受害者涉及水和废水、信息技术、政府服务和设施、医疗保健和公共卫生、紧急服务、食品和农业、金融服务、商业设施、关键制造、运输和通信关键基础设施部门。\r\n同时，Ransomhub疑似是 Knight 勒索软件的更名，Kn",
+      "url": "https://solarert.com/ransomdb/ransomhub-28"
+    },
+    {
+      "id": "27",
+      "slug": "makop-27",
+      "name": "Makop",
+      "extensions": [
+        ".mkp",
+        ".makop",
+        ".air",
+        ".decrypt"
+      ],
+      "activity": "高活跃",
+      "risk": "高",
+      "first_seen": "2021-01-01",
+      "decrypt": "",
+      "description": "Makop 勒索软件最初是由一个使用“Makop”句柄的个人于 2020 年 1 月在暗网论坛上发布的广告。宣布推出Makop 的勒索软件即服务 (“RaaS”) 计划，MAKOP 勒索软件作为 PHOBOS 变种的一个分支，主要针对全球各行各业的组织。",
+      "url": "https://solarert.com/ransomdb/makop-27"
+    },
+    {
+      "id": "26",
+      "slug": "underground-26",
+      "name": "Underground",
+      "extensions": [
+        ".勒索软件会加密文件",
+        ".但它不会更改或附加文件扩展名。"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2023-05-30",
+      "decrypt": "",
+      "description": "第一个 Underground 勒索软件样本于 2023 年 7 月初在一个公开可用的文件扫描站点上首次观察到。这与 2023 年 7 月 13 日在其数据泄露网站上发布的第一个受害者的时间大致吻合。\r\n与大多数勒索软件一样，这种勒索软件会加密受害者 Windows 计算机上的文件，并要求赎金才能通过丢弃的赎金票据解密它们。\r\n关于 Underground 的真实身份，有一些相互矛盾的报告和理论在",
+      "url": "https://solarert.com/ransomdb/underground-26"
+    },
+    {
+      "id": "25",
+      "slug": "babuk-25",
+      "name": "Babuk",
+      "extensions": [
+        ".babyk"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2020-10-25",
+      "decrypt": "",
+      "description": "Babuk勒索软件家族被发现于2020年初，通过钓鱼邮件和漏洞利用进行传播。采用“威胁曝光企业数据+加密数据勒索”双重勒索策略。开发针对Windows、Linux和VMware的攻击载荷。7月，Babuk勒索软件的部分数据文件被一位组织成员泄露，泄露的源代码还包含解密密钥，此后研究人员使用这些密钥为某些特定版本创建免费解密工具。泄露的内容中包含创建勒索软件的所有内容。10月，新版本使用了Pro",
+      "url": "https://solarert.com/ransomdb/babuk-25"
+    },
+    {
+      "id": "24",
+      "slug": "fog-24",
+      "name": "Fog",
+      "extensions": [
+        ".flocked",
+        ".fog"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2021-12-20",
+      "decrypt": "",
+      "description": "**FOG勒索病毒是一种基于STOP/DJVU勒索软件家族的变种，最早于2021年被检测到，主要通过被盗的VPN凭证来入侵网络。FOG起初针对教育和娱乐行业展开攻击，但2024年开始扩大目标，逐渐向金融行业等更高利润的领域发展。该家族的攻击特点是通过“哈希传递” (pass-the-hash) 攻击及暴力破解等手段迅速提升权限，从而获得系统的管理控制权。**\r\n**在取得访问权限后，FOG会禁用关",
+      "url": "https://solarert.com/ransomdb/fog-24"
+    },
+    {
+      "id": "23",
+      "slug": "akira-23",
+      "name": "Akira",
+      "extensions": [
+        ".nan"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2023-04-12",
+      "decrypt": "",
+      "description": "Akira成立于 2023 年 3 月。该组织主要针对美国和加拿大的组织，涉及医疗保健、金融、教育和制造业等行业。\r\n\r\n这个新的Akira团伙不应与2017年活跃的同名勒索软件混淆，后者可能并无关联，尽管两个团伙都使用.akira作为加密文件扩展名。\r\n研究人员很快发现其文件加密程序在代码上与已解散的Conti团伙的勒索软件有很多相似之处。不过Conti的加密程序源代码已经泄露，所以相似性并不一",
+      "url": "https://solarert.com/ransomdb/akira-23"
+    },
+    {
+      "id": "21",
+      "slug": "phobos-21",
+      "name": "Phobos",
+      "extensions": [
+        ".phobos",
+        ".jopanaxye",
+        ".2700",
+        ".faust",
+        ".elbie",
+        ".devos",
+        ".colony96",
+        ".mkp"
+      ],
+      "activity": "低活跃",
+      "risk": "高",
+      "first_seen": "2019-01-01",
+      "decrypt": "",
+      "description": "**Phobos勒索软件家族从2019年初期开始在全球流行，并持续更新以致出现了大量变种。通过RDP暴力破解和钓鱼邮件等方式扩散到企业与个人用户中，感染数量持续增长。Phobos是勒索软件家族中新兴的一个大家族，有时被也称为Phobos NextGen和Phobos NotDharma，许多人认为此勒索软件是Dharma勒索软件家族（也称为CrySis）的迭代产品或变种。Phobos勒索软件家族与",
+      "url": "https://solarert.com/ransomdb/phobos-21"
+    },
+    {
+      "id": "20",
+      "slug": "moneyistime-20",
+      "name": "Moneyistime",
+      "extensions": [
+        ".moneyistime",
+        ".timesungroup",
+        ".njunju",
+        ".darkhack"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2024-05-01",
+      "decrypt": "",
+      "description": "MoneyIsTime 是一种新发现的勒索软件，这种勒索软件与 Beast 和 LostInfo 勒索软件变体具有相同的特征。勒索软件攻击计算机系统，并加密所有文件。加密文件中添加一串随机字符和“.moneyistime”扩展名，无法再正常执行,通常该家族会以受害公司名称作为加密后缀结尾，该家族最早2024年5月出现，一开始的后缀为moneyistime，因此360将其命名为Moneyistime",
+      "url": "https://solarert.com/ransomdb/moneyistime-20"
+    },
+    {
+      "id": "19",
+      "slug": "medusalocker-19",
+      "name": "MedusaLocker",
+      "extensions": [
+        ".1btc",
+        ".datalock",
+        ".lr",
+        ".ako",
+        ".readtext84",
+        ".marlock01",
+        ".eg",
+        ".deadnet26",
+        ".marlock02",
+        ".empg296lck",
+        ".decrypme",
+        ".marlock08",
+        ".fartinggiraffeattacks",
+        ".encrypted",
+        ".marlock011",
+        ".filesencrypted",
+        ".faratak",
+        ".marlock13",
+        ".net1",
+        ".fileslock",
+        ".matlock20",
+        ".nz",
+        ".fileslocked",
+        ".marlock25",
+        ".readinstructions",
+        ".himynameisransom",
+        ".mylock",
+        ".readtheinstructions",
+        ".itlock20",
+        ".nt_lock20",
+        ".readinstruction",
+        ".jpz.nz",
+        ".perfection",
+        ".key1",
+        ".vindizelpux",
+        ".lock",
+        ".rs",
+        ".abstergo",
+        ".lockdata7",
+        ".readtex",
+        ".bec",
+        ".locker16",
+        ".stopflies",
+        ".lock8",
+        ".lo"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2021-11-03",
+      "decrypt": "",
+      "description": "MedusaLocker 参与者主要依靠远程桌面协议 （RDP） 中的漏洞来访问受害者的网络。MedusaLocker 演员对受害者的数据进行加密，并在包含加密文件的每个文件夹中留下带有通信说明的赎金票据。该说明指示受害者向特定的比特币钱包地址提供勒索软件付款。MedusaLocker 似乎根据观察到的赎金支付拆分作为勒索软件即服务 （RaaS） 模型运行。典型的 RaaS 模型涉及勒索软件开发人",
+      "url": "https://solarert.com/ransomdb/medusalocker-19"
+    },
+    {
+      "id": "14",
+      "slug": "dragonforce-14",
+      "name": "DragonForce",
+      "extensions": [
+        ".dragonforce_encrypted"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2023-12-13",
+      "decrypt": "",
+      "description": "暂未查询",
+      "url": "https://solarert.com/ransomdb/dragonforce-14"
+    },
+    {
+      "id": "13",
+      "slug": "devicdata-13",
+      "name": "DevicData",
+      "extensions": [
+        ".devicdata-p",
+        ".devicdata-d",
+        ".temp",
+        ".devicdata-z",
+        ".devicdata-c"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2023-01-01",
+      "decrypt": "",
+      "description": "勒索病毒家族 DevicData 的最新变种，命名为 .DevicData-P-a2a9e9cb 勒索病毒。自2023年1月首次被发现以来，DevicData 家族一直对多个高价值目标展开攻击，包括企业用户、医疗机构和教育机构。这些目标通常持有大量敏感数据，这正是DevicData 选择它们进行攻击的主要原因。随着不断的更新和演进，DevicData 勒索病毒逐渐成为攻击这些特定目标的首选工具。",
+      "url": "https://solarert.com/ransomdb/devicdata-13"
+    },
+    {
+      "id": "6",
+      "slug": "beijingcrypt-6",
+      "name": "BeijingCrypt",
+      "extensions": [
+        ".bejing",
+        ".360",
+        ".halo",
+        ".file",
+        ".520",
+        ".genesis",
+        ".baxia",
+        ".bixi"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2020-01-01",
+      "decrypt": "",
+      "description": "本文主要介绍为BeijngCrypt勒索病毒家族的最新变种，即.halo勒索病毒，该家族首次被发现时间为2020年。曾在2023全球勒索软件研究报告中，以8.39%的占比位列国内第五大活跃勒索病毒家族。从2020年发展至今，期间存在多次变种，这几年间一直保持着每年更新1-2次升级变种的频率，主要加密后缀有：BeJing、360、.halo、file、520、genesis、baxia；\r\n![](",
+      "url": "https://solarert.com/ransomdb/beijingcrypt-6"
+    },
+    {
+      "id": "3",
+      "slug": "mallox-3",
+      "name": "Mallox",
+      "extensions": [
+        ".<file",
+        ".name>.<file",
+        ".extension>.mallox"
+      ],
+      "activity": "低活跃",
+      "risk": "高",
+      "first_seen": "2022-11-04",
+      "decrypt": "",
+      "description": "**Mallox 勒索软件，也称为 FARGO 或 TargetCompany，首次于 2021 年 5 月出现。最初，Mallox 勒索软件通过利用未受保护的 Microsoft SQL（MS SQL）服务器来针对 Microsoft Windows 系统。此后，它已演变为影响 Linux 系统和 VMware ESXi 环境。近年来，Mallox家族显著扩大了其业务。该集团已转型为勒索软件即服",
+      "url": "https://solarert.com/ransomdb/mallox-3"
+    },
+    {
+      "id": "2",
+      "slug": "lockbit3-0-2",
+      "name": "LockBit3.0",
+      "extensions": [
+        ".abcd",
+        ".lockbit",
+        ".7ec3rqvr",
+        ".{}.hljknskoq或{}.19mqzqzos等随机形式9位随机字符"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2019-09-01",
+      "decrypt": "",
+      "description": "LockBit 3.0（也称为 LockBit Black）是LockBit 勒索软件的新变种。前身LockBit最早出现在2019年，安全研究人员一度将其称为ABCD（因为早期变种将加密文件的扩展名改为.abcd）。\r\n      2021年，发布Lockbit2.0版本，也称Lockbit RED，加入了双重勒索攻击、删除磁盘卷影和日志文件等新功能。同时还内置了一款名为StealBit的数据窃",
+      "url": "https://solarert.com/ransomdb/lockbit3-0-2"
+    },
+    {
+      "id": "44",
+      "slug": "mimic-44",
+      "name": "Mimic",
+      "extensions": [
+        ".demetro9990@cock.li"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2026-03-02",
+      "decrypt": "",
+      "description": "暂无信息",
+      "url": "https://solarert.com/ransomdb/mimic-44"
+    },
+    {
+      "id": "34",
+      "slug": "0mega-34",
+      "name": "0Mega",
+      "extensions": [
+        ".omega"
+      ],
+      "activity": "高活跃",
+      "risk": "中",
+      "first_seen": "2022-07-14",
+      "decrypt": "",
+      "description": "“0mega”是一项新的勒索软件操作，于2022年5月发起，针对全球组织进行双重勒索攻击，并提出数百万美元的赎金要求。0mega勒索软件会将.0mega扩展名附加到加密文件的名称中，并创建名为DECRYPT-FILES.txt的勒索记录。这些勒索记录是针对每个受害者定制的，通常包含公司名称以及对攻击中窃取的不同类型数据的描述。",
+      "url": "https://solarert.com/ransomdb/0mega-34"
+    },
+    {
+      "id": "31",
+      "slug": "3am-31",
+      "name": "3Am",
+      "extensions": [
+        ".threeamtime"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2023-08-04",
+      "decrypt": "",
+      "description": "3AM勒索病毒，也被称为ThreeAM，是一种新兴的勒索软件，首次报告于2023年9月。这种勒索软件的特点在于其创新的勒索策略，它通过与受害者的社交网络联系，传播有关数据泄露的信息。3AM勒索病毒与Conti集团和Royal勒索软件团伙等臭名昭著的网络犯罪组织有着密切的联系。这个组织在攻击中使用的技术、基础设施和通信渠道与Conti集团有显著的重叠。\r\n\r\n3AM勒索病毒的一个显著特点是它们在社交",
+      "url": "https://solarert.com/ransomdb/3am-31"
+    },
+    {
+      "id": "22",
+      "slug": "ransomhouse-22",
+      "name": "RansomHouse",
+      "extensions": [
+        ".nan"
+      ],
+      "activity": "低活跃",
+      "risk": "中",
+      "first_seen": "2021-06-01",
+      "decrypt": "",
+      "description": "RansomHouse团伙首次出现在2021年底，并通过积极部署勒索软件变体来攻击目标网络，其采用Ransomware-as-a-Service（RaaS）即勒索病毒即服务模式。\r\n该团伙会要求受害者支付赎金去解密文件并且还会在其博客公开发布未支付赎金的受害者的数据。\r\n他们的策略、技术和程序（TTP）有着成熟而复杂的执行水平，利用内容交付网络（CDN）服务器进行渗透，并利用基于Tor的聊天室与受",
+      "url": "https://solarert.com/ransomdb/ransomhouse-22"
+    },
+    {
+      "id": "63",
+      "slug": "盗版lb3-1792442584016708154",
+      "name": "盗版lb3",
+      "extensions": [
+        ".nxfcpe5"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-11-22",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/盗版lb3-1792442584016708154"
+    },
+    {
+      "id": "62",
+      "slug": "rast-gang-1792441810611028421",
+      "name": "Rast gang",
+      "extensions": [
+        ".wstop",
+        ".sstop",
+        ".peng",
+        ".wman"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-02-14",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/rast-gang-1792441810611028421"
+    },
+    {
+      "id": "61",
+      "slug": "lvt-1792441463356861769",
+      "name": "Lvt",
+      "extensions": [
+        ".lvt"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-02-19",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/lvt-1792441463356861769"
+    },
+    {
+      "id": "60",
+      "slug": "krypt-1792440736622468204",
+      "name": "Krypt",
+      "extensions": [
+        ".rw2"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-12-26",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/krypt-1792440736622468204"
+    },
+    {
+      "id": "59",
+      "slug": "beast-helper-1792440311969574029",
+      "name": "Beast-Helper",
+      "extensions": [
+        ".{guid}.helper"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-11-28",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/beast-helper-1792440311969574029"
+    },
+    {
+      "id": "58",
+      "slug": "kalxat-1792440077673814186",
+      "name": "Kalxat",
+      "extensions": [
+        ".kalxat"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-05-21",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/kalxat-1792440077673814186"
+    },
+    {
+      "id": "56",
+      "slug": "restorebackup-1792439285521276689",
+      "name": "RestoreBackup",
+      "extensions": [
+        ".src"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-11-21",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/restorebackup-1792439285521276689"
+    },
+    {
+      "id": "55",
+      "slug": "makop-air-1792438535974589736",
+      "name": "Makop-AIR",
+      "extensions": [
+        ".air"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-04-22",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/makop-air-1792438535974589736"
+    },
+    {
+      "id": "54",
+      "slug": "backups-1792437586123080716",
+      "name": "Backups",
+      "extensions": [
+        ".backups"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-10-14",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/backups-1792437586123080716"
+    },
+    {
+      "id": "53",
+      "slug": "lockxx-1792398032514683278",
+      "name": "Lockxx",
+      "extensions": [
+        ".lockxx",
+        ".a093cf77"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-11-05",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/lockxx-1792398032514683278"
+    },
+    {
+      "id": "52",
+      "slug": "snowsoul-1792397178063044554",
+      "name": "SnowSoul",
+      "extensions": [
+        ".snowsou"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-08-25",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/snowsoul-1792397178063044554"
+    },
+    {
+      "id": "51",
+      "slug": "goddamn-1792396546618349851",
+      "name": "GodDamn",
+      "extensions": [
+        ".god8damn"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2026-04-17",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/goddamn-1792396546618349851"
+    },
+    {
+      "id": "50",
+      "slug": "piztoreco-1791968078013370638",
+      "name": "Piztoreco",
+      "extensions": [
+        ".piz"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2026-04-06",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/piztoreco-1791968078013370638"
+    },
+    {
+      "id": "49",
+      "slug": "beast-1791705958798263467",
+      "name": "Beast",
+      "extensions": [
+        ".beast",
+        ".moneyistime",
+        ".darkhack",
+        ".mkp",
+        ".backups",
+        ".helper",
+        ".reco",
+        ".onechance",
+        ".nezha",
+        ".unlck4u"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2022-03-21",
+      "decrypt": "",
+      "description": "Beast勒索软件（又名Monster）自2022年3月作为勒索软件即服务（RaaS）运营，通过俄语论坛招募合作伙伴，初期以Delphi开发后转向C/Go语言，其显著特点是利用地理规避策略（跳过CIS国家设备）降低执法风险。该恶意软件通过钓鱼、漏洞利用及双重勒索入侵，入侵后横向移动并加密文件，使用ChaCha20算法加密数据并添加唯一扩展名（如.{ID}.BEASET），同时禁用安全进程（如agntsvc.exe）、清空回收站、注册表自启动实现持久化。2024年新增离线构建器支持跨平台攻击（Windows/Linux/ESXi等），加密文件后生成勒索信（readme.txt），以泄露数据威胁24小时内联系指定邮箱（如edatax@airmail.cc）。逆向分析揭示其通过系统语言检测避开特定区域，通信隐匿于iplogger.co等平台，综合技术手段对多系统环境构成严重数据威胁。",
+      "url": "https://solarert.com/ransomdb/beast-1791705958798263467"
+    },
+    {
+      "id": "47",
+      "slug": "brzcrypt-1789540212727878934",
+      "name": "BrzCrypt",
+      "extensions": [
+        ".flex"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2026-06-24",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/brzcrypt-1789540212727878934"
+    },
+    {
+      "id": "36",
+      "slug": "blacksuit-36",
+      "name": "BlackSuit",
+      "extensions": [
+        ".blacksuit"
+      ],
+      "activity": "高活跃",
+      "risk": "高",
+      "first_seen": "2023-06-12",
+      "decrypt": "",
+      "description": "BlackSuit 是一种加密文件的恶意软件，使其所有者无法访问它们。它旨在攻击 Windows 和 Linux 系统。除了加密数据，BlackSuit 还会更改桌面背景并创建名为“README.BlackSuit.txt”的赎金票据。此外，它还更改了文件名并将“.blacksuit”扩展名添加到原始文件名中。\r\n该病毒主要目标为有价值的相关系统，攻击者在获取内网权限后会不断进行横向，最终选定有价",
+      "url": "https://solarert.com/ransomdb/blacksuit-36"
+    },
+    {
+      "id": "64",
+      "slug": "medusalocker-1792443073193217067",
+      "name": "Medusalocker",
+      "extensions": [
+        ".1btc",
+        ".datalock",
+        ".lr",
+        ".ako",
+        ".readtext84",
+        ".marlock01",
+        ".eg",
+        ".deadnet26",
+        ".marlock02",
+        ".empg296lck",
+        ".decrypme",
+        ".marlock08",
+        ".fartinggiraffeattacks",
+        ".encrypted",
+        ".marlock011",
+        ".filesencrypted",
+        ".faratak",
+        ".marlock13",
+        ".net1"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2024-11-09",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/medusalocker-1792443073193217067"
+    },
+    {
+      "id": "57",
+      "slug": "盗版mallox-1792439744130265982",
+      "name": "盗版Mallox",
+      "extensions": [
+        ".mallox"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2025-07-07",
+      "decrypt": "",
+      "description": "",
+      "url": "https://solarert.com/ransomdb/盗版mallox-1792439744130265982"
+    },
+    {
+      "id": "48",
+      "slug": "redpipe-1791465096181810806",
+      "name": "REDPIPE",
+      "extensions": [
+        ".随机大小写英文",
+        ".数字组合9位字符"
+      ],
+      "activity": "高活跃",
+      "risk": "极高",
+      "first_seen": "2026-09-20",
+      "decrypt": "",
+      "description": "2026年10月初，Solar威胁情报中心监测到 REDPIPE 勒索组织活动，现有可见最早受害记录可追溯至2026年9月20日。结合当前掌握的攻击行为、暗网站点说明及受害者公布轨迹来看，REDPIPE 属于采用数据窃取与文件加密相结合方式实施攻击的双重勒索组织。该组织在入侵企业网络后，会窃取组织架构、财务资料、客户记录、内部邮件及其他具有价值的企业数据，同时对受害者系统中的文件实施加密，以数据可用性破坏和敏感数据公开泄露形成双重施压。REDPIPE 会在其暗网站点为受害者建立独立 Case ID，并设置赎金要求及公开倒计时；受害者在期限内付款后，该组织声称将删除所窃取数据并撤下相关页面，若拒绝付款或倒计时结束，则会将完整数据包公开发布。其暗网站点设置“Negotiating”“Paid”“Leaked”等状态，用于展示受害者处置进度并强化勒索压力。截至2026年10月7日，其站点共列出1",
+      "url": "https://solarert.com/ransomdb/redpipe-1791465096181810806"
+    }
+  ]
+}

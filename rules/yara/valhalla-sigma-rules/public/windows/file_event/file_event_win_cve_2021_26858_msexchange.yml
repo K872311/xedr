@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: CVE-2021-26858 Exchange Exploitation
+id: b06335b3-55ac-4b41-937e-16b7f5d57dfd
+status: test
+description: |
+    Detects possible successful exploitation for vulnerability described in CVE-2021-26858 by looking for
+    creation of non-standard files on disk by Exchange Server’s Unified Messaging service
+    which could indicate dropping web shells or other malicious content
+references:
+    - https://www.microsoft.com/security/blog/2021/03/02/hafnium-targeting-exchange-servers/
+date: "2021-03-03"
+modified: "2022-10-09"
+author: Bhabesh Raj
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection and not filter
+    filter:
+        TargetFilename|endswith:
+            - CacheCleanup.bin
+            - .txt
+            - .LOG
+            - .cfg
+            - cleanup.bin
+    selection:
+        Image|endswith: UMWorkerProcess.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.t1203
+    - attack.execution
+    - cve.2021-26858
+    - detection.emerging-threats
+customer: 'demo'

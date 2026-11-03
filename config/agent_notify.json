@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "min_severity": "high",
+  "webhook_url": "",
+  "feishu_webhook": "",
+  "dingtalk_webhook": "",
+  "dingtalk_secret": "",
+  "timeout_sec": 8
+}

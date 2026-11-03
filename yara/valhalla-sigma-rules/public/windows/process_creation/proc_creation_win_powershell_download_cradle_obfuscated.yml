@@ -1,0 +1,43 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Obfuscated PowerShell OneLiner Execution
+id: 44e24481-6202-4c62-9127-5a0ae8e3fe3d
+status: test
+description: Detects the execution of a specific OneLiner to download and execute powershell modules in memory.
+references:
+    - https://thedfirreport.com/2022/05/09/seo-poisoning-a-gootloader-story/
+    - https://gist.github.com/mgeeky/3b11169ab77a7de354f4111aa2f0df38
+date: "2022-05-09"
+modified: "2025-04-16"
+author: '@Kostastsale, TheDFIRReport'
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    condition: selection
+    selection:
+        CommandLine|contains|all:
+            - http://127.0.0.1
+            - '%{(IRM $_)}'
+            - Invoke
+        Image|endswith: \powershell.exe
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.execution
+    - attack.defense-impairment
+    - attack.t1059.001
+    - attack.t1685
+customer: 'demo'

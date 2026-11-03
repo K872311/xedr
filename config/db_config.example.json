@@ -1,0 +1,29 @@
+{
+  "enabled": false,
+  "host": "127.0.0.1",
+  "port": 3306,
+  "user": "forensic_app",
+  "password": "请设置独立强密码",
+  "database": "forensic_platform",
+  "charset": "utf8mb4",
+  "redis": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 6379,
+    "password": "",
+    "db": 0,
+    "key_prefix": "cnpc:"
+  },
+  "elasticsearch": {
+    "enabled": false,
+    "hosts": ["https://127.0.0.1:9200"],
+    "user": "elastic",
+    "password": "在此填写ES elastic用户密码",
+    "verify_certs": false,
+    "home": "",
+    "kibana_home": "",
+    "index_findings": "cnpc_findings",
+    "index_ioc": "cnpc_ioc",
+    "index_ip_ranges": "cnpc_ip_ranges"
+  }
+}

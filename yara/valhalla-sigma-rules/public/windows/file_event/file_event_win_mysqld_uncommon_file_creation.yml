@@ -1,0 +1,48 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Uncommon File Creation By Mysql Daemon Process
+id: c61daa90-3c1e-4f18-af62-8f288b5c9aaf
+status: test
+description: |
+    Detects the creation of files with scripting or executable extensions by Mysql daemon.
+    Which could be an indicator of "User Defined Functions" abuse to download malware.
+references:
+    - https://asec.ahnlab.com/en/58878/
+    - https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/honeypot-recon-mysql-malware-infection-via-user-defined-functions-udf/
+date: "2024-05-27"
+author: Joseph Kamau
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_event
+    product: windows
+detection:
+    condition: selection
+    selection:
+        Image|endswith:
+            - \mysqld.exe
+            - \mysqld-nt.exe
+        TargetFilename|endswith:
+            - .bat
+            - .dat
+            - .dll
+            - .exe
+            - .ps1
+            - .psm1
+            - .vbe
+            - .vbs
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+customer: 'demo'

@@ -1,0 +1,40 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Sysmon Driver Altitude Change
+id: 4916a35e-bfc4-47d0-8e25-a003d7067061
+status: test
+description: |
+    Detects changes in Sysmon driver altitude value.
+    If the Sysmon driver is configured to load at an altitude of another registered service, it will fail to load at boot.
+references:
+    - https://posts.specterops.io/shhmon-silencing-sysmon-via-driver-unload-682b5be57650
+    - https://youtu.be/zSihR3lTf7g
+date: "2022-07-28"
+modified: "2024-03-25"
+author: B.Talebi
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetObject|contains: \Services\
+        TargetObject|endswith: \Instances\Sysmon Instance\Altitude
+falsepositives:
+    - Legitimate driver altitude change to hide sysmon
+level: high
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+customer: 'demo'

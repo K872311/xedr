@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Access To Windows DPAPI Master Keys By Uncommon Applications
+id: 46612ae6-86be-4802-bc07-39b59feb1309
+status: test
+description: |
+    Detects file access requests to the the Windows Data Protection API Master keys by an uncommon application.
+    This can be a sign of credential stealing. Example case would be usage of mimikatz "dpapi::masterkey" function
+references:
+    - http://blog.harmj0y.net/redteaming/operational-guidance-for-offensive-user-dpapi-abuse/
+    - https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords
+date: "2022-10-17"
+modified: "2026-07-28"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: file_access
+    product: windows
+    definition: 'Requirements: Microsoft-Windows-Kernel-File ETW provider'
+detection:
+    condition: selection and not 1 of filter_main_*
+    filter_main_explorer:
+        Image: C:\Windows\explorer.exe
+    filter_main_system_folders:
+        Image|startswith:
+            - C:\Program Files\
+            - C:\Program Files (x86)\
+            - C:\Windows\system32\
+            - C:\Windows\SysWOW64\
+    selection:
+        FileName|contains:
+            - \Microsoft\Protect\S-1-5-18\
+            - \Microsoft\Protect\S-1-5-21-
+falsepositives:
+    - Unknown
+level: medium
+tags:
+    - attack.credential-access
+    - attack.t1555.004
+customer: 'demo'

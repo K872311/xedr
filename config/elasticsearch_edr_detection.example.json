@@ -1,0 +1,17 @@
+{
+  "elasticsearch": {
+    "enabled": true,
+    "hosts": ["https://127.0.0.1:9200"],
+    "user": "elastic",
+    "password": "请填写",
+    "verify_certs": false,
+    "index_findings": "cnpc_findings",
+    "index_ioc": "cnpc_ioc",
+    "index_edr_events": "cnpc_edr_events",
+    "index_edr_detection_rules": "cnpc_edr_detection_rules",
+    "edr_detection_enabled": true,
+    "edr_detection_interval_sec": 300,
+    "edr_detection_window_min": 15,
+    "edr_detection_rules_per_run": 24
+  }
+}

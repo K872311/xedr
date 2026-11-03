@@ -1,0 +1,50 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Python Image Load By Non-Python Process
+id: cbb56d62-4060-40f7-9466-d8aaf3123f83
+status: test
+description: |
+    Detects the image load of "Python Core" by a non-Python process. This might be indicative of a execution of executable that has been bundled from Python code.
+    Various tools like Py2Exe, PyInstaller, and cx_Freeze are used to bundle Python code into standalone executables.
+    Threat actors often use these tools to bundle malicious Python scripts into executables, sometimes to obfuscate the code or to bypass security measures.
+references:
+    - https://www.py2exe.org/
+    - https://unit42.paloaltonetworks.com/unit-42-technical-analysis-seaduke/
+date: "2020-05-03"
+modified: "2025-08-18"
+author: Patrick St. John, OTR (Open Threat Research)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: image_load
+    product: windows
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_generic:
+        - Image|contains: Python
+        - Image|startswith:
+            - C:\Program Files\
+            - C:\Program Files (x86)\
+            - C:\ProgramData\Anaconda3\
+    filter_optional_null_image:
+        Image: []
+    selection:
+        Description: Python Core
+falsepositives:
+    - Legitimate Py2Exe Binaries
+    - Known false positive caused with Python Anaconda
+    - Various legitimate software is bundled from Python code into executables
+level: low
+tags:
+    - attack.stealth
+    - attack.t1027.002
+customer: 'demo'

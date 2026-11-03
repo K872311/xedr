@@ -1,0 +1,64 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 14:38
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: Disable Or Stop Services
+id: de25eeb8-3655-4643-ac3a-b662d3f26b6b
+status: test
+description: |
+    Detects the usage of utilities such as 'systemctl', 'service'...etc to stop or disable tools and services on Linux systems.
+    Attackers may stop or disable security tools and services to evade detection, maintain persistence, or disrupt system operations.
+references:
+    - https://www.trendmicro.com/pl_pl/research/20/i/the-evolution-of-malicious-shell-scripts.html
+date: "2022-09-15"
+modified: "2025-03-18"
+author: Nasreddine Bencherchali (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    condition: selection and not 1 of filter_main_* and not 1 of filter_optional_*
+    filter_main_legit_snapd:
+        CommandLine|contains:
+            - --no-reload disable snap-snapd-
+            - ' stop snap-snapd-'
+        Image|endswith: /systemctl
+    filter_main_ssh_preinstall:
+        CommandLine|contains|all:
+            - ' stop '
+            - ssh.
+        Image|endswith: /systemctl
+        ParentCommandLine|contains: tmp.ci/preinst upgrade
+    filter_main_ubuntu_upgrade:
+        Image|endswith: /systemctl
+        ParentCommandLine|contains: /dpkg/info/ubuntu-pro-client.prerm upgrade
+    filter_optional_aws_agent:
+        CommandLine|endswith: snap.amazon-ssm-agent.amazon-ssm-agent.service
+        Image|endswith: /systemctl
+    selection:
+        CommandLine|contains:
+            - ' stop '
+            - ' disable '
+        Image|endswith:
+            - /service
+            - /systemctl
+            - /chkconfig
+falsepositives:
+    - Legitimate administration activities
+    - Some false positives are to be expected. Apply additional filters as needed before pushing to production.
+level: medium
+tags:
+    - attack.defense-impairment
+    - attack.t1685
+    - attack.impact
+    - attack.t1489
+customer: 'demo'

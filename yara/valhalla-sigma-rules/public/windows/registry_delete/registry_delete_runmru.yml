@@ -1,0 +1,42 @@
+
+# VALHALLA SIGMA RULE SET - DEMO
+# Retrieved: 2026-10-31 02:07
+# Generated for User: demo
+# Number of Rules: 3635
+# Warning:
+#     The full rule set contains rules with low level (< high) 
+#     that can lead to false positives - use the Python
+#     module valhallaAPI tools to retrieve a filtered set
+# This is the VALHALLA demo rule set. The content represents the 'SigmaHQ' repository
+# in a streamlined format.
+# All rules are licensed under DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md.
+title: RunMRU Registry Key Deletion - Registry
+id: 3a9b8c1e-5b2e-4f7a-9d1c-2a7f3b6e1c55
+related:
+    - type: similar
+      id: c11aecef-9c37-45a6-9c07-bc0782f963fd
+status: experimental
+description: |
+    Detects attempts to delete the RunMRU registry key, which stores the history of commands executed via the run dialog.
+    In the clickfix techniques, the phishing lures instruct users to open a run dialog through (Win + R) and execute malicious commands.
+    Adversaries may delete this key to cover their tracks after executing commands.
+references:
+    - https://www.zscaler.com/blogs/security-research/coldriver-updates-arsenal-baitswitch-and-simplefix
+date: "2025-09-25"
+author: Swachchhanda Shrawan Poudel (Nextron Systems)
+license: 'DRL 1.1 https://github.com/SigmaHQ/sigma/blob/master/LICENSE.Detection.Rules.md'
+logsource:
+    category: registry_delete
+    product: windows
+detection:
+    condition: selection
+    selection:
+        TargetObject|endswith: \Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU
+falsepositives:
+    - Unknown
+level: high
+tags:
+    - attack.stealth
+    - attack.t1070.003
+customer: 'demo'
+regression_tests_path: regression_data/rules/windows/registry/registry_delete/registry_delete_runmru/info.yml
