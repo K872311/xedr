@@ -92,8 +92,21 @@ _CATEGORY_CHANNEL = {
 
 
 def log_rules_dir() -> Path:
-    root = Path(config.ROOT) / "log_rules" / "rules"
-    return root
+    """优先用精选包 log_rules/rules；若空则回退 logrules/rules（不全量加载 sigma，避免卡顿）。"""
+    root = Path(config.ROOT)
+    primary = root / "log_rules" / "rules"
+    fallback = root / "logrules" / "rules"
+    try:
+        if primary.is_dir() and any(primary.glob("*.yml")):
+            return primary
+    except OSError:
+        pass
+    try:
+        if fallback.is_dir() and any(fallback.glob("*.yml")):
+            return fallback
+    except OSError:
+        pass
+    return primary
 
 
 def _min_level() -> str:

@@ -27,8 +27,9 @@
       "reference": "config/agent_etw_coverage.json"
     },
     "osquery": {
-      "scope": "snapshot_modules",
-      "forensic": "固定 snapshot 模块（进程/服务/网络/启动项等），无按需 Live Query、无远程 Shell"
+      "scope": "live_query_tables",
+      "forensic": "固定 snapshot 模块 + live_query 按需表（非 osquery SQL）",
+      "tables": "config/agent_live_query_tables.json"
     },
     "metricbeat": {
       "scope": "agent_plus_host_basic",

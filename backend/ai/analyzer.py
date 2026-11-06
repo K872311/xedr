@@ -355,7 +355,14 @@ def _normalize_model(model: str, base_url: str = "") -> str:
     return "gpt-4o-mini"
 
 
-def _chat_sender(url: str, api_key: str, model: str, timeout: float):
+def _chat_sender(
+    url: str,
+    api_key: str,
+    model: str,
+    timeout: float,
+    *,
+    max_tokens: Optional[int] = None,
+):
     """返回 send(messages) -> text；网络/HTTP 错误抛 RuntimeError（含请求地址）。"""
     try:
         pinned = _validate_outbound_url(url)
@@ -369,11 +376,20 @@ def _chat_sender(url: str, api_key: str, model: str, timeout: float):
             "stream": False,
             "messages": messages,
         }
-        # Qwen3 / Strata 等思考模式会把应急研判拖到数十秒乃至超时；关闭后秒级返回
+        if max_tokens:
+            body["max_tokens"] = int(max(64, min(int(max_tokens), 4096)))
+        # Qwen3 / Strata / DeepSeek-V3 思考模式会把研判拖到数十秒；默认关闭
         low_m = str(model or "").lower()
         low_u = str(url or "").lower()
-        if low_m.startswith("qwen") or "qwen" in low_m or "strata" in low_u:
+        if (
+            low_m.startswith("qwen")
+            or "qwen" in low_m
+            or "strata" in low_u
+            or "deepseek" in low_m
+            or "flash" in low_m
+        ):
             body["chat_template_kwargs"] = {"enable_thinking": False}
+            body["enable_thinking"] = False
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",

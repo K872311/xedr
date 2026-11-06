@@ -1,0 +1,17 @@
+{
+  "version": "1",
+  "protocol": "live_query",
+  "note": "Osquery 式按需查表：固定 schema（forensic_v1），非 osquery SQL。",
+  "tables": [
+    { "name": "processes", "osquery_analog": "processes", "source": "collectProcessesLite" },
+    { "name": "services", "osquery_analog": "services", "source": "collectServices" },
+    { "name": "listening_ports", "osquery_analog": "listening_ports", "source": "collectListen" },
+    { "name": "scheduled_tasks", "osquery_analog": "scheduled_tasks", "source": "collectTasks" },
+    { "name": "startup_items", "osquery_analog": "startup_items", "source": "collectStartup" },
+    { "name": "users", "osquery_analog": "users", "source": "collectUsers" },
+    { "name": "network_connections", "osquery_analog": "process_open_sockets", "source": "collectNetwork" },
+    { "name": "drivers", "osquery_analog": "drivers", "source": "collectDrivers" },
+    { "name": "installed_software", "osquery_analog": "programs", "source": "collectSoftware" },
+    { "name": "hotfixes", "osquery_analog": "patches", "source": "collectHotfix" }
+  ]
+}

@@ -4,7 +4,7 @@
     "name": "Windows 持久化检测（tasks/services/registry 全量可移植）",
     "version": "3.2",
     "description": "原始Windows持久化规则严格降噪增强版",
-    "extractedFrom": "0707/{tasks,servers,registry}",
+    "extractedFrom": "D:/GeRen/AI/0707/{tasks,servers,registry}",
     "inventory": "tools/dev/portable_rules_inventory.json",
     "extractedAt": "2026-08-12",
     "counts": {

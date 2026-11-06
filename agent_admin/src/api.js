@@ -172,6 +172,44 @@ export function listAgents(onlineWithinSec = 45) {
   return apiJson(`/api/agent/list?online_within_sec=${sec}`)
 }
 
+/** AI 分析：状态 / 本地模型初始化 / Skill / 在线终端 / 一键研判 */
+export function aiStatus() {
+  return apiJson('/api/edr/ai/status')
+}
+
+export function aiSetupLocal(payload = {}) {
+  return apiJson('/api/edr/ai/setup-local', { method: 'POST', json: payload || {} })
+}
+
+export function aiListSkills({ q = '', limit = 200, edrOnly = true } = {}) {
+  const qs = new URLSearchParams({
+    q: String(q || ''),
+    limit: String(limit || 200),
+    edr_only: edrOnly ? '1' : '0',
+  })
+  return apiJson(`/api/edr/ai/skills?${qs}`)
+}
+
+export function aiSkillDetail(skillId) {
+  return apiJson(`/api/edr/ai/skills/${encodeURIComponent(skillId)}`)
+}
+
+export function aiListHosts(onlineWithinSec = 90) {
+  const sec = Math.max(12, Math.min(3600, Number(onlineWithinSec) || 90))
+  return apiJson(`/api/edr/ai/hosts?online_within_sec=${sec}`)
+}
+
+export function aiAnalyzeHost(agentId, { skillIds = null, useLlm = true } = {}) {
+  return apiJson('/api/edr/ai/analyze-host', {
+    method: 'POST',
+    json: {
+      agent_id: agentId,
+      skill_ids: skillIds,
+      use_llm: !!useLlm,
+    },
+  })
+}
+
 export function getSnapshot(agentId, module) {
   return apiJson(`/api/agent/${encodeURIComponent(agentId)}/snapshot/${encodeURIComponent(module)}`)
 }

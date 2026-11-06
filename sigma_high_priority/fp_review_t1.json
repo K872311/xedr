@@ -1,0 +1,987 @@
+{
+  "report": "D:\\360极速浏览器X下载\\t1_2026-08-13_03-52-30+08-00.html",
+  "finding_cards": 579,
+  "unique_titles": 151,
+  "severity_counts": {
+    "CRITICAL": 10,
+    "HIGH": 556,
+    "MEDIUM": 5,
+    "LOW": 8
+  },
+  "category_counts": {
+    "持久化": 56,
+    "可疑命令": 79,
+    "可疑文件": 431,
+    "可疑目录": 1,
+    "网络外联": 5,
+    "系统日志": 6,
+    "浏览痕迹": 1
+  },
+  "likely_false_positives": [
+    {
+      "title": "检测 KnownDlls 劫持（系统 DLL 预加载列表篡改）",
+      "hits": 5,
+      "severity": "CRITICAL",
+      "category": "持久化",
+      "reason": "KnownDlls 默认系统 DLL 列表被整表匹配，正常机器也会命中",
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\KnownDlls *kernel32=kernel32.dll",
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\KnownDlls _wow64cpu=wow64cpu.dll",
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\KnownDlls _wowarmhw=wowarmhw.dll"
+      ],
+      "action": "disable_rule"
+    },
+    {
+      "title": "检测 HKCU/HKU Windows\\\\Load 或 Windows\\\\Run 持久化",
+      "hits": 2,
+      "severity": "CRITICAL",
+      "category": "持久化",
+      "reason": "同上 Load/Run 类键值默认存在",
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Windows LoadAppInit_DLLs=0",
+        "SOFTWARE\\Wow6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Windows LoadAppInit_DLLs=0"
+      ],
+      "action": "tighten"
+    },
+    {
+      "title": "检测无文件恶意软件常用的PowerShell技术",
+      "hits": 2,
+      "severity": "CRITICAL",
+      "category": "持久化",
+      "reason": "Microsoft/OneDrive 等常规路径易误报",
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\mshta.exe MitigationOptions=256",
+        "SOFTWARE\\Wow6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\mshta.exe MitigationOptions=256"
+      ],
+      "action": "whitelist_path"
+    },
+    {
+      "title": "File With Uncommon Extension Created By An Office Application",
+      "hits": 40,
+      "severity": "HIGH",
+      "category": "可疑文件",
+      "reason": "Microsoft/OneDrive 等常规路径易误报",
+      "sample": [
+        "C:\\Program Files\\VMware\\VMware Tools\\install-rvmSetup.cmd — SigmaHQ high: File With Uncommon Extension Created By An Office Application"
+      ],
+      "action": "whitelist_path"
+    },
+    {
+      "title": "HackTool - Powerup Write Hijack DLL",
+      "hits": 16,
+      "severity": "HIGH",
+      "category": "可疑文件",
+      "reason": "Microsoft/OneDrive 等常规路径易误报",
+      "sample": [
+        "C:\\Program Files\\VMware\\VMware Tools\\VmUpgradeHelper.bat — SigmaHQ high: HackTool - Powerup Write Hijack DLL"
+      ],
+      "action": "whitelist_path"
+    },
+    {
+      "title": "Malicious DLL File Dropped in the Teams or OneDrive Folder",
+      "hits": 5,
+      "severity": "HIGH",
+      "category": "可疑文件",
+      "reason": "Microsoft/OneDrive 等常规路径易误报",
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\Detection.dll — SigmaHQ high: Malicious DLL File Dropped in the Teams or OneDrive Folder"
+      ],
+      "action": "whitelist_path"
+    },
+    {
+      "title": "Suspicious Rundll32 Invoking Inline VBScript",
+      "hits": 1,
+      "severity": "HIGH",
+      "category": "可疑命令",
+      "reason": "常见系统/安装程序也会调用该 LOLBin，证据侧缺少可疑参数/路径",
+      "sample": [
+        "计划任务: SR by user disabled ExecuteScheduledSPPCreation"
+      ],
+      "action": "review"
+    },
+    {
+      "title": "Uncommon File Creation By Mysql Daemon Process",
+      "hits": 40,
+      "severity": "HIGH",
+      "category": "可疑文件",
+      "reason": "Microsoft/OneDrive 等常规路径易误报",
+      "sample": [
+        "C:\\Program Files\\Huorong\\Sysdiag\\bin\\libvxf.dat — SigmaHQ high: Uncommon File Creation By Mysql Daemon Process"
+      ],
+      "action": "whitelist_path"
+    },
+    {
+      "title": "WScript or CScript Dropper - File",
+      "hits": 4,
+      "severity": "HIGH",
+      "category": "可疑文件",
+      "reason": "常见系统/安装程序也会调用该 LOLBin，证据侧缺少可疑参数/路径",
+      "sample": [
+        "C:\\ProgramData\\Microsoft\\Windows Defender\\Definition Updates\\Backup\\mpengine.dll — SigmaHQ high: WScript or CScript Dropper - File"
+      ],
+      "action": "review"
+    }
+  ],
+  "all_titles_top": [
+    {
+      "title": "File Creation In Suspicious Directory By Msdt.EXE",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Users\\sjwus\\Desktop\\应急\\样本分析\\ExeinfoPe\\Ext_Detector.dll — SigmaHQ high: File Creation In Suspicious Directory By Msdt.EXE"
+      ]
+    },
+    {
+      "title": "File With Uncommon Extension Created By An Office Application",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Program Files\\VMware\\VMware Tools\\install-rvmSetup.cmd — SigmaHQ high: File With Uncommon Extension Created By An Office Application"
+      ]
+    },
+    {
+      "title": "ISO File Created Within Temp Folders",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\605F.tmp\\360Base.dll — SigmaHQ high: ISO File Created Within Temp Folders"
+      ]
+    },
+    {
+      "title": "Suspicious Binary Writes Via AnyDesk",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Program Files\\Common Files\\System\\Ole DB\\msdaosp.dll — SigmaHQ high: Suspicious Binary Writes Via AnyDesk"
+      ]
+    },
+    {
+      "title": "Suspicious File Created by ArcSOC.exe",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ASP.NETWebAdminFiles\\AppConfig\\AppConfigHome.aspx — SigmaHQ high: Suspicious File Created by ArcSOC.exe"
+      ]
+    },
+    {
+      "title": "Suspicious MSExchangeMailboxReplication ASPX Write",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ASP.NETWebAdminFiles\\AppConfig\\AppConfigHome.aspx — SigmaHQ high: Suspicious MSExchangeMailboxReplication ASPX Write"
+      ]
+    },
+    {
+      "title": "Uncommon File Creation By Mysql Daemon Process",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 40,
+      "evidence_items": 40,
+      "sample": [
+        "C:\\Program Files\\Huorong\\Sysdiag\\bin\\libvxf.dat — SigmaHQ high: Uncommon File Creation By Mysql Daemon Process"
+      ]
+    },
+    {
+      "title": "Legitimate Application Dropped Script",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 36,
+      "evidence_items": 36,
+      "sample": [
+        "C:\\Program Files\\Microsoft Network Monitor 3\\Help\\NetMon.chm — SigmaHQ high: Legitimate Application Dropped Script"
+      ]
+    },
+    {
+      "title": "Legitimate Application Dropped Archive",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 30,
+      "evidence_items": 30,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\vmware-sjwus-995209531\\VMwareDnD\\87cddc0c\\进程排查工具\\ProcessExplorer.zip — SigmaHQ high: Legitimate Application Dropped Archive"
+      ]
+    },
+    {
+      "title": "DPAPI Backup Keys And Certificate Export Activity IOC",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 28,
+      "evidence_items": 28,
+      "sample": [
+        "C:\\ProgramData\\Microsoft\\Diagnosis\\DownloadedSettings\\utc.cert.json — SigmaHQ high: DPAPI Backup Keys And Certificate Export Activity IOC"
+      ]
+    },
+    {
+      "title": "HackTool - Powerup Write Hijack DLL",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 16,
+      "evidence_items": 16,
+      "sample": [
+        "C:\\Program Files\\VMware\\VMware Tools\\VmUpgradeHelper.bat — SigmaHQ high: HackTool - Powerup Write Hijack DLL"
+      ]
+    },
+    {
+      "title": "Suspicious Curl.EXE Download",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 12,
+      "sample": [
+        "启动命令: C:\\Users\\sjwus\\AppData\\Local\\1s0o22zn94\\LockAppHost.exe",
+        "启动命令: C:\\Users\\sjwus\\AppData\\Roaming\\instagram\\90241842161\\FFWallpaper.exe"
+      ]
+    },
+    {
+      "title": "Suspicious Schtasks Execution AppData Folder",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 12,
+      "sample": [
+        "启动命令: C:\\Users\\sjwus\\AppData\\Local\\1s0o22zn94\\LockAppHost.exe",
+        "启动命令: C:\\Users\\sjwus\\AppData\\Roaming\\instagram\\90241842161\\FFWallpaper.exe"
+      ]
+    },
+    {
+      "title": "Exports Critical Registry Keys To a File",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 11,
+      "sample": [
+        "启动命令: %windir%\\system32\\SecurityHealthSystray.exe",
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c del /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\"
+      ]
+    },
+    {
+      "title": "LOL-Binary Copied From System Directory",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 11,
+      "sample": [
+        "启动命令: %windir%\\system32\\SecurityHealthSystray.exe",
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c del /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\"
+      ]
+    },
+    {
+      "title": "Set Suspicious Files as System Files Using Attrib.EXE",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 11,
+      "sample": [
+        "启动命令: C:\\Users\\sjwus\\AppData\\Local\\1s0o22zn94\\LockAppHost.exe",
+        "启动命令: l /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\Update\\OneDriveSetup.exe\""
+      ]
+    },
+    {
+      "title": "Shell32 DLL Execution in Suspicious Directory",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 10,
+      "sample": [
+        "计划任务: 239-3174400545-1001 %localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe /reporting",
+        "计划任务: 239-3174400545-1001 %localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe"
+      ]
+    },
+    {
+      "title": "HackTool - Potential Impacket Lateral Movement Activity",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 9,
+      "sample": [
+        "服务路径: C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+        "服务路径: C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p"
+      ]
+    },
+    {
+      "title": "Suspicious Double Extension Files",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 9,
+      "evidence_items": 9,
+      "sample": [
+        "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\System.IO.IsolatedStorage.dll — SigmaHQ high: Suspicious Double Extension Files"
+      ]
+    },
+    {
+      "title": "File In Suspicious Location Encoded To Base64 Via Certutil.EXE",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 8,
+      "sample": [
+        "启动命令: C:\\Users\\sjwus\\AppData\\Roaming\\instagram\\90241842161\\FFWallpaper.exe",
+        "启动命令: C:\\Users\\sjwus\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\desktop.ini"
+      ]
+    },
+    {
+      "title": "Process Explorer Driver Creation By Non-Sysinternals Binary",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 8,
+      "evidence_items": 8,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\vmware-sjwus-995209531\\VMwareDnD\\87cddc0c\\进程排查工具\\ProcessExplorer\\procexp.exe — SigmaHQ high: Process Explorer Driver Creation By Non-Sysinternals Binary"
+      ]
+    },
+    {
+      "title": "Potential Privilege Escalation Using Symlink Between Osk and Cmd",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c del /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\Update\\On",
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c del /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\Standalon"
+      ]
+    },
+    {
+      "title": "Suspicious Active Directory Database Snapshot Via ADExplorer",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "计划任务: indir%\\system32\\disksnapshot.exe -z"
+      ]
+    },
+    {
+      "title": "Suspicious Invoke-WebRequest Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "进程: icrosoft\\Search\\Data\\Temp\\usgthrsvc\" \"DownLevelDaemon\""
+      ]
+    },
+    {
+      "title": "Suspicious Mshta.EXE Execution Patterns",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "启动命令: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\desktop.ini",
+        "进程: Search 4.0 Robot)\" \"C:\\ProgramData\\Microsoft\\Search\\Data\\Temp\\usgthrsvc\" \"DownLevelDaemon\""
+      ]
+    },
+    {
+      "title": "Suspicious Spool Service Child Process",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "启动命令: \"C:\\Program Files (x86)\\iDefender\\iDefender.exe\" /tray",
+        "计划任务: 5F-EA90CFDB168E} C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe /c"
+      ]
+    },
+    {
+      "title": "Windows Defender Disabled Via SystemSettingsAdminFlows.EXE",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 7,
+      "sample": [
+        "启动命令: rogram Files (x86)\\iDefender\\iDefender.exe\" /tray",
+        "服务路径: rogram Files (x86)\\iDefender\\iDefenderService.exe\""
+      ]
+    },
+    {
+      "title": "NLS CodePage非.nls DLL/EXE",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage 50220=c_is2022.dll",
+        "SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage 50221=c_is2022.dll"
+      ]
+    },
+    {
+      "title": "UserInitMprLogonScript",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment ComSpec=%SystemRoot%\\system32\\cmd.exe",
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment DriverData=C:\\Windows\\System32\\Drivers\\DriverData"
+      ]
+    },
+    {
+      "title": "检测 ProgID 劫持",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Classes\\*\\shellex\\ContextMenuHandlers\\Open With ={09799AFB-AD67-11d1-ABCD-00C04FC30936}",
+        "SOFTWARE\\Classes\\*\\shellex\\ContextMenuHandlers\\Open With EncryptionMenu ={A470F8CF-A1E8-4f65-8335-227475AA5C46}"
+      ]
+    },
+    {
+      "title": "检测 Wow6432Node 下的 COM 劫持（32位应用）",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Classes\\CLSID\\{566296fe-e0e8-475f-ba9c-a31ad31620b1}\\InProcServer32 =%systemroot%\\system32\\dxp.dll",
+        "SOFTWARE\\Classes\\CLSID\\{566296fe-e0e8-475f-ba9c-a31ad31620b1}\\InProcServer32 ThreadingModel=Apartment"
+      ]
+    },
+    {
+      "title": "检测常见 COM 劫持工具的特征",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Classes\\CLSID\\{566296fe-e0e8-475f-ba9c-a31ad31620b1}\\InProcServer32 =%systemroot%\\system32\\dxp.dll",
+        "SOFTWARE\\Classes\\CLSID\\{566296fe-e0e8-475f-ba9c-a31ad31620b1}\\InProcServer32 ThreadingModel=Apartment"
+      ]
+    },
+    {
+      "title": "Add Insecure Download Source To Winget",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: ate.exe /ua /installsource scheduler",
+        "计划任务: supdate -from=task -source=task"
+      ]
+    },
+    {
+      "title": "Audit Policy Tampering Via Auditpol",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: rosoft\\Windows\\CloudRestore\\Backup COM handler",
+        "计划任务: rosoft\\Windows\\CloudRestore\\Restore COM handler"
+      ]
+    },
+    {
+      "title": "CobaltStrike Load by Rundll32",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: k %windir%\\system32\\rundll32.exe %windir%\\system32\\PcaSvc.dll,PcaPatchSdbTask",
+        "计划任务: k %windir%\\system32\\rundll32.exe Startupscan.dll,SusRunTask"
+      ]
+    },
+    {
+      "title": "Disable Windows IIS HTTP Logging",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: %windir%\\system32\\UCConfigTask.exe",
+        "计划任务: ws\\Flighting\\FeatureConfig\\BootstrapUsageDataReporting COM handler"
+      ]
+    },
+    {
+      "title": "Esentutl Volume Shadow Copy Service Keys",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Services\\VSS ImagePath=%systemroot%\\system32\\vssvc.exe",
+        "SYSTEM\\CurrentControlSet\\Services\\VSS DisplayName=@%systemroot%\\system32\\vssvc.exe,-102"
+      ]
+    },
+    {
+      "title": "HackTool - Certipy Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: \\Microsoft\\Windows\\AccountHealth\\RecoverabilityToastTask COM handler",
+        "计划任务: D RMS Rights Policy Template Management (Automated) COM handler"
+      ]
+    },
+    {
+      "title": "HackTool - SharpDPAPI Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: \\Microsoft\\Windows\\CertificateServicesClient\\AikCertEnrollTask COM handler",
+        "计划任务: \\Microsoft\\Windows\\CertificateServicesClient\\CryptoPolicyTask COM handler"
+      ]
+    },
+    {
+      "title": "Macro Enabled In A Potentially Suspicious Document",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "AppCompatCache 爱思2.tmp=C:\\Users\\sjwus\\AppData\\Local\\Temp\\is-13UDT165Y3.tmp\\爱思2.tmp",
+        "AppCompatCache lastsvkpc-xnv.tmp=C:\\Users\\sjwus\\AppData\\Local\\Temp\\is-NFS2BOPAVX.tmp\\lastsvkpc-xnv.tmp"
+      ]
+    },
+    {
+      "title": "New TimeProviders Registered With Uncommon DLL Name",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Services\\W32Time\\TimeProviders\\NtpClient AllowNonstandardModeCombinations=1",
+        "SYSTEM\\CurrentControlSet\\Services\\W32Time\\TimeProviders\\NtpClient CompatibilityFlags=2147483648"
+      ]
+    },
+    {
+      "title": "Potential Data Stealing Via Chromium Headless Debugging",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "进程: sion=2126.2002.40.0 --user-data-dir=\"C:\\Users\\sjwus\\AppData\\Local\\Packages\\MicrosoftWindows.Client.C",
+        "进程: pe=crashpad-handler --user-data-dir=C:\\Users\\sjwus\\AppData\\Local\\Packages\\MicrosoftWindows.Client.CB"
+      ]
+    },
+    {
+      "title": "Potential Persistence Via GlobalFlags",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug UserDebuggerHotKey=0",
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug Auto=0"
+      ]
+    },
+    {
+      "title": "Potential Persistence Via Powershell Search Order Hijacking - Task",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "服务路径: ystem32\\svchost.exe -k netsvcs -p",
+        "服务路径: ystem32\\svchost.exe -k netsvcs"
+      ]
+    },
+    {
+      "title": "Potential Privilege Escalation via Service Permissions Weakness",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: y Rights Management Services Client\\AD RMS Rights Policy Template Management (Automated) COM handler",
+        "计划任务: y Rights Management Services Client\\AD RMS Rights Policy Template Management (Manual) COM handler"
+      ]
+    },
+    {
+      "title": "Renamed Cloudflared.EXE Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: ows\\ApplicationData\\CleanupTemporaryState %windir%\\system32\\rundll32.exe Windows.Storage.Application",
+        "计划任务: pplicationData\\DsSvcCleanup %windir%\\system32\\dstokenclean.exe"
+      ]
+    },
+    {
+      "title": "Renamed Visual Studio Code Tunnel Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: y Rights Management Services Client\\AD RMS Rights Policy Template Management (Automated) COM handler",
+        "计划任务: y Rights Management Services Client\\AD RMS Rights Policy Template Management (Manual) COM handler"
+      ]
+    },
+    {
+      "title": "Rundll32 Execution Without CommandLine Parameters",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: sk %windir%\\system32\\rundll32.exe %windir%\\system32\\PcaSvc.dll,PcaPatchSdbTask",
+        "计划任务: sk %windir%\\system32\\rundll32.exe Startupscan.dll,SusRunTask"
+      ]
+    },
+    {
+      "title": "Service Binary in Suspicious Folder",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Services\\BITS ImagePath=%SystemRoot%\\System32\\svchost.exe -k netsvcs -p",
+        "SYSTEM\\CurrentControlSet\\Services\\BITS Start=2"
+      ]
+    },
+    {
+      "title": "Shai-Hulud 2.0 Malicious NPM Package Installation",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "计划任务: EdgeUpdate.exe /ua /installsource scheduler",
+        "计划任务: nData\\appuriverifierinstall %windir%\\system32\\AppHostRegistrationVerifier.exe"
+      ]
+    },
+    {
+      "title": "Suspicious Application Allowed Through Exploit Guard",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "AppCompatCache 爱思2.tmp=C:\\Users\\sjwus\\AppData\\Local\\Temp\\is-13UDT165Y3.tmp\\爱思2.tmp",
+        "AppCompatCache lastsvkpc-xnv.tmp=C:\\Users\\sjwus\\AppData\\Local\\Temp\\is-NFS2BOPAVX.tmp\\lastsvkpc-xnv.tmp"
+      ]
+    },
+    {
+      "title": "Suspicious Shim Database Patching Activity",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "S-1-5-21-1858468054-31582239-3174400545-1001 \\Device\\HarddiskVolume3\\Windows\\explorer.exe=\\Device\\HarddiskVolume3\\Windows\\explorer.exe",
+        "SYSTEM\\CurrentControlSet\\Services\\BITS ImagePath=%SystemRoot%\\System32\\svchost.exe -k netsvcs -p"
+      ]
+    },
+    {
+      "title": "Suspicious WMIC Execution Via Office Process",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "PS历史:sjwus: esktop\\\n .\\1.exe -m processes -deep\n cd .\\Desktop\\\n .\\1.exe -m memory,processes\n cd .\\Desktop\\\n .\\1.",
+        "计划任务: GovernedFeatureUsageProcessing COM handler"
+      ]
+    },
+    {
+      "title": "Terminal Service Process Spawn",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "服务路径: C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+        "服务路径: C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p"
+      ]
+    },
+    {
+      "title": "UAC Bypass Using NTFS Reparse Point - Process",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "HKCU\\Run WindowsLockHost: C:\\Users\\sjwus\\AppData\\Local\\1s0o22zn94\\LockAppHost.exe",
+        "HKCU\\Run Support: C:\\Users\\sjwus\\AppData\\Roaming\\instagram\\90241842161\\FFWallpaper.exe"
+      ]
+    },
+    {
+      "title": "VBScript Payload Stored in Registry",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved {08165EA0-E946-11CF-9C87-00AA005127ED}=WebCheckWebCrawler",
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved {09A47860-11B0-4DA5-AFA5-26D86198A780}=EPP"
+      ]
+    },
+    {
+      "title": "检测 Drivers32 编解码器 DLL 劫持（偏离系统基线）",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Drivers32 aux=wdmaud.drv",
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Drivers32 midi=wdmaud.drv"
+      ]
+    },
+    {
+      "title": "检测 ShellIconOverlayIdentifiers 图标覆盖处理器劫持",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellIconOverlayIdentifiers\\ OneDrive1 ={BBACC218-34EA-4666-9D7A-C78F2274A524}",
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellIconOverlayIdentifiers\\ OneDrive2 ={5AB7172C-9C11-405C-8DD5-AF20F3606282}"
+      ]
+    },
+    {
+      "title": "Logon (Service) (Noisy)",
+      "category": "系统日志",
+      "severity": "LOW",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "Channel=Security EventID=4624 Time=2026-08-12T19:09:53.2510720Z | SubjectUserSid=S-1-5-18 SubjectLogonId=0x3e7 SubjectUserName=T1$ WorkstationName=- KeyLength=0 ProcessId=0x284 ProcessName=C:\\Windows\\System32\\services.exe IpPort=- ElevatedT",
+        "Channel=Security EventID=4624 Time=2026-08-12T19:09:57.0047024Z | KeyLength=0 TargetOutboundUserName=- TargetOutboundDomainName=- TargetUserName=SYSTEM LogonGuid={00000000-0000-0000-0000-000000000000} VirtualAccount=%%1843 IpAddress=- Targe"
+      ]
+    },
+    {
+      "title": "Temp目录可疑文件",
+      "category": "可疑文件",
+      "severity": "LOW",
+      "groups": 1,
+      "evidence_items": 6,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\605F.tmp\\modules\\360Inst.exe — Temp 下无签名可执行/脚本（已降噪：去掉 bat/js，排除安装器缓存）",
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\vmware-sjwus-995209531\\VMwareDnD\\1d443bed\\iDefender(5.5.3).exe — Temp 下无签名可执行/脚本（已降噪：去掉 bat/js，排除安装器缓存）"
+      ]
+    },
+    {
+      "title": "检测 KnownDlls 劫持（系统 DLL 预加载列表篡改）",
+      "category": "持久化",
+      "severity": "CRITICAL",
+      "groups": 1,
+      "evidence_items": 5,
+      "sample": [
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\KnownDlls *kernel32=kernel32.dll",
+        "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\KnownDlls _wow64cpu=wow64cpu.dll"
+      ]
+    },
+    {
+      "title": "Allow Service Access Using Security Descriptor Tampering Via Sc.EXE",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 5,
+      "sample": [
+        "计划任务: k %windir%\\system32\\sc.exe start pushtoinstall login",
+        "计划任务: n %windir%\\system32\\sc.exe start pushtoinstall registration"
+      ]
+    },
+    {
+      "title": "MMC20 Lateral Movement",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 5,
+      "sample": [
+        "进程: 2\\RuntimeBroker.exe -Embedding",
+        "进程: thod\\CHS\\ChsIME.exe -Embedding"
+      ]
+    },
+    {
+      "title": "Malicious DLL File Dropped in the Teams or OneDrive Folder",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 5,
+      "evidence_items": 5,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\Detection.dll — SigmaHQ high: Malicious DLL File Dropped in the Teams or OneDrive Folder"
+      ]
+    },
+    {
+      "title": "Operator Bloopers Cobalt Strike Commands",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 2,
+      "evidence_items": 5,
+      "sample": [
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c del /q \"C:\\Users\\sjwus\\AppData\\Local\\Microsoft",
+        "启动命令: C:\\WINDOWS\\system32\\cmd.exe /q /c rmdir /s /q \"C:\\Users\\sjwus\\AppData\\Local\\Micr"
+      ]
+    },
+    {
+      "title": "PUA - Restic Backup Tool Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 5,
+      "sample": [
+        "计划任务: tion Experience\\MareBackup Multiple actions",
+        "计划任务: soft\\Windows\\AppListBackup\\Backup COM handler"
+      ]
+    },
+    {
+      "title": "Sensitive File Recovery From Backup Via Wbadmin.EXE",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 5,
+      "sample": [
+        "计划任务: rity Scan for Crash Recovery COM handler",
+        "计划任务: Device Setup\\Driver Recovery on Reboot COM handler"
+      ]
+    },
+    {
+      "title": "Axios NPM Compromise File Creation Indicators - Windows",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 4,
+      "evidence_items": 4,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Roaming\\kingsoft\\office6\\BrowserHost\\runhost.bat — SigmaHQ high: Axios NPM Compromise File Creation Indicators - Windows"
+      ]
+    },
+    {
+      "title": "DLL_Hijack_Scheduled_Task",
+      "category": "持久化",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 4,
+      "sample": [
+        "SOFTWARE\\Classes\\CLSID\\{566296fe-e0e8-475f-ba9c-a31ad31620b1}\\InProcServer32 =%systemroot%\\system32\\dxp.dll",
+        "Software\\Classes\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\\InprocServer32 =%systemroot%\\system32\\shell32.dll"
+      ]
+    },
+    {
+      "title": "Delete Important Scheduled Task",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 4,
+      "sample": [
+        "计划任务: \\Microsoft\\Windows\\BitLocker\\BitLocker Encrypt All Drives COM handler",
+        "计划任务: \\Microsoft\\Windows\\BitLocker\\BitLocker MDM policy Refresh COM handler"
+      ]
+    },
+    {
+      "title": "Dllhost.EXE Execution Anomaly",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 4,
+      "sample": [
+        "服务路径: C:\\WINDOWS\\system32\\dllhost.exe /Processid:{02D4B3F1-FD88-11D1-960D-00805FC79235}",
+        "服务路径: C:\\WINDOWS\\system32\\dllhost.exe /Processid:{32367CDA-1415-4D35-8CA3-F74DA4ED14B0}"
+      ]
+    },
+    {
+      "title": "PUA - Process Hacker Driver Load · kprocesshacker.sys",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 4,
+      "evidence_items": 4,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Local\\Temp\\vmware-sjwus-995209531\\VMwareDnD\\87cddc0c\\进程排查工具\\processhacker-2.39-bin\\x64\\kprocesshacker.sys — SigmaHQ driver IOC: kprocesshacker.sys"
+      ]
+    },
+    {
+      "title": "PUA - Rclone Execution",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 4,
+      "sample": [
+        "计划任务: osoft\\Windows\\input\\RemoteMouseSyncDataAvailable COM handler",
+        "计划任务: osoft\\Windows\\input\\RemotePenSyncDataAvailable COM handler"
+      ]
+    },
+    {
+      "title": "Suspicious File Creation In Uncommon AppData Folder",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 4,
+      "evidence_items": 4,
+      "sample": [
+        "C:\\Users\\sjwus\\AppData\\Roaming\\kingsoft\\office6\\BrowserHost\\runhost.bat — SigmaHQ high: Suspicious File Creation In Uncommon AppData Folder"
+      ]
+    },
+    {
+      "title": "WScript or CScript Dropper - File",
+      "category": "可疑文件",
+      "severity": "HIGH",
+      "groups": 4,
+      "evidence_items": 4,
+      "sample": [
+        "C:\\ProgramData\\Microsoft\\Windows Defender\\Definition Updates\\Backup\\mpengine.dll — SigmaHQ high: WScript or CScript Dropper - File"
+      ]
+    },
+    {
+      "title": "Abused Debug Privilege by Arbitrary Parent Processes",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 3,
+      "sample": [
+        "服务路径: C:\\WINDOWS\\System32\\spoolsv.exe",
+        "进程: wininit.exe"
+      ]
+    },
+    {
+      "title": "HackTool - Covenant PowerShell Launcher",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 3,
+      "sample": [
+        "计划任务: Diagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector by user disabled dfdts.dll,DfdGetDefaultPol",
+        "计划任务: Diagnostic\\Microsoft-Windows-DiskDiagnosticResolver %windir%\\system32\\DFDWiz.exe"
+      ]
+    },
+    {
+      "title": "LSASS 相关操作",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 3,
+      "sample": [
+        "服务路径: C:\\WINDOWS\\System32\\lsass.exe",
+        "服务路径: C:\\WINDOWS\\system32\\lsass.exe"
+      ]
+    },
+    {
+      "title": "Possible Privilege Escalation via Weak Service Permissions",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 3,
+      "sample": [
+        "计划任务: rectoryClient\\HandleCommand COM handler",
+        "计划任务: toryClient\\HandleWnsCommand COM handler"
+      ]
+    },
+    {
+      "title": "Schtasks From Suspicious Folders",
+      "category": "可疑命令",
+      "severity": "HIGH",
+      "groups": 1,
+      "evidence_items": 3,
+      "sample": [
+        "计划任务: ETisRvXHLWFHOhfjPGf cmd /c cd /d C:\\Drivers\\iXTrC2 && start  C:\\Drivers\\iXTrC2\\nM1WDPLul.exe",
+        "服务路径: cmd /c cd /d \"C:\\Drivers\\iXTrC2\" && start \"\" \"C:\\Drivers\\iXTrC2\\nM1WDPLul.exe\""
+      ]
+    }
+  ]
+}

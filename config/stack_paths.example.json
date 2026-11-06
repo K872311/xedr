@@ -1,13 +1,13 @@
 {
-  "elasticsearch_home": "C:\\elastic\\elasticsearch-9.5.0",
-  "elasticsearch_script": "C:\\elastic\\elasticsearch-9.5.0\\bin\\elasticsearch.bat",
-  "kibana_home": "C:\\elastic\\kibana-9.5.0",
-  "kibana_script": "C:\\elastic\\kibana-9.5.0\\bin\\kibana.bat",
+  "elasticsearch_home": "",
+  "elasticsearch_script": "",
+  "kibana_home": "",
+  "kibana_script": "",
   "logs": {
-    "analysis": "config\\uvicorn8000.log",
-    "elasticsearch": "C:\\elastic\\elasticsearch-9.5.0\\logs\\elasticsearch.log",
-    "mysql": "C:\\mysql\\data\\mysql.err",
-    "redis": "C:\\redis\\logs\\redis.log",
-    "kibana": "C:\\elastic\\kibana-9.5.0\\logs\\kibana.log"
+    "analysis": "",
+    "elasticsearch": "",
+    "mysql": "",
+    "redis": "",
+    "kibana": ""
   }
 }

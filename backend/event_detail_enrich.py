@@ -24,19 +24,26 @@ def detail_is_thin(d: Optional[Dict[str, Any]]) -> bool:
         return True
     if isinstance(d.get("failed"), list) and d["failed"] and not d.get("matched"):
         return True
-    if any(d.get(k) for k in _USEFUL):
-        if d.get("chain") and isinstance(d["chain"], list) and d["chain"]:
-            return False
-        if d.get("matched") and len(str(d["matched"])) > 8:
-            return False
+    # 有实质证据字段则不算薄
+    if d.get("chain") and isinstance(d["chain"], list) and d["chain"]:
+        return False
+    if d.get("matched") and len(str(d["matched"])) > 8:
+        return False
+    if any(d.get(k) for k in ("path", "reg_key", "key", "value", "value_name", "command_line", "remote", "remote_ip", "domain")):
+        return False
     et = str(d.get("etype") or "")
     keys = {k for k, v in d.items() if v not in (None, "", [], {})}
+    # summary / investigation 等说明字段不能单独撑起详情
     meta_only = keys <= {
         "etype", "rule_id", "rule_title", "title", "rule_source", "building_block",
         "count", "failed", "steps", "window_sec", "first", "entity_id", "parent_entity_id",
-        "pid", "evm_rev", "source_etype", "event_ts",
+        "pid", "evm_rev", "source_etype", "event_ts", "summary", "investigation",
+        "risk_score", "building_block_upgrade", "distinct_rules", "tactics", "correlation",
+        "correlation_rule_id", "mitre", "elastic_rule_id",
     }
     if et in ("ptm_hit", "evm_hit") and meta_only:
+        return True
+    if et.startswith("persist") or et.startswith("registry"):
         return True
     if str(d.get("module") or "") == "sca" or (d.get("failed") and not d.get("matched")):
         if isinstance(d.get("failed"), list) and d["failed"]:
@@ -412,7 +419,7 @@ def enrich_detail_from_timeline(
             return d, True
 
     if et == "evm_hit" or t.startswith("EVM") or t.startswith("EVM："):
-        src_et = str(d.get("source_etype") or "")
+        src_et = str(d.get("source_etype") or d.get("etype") or "")
         if src_et.startswith("network") or d.get("rule_id") == "sensor-etw-net":
             ev = _find_network_evidence(
                 conn, agent_id,
@@ -440,10 +447,30 @@ def enrich_detail_from_timeline(
                 for k, v in ev.items():
                     if v not in (None, "") and not d.get(k):
                         d[k] = v
-                d["matched"] = d.get("matched") or str(ev.get("summary") or ev.get("path") or "")[:500]
+                hint = str(ev.get("summary") or "")
+                rk = str(ev.get("key") or ev.get("reg_key") or "")
+                val = str(ev.get("value") or "")
+                if rk and val:
+                    hint = f"{rk} = {val}"
+                elif rk:
+                    hint = rk
+                d["matched"] = d.get("matched") or hint[:500]
                 if ev.get("summary"):
                     d["source_summary"] = ev["summary"]
                 changed = True
+
+    # 直接晋升的 persist_/registry_ 告警（无 EVM 前缀）也从时间线回填
+    if (et.startswith("persist") or et.startswith("registry")) and not (d.get("key") or d.get("reg_key") or d.get("value")):
+        ev = _find_persist_evidence(conn, agent_id, pid=int(d.get("pid") or 0))
+        if ev:
+            for k, v in ev.items():
+                if v not in (None, "") and not d.get(k):
+                    d[k] = v
+            if not d.get("matched"):
+                rk = str(ev.get("key") or ev.get("reg_key") or "")
+                val = str(ev.get("value") or "")
+                d["matched"] = (f"{rk} = {val}" if rk and val else (rk or str(ev.get("summary") or "")))[:500]
+            changed = True
 
     if et == "ptm_hit" or t.startswith("PTM") or "PTM:" in t:
         rid = str(d.get("rule_id") or "")

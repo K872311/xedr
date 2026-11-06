@@ -7,13 +7,14 @@ func elasticParitySnapshot() map[string]any {
 		"memory_threat_tier": "user_yara_trigger",
 		"winlog_tier":        "multi_channel_wevtapi",
 		"etw_tier":           "native_builtin",
-		"osquery_tier":       "snapshot_modules",
+		"osquery_tier":       "live_query_tables",
 		"metricbeat_tier":    "agent_host_basic",
 		"filestream_tier":    "fim_log_tail",
 		"config_refs": []string{
 			"config/agent_elastic_parity.json",
 			"config/agent_winlog_channels.json",
 			"config/agent_etw_coverage.json",
+			"config/agent_live_query_tables.json",
 		},
 	}
 }

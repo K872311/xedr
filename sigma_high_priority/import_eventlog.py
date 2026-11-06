@@ -2,7 +2,6 @@
 """Import high-severity eventlog Sigma candidates into log_rules/rules (one rule per file)."""
 from __future__ import annotations
 
-import os
 import re
 import sys
 from pathlib import Path
@@ -10,7 +9,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC_ROOT = Path(os.environ.get("SIGMA_RULES_DIR") or "sigma_all_rules")
+SRC_ROOT = Path(r"D:\360极速浏览器X下载\sigma_all_rules")
 DST = ROOT / "log_rules" / "rules"
 CANDS = ROOT / "sigma_high_priority" / "eventlog_candidates.txt"
 MANIFEST = ROOT / "sigma_high_priority" / "imported_eventlog.txt"

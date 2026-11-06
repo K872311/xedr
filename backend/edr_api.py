@@ -298,7 +298,7 @@ def _public_base_url(request: Request) -> str:
         raise HTTPException(
             400,
             detail="当前访问地址是 127.0.0.1，装到别的机器连不上。"
-                   "请先在「配置 → 接入与地址」填写 EDR 平台地址（如 http://<平台IP>:8100），或用局域网 IP 打开后台再下载。",
+                   "请先在「配置 → 接入与地址」填写 EDR 平台地址（如 http://192.168.31.94:8100），或用局域网 IP 打开后台再下载。",
         )
     return detected
 
@@ -1658,3 +1658,160 @@ def api_agent_tags_set(agent_id: str, request: Request, payload: dict = Body(...
     _require_admin(request)
     from . import agent_edr
     return agent_edr.set_agent_tags(agent_id, list((payload or {}).get("tags") or []))
+
+
+# ---------- AI 分析（本地模型 + Skill） ----------
+
+@router.get("/api/edr/ai/status")
+def api_edr_ai_status(request: Request):
+    user = _require_user(request)
+    from . import config as cfg
+    from .ai import host_analyze, skills_loader
+    creds = host_analyze.resolve_creds(user)
+    cfg.reload_ai_config()
+    sk = skills_loader.skills_stats()
+    return {
+        "ok": True,
+        "configured": bool((creds.get("api_key") or "").strip()),
+        "base_url": creds.get("base_url") or cfg.AI_BASE_URL,
+        "model": creds.get("model") or cfg.AI_MODEL,
+        "timeout": creds.get("timeout") or cfg.AI_TIMEOUT,
+        "source": creds.get("source") or "none",
+        "skills_root": str(skills_loader.skills_root()),
+        "skills_total": int(sk.get("total_indexed") or 0),
+        "skills_edr": int(sk.get("edr_relevant") or 0),
+        "skills_priority": int(sk.get("priority") or 0),
+    }
+
+
+@router.post("/api/edr/ai/setup-local")
+def api_edr_ai_setup_local(request: Request, payload: dict = Body(None)):
+    """写入平台本地模型，并同步到当前账号个人配置。"""
+    user = _require_admin(request)
+    body = payload or {}
+    base_url = str(body.get("base_url") or "http://192.168.31.220:8085/v1").strip().rstrip("/")
+    api_key = str(body.get("api_key") or "strata-c0938a1a4b224201931e41d162698fe9").strip()
+    model = str(body.get("model") or "qwen3.8-flash-next-iq3_s").strip()
+    timeout = float(body.get("timeout") or 120)
+    from . import config as cfg
+    from . import user_ai
+    status = cfg.save_ai_config({
+        "base_url": base_url,
+        "api_key": api_key,
+        "model": model,
+        "timeout": timeout,
+    })
+    # 同步到当前管理员个人配置，避免「仅个人 Key」拦截
+    try:
+        user_ai.upsert_profile(
+            str(user.get("id") or ""),
+            {
+                "name": "本地 LAN 模型",
+                "base_url": base_url,
+                "api_key": api_key,
+                "model": model,
+                "timeout": timeout,
+            },
+            activate=True,
+        )
+    except Exception as e:
+        status["user_sync_error"] = str(e)[:200]
+    _audit("edr_ai_setup_local", user, detail=f"{base_url} / {model}")
+    return {"ok": True, "platform": status, "user": user_ai.public_status(str(user.get("id") or ""))}
+
+
+@router.get("/api/edr/ai/skills")
+def api_edr_ai_skills(
+    request: Request,
+    q: str = Query(""),
+    limit: int = Query(200, ge=1, le=500),
+    edr_only: int = Query(1, ge=0, le=1),
+):
+    _require_user(request)
+    from .ai import skills_loader
+    return skills_loader.list_skills(q=q, limit=limit, edr_only=bool(edr_only))
+
+
+@router.get("/api/edr/ai/skills/{skill_id}")
+def api_edr_ai_skill_detail(skill_id: str, request: Request):
+    _require_user(request)
+    from .ai import skills_loader
+    out = skills_loader.load_skill_body(skill_id)
+    if not out.get("ok"):
+        raise HTTPException(404, detail=out.get("error") or "skill 不存在")
+    return out
+
+
+@router.get("/api/edr/ai/hosts")
+def api_edr_ai_hosts(request: Request, online_within_sec: int = Query(90, ge=12, le=3600)):
+    """AI 分析页：在线终端列表（附威胁数，SQL 聚合，避免拉全量事件）。"""
+    _require_user(request)
+    from . import agent_protocol
+    agents = agent_protocol.list_agents(online_within_sec=online_within_sec)
+    by_agent: Dict[str, int] = {}
+    open_by_agent: Dict[str, int] = {}
+    try:
+        agent_protocol.ensure_db()
+        with agent_protocol._lock:
+            conn = agent_protocol._connect()
+            try:
+                # 轻量计数，不解析 detail
+                for row in conn.execute(
+                    "SELECT agent_id, COUNT(*) AS c FROM agent_events "
+                    "WHERE agent_id IS NOT NULL AND agent_id != '' "
+                    "GROUP BY agent_id"
+                ).fetchall():
+                    aid = str(row["agent_id"] or "")
+                    if aid:
+                        by_agent[aid] = int(row["c"] or 0)
+                for row in conn.execute(
+                    "SELECT agent_id, COUNT(*) AS c FROM agent_events "
+                    "WHERE agent_id IS NOT NULL AND agent_id != '' "
+                    "AND lower(COALESCE(status,'')) IN ('','open','new','alerted','active') "
+                    "GROUP BY agent_id"
+                ).fetchall():
+                    aid = str(row["agent_id"] or "")
+                    if aid:
+                        open_by_agent[aid] = int(row["c"] or 0)
+            finally:
+                conn.close()
+    except Exception:
+        pass
+    items = []
+    for a in (agents.get("items") or []):
+        if not isinstance(a, dict):
+            continue
+        aid = str(a.get("agent_id") or "")
+        items.append({
+            **{k: a.get(k) for k in (
+                "agent_id", "hostname", "ip", "last_ip", "online", "status",
+                "os", "platform", "version", "last_seen", "group",
+            )},
+            "threat_count": by_agent.get(aid, 0),
+            "open_threat_count": open_by_agent.get(aid, 0),
+        })
+    items.sort(key=lambda x: (0 if x.get("online") else 1, -(x.get("open_threat_count") or 0), str(x.get("hostname") or "")))
+    return {"ok": True, "items": items, "online_within_sec": online_within_sec}
+
+
+@router.post("/api/edr/ai/analyze-host")
+def api_edr_ai_analyze_host(request: Request, payload: dict = Body(...)):
+    """点击在线终端后一键分析（快照 + 威胁 + 日志）。"""
+    user = _require_user(request)
+    body = payload or {}
+    agent_id = str(body.get("agent_id") or "").strip()
+    if not agent_id:
+        raise HTTPException(400, detail="缺少 agent_id")
+    skill_ids = body.get("skill_ids") if isinstance(body.get("skill_ids"), list) else None
+    use_llm = body.get("use_llm") is not False
+    from .ai import host_analyze
+    out = host_analyze.analyze_agent(
+        agent_id,
+        user=user,
+        skill_ids=skill_ids,
+        use_llm=bool(use_llm),
+    )
+    if not out.get("ok") and out.get("error"):
+        raise HTTPException(400, detail=out.get("error"))
+    _audit("edr_ai_analyze_host", user, detail=agent_id)
+    return out

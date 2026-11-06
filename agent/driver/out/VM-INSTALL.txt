@@ -1,0 +1,29 @@
+FaKmon test driver — install on VM (2026-10-31 build)
+
+Files in this folder:
+  fakmon.sys       — signed test driver
+  FaKmonTest.cer   — trust this cert on the VM
+
+Prerequisites on VM:
+  1. BIOS: disable Secure Boot (if you use test signing)
+  2. Admin CMD: bcdedit /set testsigning on
+  3. Reboot
+  4. Install ForensicAgent first (platform install package)
+
+Quick install (admin PowerShell, copy this whole out\ folder to VM):
+  cd <path-to-out>
+  Import-Certificate -FilePath .\FaKmonTest.cer -CertStoreLocation Cert:\LocalMachine\Root
+  Import-Certificate -FilePath .\FaKmonTest.cer -CertStoreLocation Cert:\LocalMachine\TrustedPublisher
+  New-Item -Force -ItemType Directory C:\ProgramData\ForensicAgent | Out-Null
+  Copy-Item .\fakmon.sys C:\ProgramData\ForensicAgent\fakmon.sys -Force
+  sc.exe create FaKmon type= kernel start= auto binPath= "C:\ProgramData\ForensicAgent\fakmon.sys" DisplayName= "ForensicAgent Kernel Monitor"
+  sc.exe start FaKmon
+  Restart-Service ForensicAgent -ErrorAction SilentlyContinue
+
+Or from repo on VM:
+  cd agent\driver
+  .\build-driver.ps1 -Install
+
+Verify: sc query FaKmon (RUNNING); agent.log contains "FaKmon driver connected".
+
+SHA256 (fakmon.sys): see build machine hash at pack time.

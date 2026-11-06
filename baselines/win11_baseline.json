@@ -1,0 +1,2601 @@
+{
+  "id": "win11_baseline",
+  "name": "Win11 干净系统基线",
+  "source_report": "t1_2026-08-13_07-30-24+08-00",
+  "created_at": "2026-08-13T07:38:55",
+  "note": "从干净 Win11 采集生成；匹配时优先过滤服务/计划任务/启动项",
+  "services": [
+    {
+      "name": "ADPSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "ALG",
+      "image_path": "C:\\WINDOWS\\System32\\alg.exe",
+      "image_path_norm": "c:\\windows\\system32\\alg.exe"
+    },
+    {
+      "name": "AppIDSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "Appinfo",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "AppReadiness",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k AppReadiness -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k appreadiness -p"
+    },
+    {
+      "name": "AppXSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k wsappx -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wsappx -p"
+    },
+    {
+      "name": "ApxSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "AudioEndpointBuilder",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "Audiosrv",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "autotimesvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k autoTimeSvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k autotimesvc"
+    },
+    {
+      "name": "AxInstSV",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k AxInstSVGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k axinstsvgroup"
+    },
+    {
+      "name": "BDESVC",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "BFE",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNoNetworkFirewall -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetworkfirewall -p"
+    },
+    {
+      "name": "BITS",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "BrokerInfrastructure",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "BTAGService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted"
+    },
+    {
+      "name": "BthAvctpSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "bthserv",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "camsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k osprivacy -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k osprivacy -p"
+    },
+    {
+      "name": "CDPSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "CertPropSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs"
+    },
+    {
+      "name": "ClipSVC",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k wsappx -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wsappx -p"
+    },
+    {
+      "name": "COMSysApp",
+      "image_path": "C:\\WINDOWS\\system32\\dllhost.exe /Processid:{02D4B3F1-FD88-11D1-960D-00805FC79235}",
+      "image_path_norm": "c:\\windows\\system32\\dllhost.exe \\processid:{02d4b3f1-fd88-11d1-960d-00805fc79235}"
+    },
+    {
+      "name": "CoreMessagingRegistrar",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNoNetwork -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetwork -p"
+    },
+    {
+      "name": "CryptSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "DcomLaunch",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "dcsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "defragsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k defragsvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k defragsvc"
+    },
+    {
+      "name": "DeviceAssociationService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "DeviceInstall",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "DevQueryBroker",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "Dhcp",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "diagsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k diagnostics",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k diagnostics"
+    },
+    {
+      "name": "DiagTrack",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k utcsvc -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k utcsvc -p"
+    },
+    {
+      "name": "DispBrokerDesktopSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "DisplayEnhancementService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "DmEnrollmentSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "dmwappushservice",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "Dnscache",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "DoSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "dot3svc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "DPS",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNoNetwork -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetwork -p"
+    },
+    {
+      "name": "DsmSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "DsSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "DusmSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s DusmSvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p -s dusmsvc"
+    },
+    {
+      "name": "EapHost",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "edgeupdate",
+      "image_path": "\"C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe\" /svc",
+      "image_path_norm": "\"c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe\" \\svc"
+    },
+    {
+      "name": "edgeupdatem",
+      "image_path": "\"C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe\" /medsvc",
+      "image_path_norm": "\"c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe\" \\medsvc"
+    },
+    {
+      "name": "EFS",
+      "image_path": "C:\\WINDOWS\\System32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "embeddedmode",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "EntAppSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k appmodelRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k appmodelredirectionguard -p"
+    },
+    {
+      "name": "EventLog",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "EventSystem",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceredirectionguard -p"
+    },
+    {
+      "name": "fdPHost",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "FDResPub",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "fhsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "FontCache",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "FrameServer",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k Camera",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k camera"
+    },
+    {
+      "name": "FrameServerMonitor",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k CameraMonitor",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k cameramonitor"
+    },
+    {
+      "name": "GameInputSvc",
+      "image_path": "C:\\WINDOWS\\System32\\GameInputSvc.exe",
+      "image_path_norm": "c:\\windows\\system32\\gameinputsvc.exe"
+    },
+    {
+      "name": "gpsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k GPSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k gpsvcgroup"
+    },
+    {
+      "name": "GraphicsPerfSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k GraphicsPerfSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k graphicsperfsvcgroup"
+    },
+    {
+      "name": "hidserv",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "HipsDaemon",
+      "image_path": "\"C:\\Program Files\\Huorong\\Sysdiag\\bin\\HipsDaemon.exe\" -sHipsDaemon",
+      "image_path_norm": "\"c:\\program files\\huorong\\sysdiag\\bin\\hipsdaemon.exe\" -shipsdaemon"
+    },
+    {
+      "name": "hpatchmon",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "HRWSCCtrl",
+      "image_path": "\"C:\\Program Files\\Huorong\\Sysdiag\\bin\\wsctrlsvc.exe\" /svc_run",
+      "image_path_norm": "\"c:\\program files\\huorong\\sysdiag\\bin\\wsctrlsvc.exe\" \\svc_run"
+    },
+    {
+      "name": "HvHost",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "icssvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "iDefender",
+      "image_path": "\"C:\\Program Files (x86)\\iDefender\\iDefenderService.exe\"",
+      "image_path_norm": "\"c:\\program files (x86)\\idefender\\idefenderservice.exe\""
+    },
+    {
+      "name": "IKEEXT",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "InstallService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "InventorySvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k InvSvcGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k invsvcgroup -p"
+    },
+    {
+      "name": "iphlpsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetSvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "IpxlatCfgSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "KeyIso",
+      "image_path": "C:\\WINDOWS\\system32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "KtmRm",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkserviceandnoimpersonation -p"
+    },
+    {
+      "name": "LanmanServer",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "LanmanWorkstation",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "lfsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcsRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcsredirectionguard -p"
+    },
+    {
+      "name": "LicenseManager",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "lltdsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "lmhosts",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "LocalKdc",
+      "image_path": "C:\\WINDOWS\\System32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "LSM",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "LxpSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs"
+    },
+    {
+      "name": "MapsBroker",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "McmSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k McmSvc -p -s McmSvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k mcmsvc -p -s mcmsvc"
+    },
+    {
+      "name": "McpManagementService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k McpManagementServiceGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k mcpmanagementservicegroup"
+    },
+    {
+      "name": "MicrosoftCopilotElevationService",
+      "image_path": "\"C:\\Program Files (x86)\\Microsoft\\Copilot\\Application\\150.0.4078.65\\elevation_service.exe\"",
+      "image_path_norm": "\"c:\\program files (x86)\\microsoft\\copilot\\application\\150.0.4078.65\\elevation_service.exe\""
+    },
+    {
+      "name": "MicrosoftEdgeElevationService",
+      "image_path": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\150.0.4078.99\\elevation_service.exe\"",
+      "image_path_norm": "\"c:\\program files (x86)\\microsoft\\edge\\application\\150.0.4078.99\\elevation_service.exe\""
+    },
+    {
+      "name": "midisrv",
+      "image_path": "C:\\WINDOWS\\system32\\midisrv.exe",
+      "image_path_norm": "c:\\windows\\system32\\midisrv.exe"
+    },
+    {
+      "name": "mpssvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNoNetworkFirewall -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetworkfirewall -p"
+    },
+    {
+      "name": "MSDTC",
+      "image_path": "C:\\WINDOWS\\System32\\msdtc.exe",
+      "image_path_norm": "c:\\windows\\system32\\msdtc.exe"
+    },
+    {
+      "name": "MSiSCSI",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "msiserver",
+      "image_path": "C:\\WINDOWS\\system32\\msiexec.exe /V",
+      "image_path_norm": "c:\\windows\\system32\\msiexec.exe \\v"
+    },
+    {
+      "name": "NaturalAuthentication",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "NcaSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetSvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "NcbService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "NcdAutoSetup",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNoNetwork -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetwork -p"
+    },
+    {
+      "name": "Netlogon",
+      "image_path": "C:\\WINDOWS\\system32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "Netman",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "netprofm",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netprofm -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netprofm -p"
+    },
+    {
+      "name": "NetSetupSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "NetTcpPortSharing",
+      "image_path": "C:\\WINDOWS\\Microsoft.NET\\Framework64\\v4.0.30319\\SMSvcHost.exe",
+      "image_path_norm": "c:\\windows\\microsoft.net\\framework64\\v4.0.30319\\smsvchost.exe"
+    },
+    {
+      "name": "NgcCtnrSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "NgcSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "NlaSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netprofm -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netprofm -p"
+    },
+    {
+      "name": "nsi",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "PcaSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "perceptionsimulation",
+      "image_path": "C:\\WINDOWS\\system32\\PerceptionSimulation\\PerceptionSimulationService.exe",
+      "image_path_norm": "c:\\windows\\system32\\perceptionsimulation\\perceptionsimulationservice.exe"
+    },
+    {
+      "name": "PerfHost",
+      "image_path": "C:\\WINDOWS\\SysWow64\\perfhost.exe",
+      "image_path_norm": "c:\\windows\\syswow64\\perfhost.exe"
+    },
+    {
+      "name": "PhoneSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "pla",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNoNetwork -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenonetwork -p"
+    },
+    {
+      "name": "PlugPlay",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "PolicyAgent",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k NetworkServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservicenetworkrestricted -p"
+    },
+    {
+      "name": "Power",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "PrintDeviceConfigurationService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "PrintNotify",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k print",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k print"
+    },
+    {
+      "name": "PrintScanBrokerService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k PrintScanBrokerService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k printscanbrokerservice -p"
+    },
+    {
+      "name": "ProfSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UserProfileService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k userprofileservice -p"
+    },
+    {
+      "name": "PushToInstall",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "QWAVE",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "RasAuto",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "RasMan",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs"
+    },
+    {
+      "name": "refsdedupsvc",
+      "image_path": "C:\\WINDOWS\\System32\\ReFsDedupSvc.exe",
+      "image_path_norm": "c:\\windows\\system32\\refsdedupsvc.exe"
+    },
+    {
+      "name": "RemoteAccess",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs"
+    },
+    {
+      "name": "RemoteRegistry",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k localService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "RetailDemo",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k rdxgroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k rdxgroup"
+    },
+    {
+      "name": "RmSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted"
+    },
+    {
+      "name": "RpcEptMapper",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k RPCSS -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k rpcss -p"
+    },
+    {
+      "name": "RpcLocator",
+      "image_path": "C:\\WINDOWS\\system32\\locator.exe",
+      "image_path_norm": "c:\\windows\\system32\\locator.exe"
+    },
+    {
+      "name": "RpcSs",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k rpcss -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k rpcss -p"
+    },
+    {
+      "name": "SamSs",
+      "image_path": "C:\\WINDOWS\\system32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "SCardSvr",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation"
+    },
+    {
+      "name": "ScDeviceEnum",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted"
+    },
+    {
+      "name": "Schedule",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "SCPolicySvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs"
+    },
+    {
+      "name": "SDRSVC",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k SDRSVC",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k sdrsvc"
+    },
+    {
+      "name": "seclogon",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "SecurityHealthService",
+      "image_path": "C:\\WINDOWS\\system32\\SecurityHealthService.exe",
+      "image_path_norm": "c:\\windows\\system32\\securityhealthservice.exe"
+    },
+    {
+      "name": "SEMgrSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "SENS",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcsRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcsredirectionguard -p"
+    },
+    {
+      "name": "SensorDataService",
+      "image_path": "C:\\WINDOWS\\System32\\SensorDataService.exe",
+      "image_path_norm": "c:\\windows\\system32\\sensordataservice.exe"
+    },
+    {
+      "name": "SensorService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "SensrSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "SessionEnv",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "SharedAccess",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "ShellHWDetection",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "shpamsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcsRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcsredirectionguard -p"
+    },
+    {
+      "name": "smphost",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k smphost",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k smphost"
+    },
+    {
+      "name": "SmsRouter",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "SNMPTrap",
+      "image_path": "C:\\WINDOWS\\System32\\snmptrap.exe",
+      "image_path_norm": "c:\\windows\\system32\\snmptrap.exe"
+    },
+    {
+      "name": "Spooler",
+      "image_path": "C:\\WINDOWS\\System32\\spoolsv.exe",
+      "image_path_norm": "c:\\windows\\system32\\spoolsv.exe"
+    },
+    {
+      "name": "sppsvc",
+      "image_path": "C:\\WINDOWS\\system32\\sppsvc.exe",
+      "image_path_norm": "c:\\windows\\system32\\sppsvc.exe"
+    },
+    {
+      "name": "SSDPSRV",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "ssh-agent",
+      "image_path": "C:\\WINDOWS\\System32\\OpenSSH\\ssh-agent.exe",
+      "image_path_norm": "c:\\windows\\system32\\openssh\\ssh-agent.exe"
+    },
+    {
+      "name": "SstpSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "StateRepository",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k appmodel -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k appmodel -p"
+    },
+    {
+      "name": "StiSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k imgsvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k imgsvc"
+    },
+    {
+      "name": "StorSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "svsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "swprv",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k swprv",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k swprv"
+    },
+    {
+      "name": "SysMain",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "SystemEventsBroker",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DcomLaunch -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k dcomlaunch -p"
+    },
+    {
+      "name": "TapiSrv",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "TermService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice"
+    },
+    {
+      "name": "TextInputManagementService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "Themes",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "TieringEngineService",
+      "image_path": "C:\\WINDOWS\\system32\\TieringEngineService.exe",
+      "image_path_norm": "c:\\windows\\system32\\tieringengineservice.exe"
+    },
+    {
+      "name": "TimeBrokerSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "TokenBroker",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "TrkWks",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "TroubleshootingSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "TrustedInstaller",
+      "image_path": "C:\\WINDOWS\\servicing\\TrustedInstaller.exe",
+      "image_path_norm": "c:\\windows\\servicing\\trustedinstaller.exe"
+    },
+    {
+      "name": "tzautoupdate",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "UmRdpService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "upnphost",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "UserManager",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "UsoSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "VaultSvc",
+      "image_path": "C:\\WINDOWS\\system32\\lsass.exe",
+      "image_path_norm": "c:\\windows\\system32\\lsass.exe"
+    },
+    {
+      "name": "vds",
+      "image_path": "C:\\WINDOWS\\System32\\vds.exe",
+      "image_path_norm": "c:\\windows\\system32\\vds.exe"
+    },
+    {
+      "name": "VGAuthService",
+      "image_path": "\"C:\\Program Files\\VMware\\VMware Tools\\VMware VGAuth\\VGAuthService.exe\"",
+      "image_path_norm": "\"c:\\program files\\vmware\\vmware tools\\vmware vgauth\\vgauthservice.exe\""
+    },
+    {
+      "name": "VM3DService",
+      "image_path": "\"C:\\Program Files\\VMware\\VMware Tools\\vm3dservice.exe\"",
+      "image_path_norm": "\"c:\\program files\\vmware\\vmware tools\\vm3dservice.exe\""
+    },
+    {
+      "name": "vmicguestinterface",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "vmicheartbeat",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k ICService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k icservice -p"
+    },
+    {
+      "name": "vmickvpexchange",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "vmicrdv",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k ICService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k icservice -p"
+    },
+    {
+      "name": "vmicshutdown",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "vmictimesync",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "vmicvmsession",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "vmicvss",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "VMTools",
+      "image_path": "\"C:\\Program Files\\VMware\\VMware Tools\\vmtoolsd.exe\"",
+      "image_path_norm": "\"c:\\program files\\vmware\\vmware tools\\vmtoolsd.exe\""
+    },
+    {
+      "name": "vmvss",
+      "image_path": "C:\\WINDOWS\\system32\\dllhost.exe /Processid:{32367CDA-1415-4D35-8CA3-F74DA4ED14B0}",
+      "image_path_norm": "c:\\windows\\system32\\dllhost.exe \\processid:{32367cda-1415-4d35-8ca3-f74da4ed14b0}"
+    },
+    {
+      "name": "VSS",
+      "image_path": "C:\\WINDOWS\\system32\\vssvc.exe",
+      "image_path_norm": "c:\\windows\\system32\\vssvc.exe"
+    },
+    {
+      "name": "W32Time",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice"
+    },
+    {
+      "name": "WaaSMedicSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k wusvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wusvcs -p"
+    },
+    {
+      "name": "WalletService",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k appmodelRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k appmodelredirectionguard -p"
+    },
+    {
+      "name": "WarpJITSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted"
+    },
+    {
+      "name": "wbengine",
+      "image_path": "\"C:\\WINDOWS\\system32\\wbengine.exe\"",
+      "image_path_norm": "\"c:\\windows\\system32\\wbengine.exe\""
+    },
+    {
+      "name": "WbioSrvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k WbioSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wbiosvcgroup"
+    },
+    {
+      "name": "Wcmsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s Wcmsvc",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p -s wcmsvc"
+    },
+    {
+      "name": "wcncsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceAndNoImpersonation -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localserviceandnoimpersonation -p"
+    },
+    {
+      "name": "WdiServiceHost",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "WdiSystemHost",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "WdNisSvc",
+      "image_path": "\"C:\\Program Files\\Windows Defender\\NisSrv.exe\"",
+      "image_path_norm": "\"c:\\program files\\windows defender\\nissrv.exe\""
+    },
+    {
+      "name": "WebClient",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "webthreatdefsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k WebThreatDefense -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k webthreatdefense -p"
+    },
+    {
+      "name": "Wecsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "WEPHOSTSVC",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k WepHostSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wephostsvcgroup"
+    },
+    {
+      "name": "wercplsupport",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "WerSvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k WerSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wersvcgroup"
+    },
+    {
+      "name": "WFDSConMgrSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "whesvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k whesvc -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k whesvc -p"
+    },
+    {
+      "name": "WiaRpc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "WinDefend",
+      "image_path": "\"C:\\Program Files\\Windows Defender\\MsMpEng.exe\"",
+      "image_path_norm": "\"c:\\program files\\windows defender\\msmpeng.exe\""
+    },
+    {
+      "name": "WinHttpAutoProxySvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceHttp -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicehttp -p"
+    },
+    {
+      "name": "Winmgmt",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "WinRM",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k NetworkService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k networkservice -p"
+    },
+    {
+      "name": "wisvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "WlanSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "wlidsvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "wlpasvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "WManSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "wmiApSrv",
+      "image_path": "C:\\WINDOWS\\system32\\wbem\\WmiApSrv.exe",
+      "image_path_norm": "c:\\windows\\system32\\wbem\\wmiapsrv.exe"
+    },
+    {
+      "name": "WMPNetworkSvc",
+      "image_path": "\"C:\\Program Files\\Windows Media Player\\wmpnetwk.exe\"",
+      "image_path_norm": "\"c:\\program files\\windows media player\\wmpnetwk.exe\""
+    },
+    {
+      "name": "workfolderssvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "WpcMonSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice"
+    },
+    {
+      "name": "WPDBusEnum",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted"
+    },
+    {
+      "name": "WpnService",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "wpscloudsvr",
+      "image_path": "\"C:\\Program Files (x86)\\Kingsoft\\office6\\wpscloudsvr.exe\" LocalService",
+      "image_path_norm": "\"c:\\program files (x86)\\kingsoft\\office6\\wpscloudsvr.exe\" localservice"
+    },
+    {
+      "name": "WSAIFabricSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k WSAIFabricSvcGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wsaifabricsvcgroup -p"
+    },
+    {
+      "name": "wscsvc",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservicenetworkrestricted -p"
+    },
+    {
+      "name": "WSearch",
+      "image_path": "C:\\WINDOWS\\system32\\SearchIndexer.exe /Embedding",
+      "image_path_norm": "c:\\windows\\system32\\searchindexer.exe \\embedding"
+    },
+    {
+      "name": "wuauserv",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "wuqisvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k WuqiSvcGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k wuqisvcgroup -p"
+    },
+    {
+      "name": "WwanSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "XblAuthManager",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcsRedirectionGuard -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcsredirectionguard -p"
+    },
+    {
+      "name": "XblGameSave",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "XboxGipSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "XboxNetApiSvc",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k netsvcs -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k netsvcs -p"
+    },
+    {
+      "name": "AarSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k AarSvcGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k aarsvcgroup -p"
+    },
+    {
+      "name": "BcastDVRUserService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k BcastDVRUserService",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k bcastdvruserservice"
+    },
+    {
+      "name": "BluetoothUserService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k BthAppGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k bthappgroup -p"
+    },
+    {
+      "name": "CaptureService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "cbdhsvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k ClipboardSvcGroup -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k clipboardsvcgroup -p"
+    },
+    {
+      "name": "CDPUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "CloudBackupRestoreSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "ConsentUxUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DevicesFlow",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k devicesflow"
+    },
+    {
+      "name": "CredentialEnrollmentManagerUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\CredentialEnrollmentManager.exe",
+      "image_path_norm": "c:\\windows\\system32\\credentialenrollmentmanager.exe"
+    },
+    {
+      "name": "DeviceAssociationBrokerSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DevicesFlow -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k devicesflow -p"
+    },
+    {
+      "name": "DevicePickerUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DevicesFlow",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k devicesflow"
+    },
+    {
+      "name": "DevicesFlowUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k DevicesFlow",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k devicesflow"
+    },
+    {
+      "name": "MessagingService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "NPSMSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localservice -p"
+    },
+    {
+      "name": "OneSyncSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "P9RdrService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k P9RdrService -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k p9rdrservice -p"
+    },
+    {
+      "name": "PenService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k PenService",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k penservice"
+    },
+    {
+      "name": "PimIndexMaintenanceSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "PrintWorkflowUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k PrintWorkflow",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k printworkflow"
+    },
+    {
+      "name": "UdkUserSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UdkSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k udksvcgroup"
+    },
+    {
+      "name": "UnistoreSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\System32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "UserDataSvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    },
+    {
+      "name": "webthreatdefusersvc_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k localsystemnetworkrestricted -p"
+    },
+    {
+      "name": "WpnUserService_5cf6d",
+      "image_path": "C:\\WINDOWS\\system32\\svchost.exe -k UnistackSvcGroup",
+      "image_path_norm": "c:\\windows\\system32\\svchost.exe -k unistacksvcgroup"
+    }
+  ],
+  "tasks": [
+    {
+      "task_name": "\\MicrosoftEdgeUpdateTaskMachineCore{3A013C4C-A171-42B9-8D5F-EA90CFDB168E}",
+      "command": "C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe /c",
+      "command_norm": "c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe \\c"
+    },
+    {
+      "task_name": "\\MicrosoftEdgeUpdateTaskMachineUA{B0374BD6-2DC1-4F2A-B669-ECFF8BB94427}",
+      "command": "C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe /ua /installsource scheduler",
+      "command_norm": "c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe \\ua \\installsource scheduler"
+    },
+    {
+      "task_name": "\\OneDrive Reporting Task-S-1-5-21-1858468054-31582239-3174400545-1001",
+      "command": "%localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe /reporting",
+      "command_norm": "%localappdata%\\microsoft\\onedrive\\onedrivestandaloneupdater.exe \\reporting"
+    },
+    {
+      "task_name": "\\OneDrive Standalone Update Task-S-1-5-21-1858468054-31582239-3174400545-1001",
+      "command": "%localappdata%\\Microsoft\\OneDrive\\OneDriveStandaloneUpdater.exe",
+      "command_norm": "%localappdata%\\microsoft\\onedrive\\onedrivestandaloneupdater.exe"
+    },
+    {
+      "task_name": "\\OneDrive Startup Task-S-1-5-21-1858468054-31582239-3174400545-1001",
+      "command": "C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\25.087.0506.0001\\OneDriveLauncher.exe /startInstances",
+      "command_norm": "c:\\users\\sjwus\\appdata\\local\\microsoft\\onedrive\\25.087.0506.0001\\onedrivelauncher.exe \\startinstances"
+    },
+    {
+      "task_name": "\\WpsUpdateLogonTask_sjwus",
+      "command": "C:\\Users\\sjwus\\AppData\\Local\\Kingsoft\\WPS Office\\ksolaunch.exe /wpsupdate -from=task -source=task",
+      "command_norm": "c:\\users\\sjwus\\appdata\\local\\kingsoft\\wps office\\ksolaunch.exe \\wpsupdate -from=task -source=task"
+    },
+    {
+      "task_name": "\\WpsUpdateTask_sjwus",
+      "command": "C:\\Users\\sjwus\\AppData\\Local\\Kingsoft\\WPS Office\\ksolaunch.exe /wpsupdate -from=task -source=task",
+      "command_norm": "c:\\users\\sjwus\\appdata\\local\\kingsoft\\wps office\\ksolaunch.exe \\wpsupdate -from=task -source=task"
+    },
+    {
+      "task_name": "\\WpsWakeWnsLogonTask",
+      "command": "C:\\Users\\sjwus\\AppData\\Local\\Kingsoft\\WPS Office\\\\ksolaunch.exe Run addons/kpluginwrapper/kpluginwrapper.dll run_plugin -plugin_name=kmessagepushcenter -dll_name=kmessagepushcenter wake_wns",
+      "command_norm": "c:\\users\\sjwus\\appdata\\local\\kingsoft\\wps office\\ksolaunch.exe run addons\\kpluginwrapper\\kpluginwrapper.dll run_plugin -plugin_name=kmessagepushcenter -dll_name=kmessagepushcenter wake_wns"
+    },
+    {
+      "task_name": "TaskName",
+      "command": "Task To Run",
+      "command_norm": "task to run"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319 64",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319 64 Critical",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\.NET Framework\\.NET Framework NGEN v4.0.30319 Critical",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AccountHealth\\RecoverabilityToastTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Active Directory Rights Management Services Client\\AD RMS Rights Policy Template Management (Automated)",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Active Directory Rights Management Services Client\\AD RMS Rights Policy Template Management (Manual)",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppID\\EDP Policy Manager",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppID\\PolicyConverter",
+      "command": "%windir%\\system32\\appidpolicyconverter.exe",
+      "command_norm": "c:\\windows\\system32\\appidpolicyconverter.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppID\\VerifiedPublisherCertStoreCheck",
+      "command": "%windir%\\system32\\appidcertstorecheck.exe",
+      "command_norm": "c:\\windows\\system32\\appidcertstorecheck.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Application Experience\\MareBackup",
+      "command": "Multiple actions",
+      "command_norm": "multiple actions"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser Exp",
+      "command": "%windir%\\system32\\compattelrunner.exe -m:appraiser.dll -f:DoScheduledTelemetryRun express",
+      "command_norm": "c:\\windows\\system32\\compattelrunner.exe -m:appraiser.dll -f:doscheduledtelemetryrun express"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Application Experience\\PcaPatchDbTask",
+      "command": "%windir%\\system32\\rundll32.exe %windir%\\system32\\PcaSvc.dll,PcaPatchSdbTask",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe c:\\windows\\system32\\pcasvc.dll,pcapatchsdbtask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Application Experience\\SdbinstMergeDbTask",
+      "command": "%windir%\\system32\\sdbinst.exe -mm",
+      "command_norm": "c:\\windows\\system32\\sdbinst.exe -mm"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Application Experience\\StartupAppTask",
+      "command": "%windir%\\system32\\rundll32.exe Startupscan.dll,SusRunTask",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe startupscan.dll,susruntask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ApplicationData\\appuriverifierdaily",
+      "command": "%windir%\\system32\\AppHostRegistrationVerifier.exe",
+      "command_norm": "c:\\windows\\system32\\apphostregistrationverifier.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ApplicationData\\appuriverifierinstall",
+      "command": "%windir%\\system32\\AppHostRegistrationVerifier.exe",
+      "command_norm": "c:\\windows\\system32\\apphostregistrationverifier.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ApplicationData\\CleanupTemporaryState",
+      "command": "%windir%\\system32\\rundll32.exe Windows.Storage.ApplicationData.dll,CleanupTemporaryState",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe windows.storage.applicationdata.dll,cleanuptemporarystate"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ApplicationData\\DsSvcCleanup",
+      "command": "%windir%\\system32\\dstokenclean.exe",
+      "command_norm": "c:\\windows\\system32\\dstokenclean.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppListBackup\\Backup",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppListBackup\\BackupNonMaintenance",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppxDeploymentClient\\Pre-staged app cleanup",
+      "command": "%windir%\\system32\\rundll32.exe %windir%\\system32\\AppxDeploymentClient.dll,AppxPreStageCleanupRunTask",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe c:\\windows\\system32\\appxdeploymentclient.dll,appxprestagecleanupruntask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\AppxDeploymentClient\\UCPD velocity",
+      "command": "%windir%\\system32\\UCPDMgr.exe",
+      "command_norm": "c:\\windows\\system32\\ucpdmgr.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Autochk\\Proxy",
+      "command": "%windir%\\system32\\rundll32.exe /d acproxy.dll,PerformAutochkOperations",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe \\d acproxy.dll,performautochkoperations"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\BitLocker\\BitLocker Encrypt All Drives",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\BitLocker\\BitLocker MDM policy Refresh",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Bluetooth\\UninstallDeviceTask",
+      "command": "BthUdTask.exe $(Arg0)",
+      "command_norm": "bthudtask.exe $(arg0)"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\BrokerInfrastructure\\BgTaskRegistrationMaintenanceTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\capabilityaccessmanager\\maintenancetasks",
+      "command": "%windir%\\system32\\rundll32.exe %windir%\\system32\\CapabilityAccessManager.dll,CapabilityAccessManagerDoStoreMaintenance",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe c:\\windows\\system32\\capabilityaccessmanager.dll,capabilityaccessmanagerdostoremaintenance"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\AikCertEnrollTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\CryptoPolicyTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\KeyPreGenTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\SystemTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\UserTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CertificateServicesClient\\UserTask-Roam",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Chkdsk\\ProactiveScan",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Chkdsk\\SyspartRepair",
+      "command": "%windir%\\system32\\bcdboot.exe %windir% /sysrepair",
+      "command_norm": "c:\\windows\\system32\\bcdboot.exe c:\\windows \\sysrepair"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Clip\\License Validation",
+      "command": "%SystemRoot%\\system32\\ClipUp.exe -p -s -o",
+      "command_norm": "c:\\windows\\system32\\clipup.exe -p -s -o"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CloudExperienceHost\\CreateObjectTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CloudRestore\\Backup",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\CloudRestore\\Restore",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ConsentUX\\UnifiedConsent\\UnifiedConsentSyncTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator",
+      "command": "%SystemRoot%\\System32\\wsqmcons.exe",
+      "command_norm": "c:\\windows\\system32\\wsqmcons.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Check And Scan",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Scan",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Data Integrity Scan\\Data Integrity Scan for Crash Recovery",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag",
+      "command": "%windir%\\system32\\defrag.exe -c -h -o -$",
+      "command_norm": "c:\\windows\\system32\\defrag.exe -c -h -o -$"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Device Information\\Device",
+      "command": "%windir%\\system32\\devicecensus.exe SystemCxt",
+      "command_norm": "c:\\windows\\system32\\devicecensus.exe systemcxt"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Device Information\\Device User",
+      "command": "%windir%\\system32\\devicecensus.exe UserCxt",
+      "command_norm": "c:\\windows\\system32\\devicecensus.exe usercxt"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Device Setup\\Driver Recovery on Reboot",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Device Setup\\Metadata Refresh",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\HandleCommand",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\HandleWnsCommand",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\IntegrityCheck",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\LocateCommandUserSession",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceAccountChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceLocationRightsChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDevicePeriodic24",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDevicePolicyChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceProtectionStateChanged",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceSettingChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterDeviceWnsFallback",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DeviceDirectoryClient\\RegisterUserDevice",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Diagnosis\\RecommendedTroubleshootingScanner",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Diagnosis\\Scheduled",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Diagnosis\\UnexpectedCodepath",
+      "command": "%windir%\\system32\\UCConfigTask.exe",
+      "command_norm": "c:\\windows\\system32\\ucconfigtask.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DirectX\\DirectXDatabaseUpdater",
+      "command": "%windir%\\system32\\directxdatabaseupdater.exe",
+      "command_norm": "c:\\windows\\system32\\directxdatabaseupdater.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DirectX\\DXGIAdapterCache",
+      "command": "%windir%\\system32\\dxgiadaptercache.exe",
+      "command_norm": "c:\\windows\\system32\\dxgiadaptercache.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DiskCleanup\\SilentCleanup",
+      "command": "by user disabled /autocleanstoragesense /d %systemdrive%",
+      "command_norm": "by user disabled \\autocleanstoragesense \\d %systemdrive%"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector",
+      "command": "by user disabled dfdts.dll,DfdGetDefaultPolicyAndSMART",
+      "command_norm": "by user disabled dfdts.dll,dfdgetdefaultpolicyandsmart"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticResolver",
+      "command": "%windir%\\system32\\DFDWiz.exe",
+      "command_norm": "c:\\windows\\system32\\dfdwiz.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DiskFootprint\\Diagnostics",
+      "command": "%windir%\\system32\\disksnapshot.exe -z",
+      "command_norm": "c:\\windows\\system32\\disksnapshot.exe -z"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DiskFootprint\\StorageSense",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\DUSM\\dusmtask",
+      "command": "%SystemRoot%\\System32\\dusmtask.exe",
+      "command_norm": "c:\\windows\\system32\\dusmtask.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\EDP\\EDP App Launch Task",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\EDP\\EDP Auth Task",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\EDP\\EDP Inaccessible Credentials Task",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\EDP\\StorageCardEncryption Task",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ExploitGuard\\ExploitGuard MDM policy Refresh",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Feedback\\Siuf\\DmClient",
+      "command": "%windir%\\system32\\dmclient.exe",
+      "command_norm": "c:\\windows\\system32\\dmclient.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Feedback\\Siuf\\DmClientOnScenarioDownload",
+      "command": "%windir%\\system32\\dmclient.exe utcwnf",
+      "command_norm": "c:\\windows\\system32\\dmclient.exe utcwnf"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\FileHistory\\File History (maintenance mode)",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\BootstrapUsageDataReporting",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\GovernedFeatureUsageProcessing",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\ReconcileConfigs",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\ReconcileFeatures",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataFlushing",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataReceiver",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\FeatureConfig\\UsageDataReporting",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Flighting\\OneSettings\\RefreshCache",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Hotpatch\\Monitoring",
+      "command": "%systemroot%\\system32\\cmd.exe /d /c %systemroot%\\system32\\hpatchmonTask.cmd",
+      "command_norm": "c:\\windows\\system32\\cmd.exe \\d \\c c:\\windows\\system32\\hpatchmontask.cmd"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\InputSettingsRestoreDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\LocalUserSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\MouseSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\PenSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\RemoteMouseSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\RemotePenSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\RemoteTouchpadSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\syncpensettings",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\input\\TouchpadSyncDataAvailable",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\RestoreDevice",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\ScanForUpdates",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\ScanForUpdatesAsUser",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\SmartRetry",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\WakeUpAndContinueUpdates",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\InstallService\\WakeUpAndScanForUpdates",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\International\\Synchronize Language Settings",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Kernel\\La57Cleanup",
+      "command": "%windir%\\system32\\la57setup.exe",
+      "command_norm": "c:\\windows\\system32\\la57setup.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\LanguageComponentsInstaller\\Installation",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\LanguageComponentsInstaller\\ReconcileLanguageResources",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\LanguageComponentsInstaller\\Uninstallation",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\License Manager\\TempSignedLicenseExchange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Location\\WindowsActionDialog",
+      "command": "%windir%\\System32\\WindowsActionDialog.exe",
+      "command_norm": "c:\\windows\\system32\\windowsactiondialog.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Maintenance\\WinSAT",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Autopilot\\DetectHardwareChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Autopilot\\RemediateHardwareChange",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Provisioning\\Cellular",
+      "command": "%windir%\\system32\\ProvTool.exe /turn 7 /source CellStateChangeTask",
+      "command_norm": "c:\\windows\\system32\\provtool.exe \\turn 7 \\source cellstatechangetask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Provisioning\\Logon",
+      "command": "%windir%\\system32\\ProvTool.exe /turn 5 /source LogonIdleTask",
+      "command_norm": "c:\\windows\\system32\\provtool.exe \\turn 5 \\source logonidletask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Provisioning\\MdmDiagnosticsCleanup",
+      "command": "%windir%\\system32\\MdmDiagnosticsTool.exe /clean",
+      "command_norm": "c:\\windows\\system32\\mdmdiagnosticstool.exe \\clean"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Provisioning\\Retry",
+      "command": "%windir%\\system32\\ProvTool.exe /turn 5 /source ProvRetryTask",
+      "command_norm": "c:\\windows\\system32\\provtool.exe \\turn 5 \\source provretrytask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Management\\Provisioning\\RunOnReboot",
+      "command": "%windir%\\system32\\ProvTool.exe /turn 5 /source ContinueSessionTask",
+      "command_norm": "c:\\windows\\system32\\provtool.exe \\turn 5 \\source continuesessiontask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Maps\\MapsToastTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Maps\\MapsUpdateTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\MemoryDiagnostic\\AutomaticOfflineMemoryDiagnostic",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\MemoryDiagnostic\\ProcessMemoryDiagnosticEvents",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\MemoryDiagnostic\\RunFullMemoryDiagnostic",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\MUI\\LPRemove",
+      "command": "%windir%\\system32\\lpremove.exe",
+      "command_norm": "c:\\windows\\system32\\lpremove.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Multimedia\\SystemSoundsService",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Network Connectivity Status Indicator\\NcsiIdentifyUserProxies",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\NlaSvc\\WiFiTask",
+      "command": "%SystemRoot%\\System32\\WiFiTask.exe nla",
+      "command_norm": "c:\\windows\\system32\\wifitask.exe nla"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PCRPF\\PCR Prediction Framework Firmware Update Task",
+      "command": "%windir%\\system32\\rundll32.exe %windir%\\system32\\pcrpf.dll,NotifyFirmwareUpdateStaged",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe c:\\windows\\system32\\pcrpf.dll,notifyfirmwareupdatestaged"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PerformanceTrace\\RequestTrace",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PerformanceTrace\\WhesvcToast",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PI\\Secure-Boot-Update",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PI\\Sqm-Tasks",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Plug and Play\\Device Install Group Policy",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Plug and Play\\Device Install Reboot Required",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Plug and Play\\Sysprep Generalize Drivers",
+      "command": "%SystemRoot%\\System32\\drvinst.exe 6",
+      "command_norm": "c:\\windows\\system32\\drvinst.exe 6"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Pluton\\Pluton-Ksp-Provisioning",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Power Efficiency Diagnostics\\AnalyzeSystem",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Printing\\EduPrintProv",
+      "command": "%windir%\\system32\\eduprintprov.exe",
+      "command_norm": "c:\\windows\\system32\\eduprintprov.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Printing\\PrinterCleanupTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Printing\\PrintJobCleanupTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PushToInstall\\LoginCheck",
+      "command": "%windir%\\system32\\sc.exe start pushtoinstall login",
+      "command_norm": "c:\\windows\\system32\\sc.exe start pushtoinstall login"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\PushToInstall\\Registration",
+      "command": "%windir%\\system32\\sc.exe start pushtoinstall registration",
+      "command_norm": "c:\\windows\\system32\\sc.exe start pushtoinstall registration"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Ras\\MobilityManager",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\RecoveryEnvironment\\VerifyWinRE",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\ReFsDedupSvc\\Initialization",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Registry\\RegIdleBackup",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\RemoteAssistance\\RemoteAssistanceTask",
+      "command": "%windir%\\system32\\RAServer.exe /offerraupdate",
+      "command_norm": "c:\\windows\\system32\\raserver.exe \\offerraupdate"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\RetailDemo\\CleanupOfflineContent",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Servicing\\OOBEFodSetup",
+      "command": "%windir%\\system32\\OOBEFodSetup.exe",
+      "command_norm": "c:\\windows\\system32\\oobefodsetup.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Servicing\\StartComponentCleanup",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Setup\\PITRTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Setup\\SetupRecoveryDataTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SharedPC\\Account Cleanup",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\CreateObjectTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\FamilySafetyMonitor",
+      "command": "%windir%\\System32\\wpcmon.exe",
+      "command_norm": "c:\\windows\\system32\\wpcmon.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\FamilySafetyRefreshTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\IndexerAutomaticMaintenance",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\ThemeAssetTask_SyncFODState",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\ThemesSyncedImageDownload",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\UpdateUserPictureTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Shell\\UpdateUserPictureTaskContained",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTaskLogon",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SoftwareProtectionPlatform\\SvcRestartTaskNetwork",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SpacePort\\SpaceAgentTask",
+      "command": "%windir%\\system32\\SpaceAgent.exe",
+      "command_norm": "c:\\windows\\system32\\spaceagent.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SpacePort\\SpaceManagerTask",
+      "command": "%windir%\\system32\\spaceman.exe /Work",
+      "command_norm": "c:\\windows\\system32\\spaceman.exe \\work"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Speech\\SpeechModelDownloadTask",
+      "command": "%windir%\\system32\\speech_onecore\\common\\SpeechModelDownload.exe",
+      "command_norm": "c:\\windows\\system32\\speech_onecore\\common\\speechmodeldownload.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\StateRepository\\MaintenanceTasks",
+      "command": "%windir%\\system32\\rundll32.exe %windir%\\system32\\Windows.StateRepositoryClient.dll,StateRepositoryDoMaintenanceTasks",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe c:\\windows\\system32\\windows.staterepositoryclient.dll,staterepositorydomaintenancetasks"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Storage Tiers Management\\Storage Tiers Management Initialization",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Storage Tiers Management\\Storage Tiers Optimization",
+      "command": "%windir%\\system32\\defrag.exe -c -h -g -# -m 8 -i 13500",
+      "command_norm": "c:\\windows\\system32\\defrag.exe -c -h -g -# -m 8 -i 13500"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Subscription\\EnableLicenseAcquisition",
+      "command": "%SystemRoot%\\system32\\ClipRenew.exe -e",
+      "command_norm": "c:\\windows\\system32\\cliprenew.exe -e"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Subscription\\LicenseAcquisition",
+      "command": "%SystemRoot%\\system32\\ClipRenew.exe",
+      "command_norm": "c:\\windows\\system32\\cliprenew.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sustainability\\PowerGridForecastTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sustainability\\SustainabilityTelemetry",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sysmain\\HybridDriveCachePrepopulate",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sysmain\\HybridDriveCacheRebalance",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sysmain\\ResPriStaticDbSync",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Sysmain\\WsSwapAssessmentTask",
+      "command": "%windir%\\system32\\rundll32.exe sysmain.dll,PfSvWsSwapAssessmentTask",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe sysmain.dll,pfsvwsswapassessmenttask"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\SystemRestore\\SR",
+      "command": "by user disabled ExecuteScheduledSPPCreation",
+      "command_norm": "by user disabled executescheduledsppcreation"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Task Manager\\Interactive",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\TextServicesFramework\\MsCtfMonitor",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Time Synchronization\\ForceSynchronizeTime",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Time Synchronization\\SynchronizeTime",
+      "command": "%windir%\\system32\\sc.exe start w32time task_started",
+      "command_norm": "c:\\windows\\system32\\sc.exe start w32time task_started"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Time Zone\\SynchronizeTimeZone",
+      "command": "%windir%\\system32\\tzsync.exe",
+      "command_norm": "c:\\windows\\system32\\tzsync.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\TPM\\Tpm-HASCertRetr",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\TPM\\Tpm-Maintenance",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\TPM\\Tpm-PreAttestationHealthCheck",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Report policies",
+      "command": "%systemroot%\\system32\\usoclient.exe ReportPolicies",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe reportpolicies"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Maintenance Work",
+      "command": "%systemroot%\\system32\\usoclient.exe StartMaintenanceWork",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startmaintenancework"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan",
+      "command": "%systemroot%\\system32\\usoclient.exe StartScan",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startscan"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Scan Static Task",
+      "command": "%systemroot%\\system32\\usoclient.exe StartScan",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startscan"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Wake To Work",
+      "command": "%systemroot%\\system32\\usoclient.exe StartWork",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startwork"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Schedule Work",
+      "command": "%systemroot%\\system32\\usoclient.exe StartWork",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startwork"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\Start Oobe Expedite Work",
+      "command": "%systemroot%\\system32\\usoclient.exe StartWork",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startwork"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\StartOobeAppsScanAfterUpdate",
+      "command": "%systemroot%\\system32\\usoclient.exe StartOobeAppsScanAfterUpdate",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startoobeappsscanafterupdate"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\StartOobeAppsScan_LicenseAccepted",
+      "command": "%systemroot%\\system32\\usoclient.exe StartOobeAppsScan",
+      "command_norm": "c:\\windows\\system32\\usoclient.exe startoobeappsscan"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\UIEOrchestrator",
+      "command": "%systemroot%\\system32\\UIEOrchestratorStub.exe /SendHeartbeat",
+      "command_norm": "c:\\windows\\system32\\uieorchestratorstub.exe \\sendheartbeat"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\USO_UxBroker",
+      "command": "%systemroot%\\system32\\MusNotification.exe",
+      "command_norm": "c:\\windows\\system32\\musnotification.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UpdateOrchestrator\\UUS Failover Task",
+      "command": "%windir%\\System32\\MLEngineStub.exe HandleUusFailoverEvaluationSignalFromWnf",
+      "command_norm": "c:\\windows\\system32\\mlenginestub.exe handleuusfailoverevaluationsignalfromwnf"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UPnP\\UPnPHostConfig",
+      "command": "sc.exe config upnphost start= auto",
+      "command_norm": "sc.exe config upnphost start= auto"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\UsageAndQualityInsights\\UsageAndQualityInsights-MaintenanceTask",
+      "command": "C:\\Windows\\System32\\Microsoft.Data.UsageAndQualityInsights.MaintenanceTask.exe",
+      "command_norm": "c:\\windows\\system32\\microsoft.data.usageandqualityinsights.maintenancetask.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\USB\\Usb-Notifications",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\User Profile Service\\HiveUploadTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WaaSMedic\\PerformRemediation",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WCM\\WiFiTask",
+      "command": "%SystemRoot%\\System32\\WiFiTask.exe",
+      "command_norm": "c:\\windows\\system32\\wifitask.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WDI\\ResolutionHost",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Windows Error Reporting\\QueueReporting",
+      "command": "%windir%\\system32\\wermgr.exe -upload",
+      "command_norm": "c:\\windows\\system32\\wermgr.exe -upload"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Windows Filtering Platform\\BfeOnServiceStartTypeChange",
+      "command": "%windir%\\system32\\rundll32.exe bfe.dll,BfeOnServiceStartTypeChange",
+      "command_norm": "c:\\windows\\system32\\rundll32.exe bfe.dll,bfeonservicestarttypechange"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Windows Media Sharing\\UpdateLibrary",
+      "command": "%ProgramFiles%\\Windows Media Player\\wmpnscfg.exe",
+      "command_norm": "c:\\program files\\windows media player\\wmpnscfg.exe"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsAI\\Recall\\InitialConfiguration",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsAI\\Recall\\PolicyConfiguration",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsAI\\Settings\\InitialConfiguration",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsColorSystem\\Calibration Loader",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsUpdate\\Refresh Group Policy Cache",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WindowsUpdate\\Scheduled Start",
+      "command": "%systemroot%\\System32\\sc.exe start wuauserv",
+      "command_norm": "c:\\windows\\system32\\sc.exe start wuauserv"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Wininet\\CacheTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WlanSvc\\CDSSync",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WlanSvc\\MoProfileManagement",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WOF\\WIM-Hash-Management",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WOF\\WIM-Hash-Validation",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Work Folders\\Work Folders Logon Synchronization",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Work Folders\\Work Folders Maintenance Work",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Workplace Join\\Automatic-Device-Join",
+      "command": "%SystemRoot%\\System32\\dsregcmd.exe $(Arg0) $(Arg1) $(Arg2)",
+      "command_norm": "c:\\windows\\system32\\dsregcmd.exe $(arg0) $(arg1) $(arg2)"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Workplace Join\\Device-Sync",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\Workplace Join\\Recovery-Check",
+      "command": "%SystemRoot%\\System32\\dsregcmd.exe /checkrecovery",
+      "command_norm": "c:\\windows\\system32\\dsregcmd.exe \\checkrecovery"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WwanSvc\\NotificationTask",
+      "command": "%SystemRoot%\\System32\\WiFiTask.exe wwan",
+      "command_norm": "c:\\windows\\system32\\wifitask.exe wwan"
+    },
+    {
+      "task_name": "\\Microsoft\\Windows\\WwanSvc\\OobeDiscovery",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\Microsoft\\XblGameSave\\XblGameSaveTask",
+      "command": "%windir%\\System32\\XblGameSaveTask.exe standby",
+      "command_norm": "c:\\windows\\system32\\xblgamesavetask.exe standby"
+    },
+    {
+      "task_name": "\\SoftLanding\\S-1-5-21-1858468054-31582239-3174400545-1001\\SoftLandingCreativeManagementTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    },
+    {
+      "task_name": "\\SoftLanding\\S-1-5-21-1858468054-31582239-3174400545-1002\\SoftLandingCreativeManagementTask",
+      "command": "COM handler",
+      "command_norm": "com handler"
+    }
+  ],
+  "startup": [
+    {
+      "name": "SecurityHealth",
+      "command": "%windir%\\system32\\SecurityHealthSystray.exe",
+      "command_norm": "c:\\windows\\system32\\securityhealthsystray.exe"
+    },
+    {
+      "name": "VMware User Process",
+      "command": "\"C:\\Program Files\\VMware\\VMware Tools\\vmtoolsd.exe\" -n vmusr",
+      "command_norm": "\"c:\\program files\\vmware\\vmware tools\\vmtoolsd.exe\" -n vmusr"
+    },
+    {
+      "name": "sysdiag",
+      "command": "\"C:\\Program Files\\Huorong\\Sysdiag\\bin\\hipstray.exe\"",
+      "command_norm": "\"c:\\program files\\huorong\\sysdiag\\bin\\hipstray.exe\""
+    },
+    {
+      "name": "iDefender",
+      "command": "\"C:\\Program Files (x86)\\iDefender\\iDefender.exe\" /tray",
+      "command_norm": "\"c:\\program files (x86)\\idefender\\idefender.exe\" \\tray"
+    },
+    {
+      "name": "OneDrive",
+      "command": "\"C:\\Users\\sjwus\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe\" /background",
+      "command_norm": "\"c:\\users\\sjwus\\appdata\\local\\microsoft\\onedrive\\onedrive.exe\" \\background"
+    },
+    {
+      "name": "Shell",
+      "command": "explorer.exe",
+      "command_norm": "explorer.exe"
+    },
+    {
+      "name": "Userinit",
+      "command": "C:\\WINDOWS\\system32\\userinit.exe,",
+      "command_norm": "c:\\windows\\system32\\userinit.exe,"
+    },
+    {
+      "name": "desktop.ini",
+      "command": "C:\\Users\\sjwus\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\desktop.ini",
+      "command_norm": "c:\\users\\sjwus\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\startup\\desktop.ini"
+    },
+    {
+      "name": "desktop.ini",
+      "command": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\desktop.ini",
+      "command_norm": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\startup\\desktop.ini"
+    }
+  ],
+  "stats": {
+    "services": 264,
+    "tasks": 243,
+    "startup": 9
+  },
+  "release": true,
+  "release_published_at": "2026-08-13T08:34:05",
+  "release_note": "正式发布默认版 · OS 基线规则 + 手动白名单 + 黑名单"
+}

@@ -21,7 +21,10 @@ func cmdGroup(action string) string {
 	case "isolate_network", "unisolate_network", "kill_process", "quarantine_file":
 		return "response"
 	case "collect_diagnostics":
-		return "diag"
+		return "remote"
+	case "reg_read", "fs_list", "fs_stat", "fs_read", "fs_volumes", "live_query", "run_cmd",
+		"shell_open", "shell_write", "shell_poll", "shell_close":
+		return "remote"
 	default:
 		return "other"
 	}

@@ -1,8 +1,8 @@
-﻿# 启动 config\stack_paths.json 中配置的 Elasticsearch（与 db_config 一致）
+﻿# 启动 D:\GeRen\web\hj 下的 Elasticsearch（与 config\stack_paths.json / db_config 一致）
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $stack = Join-Path $root "config\stack_paths.json"
-if (-not (Test-Path $stack)) { throw "缺少 $stack（可从 config\stack_paths.example.json 复制后修改）" }
+if (-not (Test-Path $stack)) { throw "缺少 $stack" }
 $sp = Get-Content $stack -Raw | ConvertFrom-Json
 $bat = $sp.elasticsearch_script
 $esHome = $sp.elasticsearch_home

@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
 ROOT = Path(__file__).resolve().parent.parent
-MD = Path(os.environ.get("CLEAN_REPORT_MD") or "t1_2026-08-13_07-30-24+08-00.md")
+MD = Path(r"D:\360极速浏览器X下载\t1_2026-08-13_07-30-24+08-00.md")
 REPORT = ROOT / "reports" / "t1_2026-08-13_07-30-24+08-00" / "report.json"
 NOTE = "clean Win11 baseline FP 2026-08-13"
 

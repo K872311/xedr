@@ -139,6 +139,7 @@ func runAgent(ctx context.Context, cfg Config, cfgPath string) error {
 			"winevent_channels": len(winevtChannelDefsFiltered()),
 			"winevent_manifest": winevtChannelManifest(),
 			"host_metrics":      hostMetricsSnapshot(),
+			"live_query_tables": liveQueryManifest(),
 			"elastic_parity":    elasticParitySnapshot(),
 			"dynamic_fim":       dynamicFIMCount(),
 		}
@@ -343,6 +344,7 @@ func runAgent(ctx context.Context, cfg Config, cfgPath string) error {
 		if v, ok := pol["response_enabled"].(bool); ok {
 			responseEnabled = v
 		}
+		applyRemoteOpsPolicy(pol)
 		if v, ok := pol["timeline_process"].(bool); ok {
 			tl.setEnabled(v)
 		}
@@ -401,8 +403,12 @@ func runAgent(ctx context.Context, cfg Config, cfgPath string) error {
 			"title": title, "detail": detail,
 		})
 	}
+	// 远程只读运维（读文件/目录/注册表/Shell）失败不进威胁告警，仅真实处置动作失败才报 high。
 	emitCommandOutcome := func(action string, ok bool, detail string, _ map[string]any) {
 		act := strings.ToLower(strings.TrimSpace(action))
+		if isRemoteOpsAction(act) {
+			return
+		}
 		if ok {
 			responseEvent("info", "处置成功："+act, detail, 70)
 			return
@@ -435,7 +441,7 @@ func runAgent(ctx context.Context, cfg Config, cfgPath string) error {
 				ackReliable(cmd.ID, false, res)
 				continue
 			}
-			if !responseEnabled &&
+			if !responseEnabled && !isRemoteOpsAction(cmd.Action) &&
 				cmd.Action != "refresh_modules" && cmd.Action != "upgrade" && cmd.Action != "uninstall_agent" && cmd.Action != "scan_memory" {
 				res := map[string]any{"error": "response disabled by policy"}
 				box.cmdBegin(cmd.ID, cmd.Action)

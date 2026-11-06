@@ -72,6 +72,7 @@ function Find-Home([string]$Kind, [string]$Hint) {
     if (Test-Path -LiteralPath $bat) { return (Resolve-Path -LiteralPath $envVal).Path }
   }
   $roots = @(
+    "D:\GeRen\AI\hj",
     "C:\elastic",
     "C:\Program Files\Elastic",
     (Split-Path -Parent $PSScriptRoot)

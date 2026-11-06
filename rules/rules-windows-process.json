@@ -4,7 +4,7 @@
     "name": "Windows 进程行为（0707 抽取）",
     "version": "1.1",
     "updatedAt": "2026-11-02T17:15:00",
-    "source": "0707/processes",
+    "source": "D:\\\\GeRen\\\\AI\\\\0707\\\\processes",
     "description": "从原 Go 检测器抽取、快照可判定的高价值进程规则。不覆盖内存注入 / 模块扫描 / API 挂钩。",
     "judgment": [
       "不要单靠未签名定罪。0707 要求未签名再叠加脏路径（Public/Temp/Downloads）、投放结构或同目录未签名文件。",

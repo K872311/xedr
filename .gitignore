@@ -1,4 +1,4 @@
-# 本机密钥与连接配置（根目录旧路径兼容 + config/）
+# ── 本机密钥与连接配置（勿提交）──
 db_config.json
 ai_config.json
 platform_settings.json
@@ -9,52 +9,70 @@ config/ai_config.json
 config/platform_settings.json
 config/redis_config.json
 config/es_config.json
-platform_secret.key
-config/platform_secret.key
-
-# 运行数据与用户上传
-reports/
-jg/
-lists/
-
-# 运行时索引 / 缓存
-rule_index.db
-config/rule_index.db
-__pycache__/
-*.pyc
-*.log
-.pending_purge.json
-
-# 本机环境路径（示例见 *.example.json）
 config/stack_paths.json
 config/hj_stack.json
+platform_secret.key
+config/platform_secret.key
+*.key
+*.pem
 
-# 用户 / 运行时数据
-config/user_ai/
-config/runtime_metrics.json
-data/agent_upgrades/
+# ── 用户 / 告警 / 运行时数据 ──
+reports/**
+!reports/.gitkeep
+jg/**
+!jg/.gitkeep
+data/**
+!data/.gitkeep
 ioc/*.db
-ioc_data.db*
-index.db
-*.db-wal
-*.db-shm
+ioc/*.db-*
+ioc/**
+!ioc/.gitkeep
+# 黑白名单（用户运营数据）；规则基线可保留
+lists/whitelist.json
+lists/blacklist.json
+lists/bw_list.json.bak
+lists/published/whitelist.json
+lists/published/blacklist.json
+lists/published/manifest.json
+config/*.local
+
+# ── Agent 本机状态与二进制 ──
 agent/state/
-agent/agent.log
+agent/*.log
 agent/_test_agent.json
+agent/forensic-agent.exe
+agent/agent.json
 
-# 工具缓存
-node_modules/
-.pytest_cache/
-.claude/
+# ── 前端构建产物与依赖 ──
+agent_admin/node_modules/
+agent_admin/dist/
 
-# 编译产物与二进制工具包（通过 Releases 分发）
-agent/*.exe
-agent/dist/
-agent/*.sys
-agent/*.cer
-agent/driver/out/
-tools/caiji/
-tools/Yj/
-*.pdb
-*.obj
-结果/
+# ── 运行时索引 / 缓存 / 同步状态 ──
+rule_index.db
+config/rule_index.db
+config/ip_ranges.db
+config/skills_index_cache.json
+config/runtime_metrics.json
+config/ioc_*_sync_state.json
+config/user_ai/
+config/uvicorn*.log
+config/uvicorn*.log.err
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.pending_purge.json
+*.db-shm
+*.db-wal
+
+# ── 临时脚本与本地杂项 ──
+_tmp*
+config/_restart_*
+config/_patch_*
+config/_snip*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~

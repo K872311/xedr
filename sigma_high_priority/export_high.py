@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(os.environ.get("SIGMA_RULES_DIR") or "sigma_all_rules")
+ROOT = Path(r"D:\360极速浏览器X下载\sigma_all_rules")
 OUT = Path(__file__).resolve().parent
 
 HIGH = {"high", "critical"}

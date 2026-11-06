@@ -130,6 +130,8 @@ _lock = threading.RLock()
 COMMAND_LEASE_DEFAULT_SEC = 60
 COMMAND_LEASE_SEC = {
     "scan_memory": 180, "upgrade": 300, "rollback_upgrade": 300, "refresh_modules": 90,
+    "run_cmd": 120, "reg_read": 90, "fs_list": 90, "fs_stat": 60, "fs_read": 120, "fs_volumes": 60,
+    "shell_open": 60, "shell_write": 45, "shell_poll": 45, "shell_close": 30,
 }
 COMMAND_MAX_ATTEMPTS = 3
 COMMAND_TTL_DEFAULT_SEC = 1800
@@ -148,7 +150,52 @@ ACTIONS = (
     "cancel_upgrade",
     "uninstall_agent",
     "collect_diagnostics",
+    "reg_read",
+    "fs_list",
+    "fs_stat",
+    "fs_read",
+    "fs_volumes",
+    "live_query",
+    "run_cmd",
+    "shell_open",
+    "shell_write",
+    "shell_poll",
+    "shell_close",
 )
+
+_REMOTE_OPS_READ = frozenset({"reg_read", "fs_list", "fs_stat", "fs_read", "fs_volumes", "live_query", "shell_poll"})
+_REMOTE_OPS_SHELL = frozenset({"shell_open", "shell_write", "shell_poll", "shell_close"})
+_REMOTE_OPS_ALL = _REMOTE_OPS_READ | frozenset({"run_cmd"}) | _REMOTE_OPS_SHELL
+
+
+def _remote_ops_policy_cfg() -> Dict[str, Any]:
+    try:
+        pol = (get_policy("global").get("policy") or {})
+    except Exception:
+        pol = dict(_DEFAULT_POLICY)
+    ro = pol.get("remote_ops") if isinstance(pol.get("remote_ops"), dict) else {}
+    return {
+        "enabled": bool(pol.get("remote_ops_enabled", ro.get("enabled", True))),
+        "read_only": bool(ro.get("read_only", False)),
+        "run_cmd_enabled": bool(ro.get("run_cmd_enabled", True)),
+        "shell_enabled": bool(ro.get("shell_enabled", True)),
+    }
+
+
+def _validate_remote_ops_command(action: str, params: Dict[str, Any]) -> str:
+    act = str(action or "").strip().lower()
+    if act not in _REMOTE_OPS_ALL:
+        return ""
+    cfg = _remote_ops_policy_cfg()
+    if not cfg["enabled"]:
+        return "远程运维未启用（策略 remote_ops）"
+    if act == "run_cmd":
+        if cfg["read_only"] or not cfg["run_cmd_enabled"]:
+            return "远程命令执行未启用或处于只读模式"
+    if act in ("shell_open", "shell_write", "shell_poll", "shell_close") and not cfg["shell_enabled"]:
+        return "交互式 Shell 未启用"
+    _ = params
+    return ""
 
 # ATT&CK 战术顺序（看板列）
 _ATTCK_TACTICS = [
@@ -319,6 +366,9 @@ def create_command(
     act = str(action or "").strip().lower()
     if not aid or act not in ACTIONS:
         return {"ok": False, "error": "agent_id 或 action 无效"}
+    pol_err = _validate_remote_ops_command(act, params or {})
+    if pol_err:
+        return {"ok": False, "error": pol_err}
     cid = uuid.uuid4().hex
     now = _now()
     blob = json.dumps(params or {}, ensure_ascii=False)
@@ -779,27 +829,28 @@ def ingest_timeline(payload: Dict[str, Any]) -> Dict[str, Any]:
                         if src != "protections-artifacts" and str(r.get("id") or "").endswith(".prot.evm"):
                             src = "protections"
                         prefix = "Protections EVM" if src.startswith("protections") else "Elastic EVM"
+                        detail = _timeline_rule_hit_detail(
+                            ev,
+                            rule_id=r.get("id"),
+                            rule_title=title,
+                            rule_source=src,
+                            building_block=True,
+                            extra={
+                                "elastic_rule_id": r.get("elastic_rule_id") or r.get("protections_rule_id"),
+                            },
+                        )
                         agent_protocol.report_event({
                             "agent_id": agent_id,
                             "hostname": host,
-                            "module": "timeline",
+                            "module": _timeline_rule_hit_module(ev, detail),
                             "severity": str(r.get("severity") or "medium"),
                             "title": f"{prefix}：{title}"[:200],
-                            "detail": {
-                                "rule_id": r.get("id"),
-                                "rule_title": title,
-                                "rule_source": src,
-                                "elastic_rule_id": r.get("elastic_rule_id") or r.get("protections_rule_id"),
-                                "etype": ev.get("etype"),
-                                "summary": ev.get("summary"),
-                                "building_block": True,
-                            },
+                            "detail": detail,
                         })
                         elastic_reported += 1
                         matched = True
                         break
                 if not matched and do_custom_evm:
-                    det = ev.get("detail") if isinstance(ev.get("detail"), dict) else {}
                     for r in _ar.match_live_evm_events(ev):
                         title = str(r.get("title") or "EVM 命中")[:200]
                         rid = str(r.get("id") or "")
@@ -808,33 +859,20 @@ def ingest_timeline(payload: Dict[str, Any]) -> Dict[str, Any]:
                             src = "elastic"
                         elif ".prot.evm" in rid:
                             src = "protections"
-                        cmd = str(det.get("command_line") or det.get("command") or "")
-                        mod = "script" if cmd and re.search(
-                            r"powershell|pwsh|wscript|cscript|mshta|scriptblock|\.ps1|\.vbs",
-                            cmd,
-                            re.I,
-                        ) else "process"
+                        detail = _timeline_rule_hit_detail(
+                            ev,
+                            rule_id=rid,
+                            rule_title=title,
+                            rule_source=src,
+                            building_block=bool(r.get("building_block")),
+                        )
                         agent_protocol.report_event({
                             "agent_id": agent_id,
                             "hostname": host,
-                            "module": mod,
+                            "module": _timeline_rule_hit_module(ev, detail),
                             "severity": str(r.get("severity") or "high"),
                             "title": f"EVM：{title}"[:200],
-                            "detail": {
-                                "rule_id": rid,
-                                "rule_title": title,
-                                "rule_source": src,
-                                "etype": ev.get("etype"),
-                                "summary": ev.get("summary"),
-                                "command_line": det.get("command_line"),
-                                "command": det.get("command"),
-                                "name": det.get("name"),
-                                "path": det.get("path") or det.get("image"),
-                                "parent_name": det.get("parent_name"),
-                                "pid": det.get("pid"),
-                                "matched": cmd[:400] if cmd else "",
-                                "building_block": bool(r.get("building_block")),
-                            },
+                            "detail": detail,
                         })
                         elastic_reported += 1
                         break
@@ -1729,6 +1767,19 @@ _DEFAULT_POLICY = {
         "max_checks_per_run": 48,
     },
     "active_response_enabled": True,
+    "remote_ops_enabled": True,
+    "remote_ops": {
+        "enabled": True,
+        "read_only": False,
+        "run_cmd_enabled": True,
+        "shell_enabled": True,
+        "shell_max_minutes": 15,
+        "run_cmd_whitelist": [
+            "dir", "type", "reg", "ipconfig", "netstat", "tasklist", "systeminfo",
+            "whoami", "hostname", "net", "sc", "cd", "echo", "where", "findstr",
+            "powershell -noprofile -command",
+        ],
+    },
     "memory_scan": {
         "mode": "yara_triggered",
         "rules_rev": "2026.10.31.1",
@@ -1784,6 +1835,7 @@ def get_policy(scope: str = "global") -> Dict[str, Any]:
 _POLICY_BOOL_KEYS = (
     "response_enabled", "timeline_process", "timeline_file", "timeline_network", "self_protect",
     "fim_enabled", "isolate_allow_server", "whitelist_skip_rules", "mysql_dual_write",
+    "remote_ops_enabled",
 )
 
 
@@ -1872,13 +1924,8 @@ def set_policy(scope: str, policy: Dict[str, Any], *, actor: str = "", note: str
     scope = str(scope or "global")
     if not isinstance(policy, dict):
         return {"ok": False, "error": "policy 必须是对象"}
-    policy = dict(policy)
-    policy.pop("remote_ops", None)
-    policy.pop("remote_ops_enabled", None)
     merged = dict(_DEFAULT_POLICY)
     merged.update(policy)
-    merged.pop("remote_ops", None)
-    merged.pop("remote_ops_enabled", None)
     errs = validate_policy(merged)
     if errs:
         return {"ok": False, "error": "；".join(errs), "errors": errs}
@@ -2931,6 +2978,88 @@ def alert_module_for(etype: str) -> str:
         if et.startswith(prefixes):
             return mod
     return "timeline"
+
+
+_TIMELINE_HIT_COPY_KEYS = (
+    "command_line", "command", "name", "process_name", "path", "image", "parent_name",
+    "pid", "ppid", "user", "key", "reg_key", "hive", "value", "value_name", "old_value",
+    "label", "category", "change", "watch", "remote", "remote_ip", "domain", "local",
+    "proto", "query", "entity_id", "parent_entity_id", "signed", "signer", "sha256",
+    "ext", "size", "task_name", "task_execute", "payload_path", "script_block", "payload",
+)
+
+
+def _timeline_rule_hit_detail(
+    ev: Dict[str, Any],
+    *,
+    rule_id: Any,
+    rule_title: str,
+    rule_source: str,
+    building_block: bool = False,
+    extra: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """把时间线事件的进程/注册表/网络等关键字段带进 EVM/Elastic 告警 detail。"""
+    det = ev.get("detail") if isinstance(ev.get("detail"), dict) else {}
+    et = str(ev.get("etype") or "")
+    summary = str(ev.get("summary") or "")
+    out: Dict[str, Any] = {
+        "rule_id": rule_id,
+        "rule_title": rule_title,
+        "rule_source": rule_source,
+        "etype": et,
+        "summary": summary,
+        "building_block": bool(building_block),
+    }
+    for k in _TIMELINE_HIT_COPY_KEYS:
+        v = det.get(k)
+        if v not in (None, "", [], {}):
+            out[k] = v
+    if not out.get("path") and det.get("image"):
+        out["path"] = det.get("image")
+    if not out.get("reg_key") and det.get("key"):
+        out["reg_key"] = det.get("key")
+    if not out.get("key") and out.get("reg_key"):
+        # 值名挂在 key 末段时保留完整键；否则用 reg_key
+        out["key"] = out.get("reg_key")
+    cmd = str(out.get("command_line") or out.get("command") or "").strip()
+    matched = str(det.get("matched") or "").strip()
+    if not matched:
+        if cmd:
+            matched = cmd[:400]
+        else:
+            rk = str(out.get("key") or out.get("reg_key") or "")
+            vn = str(out.get("value_name") or "")
+            val = str(out.get("value") or "")
+            if rk and (vn or val):
+                matched = f"{rk} → {vn}={val}"[:500] if (vn or val) else rk[:500]
+            elif rk:
+                matched = rk[:500]
+            elif summary:
+                matched = summary[:500]
+    out["matched"] = matched
+    if isinstance(extra, dict):
+        for k, v in extra.items():
+            if v not in (None, "", [], {}):
+                out[k] = v
+    return out
+
+
+def _timeline_rule_hit_module(ev: Dict[str, Any], detail: Dict[str, Any]) -> str:
+    et = str((ev or {}).get("etype") or (detail or {}).get("etype") or "").lower()
+    if et.startswith("persist") or et.startswith("registry") or _detail_looks_registry(detail or {}):
+        return "registry"
+    cmd = str((detail or {}).get("command_line") or (detail or {}).get("command") or "")
+    if cmd and re.search(
+        r"powershell|pwsh|wscript|cscript|mshta|scriptblock|\.ps1|\.vbs",
+        cmd,
+        re.I,
+    ):
+        return "script"
+    if et.startswith("network") or et.startswith("dns"):
+        return "network"
+    if et.startswith("process"):
+        return "process"
+    return alert_module_for(et)
 
 
 def _detail_looks_registry(detail: Dict[str, Any]) -> bool:

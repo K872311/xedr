@@ -3,14 +3,13 @@
   "groups": {
     "protections_yara": true,
     "builtin_yara": true,
-    "valhalla_yara": false,
+    "valhalla_yara": true,
     "string_rules": true
   },
   "disabled_string_rule_ids": [
-    "mem.powershell_enc",
     "mem.mimikatz",
     "mem.cobalt_strike",
     "mem.amsi_bypass"
   ],
-  "updated_at": "2026-11-02T09:50:43"
+  "updated_at": "2026-11-06T11:10:26"
 }

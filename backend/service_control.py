@@ -415,6 +415,7 @@ def _candidate_roots() -> List[Path]:
         pass
     for raw in (
         *extra,
+        r"D:\GeRen\AI\hj",
         r"C:\elastic",
         r"C:\Program Files\Elastic",
         r"D:\phpstudy_pro\Extensions",

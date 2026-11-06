@@ -87,6 +87,9 @@
       <p v-if="section === 'rules'" class="menu-hint">
         Agent 规则：单条快照特征（可限文件类型）。行为序列：时间窗口内 A→B→C 链式命中。
       </p>
+      <p v-if="section === 'ai'" class="menu-hint">
+        选择在线终端后自动汇总快照、威胁事件与日志，结合 Skill 调用本地大模型研判。
+      </p>
       <p class="menu-hint soft">默认隐藏二级菜单：鼠标移到左侧图标栏可展开；需要常显时点「固定」。</p>
     </aside>
 
@@ -1874,7 +1877,13 @@
                           <span class="tv-proc-ico">⚙</span>
                           <b :title="n.name">{{ n.name }}</b>
                           <small>PID {{ n.pid }}<template v-if="n.exit_time"> · 已退出</template></small>
-                          <small v-if="n.command_line" class="tv-proc-cmd mono" :class="{ hit: n.is_hit }" :title="n.command_line">{{ n.command_line.slice(0, 80) }}{{ n.command_line.length > 80 ? '…' : '' }}</small>
+                          <small
+                            v-if="n.command_line"
+                            class="tv-proc-cmd mono"
+                            :class="{ hit: n.is_hit }"
+                            :title="n.command_line"
+                          >{{ n.command_line }}</small>
+                          <small v-else-if="n.path" class="tv-proc-cmd mono" :title="n.path">{{ n.path }}</small>
                           <em v-if="n.is_hit" class="tv-hit-tag">威胁命中</em>
                         </div>
                       </div>
@@ -2380,7 +2389,7 @@
               @click="selectHostGroup(g.id)"
             >{{ g.label }}</button>
           </nav>
-          <nav class="mod-tabs bar">
+          <nav v-if="hostTabGroup !== 'remote'" class="mod-tabs bar">
             <button
               v-for="m in hostGroupMods"
               :key="m"
@@ -2391,12 +2400,375 @@
             >{{ modLabel(m) }}</button>
           </nav>
 
-          <div class="snap-flags">
+          <div v-if="hostTabGroup === 'remote'" class="host-remote-wrap panel">
+            <div class="host-remote-hero">
+              <div class="host-remote-hero-main">
+                <h2>应急远程管理</h2>
+                <p class="hint">经 Agent 指令通道运维（非 RDP）：Live Query 表 · 只读文件/注册表 · 白名单命令 · 交互 Shell。终端需<strong>在线</strong>，策略开启「远程运维」；下发需管理员。</p>
+                <div class="host-remote-steps">
+                  <span>① Live Query</span>
+                  <span>② 读盘/注册表</span>
+                  <span>③ Shell / 命令</span>
+                </div>
+              </div>
+              <div class="host-remote-hero-aside">
+                <span class="sync-pill lg" :class="{ on: selected.online }">
+                  <i class="sync-dot" />
+                  {{ selected.online ? '可下发指令' : '离线 · 仅可查看历史' }}
+                </span>
+                <span v-if="hostRemoteBusy" class="hr-busy-pill">执行中…</span>
+              </div>
+            </div>
+            <nav class="host-remote-subnav" aria-label="远程运维功能">
+              <button
+                v-for="t in HOST_REMOTE_TABS"
+                :key="t.id"
+                type="button"
+                class="hr-tab"
+                :class="{ on: hostRemoteSubTab === t.id }"
+                @click="hostRemoteSubTab = t.id"
+              >
+                <span class="hr-tab-label">{{ t.label }}</span>
+                <span class="hr-tab-hint">{{ t.hint }}</span>
+              </button>
+            </nav>
+            <div v-show="hostRemoteSubTab === 'files'" class="host-remote-panel hr-fs-panel">
+              <div class="host-remote-toolbar">
+                <input v-model="hostRemoteFsPath" class="field mono grow" placeholder="C:\" @keyup.enter="hostRemoteFsBrowse" />
+                <button type="button" class="btn sm" :disabled="!hostRemoteFsPath || hostRemoteBusy" @click="hostRemoteFsUp">上级</button>
+                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsBrowse">刷新</button>
+                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsRead">读文件</button>
+                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteFsLoadVolumes">重新获取盘符</button>
+              </div>
+              <p v-if="hostRemoteFsHint" class="hint sm">{{ hostRemoteFsHint }}</p>
+              <div class="hr-fs-explorer">
+                <aside class="hr-fs-tree">
+                  <div class="hr-fs-tree-hd">盘符 / 目录</div>
+                  <p v-if="!hostRemoteFsTree.length" class="empty sm">{{ selected.online ? '正在读取盘符…' : '终端离线，无法列盘符' }}</p>
+                  <ul v-else class="hr-fs-tree-ul">
+                    <li v-for="row in hostRemoteFsTree" :key="row.node.path">
+                      <button
+                        type="button"
+                        class="hr-fs-node"
+                        :class="{ on: hostRemoteFsSamePath(hostRemoteFsPath, row.node.path) }"
+                        :style="{ paddingLeft: (8 + row.depth * 14) + 'px' }"
+                        :disabled="hostRemoteBusy"
+                        @click="hostRemoteFsToggle(row.node)"
+                      >
+                        <i class="hr-fs-caret">{{ row.node.expanded ? '▼' : '▶' }}</i>
+                        <span class="hr-fs-node-name">{{ row.node.label }}</span>
+                        <em v-if="row.node.child_count != null">{{ row.node.child_count }} 项</em>
+                      </button>
+                    </li>
+                  </ul>
+                </aside>
+                <div class="hr-fs-main">
+                  <p class="hr-fs-crumb mono">
+                    {{ hostRemoteFsPath || '未选择' }}
+                    <span v-if="hostRemoteFsEntries.length"> · {{ hostRemoteFsEntries.length }} 项</span>
+                    <span v-if="hostRemoteFsDirCount"> · 目录 {{ hostRemoteFsDirCount }}</span>
+                    <span v-if="hostRemoteFsFileCount"> · 文件 {{ hostRemoteFsFileCount }}</span>
+                  </p>
+                  <p v-if="hostRemoteFsTruncated" class="hint sm warn-hint">目录项过多，仅显示前 200 条</p>
+                  <table v-if="hostRemoteFsEntries.length" class="host-remote-cmd-table hr-fs-table">
+                    <thead><tr><th>名称</th><th>类型</th><th>大小 / 项数</th><th></th></tr></thead>
+                    <tbody>
+                      <tr v-for="e in hostRemoteFsEntries" :key="e.name" class="hr-fs-row" @dblclick="hostRemoteFsEnter(e)">
+                        <td><span class="hr-fs-icon">{{ e.dir ? '📁' : '📄' }}</span>{{ e.name }}</td>
+                        <td>{{ e.dir ? '目录' : '文件' }}</td>
+                        <td>{{ e.dir ? (e.child_count != null ? `${e.child_count} 项` : '目录') : hostRemoteFmtSize(e.size) }}</td>
+                        <td>
+                          <button type="button" class="btn-text" @click="hostRemoteFsEnter(e)">{{ e.dir ? '进入' : '预览' }}</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p v-else class="empty sm">点左侧盘符展开目录</p>
+                  <pre v-if="hostRemoteFsPreview" class="host-remote-pre">{{ hostRemoteFsPreview }}</pre>
+                </div>
+              </div>
+            </div>
+            <div v-show="hostRemoteSubTab === 'reg'" class="host-remote-panel hr-reg-panel">
+              <div class="host-remote-toolbar">
+                <select v-model="hostRemoteReg.hive" class="field">
+                  <option value="HKLM">HKLM</option>
+                  <option value="HKCU">HKCU</option>
+                  <option value="HKU">HKU</option>
+                  <option value="HKCR">HKCR</option>
+                </select>
+                <input v-model="hostRemoteReg.key" class="field mono grow" placeholder="SOFTWARE\..." @keyup.enter="hostRemoteRegLoad" />
+                <input v-model="hostRemoteReg.value" class="field" placeholder="值名（留空列全部）" @keyup.enter="hostRemoteRegLoad" />
+                <button type="button" class="btn sm" :disabled="!hostRemoteReg.key || hostRemoteBusy" @click="hostRemoteRegUp">上级</button>
+                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteRegLoad">读取</button>
+              </div>
+              <div class="hr-reg-shortcuts">
+                <button
+                  v-for="s in HOST_REG_SHORTCUTS"
+                  :key="s.label"
+                  type="button"
+                  class="hr-reg-chip"
+                  @click="hostRemoteRegApplyShortcut(s)"
+                >{{ s.label }}</button>
+              </div>
+              <p v-if="hostRemoteRegBreadcrumb" class="hr-reg-crumb mono">{{ hostRemoteRegBreadcrumb }}</p>
+              <div v-if="hostRemoteRegResult" class="hr-reg-body">
+                <section v-if="hostRemoteRegSubkeys.length" class="hr-reg-section">
+                  <h4>子键 <span class="muted">({{ hostRemoteRegSubkeys.length }})</span></h4>
+                  <div class="hr-reg-subkey-list">
+                    <button
+                      v-for="sk in hostRemoteRegSubkeys"
+                      :key="sk"
+                      type="button"
+                      class="hr-reg-subkey"
+                      @click="hostRemoteRegOpenSubkey(sk)"
+                    >{{ sk }}</button>
+                  </div>
+                </section>
+                <section v-if="hostRemoteRegSingleValue" class="hr-reg-section">
+                  <h4>值 · {{ hostRemoteRegSingleValue.name }}</h4>
+                  <dl class="hr-reg-dl">
+                    <div><dt>类型</dt><dd>{{ hostRemoteRegSingleValue.type }}</dd></div>
+                    <div><dt>数据</dt><dd class="mono hr-reg-data">{{ hostRemoteRegSingleValue.data }}</dd></div>
+                  </dl>
+                </section>
+                <section v-else-if="hostRemoteRegValues.length" class="hr-reg-section">
+                  <h4>值 <span class="muted">({{ hostRemoteRegValues.length }}{{ hostRemoteRegResult.truncated ? '+' : '' }})</span></h4>
+                  <table class="host-remote-cmd-table hr-reg-val-table">
+                    <thead><tr><th>名称</th><th>类型</th><th>数据</th></tr></thead>
+                    <tbody>
+                      <tr v-for="v in hostRemoteRegValues" :key="v.name">
+                        <td class="mono">{{ v.name }}</td>
+                        <td>{{ v.type }}</td>
+                        <td class="mono hr-reg-data">{{ v.data || v.data_hex || '—' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+                <p v-if="hostRemoteRegResult.truncated" class="hint sm">值过多，仅显示部分</p>
+              </div>
+              <p v-else class="empty sm">只读查询，不会修改注册表</p>
+            </div>
+            <div v-show="hostRemoteSubTab === 'livequery'" class="host-remote-panel hr-lq-panel">
+              <p class="hint sm">
+                按需向<strong>在线终端</strong>拉取只读资产表（进程、服务、监听端口、任务等），类似 Osquery 的「选表查询」。
+                不是在终端里跑 Osquery / SQL；返回的是 Agent 现场采集结果。
+              </p>
+              <div class="host-remote-toolbar">
+                <select v-model="hostLiveQueryTable" class="field">
+                  <option v-for="t in hostLiveQueryTableOptions" :key="t.name" :value="t.name">
+                    {{ t.name }}<template v-if="t.osquery_analog"> · ≈ {{ t.osquery_analog }}</template>
+                  </option>
+                </select>
+                <input v-model.number="hostLiveQueryLimit" type="number" min="10" max="500" class="field" style="max-width:6rem" title="行数上限" />
+                <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostLiveQueryRun">查询</button>
+                <button type="button" class="btn sm" :disabled="!hostLiveQueryRows.length" @click="hostLiveQueryExport">导出 JSON</button>
+              </div>
+              <p v-if="hostLiveQueryMeta" class="hint sm mono">
+                {{ hostLiveQueryMeta.table }} · {{ hostLiveQueryMeta.row_count ?? hostLiveQueryRows.length }} 行 · {{ hostLiveQueryMeta.schema || 'forensic_v1' }}
+              </p>
+              <div v-if="hostLiveQueryRows.length" class="hr-lq-table-wrap">
+                <table class="host-remote-cmd-table hr-lq-table">
+                  <thead>
+                    <tr>
+                      <th v-for="col in hostLiveQueryCols" :key="col">{{ col }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, ri) in hostLiveQueryRows" :key="ri">
+                      <td v-for="col in hostLiveQueryCols" :key="col" class="mono sm">{{ hostLiveQueryCell(row, col) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p v-else class="empty sm">{{ selected.online ? '选择表并点击查询' : '终端离线' }}</p>
+              <div class="panel pad" style="margin-top:12px">
+                <div class="panel-hd" style="display:flex;justify-content:space-between;align-items:center">
+                  <h4>Live Query 审计</h4>
+                  <button type="button" class="btn sm" @click="loadLiveQueryAudit">刷新</button>
+                </div>
+                <p class="hint sm">谁查了什么（来自 agent_audit · command:live_query）</p>
+                <table v-if="liveQueryAuditItems.length">
+                  <thead><tr><th>时间</th><th>操作者</th><th>参数</th></tr></thead>
+                  <tbody>
+                    <tr v-for="a in liveQueryAuditItems" :key="a.id">
+                      <td class="sm">{{ fmtTime(a.created_at) }}</td>
+                      <td class="mono sm">{{ a.actor || '—' }}</td>
+                      <td class="mono sm">{{ a.detail }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p v-else class="empty sm">暂无本机 Live Query 记录</p>
+              </div>
+            </div>
+            <div v-show="hostRemoteSubTab === 'cmd'" class="host-remote-panel">
+              <p class="hint sm">第二阶段：单条命令，Agent 侧白名单 + 危险关键字拦截；输出记录在下方与会话历史。</p>
+              <textarea v-model="hostRemoteCmdLine" class="field mono host-remote-cmd-in" rows="3" placeholder="dir C:\Users" />
+              <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteRunCmd">执行</button>
+              <pre v-if="hostRemoteCmdOut" class="host-remote-pre">{{ hostRemoteCmdOut }}</pre>
+              <div v-if="hostRemoteCmdLog.length" class="host-remote-cmd-log">
+                <h4>会话历史</h4>
+                <div v-for="(ln, i) in hostRemoteCmdLog" :key="i" class="host-remote-log-line">
+                  <em>{{ ln.at }}</em> <code>{{ ln.cmd }}</code>
+                </div>
+              </div>
+            </div>
+            <div v-show="hostRemoteSubTab === 'shell'" class="host-remote-panel hr-shell-panel">
+              <div class="hr-shell-layout">
+                <div class="hr-shell-card">
+                  <div class="hr-shell-hd">
+                    <div class="hr-shell-status">
+                      <i class="hr-shell-led" :class="hostRemoteShellPhase" />
+                      <span>{{ hostRemoteShellStatusLabel }}</span>
+                      <code v-if="hostRemoteShellId" class="mono hr-shell-sid">{{ hostRemoteShellId.slice(0, 12) }}…</code>
+                    </div>
+                    <div class="hr-shell-actions">
+                      <button
+                        type="button"
+                        class="btn sm primary"
+                        :disabled="hostRemoteShellConnectDisabled"
+                        @click="hostRemoteShellStart"
+                      >
+                        {{ hostRemoteShellPhase === 'connecting' ? '连接中…' : (hostRemoteShellPhase === 'live' ? '已连接' : '连接 Shell') }}
+                      </button>
+                      <button type="button" class="btn sm" :disabled="!hostRemoteShellId && hostRemoteShellPhase !== 'connecting'" @click="() => hostRemoteShellStop(false)">断开</button>
+                      <button type="button" class="btn sm" :disabled="!hostRemoteShellLines.length" @click="hostRemoteShellClear">清屏</button>
+                    </div>
+                  </div>
+                  <p v-if="hostRemoteShellHint" class="hr-shell-banner" :class="hostRemoteShellHintKind">{{ hostRemoteShellHint }}</p>
+                  <div ref="hostRemoteShellViewRef" class="hr-shell-body">
+                    <div v-if="!hostRemoteShellLines.length" class="hr-shell-empty">
+                      <p>尚未建立会话</p>
+                      <p class="muted">连接后输入命令；中文 Windows 输出已按 GBK 解码。右侧可点常用命令。</p>
+                      <p v-if="!isAdmin" class="warn-hint">当前账号非管理员，无法下发 Shell 指令，请使用 admin 登录。</p>
+                      <p v-else-if="!selected.online" class="warn-hint">终端离线，按钮不可用。</p>
+                    </div>
+                    <div
+                      v-for="(ln, i) in hostRemoteShellLines"
+                      :key="i"
+                      class="hr-shell-line"
+                      :class="ln.kind || 'out'"
+                    >{{ ln.text }}</div>
+                  </div>
+                  <div class="hr-shell-inputbar">
+                    <span class="hr-shell-prompt">&gt;</span>
+                    <input
+                      ref="hostRemoteShellInputRef"
+                      v-model="hostRemoteShellInput"
+                      class="field mono grow hr-shell-input"
+                      :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
+                      placeholder="连接后输入命令，Enter 发送"
+                      @keyup.enter="hostRemoteShellSend"
+                    />
+                    <button
+                      type="button"
+                      class="btn sm primary"
+                      :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
+                      @click="hostRemoteShellSend"
+                    >
+                      发送
+                    </button>
+                  </div>
+                </div>
+                <aside class="hr-shell-aside">
+                  <h4>常用命令</h4>
+                  <p class="hint sm">需先连接 Shell；危险命令仍会被 Agent 拦截。</p>
+                  <button
+                    v-for="c in HOST_SHELL_QUICK"
+                    :key="c"
+                    type="button"
+                    class="btn sm block hr-shell-quick"
+                    :disabled="!hostRemoteShellId || hostRemoteShellPhase === 'connecting'"
+                    @click="hostRemoteShellQuick(c)"
+                  >{{ c }}</button>
+                </aside>
+              </div>
+              <p class="hint sm hr-shell-foot">会话默认 15 分钟空闲超时，单 Agent 最多 3 路；轮询拉取输出（约 1–2 秒）。</p>
+            </div>
+            <div v-show="hostRemoteSubTab === 'ops'" class="host-remote-grid">
+              <section class="host-remote-card">
+                <h4>调查入口</h4>
+                <div class="host-remote-links">
+                  <button type="button" class="btn sm" @click="openSelectedHostThreats">本机威胁事件</button>
+                  <button type="button" class="btn sm" @click="openInvestigateForHost">日志调查</button>
+                  <button type="button" class="btn sm" @click="goMenu('timeline'); tlAgentId = selected?.agent_id || ''; loadTimeline()">主机时间线</button>
+                  <button type="button" class="btn sm primary" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('refresh_modules')">立即刷新采集</button>
+                </div>
+              </section>
+              <section class="host-remote-card">
+                <h4>网络与采集</h4>
+                <p class="hint sm">隔离后仍保留 DNS/管理端通道，便于继续下发解除指令。</p>
+                <div class="host-remote-btns">
+                  <button type="button" class="btn sm danger-outline" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('isolate_network')">网络隔离</button>
+                  <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('unisolate_network')">解除隔离</button>
+                </div>
+              </section>
+              <section class="host-remote-card">
+                <h4>结束进程</h4>
+                <label class="hr-field">
+                  <span>PID</span>
+                  <input v-model="hostRemoteForm.pid" class="field" placeholder="如 9448" />
+                </label>
+                <button type="button" class="btn sm danger" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('kill_process')">结束进程</button>
+              </section>
+              <section class="host-remote-card">
+                <h4>隔离文件</h4>
+                <label class="hr-field">
+                  <span>完整路径</span>
+                  <input v-model="hostRemoteForm.path" class="field mono" placeholder="C:\Users\...\file.exe" />
+                </label>
+                <button type="button" class="btn sm danger-outline" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('quarantine_file')">隔离文件</button>
+              </section>
+              <section class="host-remote-card">
+                <h4>内存 YARA 扫描</h4>
+                <label class="hr-field">
+                  <span>PID（留空扫前 40 进程）</span>
+                  <input v-model="hostRemoteForm.scanPid" class="field" placeholder="可选" />
+                </label>
+                <button type="button" class="btn sm" :disabled="!selected.online || hostRemoteBusy" @click="hostRemoteAction('scan_memory')">开始扫描</button>
+              </section>
+              <section class="host-remote-card">
+                <h4>维护</h4>
+                <p class="hint sm">卸载会停止 Agent 服务；仅应急确认后使用。</p>
+                <button type="button" class="btn sm" :disabled="!selected.online" @click="uninstallHost(selected)">远程卸载 Agent</button>
+              </section>
+              <section class="host-remote-card wide">
+                <div class="host-remote-cmd-hd">
+                  <h4>指令记录</h4>
+                  <button type="button" class="btn sm" @click="loadHostRemoteCommands">刷新</button>
+                </div>
+                <table v-if="hostRemoteCommands.length" class="host-remote-cmd-table">
+                  <thead>
+                    <tr><th>时间</th><th>动作</th><th>状态</th><th>参数</th><th>结果</th><th></th></tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="c in hostRemoteCommands" :key="c.id">
+                      <td>{{ fmtTime(c.updated_at || c.created_at) }}</td>
+                      <td>{{ actionLabel(c.action) }}</td>
+                      <td><span class="cmd-st" :data-s="c.status">{{ cmdStatusLabel(c.status) }}</span></td>
+                      <td class="muted mono">{{ shortJson(c.params_json) }}</td>
+                      <td class="muted" :title="c.result_json">{{ friendlyCmdResult(c.action, c.result_json) }}</td>
+                      <td>
+                        <button
+                          v-if="c.action === 'quarantine_file' && c.status === 'done'"
+                          type="button"
+                          class="btn-text"
+                          @click="restoreQuarantined(c)"
+                        >回滚隔离</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p v-else class="empty sm">暂无远程指令记录</p>
+              </section>
+            </div>
+          </div>
+
+          <div v-if="hostTabGroup !== 'remote'" class="snap-flags">
             <span v-for="f in snapStats.flags" :key="f.k" class="sflag" :data-t="f.tone">{{ f.label }}</span>
             <span class="sflag muted">共 {{ snapStats.total }} 条 · 同步 {{ fmtTime(snap?.collected_at) }}</span>
             <span v-if="columns.length" class="sflag muted">展示 {{ columns.length }} 列</span>
           </div>
-          <div class="snap-viewbar" v-if="module !== 'sysinfo' && hostTabGroup === 'runtime'">
+          <div class="snap-viewbar" v-if="hostTabGroup !== 'remote' && module !== 'sysinfo' && hostTabGroup === 'runtime'">
             <button type="button" class="tl-fchip" :class="{ on: snapView === 'all' }" @click="snapView = 'all'">全部</button>
             <button type="button" class="tl-fchip" :class="{ on: snapView === 'risk' }" data-k="file" @click="snapView = 'risk'">
               仅可疑 <em>{{ snapRiskCount }}</em>
@@ -2406,11 +2778,11 @@
             </button>
             <span class="meta">运行态筛选 · 告警/时间线请到「检测」分区</span>
           </div>
-          <div class="snap-viewbar" v-else-if="module !== 'sysinfo' && hostTabGroup === 'inventory'">
+          <div class="snap-viewbar" v-else-if="hostTabGroup !== 'remote' && module !== 'sysinfo' && hostTabGroup === 'inventory'">
             <span class="meta">资产清单：软件 / 补丁 / 监听端口 / 用户 · 与检测态分离</span>
           </div>
 
-          <div class="snap-work has-detail">
+          <div v-if="hostTabGroup !== 'remote'" class="snap-work has-detail">
             <div class="panel snap-list">
               <div class="panel-hd">
                 <div>
@@ -2497,6 +2869,9 @@
                       </div>
                     </dl>
                   </div>
+                </div>
+                <div class="sd-actions" v-if="snapRow && (module === 'process' || module === 'file')">
+                  <button type="button" class="btn sm primary block" @click="hostRemoteFromRow(snapRow)">远程管理 →</button>
                 </div>
                 <div class="sd-actions" v-if="module === 'process' && snapRow">
                   <h4>进程关系</h4>
@@ -3318,193 +3693,923 @@
         </div>
 
         <div v-show="rulesSection === 'memory'" class="mem-yara-layout">
-          <p class="mem-yara-lead">
-            Agent 通过 <strong>sync</strong> 拉取规则包；下方开关控制<strong>实际下发</strong>的 YARA/字符串规则，用于压误报。
-            修改后终端在下次同步生效（可点「刷新规则包」查看 rev）。
-          </p>
-          <div v-if="memoryYaraPack?.ok && memoryYaraPack.controls" class="mem-yara-controls panel pad">
-            <h3 style="margin:0 0 12px">规则开关</h3>
-            <div class="mem-yara-group-toggles">
-              <div
-                v-for="gk in MEMORY_YARA_GROUP_KEYS"
-                :key="'myg-'+gk"
-                class="mem-yara-group-toggle"
-              >
-                <span class="mem-yara-group-label">{{ memoryYaraPack.group_labels?.[gk] || gk }}</span>
-                <label class="switch mem-yara-switch" @click.stop>
-                  <input
-                    type="checkbox"
-                    :disabled="!isAdmin || memoryYaraControlsBusy"
-                    :checked="memoryYaraPack.controls.groups?.[gk] !== false"
-                    @change="setMemoryYaraGroup(gk, $event.target.checked)"
-                  />
-                  <i aria-hidden="true" />
-                </label>
-              </div>
-            </div>
-            <p class="hint sm" style="margin:10px 0 0">
-              已启用：字符串 {{ memoryYaraPack.rule_count ?? 0 }}/{{ memoryYaraPack.rule_count_total ?? 0 }} ·
-              .yar {{ memoryYaraPack.yar_active ?? 0 }}/{{ memoryYaraPack.yar_total ?? 0 }}
-              <span v-if="!isAdmin">（只读，需管理员改开关）</span>
-            </p>
-          </div>
           <p v-if="memoryYaraErr" class="err-text">{{ memoryYaraErr }}</p>
           <p v-if="memoryYaraErr" class="hint sm">
-            规则目录：<code class="mono">rules/memory-yara/</code> 或 <code class="mono">agent/memory-yara/</code>；
-            Agent 内置兜底见 <code class="mono">agent/data/memory_yara_rules.json</code>。
-            点上方「刷新规则包」重试。
+            规则目录：<code class="mono">agent/memory-yara/</code> · 点「刷新规则包」重试。
           </p>
+
           <template v-else-if="memoryYaraPack?.ok">
-            <div class="mem-yara-kpis">
-              <div class="mem-yara-kpi">
-                <span class="mem-yara-kpi-l">轻量包版本</span>
-                <b class="mono">{{ memoryYaraPack.rev || memoryYaraPack.manifest?.version || '—' }}</b>
+            <div class="mem-yara-top">
+              <div class="mem-yara-stats">
+                <div class="mem-yara-stat">
+                  <label>包版本</label>
+                  <b class="mono" :title="memoryYaraPack.rev">{{ shortHash(memoryYaraPack.rev || memoryYaraPack.manifest?.version || '—') }}</b>
+                </div>
+                <button type="button" class="mem-yara-stat click" :class="{ on: memoryYaraView === 'strings' }" @click="memoryYaraView = 'strings'">
+                  <label>字符串规则</label>
+                  <b>{{ memoryYaraPack.rule_count ?? 0 }}/{{ memoryYaraPack.rule_count_total ?? (memoryYaraPack.items || []).length }}</b>
+                </button>
+                <button type="button" class="mem-yara-stat click accent" :class="{ on: memoryYaraView === 'yar' }" @click="memoryYaraView = 'yar'">
+                  <label>YARA 文件</label>
+                  <b>{{ memoryYaraPack.yar_active ?? 0 }}/{{ memoryYaraPack.yar_total || (memoryYaraPack.yar_files_all || []).length || 0 }}</b>
+                </button>
+                <button type="button" class="mem-yara-stat click" :class="{ on: memoryYaraView === 'meta' }" @click="memoryYaraView = 'meta'">
+                  <label>Valhalla</label>
+                  <b>{{ memoryYaraPack.valhalla?.present ? ('≈ ' + (memoryYaraPack.valhalla.rule_count || '?')) : '—' }}</b>
+                </button>
               </div>
-              <div class="mem-yara-kpi">
-                <span class="mem-yara-kpi-l">字符串规则</span>
-                <b>{{ memoryYaraPack.rule_count ?? (memoryYaraPack.items || []).length }}</b>
-              </div>
-              <div class="mem-yara-kpi">
-                <span class="mem-yara-kpi-l">Agent 包 .yar</span>
-                <b>{{ (memoryYaraPack.yar_files || []).length }}</b>
-              </div>
-              <div class="mem-yara-kpi" v-if="memoryYaraPack.valhalla?.present">
-                <span class="mem-yara-kpi-l">Valhalla 规则</span>
-                <b>≈ {{ memoryYaraPack.valhalla.rule_count || '?' }}</b>
+              <div class="mem-yara-toggles" v-if="memoryYaraPack.controls">
+                <div
+                  v-for="gk in MEMORY_YARA_GROUP_KEYS"
+                  :key="'myg-'+gk"
+                  class="mem-yara-tog"
+                  :class="{ off: memoryYaraPack.controls.groups?.[gk] === false }"
+                >
+                  <span>{{ memoryYaraPack.group_labels?.[gk] || gk }}</span>
+                  <label class="switch mem-yara-switch" @click.stop>
+                    <input
+                      type="checkbox"
+                      :disabled="!isAdmin || memoryYaraControlsBusy"
+                      :checked="memoryYaraPack.controls.groups?.[gk] !== false"
+                      @change="setMemoryYaraGroup(gk, $event.target.checked)"
+                    />
+                    <i aria-hidden="true" />
+                  </label>
+                </div>
               </div>
             </div>
-            <div class="mem-yara-split">
-              <aside class="mem-yara-side">
-                <div class="mem-yara-side-block">
-                  <h4>Agent 轻量包</h4>
-                  <ul class="mem-yara-facts">
-                    <li><span>名称</span><em>{{ memoryYaraPack.manifest?.name || '—' }}</em></li>
-                    <li v-if="memoryYaraPack.manifest?.updated_at"><span>更新</span><em>{{ memoryYaraPack.manifest.updated_at }}</em></li>
-                    <li v-if="memoryYaraPack.sha256"><span>SHA256</span><em class="mono" :title="memoryYaraPack.sha256">{{ shortHash(memoryYaraPack.sha256) }}</em></li>
-                  </ul>
-                  <p v-if="memoryYaraPack.manifest?.description" class="hint mem-yara-clamp">{{ memoryYaraPack.manifest.description }}</p>
+
+            <nav class="mem-yara-subnav">
+              <button type="button" :class="{ on: memoryYaraView === 'strings' }" @click="memoryYaraView = 'strings'">
+                字符串规则 <em>{{ (memoryYaraPack.items || []).length }}</em>
+              </button>
+              <button type="button" :class="{ on: memoryYaraView === 'yar' }" @click="memoryYaraView = 'yar'">
+                YARA 文件 <em>{{ memoryYaraPack.yar_total || (memoryYaraPack.yar_files_all || []).length || 0 }}</em>
+              </button>
+              <button type="button" :class="{ on: memoryYaraView === 'meta' }" @click="memoryYaraView = 'meta'">包信息</button>
+            </nav>
+
+            <div v-show="memoryYaraView === 'strings'" class="mem-yara-body" :class="{ dim: memoryYaraPack.controls?.groups?.string_rules === false }">
+              <div class="mem-yara-toolbar">
+                <div>
+                  <h3>rules.json 轻量字符串</h3>
+                  <p>不编译 YARA 也能扫；全量签名在「YARA 文件」。Sync 下发，改完下次同步生效。</p>
                 </div>
-                <div v-if="memoryYaraPack.valhalla?.present" class="mem-yara-side-block accent">
-                  <h4>
-                    Valhalla 主库
-                    <span class="pill sm" :class="{ on: memoryYaraPack.valhalla_included_in_agent_bundle }">
-                      {{ memoryYaraPack.valhalla_included_in_agent_bundle ? '已编入包' : '未编入包' }}
-                    </span>
-                  </h4>
-                  <ul class="mem-yara-facts">
-                    <li><span>文件</span><em class="mono">{{ memoryYaraPack.valhalla.path }}</em></li>
-                    <li><span>大小</span><em>{{ fmtSize(memoryYaraPack.valhalla.size) }}</em></li>
-                    <li v-if="memoryYaraPack.valhalla.retrieved"><span>检索</span><em>{{ memoryYaraPack.valhalla.retrieved }}</em></li>
-                  </ul>
-                  <p class="hint mem-yara-clamp">{{ memoryYaraPack.valhalla.note }}</p>
+                <div class="mem-yara-toolbar-actions" v-if="isAdmin">
+                  <button type="button" class="btn sm" :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false" @click="setAllMemoryYaraStringRules(true)">全部启用</button>
+                  <button type="button" class="btn sm" :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false" @click="setAllMemoryYaraStringRules(false)">全部关闭</button>
                 </div>
-                <div class="mem-yara-side-block">
+              </div>
+              <p v-if="memoryYaraPack.controls?.groups?.string_rules === false" class="mem-yara-banner">本组总开关已关，单条不可改，Agent 不下发字符串规则。</p>
+              <div class="mem-yara-scroll">
+                <table class="mem-yara-table">
+                  <colgroup>
+                    <col v-if="isAdmin" style="width:64px" />
+                    <col style="width:22%" />
+                    <col style="width:22%" />
+                    <col style="width:72px" />
+                    <col style="width:16%" />
+                    <col />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th v-if="isAdmin">启用</th>
+                      <th>ID</th>
+                      <th>标题</th>
+                      <th>级别</th>
+                      <th>MITRE</th>
+                      <th>匹配串</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="r in memoryYaraPack.items || []" :key="r.id" :class="{ 'row-off': r.enabled === false }">
+                      <td v-if="isAdmin">
+                        <label class="switch mem-yara-switch">
+                          <input
+                            type="checkbox"
+                            :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false"
+                            :checked="r.enabled !== false"
+                            @change="toggleMemoryYaraStringRule(r, $event.target.checked)"
+                          />
+                          <i aria-hidden="true" />
+                        </label>
+                      </td>
+                      <td class="mono">{{ r.id }}</td>
+                      <td><b>{{ r.title }}</b></td>
+                      <td><span class="sev" :data-s="r.severity">{{ sevLabel(r.severity) }}</span></td>
+                      <td class="mono muted">{{ (r.mitre || []).join(', ') || '—' }}</td>
+                      <td class="mono muted mem-yara-str" :title="(r.strings || []).join(' | ')">
+                        {{ ((r.strings || []).slice(0, 3).join(' · ')) || '—' }}{{ (r.strings || []).length > 3 ? '…' : '' }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div v-show="memoryYaraView === 'yar'" class="mem-yara-body">
+              <div class="mem-yara-toolbar">
+                <div>
+                  <h3>YARA 规则文件</h3>
+                  <p><code class="mono">agent/memory-yara/</code> · ep_*.yar（Hacktool/勒索/Trojan）+ 内置 .yar。分组开关在上方。</p>
+                </div>
+                <span class="meta">{{ memoryYaraPack.yar_active ?? 0 }} / {{ memoryYaraPack.yar_total || 0 }} 启用</span>
+              </div>
+              <div class="mem-yara-scroll">
+                <table class="mem-yara-table">
+                  <colgroup>
+                    <col style="width:72px" />
+                    <col />
+                    <col style="width:240px" />
+                  </colgroup>
+                  <thead>
+                    <tr><th>状态</th><th>文件</th><th>分组</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="f in (memoryYaraPack.yar_files_all || []).length ? memoryYaraPack.yar_files_all : (memoryYaraPack.yar_files || []).map((n) => ({ name: n, enabled: true, group: 'protections_yara' }))"
+                      :key="f.name || f"
+                      :class="{ 'row-off': f.enabled === false }"
+                    >
+                      <td><span class="pill sm" :class="f.enabled === false ? '' : 'on'">{{ f.enabled === false ? '关闭' : '启用' }}</span></td>
+                      <td class="mono">{{ f.name || f }}</td>
+                      <td class="muted">{{ memoryYaraPack.group_labels?.[f.group] || f.group || '—' }}</td>
+                    </tr>
+                    <tr v-if="!(memoryYaraPack.yar_files_all || []).length && !(memoryYaraPack.yar_files || []).length">
+                      <td colspan="3" class="muted">未发现 .yar 文件</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div v-show="memoryYaraView === 'meta'" class="mem-yara-body meta">
+              <div class="mem-yara-meta-grid">
+                <section>
+                  <h4>轻量包</h4>
+                  <dl>
+                    <div><dt>名称</dt><dd>{{ memoryYaraPack.manifest?.name || '—' }}</dd></div>
+                    <div><dt>版本</dt><dd class="mono">{{ memoryYaraPack.manifest?.version || memoryYaraPack.rev || '—' }}</dd></div>
+                    <div v-if="memoryYaraPack.manifest?.updated_at"><dt>更新</dt><dd>{{ memoryYaraPack.manifest.updated_at }}</dd></div>
+                    <div v-if="memoryYaraPack.sha256"><dt>SHA256</dt><dd class="mono" :title="memoryYaraPack.sha256">{{ shortHash(memoryYaraPack.sha256) }}</dd></div>
+                    <div class="full" v-if="memoryYaraPack.manifest?.description"><dt>说明</dt><dd>{{ memoryYaraPack.manifest.description }}</dd></div>
+                  </dl>
+                </section>
+                <section v-if="memoryYaraPack.valhalla?.present">
+                  <h4>Valhalla 主库 <span class="pill sm" :class="{ on: memoryYaraPack.valhalla_included_in_agent_bundle }">{{ memoryYaraPack.valhalla_included_in_agent_bundle ? '已编入包' : '未编入包' }}</span></h4>
+                  <dl>
+                    <div><dt>路径</dt><dd class="mono">{{ memoryYaraPack.valhalla.path }}</dd></div>
+                    <div><dt>大小</dt><dd>{{ fmtSize(memoryYaraPack.valhalla.size) }}</dd></div>
+                    <div v-if="memoryYaraPack.valhalla.retrieved"><dt>检索</dt><dd>{{ memoryYaraPack.valhalla.retrieved }}</dd></div>
+                    <div class="full"><dt>说明</dt><dd>{{ memoryYaraPack.valhalla.note }}</dd></div>
+                  </dl>
+                </section>
+                <section>
                   <h4>仓库路径</h4>
-                  <ul class="mem-yara-facts paths">
-                    <li><span>主库</span><em><code class="mono">{{ memoryYaraPack.repo_paths?.yara_corpus || 'yara/' }}</code></em></li>
-                    <li><span>轻量包</span><em><code class="mono">{{ memoryYaraPack.repo_paths?.agent_memory_pack || 'rules/memory-yara/' }}</code></em></li>
-                  </ul>
-                  <p v-if="memoryYaraPack.sigma_note" class="hint mem-yara-clamp">{{ memoryYaraPack.sigma_note }}</p>
-                </div>
-                <div v-if="(memoryYaraPack.yar_files || []).length" class="mem-yara-side-block">
-                  <h4>下载包内 YARA 文件</h4>
-                  <ul class="mem-yara-file-list">
-                    <li v-for="f in memoryYaraPack.yar_files" :key="f"><code class="mono">{{ f }}</code></li>
-                  </ul>
-                </div>
-              </aside>
-              <div
-                class="panel fill mem-yara-table-panel"
-                :class="{ 'mem-yara-panel-off': memoryYaraPack.controls?.groups?.string_rules === false }"
-              >
-                <div class="panel-hd mem-yara-table-hd">
-                  <div class="mem-yara-table-hd-left">
-                    <h3>内存字符串规则（rules.json）</h3>
-                    <p class="hint sm mem-yara-table-hint">
-                      轻量包内置仅 <strong>{{ (memoryYaraPack.items || []).length }}</strong> 条子串规则（不编译 YARA 也能扫）；
-                      大量 Hacktool/勒索等签名在上方 <strong>Protections YARA（ep_*.yar，约 {{ memoryYaraPack.yar_active ?? 0 }} 个文件）</strong>。
-                    </p>
-                  </div>
-                  <div class="mem-yara-table-hd-actions" v-if="isAdmin">
-                    <span class="meta">{{ memoryYaraPack.rule_count ?? 0 }} 启用 / {{ (memoryYaraPack.items || []).length }} 条</span>
-                    <label class="mem-yara-master-label">
-                      <span>本组总开关</span>
-                      <label class="switch mem-yara-switch">
-                        <input
-                          type="checkbox"
-                          :disabled="memoryYaraControlsBusy"
-                          :checked="memoryYaraPack.controls?.groups?.string_rules !== false"
-                          @change="setMemoryYaraGroup('string_rules', $event.target.checked)"
-                        />
-                        <i aria-hidden="true" />
-                      </label>
-                    </label>
-                    <button
-                      type="button"
-                      class="btn sm"
-                      :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false"
-                      @click="setAllMemoryYaraStringRules(true)"
-                    >
-                      全部启用
-                    </button>
-                    <button
-                      type="button"
-                      class="btn sm"
-                      :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false"
-                      @click="setAllMemoryYaraStringRules(false)"
-                    >
-                      全部关闭
-                    </button>
-                  </div>
-                </div>
-                <p
-                  v-if="memoryYaraPack.controls?.groups?.string_rules === false"
-                  class="mem-yara-group-off-banner"
-                >
-                  已关闭「rules.json 字符串规则」总开关：下面单条开关不可用，Agent 不会下发这 {{ (memoryYaraPack.items || []).length }} 条字符串规则。
-                </p>
-                <div class="table-scroll">
-                  <table class="mem-yara-table">
-                    <thead>
-                      <tr>
-                        <th v-if="isAdmin">启用</th>
-                        <th>ID</th>
-                        <th>标题</th>
-                        <th>级别</th>
-                        <th>MITRE</th>
-                        <th>积木</th>
-                        <th>匹配串</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="r in memoryYaraPack.items || []" :key="r.id" :class="{ 'row-off': r.enabled === false }">
-                        <td v-if="isAdmin">
-                          <label class="switch mem-yara-switch">
-                            <input
-                              type="checkbox"
-                              :disabled="memoryYaraControlsBusy || memoryYaraPack.controls?.groups?.string_rules === false"
-                              :checked="r.enabled !== false"
-                              @change="toggleMemoryYaraStringRule(r, $event.target.checked)"
-                            />
-                            <i aria-hidden="true" />
-                          </label>
-                        </td>
-                        <td class="mono muted">{{ r.id }}</td>
-                        <td><b>{{ r.title }}</b></td>
-                        <td><span class="sev" :data-s="r.severity">{{ sevLabel(r.severity) }}</span></td>
-                        <td class="muted mono">{{ (r.mitre || []).join(', ') || '—' }}</td>
-                        <td>{{ r.building_block ? '是' : '否' }}</td>
-                        <td class="muted mem-yara-str" :title="(r.strings || []).join(' | ')">
-                          {{ ((r.strings || []).slice(0, 2).join(' · ')) || '—' }}{{ (r.strings || []).length > 2 ? '…' : '' }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                  <dl>
+                    <div><dt>主库</dt><dd class="mono">{{ memoryYaraPack.repo_paths?.yara_corpus || 'yara/' }}</dd></div>
+                    <div><dt>轻量包</dt><dd class="mono">{{ memoryYaraPack.repo_paths?.agent_memory_pack || 'agent/memory-yara/' }}</dd></div>
+                    <div class="full" v-if="memoryYaraPack.sigma_note"><dt>注意</dt><dd>{{ memoryYaraPack.sigma_note }}</dd></div>
+                  </dl>
+                </section>
               </div>
             </div>
           </template>
           <p v-else-if="!memoryYaraBusy" class="empty">暂无规则包数据，点右上角「刷新规则包」</p>
+        </div>
+      </section>
+
+      <!-- ========== AI 分析 ========== -->
+      <section v-else-if="page === 'ai-analyze'" class="page ai-page">
+        <header class="page-hd">
+          <div>
+            <h1>AI 分析</h1>
+            <p class="desc">Agentic SOC 风格 · Team Leader 调度多 Agent · 感知—调查—研判—处置建议（人工审核）</p>
+          </div>
+          <div class="hd-right">
+            <button type="button" class="btn sm" :disabled="aiHostsLoading" @click="loadAiAnalyzePage({ force: true })">
+              {{ aiHostsLoading ? '刷新中…' : '刷新终端' }}
+            </button>
+            <button
+              v-if="isAdmin"
+              type="button"
+              class="btn sm primary"
+              :disabled="aiBusy"
+              @click="setupLocalAiModel()"
+            >同步本地模型</button>
+          </div>
+        </header>
+
+        <div class="ai-status-bar panel pad">
+          <div class="ai-status-main">
+            <span class="pill" :class="aiStatusInfo.configured ? 'ok' : 'warn'">
+              {{ aiStatusInfo.configured ? '模型已就绪' : '模型未配置' }}
+            </span>
+            <span class="mono muted">{{ aiStatusInfo.base_url || '—' }}</span>
+            <span class="mono">{{ aiStatusInfo.model || '—' }}</span>
+            <span class="muted">来源 {{ aiStatusInfo.source || '—' }} · 超时 {{ aiStatusInfo.timeout || 120 }}s</span>
+          </div>
+          <div class="ai-status-skills muted">
+            Skill 根目录：<code class="mono">{{ aiStatusInfo.skills_root || 'skills' }}</code>
+            · 库内索引 {{ aiStatusInfo.skills_total || aiSkillsMeta.total_indexed || '—' }}
+            · EDR 相关 {{ aiStatusInfo.skills_edr || aiSkillsMeta.edr_relevant || aiSkills.length }}
+            · 列表展示 {{ aiSkills.length }}
+          </div>
+        </div>
+
+        <div class="ai-layout">
+          <aside class="ai-host-pane panel">
+            <div class="panel-hd">
+              <h3>在线终端 <em>{{ aiOnlineHosts.length }}</em></h3>
+              <label class="ai-only-online">
+                <input type="checkbox" v-model="aiOnlyOnline" /> 仅在线
+                <span v-if="aiHostsLoading" class="muted sm">同步中</span>
+              </label>
+            </div>
+            <div class="ai-host-list">
+              <button
+                v-for="h in aiVisibleHosts"
+                :key="h.agent_id"
+                type="button"
+                class="ai-host-row"
+                :class="{ on: aiSelectedId === h.agent_id, offline: !h.online }"
+                :disabled="aiBusy && aiSelectedId === h.agent_id"
+                @click="runAiAnalyze(h)"
+              >
+                <span class="ai-host-dot" :class="{ on: h.online }" />
+                <span class="ai-host-meta">
+                  <b>{{ h.hostname || h.agent_id }}</b>
+                  <small class="mono">{{ h.ip || h.last_ip || '—' }} · {{ h.online ? '在线' : '离线' }}</small>
+                </span>
+                <span class="ai-host-badges">
+                  <em v-if="h.open_threat_count" class="pill danger">威胁 {{ h.open_threat_count }}</em>
+                  <em v-else-if="h.threat_count" class="pill soft">历史 {{ h.threat_count }}</em>
+                </span>
+              </button>
+              <p v-if="!aiVisibleHosts.length && aiHostsLoading" class="empty sm">正在拉取在线终端…</p>
+              <p v-else-if="!aiVisibleHosts.length" class="empty sm">暂无终端，请先部署 Agent 或点「刷新终端」</p>
+            </div>
+          </aside>
+
+          <main class="ai-result-pane panel">
+            <div class="panel-hd">
+              <h3>
+                研判结果
+                <template v-if="aiSelectedHost"> · {{ aiSelectedHost.hostname || aiSelectedHost.agent_id }}</template>
+              </h3>
+              <span v-if="aiRefining" class="pill warn">模型精炼中…</span>
+              <span v-else-if="aiResult" class="muted">{{ aiResult.mode }} · {{ aiResult.elapsed_ms || 0 }} ms</span>
+            </div>
+
+            <div v-if="aiBusy && !aiResult" class="ai-busy">
+              <div class="ai-spinner" />
+              <p>正在快速汇总快照 / 威胁事件 / 日志…</p>
+              <p class="muted sm">约 1 秒内先出启发式结论，随后自动精炼。</p>
+            </div>
+
+            <div v-else-if="aiErrorText" class="ai-empty">
+              <p class="hint warn">分析失败：{{ aiErrorText }}</p>
+              <p class="muted">可再次点击左侧终端重试；若模型超时，仍会尽量返回启发式结论。</p>
+            </div>
+
+            <div v-else-if="aiResult" class="ai-result-body">
+              <div class="ai-hero">
+                <div class="ai-hero-verdict">
+                  <span class="ai-verdict" :data-v="aiResult.result?.verdict || ''">{{ aiResult.result?.verdict || '待研判' }}</span>
+                  <div class="ai-hero-meta">
+                    <b :class="'sev-' + String(aiResult.result?.risk_level || '').toLowerCase()">
+                      {{ aiResult.result?.risk_level || '—' }} · {{ aiResult.result?.risk_score ?? '—' }}
+                    </b>
+                    <small class="mono muted">{{ aiResult.mode }} · {{ aiResult.model || 'Agent Team' }} · {{ aiResult.elapsed_ms || 0 }} ms</small>
+                  </div>
+                </div>
+                <div class="ai-hero-stats">
+                  <button type="button" class="ai-hero-stat" @click="aiTab = 'threats'">
+                    <label>威胁</label>
+                    <b>{{ (aiResult.result?.threat_events || []).length || aiResult.pack_stats?.threat_events || 0 }}</b>
+                  </button>
+                  <button type="button" class="ai-hero-stat" @click="aiTab = 'logs'">
+                    <label>日志 / 规则</label>
+                    <b>{{ aiResult.pack_stats?.security_logs || 0 }} / {{ aiResult.pack_stats?.log_rule_hits || 0 }}</b>
+                  </button>
+                  <button type="button" class="ai-hero-stat" @click="aiTab = 'entity'">
+                    <label>实体</label>
+                    <b>{{ (aiResult.result?.entities || []).length }}</b>
+                  </button>
+                  <button type="button" class="ai-hero-stat" @click="aiTab = 'resp'">
+                    <label>处置建议</label>
+                    <b>{{ (aiResult.result?.dispositions || []).length }}</b>
+                  </button>
+                </div>
+              </div>
+
+              <p class="ai-scope-banner" v-if="aiResult.result?.data_scope">
+                <b>分析范围</b>
+                <span>{{ aiResult.result.data_scope.note }}</span>
+                <em class="muted">
+                  快照 {{ (aiResult.result.data_scope.snapshots || []).length }} 类 ·
+                  威胁 {{ aiResult.result.data_scope.threat_events || 0 }} ·
+                  时间线 {{ aiResult.result.data_scope.timeline || 0 }} ·
+                  调查日志 {{ aiResult.result.data_scope.investigate_logs || 0 }} ·
+                  规则命中 {{ aiResult.result.data_scope.log_rule_hits || 0 }}
+                </em>
+              </p>
+
+              <nav class="ai-tabs">
+                <button type="button" :class="{ on: aiTab === 'overview' }" @click="aiTab = 'overview'">概览</button>
+                <button type="button" :class="{ on: aiTab === 'chain' }" @click="aiTab = 'chain'">
+                  攻击链路
+                  <em v-if="aiResult.result?.attack_graph?.stage_count">{{ aiResult.result.attack_graph.stage_count }}</em>
+                </button>
+                <button type="button" :class="{ on: aiTab === 'threats' }" @click="aiTab = 'threats'">
+                  AI 研判事件
+                  <em v-if="(aiResult.result?.threat_events || []).length">{{ (aiResult.result.threat_events || []).length }}</em>
+                </button>
+                <button type="button" :class="{ on: aiTab === 'think' }" @click="aiTab = 'think'">
+                  AI 思维链
+                  <em v-if="(aiResult.result?.thinking_chain || []).length">{{ (aiResult.result.thinking_chain || []).length }}</em>
+                </button>
+                <button type="button" :class="{ on: aiTab === 'logs' }" @click="aiTab = 'logs'">
+                  日志取证
+                  <em v-if="(aiResult.result?.forensics_logs || aiResult.result?.security_logs || []).length">
+                    {{ (aiResult.result?.forensics_logs || aiResult.result?.security_logs || []).length }}
+                  </em>
+                </button>
+                <button type="button" :class="{ on: aiTab === 'entity' }" @click="aiTab = 'entity'">实体</button>
+                <button type="button" :class="{ on: aiTab === 'report' }" @click="aiTab = 'report'">报告</button>
+                <button type="button" :class="{ on: aiTab === 'resp' }" @click="aiTab = 'resp'">处置</button>
+              </nav>
+
+              <div v-show="aiTab === 'overview'" class="ai-tab-pane ai-overview">
+                <div v-if="(aiResult.result?.team?.agents || []).length" class="ai-team-strip">
+                  <div
+                    v-for="a in aiResult.result.team.agents"
+                    :key="a.id"
+                    class="ai-team-pill"
+                    :title="a.summary"
+                  >
+                    <i />
+                    <span>
+                      <b>{{ a.name }}</b>
+                      <small>{{ a.role }}</small>
+                    </span>
+                    <em>{{ a.status === 'done' ? '完成' : a.status }}</em>
+                  </div>
+                </div>
+
+                <div class="ai-board">
+                  <section class="ai-board-main">
+                    <div class="ai-panel">
+                      <header class="ai-panel-hd">
+                        <h4>AI 研判事件</h4>
+                        <button type="button" class="btn-text sm" @click="aiTab = 'threats'">全部 →</button>
+                      </header>
+                      <div v-if="(aiResult.result?.threat_events || []).length" class="ai-threat-preview">
+                        <button
+                          v-for="(ev, i) in (aiResult.result.threat_events || []).slice(0, 6)"
+                          :key="ev.id || i"
+                          type="button"
+                          class="ai-threat-row"
+                          @click="aiThreatIdx = i; aiTab = 'threats'"
+                        >
+                          <span class="pill" :data-ai="ev.ai?.conclusion || ''">{{ ev.ai?.conclusion || '待研判' }}</span>
+                          <span class="ai-threat-row-body">
+                            <b>{{ ev.title || '未命名告警' }}</b>
+                            <small>{{ (ev.ai?.reasoning && ev.ai.reasoning[0]) || ev.ai?.note || '—' }}</small>
+                          </span>
+                          <em class="muted sm">{{ ev.ai?.confidence != null ? ev.ai.confidence + '%' : '' }}</em>
+                        </button>
+                      </div>
+                      <p v-else class="ai-panel-empty">暂无 AI 研判事件</p>
+                    </div>
+
+                    <div class="ai-panel">
+                      <header class="ai-panel-hd">
+                        <h4>攻击时间线</h4>
+                        <span class="muted sm">威胁 + 安全日志</span>
+                      </header>
+                      <ol v-if="(aiResult.result?.attack_timeline || []).length" class="ai-rail">
+                        <li v-for="(t, i) in aiResult.result.attack_timeline.slice(0, 10)" :key="i">
+                          <span class="ai-rail-dot" :data-k="t.kind || ''" />
+                          <div>
+                            <div class="ai-rail-top">
+                              <time>{{ t.ts || '—' }}</time>
+                              <span class="pill soft">{{ t.kind }}</span>
+                            </div>
+                            <b>{{ t.title }}</b>
+                            <small v-if="t.detail">{{ t.detail }}</small>
+                          </div>
+                        </li>
+                      </ol>
+                      <p v-else class="ai-panel-empty">暂无攻击时间线节点</p>
+                    </div>
+                  </section>
+
+                  <aside class="ai-board-side">
+                    <div class="ai-panel">
+                      <header class="ai-panel-hd"><h4>调查流水线</h4></header>
+                      <ol v-if="(aiResult.result?.pipeline || []).length" class="ai-steps">
+                        <li v-for="(p, i) in aiResult.result.pipeline" :key="i">
+                          <span class="ai-step-no">{{ i + 1 }}</span>
+                          <div>
+                            <b>{{ p.stage }}</b>
+                            <span>{{ p.goal }}</span>
+                            <small v-if="typeof p.output === 'string'">{{ p.output }}</small>
+                            <small v-else-if="p.output?.what">{{ p.output.what }}</small>
+                            <em v-if="(p.deliverables || []).length">{{ (p.deliverables || []).join(' · ') }}</em>
+                          </div>
+                        </li>
+                      </ol>
+                      <p v-else class="ai-panel-empty">暂无流水线</p>
+                    </div>
+
+                    <div v-if="aiResult.result?.alert_meta" class="ai-panel">
+                      <header class="ai-panel-hd"><h4>告警基本信息</h4></header>
+                      <dl class="ai-meta-compact">
+                        <div><dt>来源</dt><dd>{{ aiResult.result.alert_meta.source || '—' }}</dd></div>
+                        <div><dt>分析规则</dt><dd>{{ aiResult.result.alert_meta.analysis_rule || '—' }}</dd></div>
+                        <div><dt>关联告警</dt><dd>{{ aiResult.result.alert_meta.related_alerts ?? '—' }}</dd></div>
+                        <div><dt>资产</dt><dd>{{ aiResult.result.alert_meta.hostname || '—' }}</dd></div>
+                        <div class="full"><dt>ATT&CK</dt><dd>{{ (aiResult.result.alert_meta.attck_stages || []).join(' · ') || '—' }}</dd></div>
+                        <div class="full" v-if="aiResult.result?.root_cause"><dt>根因</dt><dd>{{ aiResult.result.root_cause }}</dd></div>
+                      </dl>
+                    </div>
+
+                    <div class="ai-panel ai-quick">
+                      <header class="ai-panel-hd"><h4>快捷入口</h4></header>
+                      <div class="ai-quick-row">
+                        <button type="button" @click="aiTab = 'think'">思维链 {{ (aiResult.result?.thinking_chain || []).length }}</button>
+                        <button type="button" @click="aiTab = 'logs'">日志 {{ (aiResult.result?.security_logs || []).length }}</button>
+                        <button type="button" @click="aiTab = 'report'">报告</button>
+                        <button type="button" @click="aiTab = 'resp'">处置 {{ (aiResult.result?.dispositions || []).length }}</button>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+
+              <div v-show="aiTab === 'chain'" class="ai-tab-pane ai-chain-pane">
+                <div class="ai-section-hd">
+                  <div>
+                    <label>攻击链路图</label>
+                    <span class="muted sm">{{ aiResult.result?.attack_graph?.summary || '将主机 → 各 ATT&CK 阶段 → 证据串联' }}</span>
+                  </div>
+                  <button type="button" class="btn-text sm" @click="aiTab = 'logs'">日志取证 →</button>
+                </div>
+                <div v-if="(aiResult.result?.attack_graph?.nodes || []).length" class="ai-chain-board">
+                  <div class="ai-chain-flow">
+                    <template v-for="(n, i) in aiResult.result.attack_graph.nodes" :key="n.id">
+                      <div
+                        class="ai-chain-node"
+                        :class="[n.type, { on: aiChainNodeId === n.id }]"
+                        @click="aiChainNodeId = n.id"
+                      >
+                        <span class="ai-chain-badge">{{ n.type === 'host' ? '主机' : (i) }}</span>
+                        <b>{{ n.label }}</b>
+                        <small v-if="n.sub">{{ n.sub }}</small>
+                        <em v-if="n.count">{{ n.count }} 证据</em>
+                      </div>
+                      <div
+                        v-if="i < aiResult.result.attack_graph.nodes.length - 1"
+                        class="ai-chain-arrow"
+                        aria-hidden="true"
+                      >→</div>
+                    </template>
+                  </div>
+                  <div class="ai-chain-detail" v-if="aiChainNode">
+                    <header>
+                      <h4>{{ aiChainNode.label }}</h4>
+                      <span class="muted sm">{{ aiChainNode.sub || aiChainNode.type }}</span>
+                    </header>
+                    <div v-if="(aiChainNode.items || []).length" class="ai-chain-items">
+                      <article v-for="(it, ii) in aiChainNode.items" :key="ii" class="ai-chain-item" :data-k="it.kind">
+                        <div class="ai-chain-item-top">
+                          <span class="pill soft">{{ it.kind }}</span>
+                          <time>{{ it.ts || '—' }}</time>
+                        </div>
+                        <b>{{ it.title }}</b>
+                        <p>{{ it.detail || '—' }}</p>
+                      </article>
+                    </div>
+                    <p v-else class="muted">该节点无挂接明细证据</p>
+                    <div class="ai-threat-actions">
+                      <button type="button" class="btn sm" @click="aiTab = 'threats'">看 AI 研判事件</button>
+                      <button type="button" class="btn sm" @click="aiTab = 'entity'">看实体</button>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="ai-panel-empty fill">暂无线路节点。请确认 Agent 已回传威胁/日志后再分析。</div>
+              </div>
+
+              <div v-show="aiTab === 'threats'" class="ai-tab-pane">
+                <div class="ai-threats-head">
+                  <label>AI 研判事件（本地 Agent / 模型结论，非原始告警照搬）</label>
+                  <span class="muted sm">
+                    {{ (aiResult.result?.threat_events || []).length }} 条 ·
+                    主机结论 {{ aiResult.result?.verdict || '—' }} ·
+                    点行看推理与处置建议
+                  </span>
+                </div>
+                <div class="ai-threats-layout">
+                  <div class="ai-threats-list">
+                    <table class="ai-mini-tbl">
+                      <thead>
+                        <tr>
+                          <th>AI 结论</th>
+                          <th>置信</th>
+                          <th>原告警</th>
+                          <th>角色</th>
+                          <th>阶段</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(ev, i) in (aiResult.result?.threat_events || [])"
+                          :key="ev.id || i"
+                          :class="{ on: aiThreatIdx === i }"
+                          @click="aiThreatIdx = i"
+                        >
+                          <td>
+                            <span class="pill" :data-ai="ev.ai?.conclusion || ''">{{ ev.ai?.conclusion || '待研判' }}</span>
+                          </td>
+                          <td class="mono">{{ ev.ai?.confidence != null ? ev.ai.confidence + '%' : '—' }}</td>
+                          <td :title="ev.title">
+                            <b class="ai-threat-title">{{ ev.title || '未命名告警' }}</b>
+                            <small class="muted">EDR {{ ev.severity || '—' }} · {{ ev.process_name || ev.path || ev.etype || '' }}</small>
+                          </td>
+                          <td>
+                            <span class="pill soft" :data-role="ev.ai?.role || ''">{{ ev.ai?.role || '—' }}</span>
+                          </td>
+                          <td>{{ ev.ai?.chain_stage || '—' }}</td>
+                        </tr>
+                        <tr v-if="!(aiResult.result?.threat_events || []).length">
+                          <td colspan="5" class="muted">暂无可供 AI 研判的威胁；请确认终端已上报告警。</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <aside v-if="aiThreatCard" class="ai-threat-card">
+                    <div class="ai-threat-card-top">
+                      <span class="pill" :data-ai="aiThreatCard.ai?.conclusion || ''">{{ aiThreatCard.ai?.conclusion || '待研判' }}</span>
+                      <b v-if="aiThreatCard.ai?.confidence != null">置信 {{ aiThreatCard.ai.confidence }}%</b>
+                    </div>
+                    <h4>{{ aiThreatCard.title || '研判详情' }}</h4>
+                    <p class="muted sm">原 EDR #{{ aiThreatCard.id || '—' }} · {{ aiThreatCard.severity || '—' }} · {{ aiThreatCard.etype || '—' }}</p>
+                    <div class="ai-think-block">
+                      <label>AI 结论说明</label>
+                      <p>{{ aiThreatCard.ai?.note || '暂无' }}</p>
+                    </div>
+                    <div class="ai-think-block" v-if="(aiThreatCard.ai?.reasoning || []).length">
+                      <label>AI 推理过程</label>
+                      <ul>
+                        <li v-for="(r, ri) in aiThreatCard.ai.reasoning" :key="ri">{{ r }}</li>
+                      </ul>
+                    </div>
+                    <div class="ai-think-block">
+                      <label>处置建议</label>
+                      <p>{{ aiThreatCard.ai?.recommendation || '—' }}</p>
+                    </div>
+                    <div class="ai-think-block" v-if="(aiThreatCard.ai?.attck || []).length">
+                      <label>关联 ATT&CK</label>
+                      <p>{{ (aiThreatCard.ai.attck || []).join(' · ') }}</p>
+                    </div>
+                    <div class="ai-think-block" v-if="(aiThreatCard.ai?.entities || []).length">
+                      <label>关联实体</label>
+                      <ul>
+                        <li v-for="(en, ei) in aiThreatCard.ai.entities" :key="ei">
+                          [{{ en.type }}/{{ en.risk }}] <code>{{ en.value }}</code>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="ai-think-block" v-if="(aiThreatCard.ai?.signals || []).length">
+                      <label>命中信号</label>
+                      <p>{{ (aiThreatCard.ai.signals || []).join(' · ') }}</p>
+                    </div>
+                    <div class="ai-think-block">
+                      <label>原始证据（EDR）</label>
+                      <p class="mono sm">{{ aiThreatCard.matched || aiThreatCard.summary || '—' }}</p>
+                      <p v-if="aiThreatCard.command_line" class="mono sm">{{ aiThreatCard.command_line }}</p>
+                    </div>
+                    <div class="ai-threat-actions">
+                      <button type="button" class="btn sm" @click="aiTab = 'think'">看 AI 思维链</button>
+                      <button type="button" class="btn sm" @click="aiTab = 'resp'">去处置</button>
+                      <button type="button" class="btn sm" @click="goMenu('events')">原始威胁事件</button>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+
+              <div v-show="aiTab === 'think'" class="ai-tab-pane">
+                <div class="ai-think-banner">
+                  <b>AI ReAct 思维链</b>
+                  <span class="muted sm">每步含线索 / 假设 / 推理 / 观察，并挂接本机告警与日志证据；模型精炼后会追加一步。</span>
+                </div>
+                <div v-if="(aiResult.result?.thinking_chain || []).length" class="ai-think">
+                  <div class="ai-think-layout">
+                    <aside class="ai-think-steps">
+                      <button
+                        v-for="(s, i) in aiResult.result.thinking_chain"
+                        :key="s.id || i"
+                        type="button"
+                        class="ai-think-step"
+                        :class="{ on: aiThinkIdx === i, llm: s.phase === '模型精炼' }"
+                        @click="aiThinkIdx = i"
+                      >
+                        <b>{{ i + 1 }}. {{ s.title }}</b>
+                        <small>{{ s.phase }} · {{ s.agent }}</small>
+                      </button>
+                    </aside>
+                    <div v-if="aiThinkStep" class="ai-think-detail">
+                      <h4>{{ aiThinkStep.title }}</h4>
+                      <p class="muted sm">{{ aiThinkStep.phase }} · {{ aiThinkStep.agent }}</p>
+                      <div class="ai-think-block"><label>线索摘要</label><p>{{ aiThinkStep.clue || '—' }}</p></div>
+                      <div class="ai-think-block"><label>初始假设</label><p>{{ aiThinkStep.hypothesis || '—' }}</p></div>
+                      <div class="ai-think-block">
+                        <label>推理过程</label>
+                        <ul><li v-for="(r, ri) in (aiThinkStep.reasoning || [])" :key="ri">{{ r }}</li></ul>
+                      </div>
+                      <div class="ai-think-block"><label>观察结果</label><p>{{ aiThinkStep.observation || '—' }}</p></div>
+                      <div class="ai-think-block" v-if="(aiThinkStep.evidence || []).length">
+                        <label>本步 AI 证据</label>
+                        <ul class="ai-evidence-list">
+                          <li v-for="(ev, ei) in aiThinkStep.evidence" :key="ei">{{ ev }}</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p v-else class="muted">暂无思维链</p>
+              </div>
+
+              <div v-show="aiTab === 'logs'" class="ai-tab-pane ai-logs-pane">
+                <div class="ai-section-hd">
+                  <div>
+                    <label>日志取证</label>
+                    <span class="muted sm">Agent 回传时间线 / 调查日志（含重点安全样本）· 点击分类筛选</span>
+                  </div>
+                  <span class="muted sm">
+                    规则库 {{ aiResult.pack_stats?.log_rules_indexed || 0 }} ·
+                    命中 {{ (aiResult.result?.log_rule_hits || []).length }}
+                  </span>
+                </div>
+                <div class="ai-log-cats">
+                  <button
+                    type="button"
+                    class="chip soft"
+                    :class="{ on: !aiLogCat }"
+                    @click="aiLogCat = ''"
+                  >全部 {{ aiForensicsLogs.length }}</button>
+                  <button
+                    v-for="(n, k) in aiLogCategoryMap"
+                    :key="k"
+                    type="button"
+                    class="chip soft"
+                    :class="{ on: aiLogCat === k }"
+                    @click="aiLogCat = (aiLogCat === k ? '' : k)"
+                  >{{ k }} {{ n }}</button>
+                  <span v-if="!Object.keys(aiLogCategoryMap).length" class="muted">分类为空</span>
+                </div>
+                <div class="ai-log-board">
+                  <div class="ai-log-main">
+                    <header class="ai-panel-hd">
+                      <h4>回传日志 {{ aiLogCat ? '· ' + aiLogCat : '' }}</h4>
+                      <span class="muted sm">{{ aiFilteredForensicsLogs.length }} 条</span>
+                    </header>
+                    <div class="ai-log-table-wrap">
+                      <table class="ai-mini-tbl">
+                        <thead>
+                          <tr><th>时间</th><th>类型</th><th>分类</th><th>摘要 / 命令行</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(l, i) in aiFilteredForensicsLogs.slice(0, 80)"
+                            :key="i"
+                            :class="{ on: aiLogIdx === i }"
+                            @click="aiLogIdx = i"
+                          >
+                            <td class="muted">{{ l.ts || '—' }}</td>
+                            <td class="mono">{{ l.etype || '—' }}</td>
+                            <td>
+                              <button type="button" class="chip soft sm" @click.stop="aiLogCat = l.category || ''">
+                                {{ l.category || 'other' }}
+                              </button>
+                            </td>
+                            <td :title="l.command_line || l.summary">{{ l.summary || l.command_line || '—' }}</td>
+                          </tr>
+                          <tr v-if="!aiFilteredForensicsLogs.length">
+                            <td colspan="4" class="muted">当前分类无日志。可切「全部」，或确认 Agent 已上报 Winlog / 持久化 / 进程事件。</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <aside v-if="aiLogCard" class="ai-log-card">
+                      <b>{{ aiLogCard.etype || '日志' }}</b>
+                      <p class="muted sm">{{ aiLogCard.ts || '—' }} · {{ aiLogCard.category || 'other' }}</p>
+                      <p>{{ aiLogCard.summary || '—' }}</p>
+                      <p v-if="aiLogCard.command_line" class="mono sm">{{ aiLogCard.command_line }}</p>
+                      <p v-if="aiLogCard.path" class="mono sm">{{ aiLogCard.path }}</p>
+                    </aside>
+                  </div>
+                  <div class="ai-log-side">
+                    <header class="ai-panel-hd">
+                      <h4>日志规则命中</h4>
+                      <span class="muted sm">对照 log_rules / logrules</span>
+                    </header>
+                    <div class="ai-log-table-wrap">
+                      <table class="ai-mini-tbl">
+                        <thead><tr><th>规则</th><th>来源</th><th>证据</th></tr></thead>
+                        <tbody>
+                          <tr v-for="(h, i) in (aiResult.result?.log_rule_hits || []).slice(0, 40)" :key="i">
+                            <td>{{ h.rule_title || '—' }}</td>
+                            <td class="mono">{{ h.source || h.match || '—' }}</td>
+                            <td :title="h.evidence">{{ h.evidence || h.etype || '—' }}</td>
+                          </tr>
+                          <tr v-if="!(aiResult.result?.log_rule_hits || []).length">
+                            <td colspan="3" class="muted">暂无规则命中（增强对照，分析不依赖此项）。</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-show="aiTab === 'entity'" class="ai-tab-pane ai-entity-pane">
+                <div class="ai-section-hd">
+                  <div>
+                    <label>实体研判</label>
+                    <span class="muted sm">
+                      共 {{ (aiResult.result?.entities || []).length }} ·
+                      恶意 {{ aiEntityStats.malicious }} ·
+                      可疑 {{ aiEntityStats.suspicious }} ·
+                      IoC {{ (aiResult.result?.iocs || []).length }}
+                    </span>
+                  </div>
+                  <button type="button" class="btn-text sm" @click="aiTab = 'resp'">去处置 →</button>
+                </div>
+                <div v-if="(aiResult.result?.entities || []).length" class="ai-entity-board">
+                  <div class="ai-entity-list">
+                    <button
+                      v-for="(e, i) in aiResult.result.entities"
+                      :key="i"
+                      type="button"
+                      class="ai-entity-row"
+                      :class="{ on: aiEntityIdx === i }"
+                      :data-risk="e.risk || ''"
+                      @click="aiEntityIdx = i"
+                    >
+                      <span class="ai-entity-type">{{ e.type || 'obj' }}</span>
+                      <span class="ai-entity-main">
+                        <b :title="e.value">{{ e.value || '—' }}</b>
+                        <small>{{ e.reason || e.analysis?.conclusion || '—' }}</small>
+                      </span>
+                      <span class="pill" :data-risk="e.risk">{{ e.risk || '—' }}</span>
+                    </button>
+                  </div>
+                  <aside v-if="aiEntityCard" class="ai-entity-detail">
+                    <div class="ai-entity-detail-top">
+                      <span class="pill" :data-risk="aiEntityCard.risk">{{ aiEntityCard.risk || '—' }}</span>
+                      <em>{{ aiEntityCard.type || 'entity' }}</em>
+                      <span v-if="aiEntityCard.action" class="chip soft">剧本 {{ aiEntityCard.action }}</span>
+                    </div>
+                    <h4 class="mono">{{ aiEntityCard.value }}</h4>
+                    <div class="ai-entity-grid">
+                      <div class="ai-entity-box">
+                        <label>基本信息</label>
+                        <dl>
+                          <div><dt>PID</dt><dd>{{ aiEntityCard.analysis?.basic?.pid ?? aiEntityCard.pid ?? '—' }}</dd></div>
+                          <div><dt>路径</dt><dd class="mono">{{ aiEntityCard.analysis?.basic?.path || aiEntityCard.path || '—' }}</dd></div>
+                          <div class="full" v-if="aiEntityCard.analysis?.basic?.command_line || aiEntityCard.command_line">
+                            <dt>命令行</dt>
+                            <dd class="mono">{{ aiEntityCard.analysis?.basic?.command_line || aiEntityCard.command_line }}</dd>
+                          </div>
+                        </dl>
+                      </div>
+                      <div class="ai-entity-box">
+                        <label>研判过程</label>
+                        <ol>
+                          <li v-for="(p, pi) in (aiEntityCard.analysis?.process || ['暂无过程说明'])" :key="pi">{{ p }}</li>
+                        </ol>
+                      </div>
+                      <div class="ai-entity-box accent">
+                        <label>研判结论</label>
+                        <p>{{ aiEntityCard.analysis?.conclusion || aiEntityCard.reason || '—' }}</p>
+                      </div>
+                      <div class="ai-entity-box advice">
+                        <label>处置建议</label>
+                        <p>{{ aiEntityCard.analysis?.advice || '—' }}</p>
+                      </div>
+                    </div>
+                    <div v-if="(aiResult.result?.iocs || []).length" class="ai-ioc-strip">
+                      <label>相关 IoC</label>
+                      <div class="ai-ioc-chips">
+                        <span v-for="(x, i) in aiResult.result.iocs.slice(0, 12)" :key="i" class="chip soft">
+                          <b>{{ x.type }}</b> {{ x.value }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="ai-threat-actions">
+                      <button type="button" class="btn sm" @click="aiTab = 'threats'">看 AI 研判事件</button>
+                      <button type="button" class="btn sm" @click="aiTab = 'resp'">去处置</button>
+                    </div>
+                  </aside>
+                </div>
+                <div v-else class="ai-panel-empty fill">暂无实体。分析完成后会从威胁/日志抽出进程、文件、IP、注册表等。</div>
+              </div>
+
+              <div v-show="aiTab === 'report'" class="ai-tab-pane ai-report-pane">
+                <div class="ai-section-hd">
+                  <div>
+                    <label>调查报告</label>
+                    <span class="muted sm">
+                      {{ aiResult.result?.verdict || '—' }} ·
+                      {{ aiResult.result?.risk_level || '—' }} /
+                      {{ aiResult.result?.risk_score ?? '—' }} ·
+                      {{ aiResult.llm_refined || aiResult.result?.llm_refined ? '模型已精炼' : (aiResult.mode || 'Agent Team') }}
+                    </span>
+                  </div>
+                  <div class="ai-report-actions">
+                    <button type="button" class="btn-text sm" @click="aiTab = 'think'">思维链</button>
+                    <button type="button" class="btn-text sm" @click="aiTab = 'resp'">处置 →</button>
+                  </div>
+                </div>
+                <div class="ai-report-board">
+                  <article class="ai-md ai-report-doc" v-html="aiMarkdownHtml" />
+                  <aside class="ai-report-side">
+                    <div class="ai-report-card verdict" :data-v="aiResult.result?.verdict || ''">
+                      <label>AI 定性</label>
+                      <b>{{ aiResult.result?.verdict || '待研判' }}</b>
+                      <small>风险 {{ aiResult.result?.risk_level || '—' }} · {{ aiResult.result?.risk_score ?? '—' }}/100</small>
+                    </div>
+                    <div class="ai-report-card" v-if="aiResult.result?.root_cause">
+                      <label>根因摘要</label>
+                      <p>{{ aiResult.result.root_cause }}</p>
+                    </div>
+                    <div class="ai-report-card" v-if="(aiResult.result?.highlights || []).length">
+                      <label>关键证据</label>
+                      <ul>
+                        <li v-for="(h, i) in aiResult.result.highlights.slice(0, 8)" :key="i">{{ h }}</li>
+                      </ul>
+                    </div>
+                    <div class="ai-report-card" v-if="(aiResult.skills_used || []).length">
+                      <label>使用 Skill</label>
+                      <div class="ai-ioc-chips">
+                        <span v-for="s in aiResult.skills_used" :key="s.id" class="chip soft" :title="(s.why || []).join('；')">
+                          {{ s.name || s.id }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="ai-report-card" v-if="(aiResult.result?.iocs || []).length">
+                      <label>IoC</label>
+                      <ul class="ai-ioc-list">
+                        <li v-for="(x, i) in aiResult.result.iocs.slice(0, 10)" :key="i">
+                          <b>{{ x.type }}</b> <code>{{ x.value }}</code>
+                        </li>
+                      </ul>
+                    </div>
+                    <p v-if="aiResult.error" class="hint warn">模型回退：{{ aiResult.error }}</p>
+                  </aside>
+                </div>
+              </div>
+
+              <div v-show="aiTab === 'resp'" class="ai-tab-pane">
+                <div v-if="(aiResult.result?.dispositions || []).length" class="ai-disp">
+                  <label>推荐处置 <em class="muted">（需人工审核）</em></label>
+                  <div class="ai-disp-list">
+                    <div v-for="(d, i) in aiResult.result.dispositions" :key="i" class="ai-disp-row">
+                      <div>
+                        <b>{{ d.label }}</b>
+                        <span class="mono">{{ d.target }}</span>
+                        <small>{{ d.reason }}</small>
+                      </div>
+                      <button
+                        v-if="d.action && d.action !== 'review'"
+                        type="button"
+                        class="btn sm danger-outline"
+                        :disabled="aiDispBusy"
+                        @click="runAiDisposition(d)"
+                      >审核并下发</button>
+                      <button v-else type="button" class="btn sm" @click="goMenu('events')">去威胁事件</button>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="(aiResult.result?.hardening || []).length" class="ai-hard">
+                  <label>体系化加固建议</label>
+                  <ul>
+                    <li v-for="(h, i) in aiResult.result.hardening" :key="i">
+                      <b>{{ h.title }}</b>
+                      <span>{{ h.detail }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div v-else class="ai-empty">
+              <p>请选择左侧<strong>在线终端</strong>，点击后自动开始分析。</p>
+              <p class="muted">分析内容包含：Agent 实时快照（进程/服务/任务/启动项/网络/文件等）、威胁事件，以及近 24 小时终端日志（登录/PowerShell/计划任务/服务/注册表/外联等）。</p>
+            </div>
+          </main>
         </div>
       </section>
 
@@ -4185,7 +5290,7 @@
             <div class="settings-addr-row">
               <label class="grow">
                 <span>EDR 平台地址</span>
-                <input v-model="agentServerUrl" class="field" :disabled="!isAdmin" placeholder="http://<平台IP>:8100" />
+                <input v-model="agentServerUrl" class="field" :disabled="!isAdmin" placeholder="http://192.168.31.94:8100" />
               </label>
               <div v-if="isAdmin" class="settings-addr-acts">
                 <button type="button" class="btn primary" :disabled="saving" @click="saveSettings">{{ saving ? '保存中…' : '保存' }}</button>
@@ -4434,6 +5539,10 @@
           <div class="panel pad settings">
             <h3 style="margin:0 0 12px">全局策略</h3>
             <label class="chk"><input type="checkbox" v-model="policyForm.response_enabled" /> 允许远程处置</label>
+            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_enabled" /> 允许远程运维（读注册表/文件/命令/Shell）</label>
+            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_read_only" /> 远程运维只读（禁止 run_cmd；Shell 仅允许 dir/ipconfig 等调查命令）</label>
+            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_run_cmd" /> 允许白名单命令（run_cmd）</label>
+            <label class="chk"><input type="checkbox" v-model="policyForm.remote_ops_shell" /> 允许交互式 Shell 会话</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_process" /> 上报进程时间线</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_file" /> 上报文件时间线</label>
             <label class="chk"><input type="checkbox" v-model="policyForm.timeline_network" /> 上报网络外联时间线</label>
@@ -4656,7 +5765,7 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, h, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import {
   agentProtocol, agentRuleStats, addIoc, addWhitelist, attackStory, attckBoard,
   bulkAgentRulesEnabled, bulkElasticEvmEnabled, getElasticDetectionRuleDetail,
@@ -4678,6 +5787,7 @@ import {
   subscribeAgentStream, updateAgentRule, uploadUpgradePackage, upsertAgentGroup, upsertSeqRule, deleteSeqRule,
   edrChangePassword, edrCreateUser, edrDeleteUser, edrGetSettings, edrListUsers, edrResetPassword,
   edrSaveSettings, edrUpdateUser, rotateEnrollKey,
+  aiStatus, aiSetupLocal, aiListSkills, aiListHosts, aiAnalyzeHost,
 } from './api'
 
 const props = defineProps({ user: { type: Object, default: null } })
@@ -4695,6 +5805,34 @@ const LABELS = {
 const HOST_TAB_GROUPS = [
   { id: 'runtime', label: '运行态', mods: ['process', 'network', 'service', 'task', 'startup', 'file'] },
   { id: 'inventory', label: '资产清单', mods: ['software', 'hotfix', 'driver', 'listen', 'user', 'sysinfo', 'browser'] },
+  { id: 'remote', label: '远程管理', mods: [] },
+]
+const HOST_REMOTE_TABS = [
+  { id: 'ops', label: '应急处置', hint: '隔离 / 杀进程 / 指令审计' },
+  { id: 'livequery', label: 'Live Query', hint: 'Osquery 式只读表' },
+  { id: 'files', label: '文件浏览', hint: '只读列目录与读文件' },
+  { id: 'reg', label: '注册表', hint: '只读查询键值' },
+  { id: 'cmd', label: '白名单命令', hint: '单条 cmd，带白名单校验' },
+  { id: 'shell', label: '交互 Shell', hint: 'cmd 会话，轮询输出' },
+]
+const LIVE_QUERY_TABLES_DEFAULT = [
+  { name: 'processes', osquery_analog: 'processes' },
+  { name: 'services', osquery_analog: 'services' },
+  { name: 'listening_ports', osquery_analog: 'listening_ports' },
+  { name: 'scheduled_tasks', osquery_analog: 'scheduled_tasks' },
+  { name: 'startup_items', osquery_analog: 'startup_items' },
+  { name: 'users', osquery_analog: 'users' },
+  { name: 'network_connections', osquery_analog: 'process_open_sockets' },
+  { name: 'drivers', osquery_analog: 'drivers' },
+  { name: 'installed_software', osquery_analog: 'programs' },
+  { name: 'hotfixes', osquery_analog: 'patches' },
+]
+const HOST_SHELL_QUICK = ['ipconfig', 'whoami', 'systeminfo', 'tasklist', 'dir', 'netstat -ano']
+const HOST_REG_SHORTCUTS = [
+  { label: 'Run', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' },
+  { label: 'RunOnce', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce' },
+  { label: 'IFEO', hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options' },
+  { label: 'Services', hive: 'HKLM', key: 'SYSTEM\\CurrentControlSet\\Services' },
 ]
 const FILE_EXT_OPTIONS = [
   'exe', 'dll', 'sys', 'scr', 'bat', 'cmd', 'ps1', 'vbs', 'js', 'msi', 'jar',
@@ -4926,10 +6064,12 @@ const I = {
   asset: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8M12 18v2"/></svg>',
   deploy: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>',
   config: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  ai: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.2 4.5L19 9l-4.2 2.1L12 16l-2.8-4.9L5 9l4.8-1.5L12 3z"/><circle cx="12" cy="19" r="1.6"/></svg>',
 }
 const railItems = [
   { id: 'overview', label: '数据概览', short: '概览', ico: I.grid },
   { id: 'detect', label: '检测响应', short: '检测', ico: I.detect },
+  { id: 'ai', label: 'AI 分析', short: 'AI', ico: I.ai },
   { id: 'rules', label: '规则管理', short: '规则', ico: I.rules },
   { id: 'asset', label: '终端资产', short: '资产', ico: I.asset },
   { id: 'deploy', label: '部署运营', short: '部署', ico: I.deploy },
@@ -4963,6 +6103,7 @@ const NAV_PAGES = new Set([
   'overview', 'events', 'malware', 'behaviors', 'attck', 'investigate', 'timeline',
   'hunt', 'dns', 'ioc', 'rules', 'seq', 'hosts', 'groups', 'deploy', 'upgrade',
   'audit', 'settings', 'policy', 'notify', 'storage', 'accounts', 'threat-view',
+  'ai-analyze',
 ])
 const pendingThreatRestoreId = ref(null)
 
@@ -5056,6 +6197,12 @@ const menuMap = {
       { id: 'seq', label: '行为序列' },
     ],
   }],
+  ai: [{
+    title: 'AI 分析',
+    items: [
+      { id: 'ai-analyze', label: '一键研判' },
+    ],
+  }],
   asset: [{
     title: '调查资产',
     items: [
@@ -5089,6 +6236,117 @@ const q = ref('')
 const loading = ref(false)
 const error = ref('')
 const okMsg = ref('')
+
+/** AI 分析页 */
+const aiBusy = ref(false)
+const aiHostsLoading = ref(false)
+const aiOnlyOnline = ref(true)
+const aiHosts = ref([])
+const aiSkills = ref([])
+const aiSkillsMeta = ref({ total_indexed: 0, edr_relevant: 0, returned: 0 })
+const aiStatusInfo = ref({})
+let aiHostsTimer = null
+let aiHostsInflight = null
+const aiSelectedId = ref('')
+const aiResult = ref(null)
+const aiErrorText = ref('')
+const aiRefining = ref(false)
+const aiDispBusy = ref(false)
+const aiThinkIdx = ref(0)
+const aiEntityIdx = ref(0)
+const aiThreatIdx = ref(0)
+const aiLogIdx = ref(0)
+const aiLogCat = ref('')
+const aiChainNodeId = ref('')
+const aiTab = ref('overview')
+const aiThinkStep = computed(() => {
+  const steps = aiResult.value?.result?.thinking_chain || []
+  if (!steps.length) return null
+  const i = Math.min(Math.max(0, aiThinkIdx.value), steps.length - 1)
+  return steps[i]
+})
+const aiEntityCard = computed(() => {
+  const list = aiResult.value?.result?.entities || []
+  if (!list.length) return null
+  const i = Math.min(Math.max(0, aiEntityIdx.value), list.length - 1)
+  return list[i]
+})
+const aiEntityStats = computed(() => {
+  const list = aiResult.value?.result?.entities || []
+  let malicious = 0
+  let suspicious = 0
+  for (const e of list) {
+    if (e?.risk === 'malicious') malicious += 1
+    else if (e?.risk === 'suspicious') suspicious += 1
+  }
+  return { malicious, suspicious, total: list.length }
+})
+const aiThreatCard = computed(() => {
+  const list = aiResult.value?.result?.threat_events || []
+  if (!list.length) return null
+  const i = Math.min(Math.max(0, aiThreatIdx.value), list.length - 1)
+  return list[i]
+})
+const aiForensicsLogs = computed(() => {
+  const r = aiResult.value?.result || {}
+  const list = r.forensics_logs || r.security_logs || []
+  return Array.isArray(list) ? list : []
+})
+const aiLogCategoryMap = computed(() => {
+  const fromPack = aiResult.value?.pack_stats?.log_categories || aiResult.value?.result?.log_categories || {}
+  if (fromPack && Object.keys(fromPack).length) return fromPack
+  const map = {}
+  for (const l of aiForensicsLogs.value) {
+    const k = l?.category || 'other'
+    map[k] = (map[k] || 0) + 1
+  }
+  return map
+})
+const aiFilteredForensicsLogs = computed(() => {
+  const cat = aiLogCat.value
+  const list = aiForensicsLogs.value
+  if (!cat) return list
+  return list.filter((l) => (l?.category || 'other') === cat)
+})
+const aiLogCard = computed(() => {
+  const list = aiFilteredForensicsLogs.value
+  if (!list.length) return null
+  const i = Math.min(Math.max(0, aiLogIdx.value), list.length - 1)
+  return list[i]
+})
+const aiChainNode = computed(() => {
+  const nodes = aiResult.value?.result?.attack_graph?.nodes || []
+  if (!nodes.length) return null
+  const id = aiChainNodeId.value
+  const hit = nodes.find((n) => n.id === id)
+  return hit || nodes[Math.min(1, nodes.length - 1)] || nodes[0]
+})
+const aiMatchedSkillIds = computed(() => {
+  const ids = new Set()
+  for (const s of aiResult.value?.skills_used || []) {
+    if (s?.id) ids.add(s.id)
+  }
+  return ids
+})
+const aiOnlineHosts = computed(() => (aiHosts.value || []).filter((h) => h.online))
+const aiVisibleHosts = computed(() => {
+  const list = aiHosts.value || []
+  return aiOnlyOnline.value ? list.filter((h) => h.online) : list
+})
+const aiSelectedHost = computed(() => (aiHosts.value || []).find((h) => h.agent_id === aiSelectedId.value) || null)
+const aiMarkdownHtml = computed(() => {
+  const md = aiResult.value?.result?.markdown || aiResult.value?.result?.summary || ''
+  if (String(md || '').trim()) return renderAiMarkdown(md)
+  const highlights = aiResult.value?.result?.highlights || []
+  if (highlights.length) {
+    return renderAiMarkdown(
+      `## 风险结论\n${aiResult.value?.result?.risk_level || '待复核'}\n\n## 关键证据\n`
+      + highlights.map((h) => `- ${h}`).join('\n'),
+    )
+  }
+  return renderAiMarkdown('暂无正文。请确认 Agent 已上报快照/威胁/日志后重试。')
+})
+
 let errorToastTimer = null
 function clearErrorToast() {
   error.value = ''
@@ -5111,6 +6369,114 @@ watch(error, (msg) => {
 const module = ref('process')
 const modules = ref(Object.keys(LABELS))
 const hostTabGroup = ref('runtime')
+const hostRemoteBusy = ref(false)
+const hostRemoteCommands = ref([])
+let hostRemotePollTimer = null
+const hostRemoteForm = ref({ pid: '', path: '', scanPid: '' })
+const hostRemoteSubTab = ref('ops')
+const hostRemoteFsPath = ref('C:\\')
+const hostRemoteFsEntries = ref([])
+const hostRemoteFsDrives = ref([])
+const hostRemoteFsRoots = ref([])
+const hostRemoteFsHint = ref('')
+const hostRemoteFsTruncated = ref(false)
+const hostRemoteFsPreview = ref('')
+const hostRemoteFsTree = computed(() => {
+  const out = []
+  const walk = (nodes, depth) => {
+    for (const n of nodes || []) {
+      out.push({ node: n, depth })
+      if (n.expanded && n.children?.length) walk(n.children, depth + 1)
+    }
+  }
+  walk(hostRemoteFsRoots.value, 0)
+  return out
+})
+const hostRemoteFsDirCount = computed(() => hostRemoteFsEntries.value.filter((e) => e.dir).length)
+const hostRemoteFsFileCount = computed(() => hostRemoteFsEntries.value.filter((e) => !e.dir).length)
+const hostRemoteReg = ref({ hive: 'HKLM', key: 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run', value: '' })
+const hostRemoteRegResult = ref(null)
+const hostRemoteRegBreadcrumb = computed(() => {
+  const h = hostRemoteReg.value.hive || 'HKLM'
+  const k = String(hostRemoteReg.value.key || '').trim()
+  return k ? `${h}\\${k}` : h
+})
+const hostRemoteRegSubkeys = computed(() => hostRemoteRegResult.value?.subkeys || [])
+const hostRemoteRegValues = computed(() => hostRemoteRegResult.value?.values || [])
+const hostRemoteRegSingleValue = computed(() => {
+  const r = hostRemoteRegResult.value
+  if (!r || r.values) return null
+  if (r.value_name == null && r.data == null && !r.data_hex) return null
+  return { name: r.value_name || '(默认)', type: r.type, data: r.data || r.data_hex }
+})
+const hostRemoteCmdLine = ref('')
+const hostRemoteCmdOut = ref('')
+const hostRemoteCmdLog = ref([])
+const hostLiveQueryTable = ref('processes')
+const hostLiveQueryLimit = ref(200)
+const hostLiveQueryRows = ref([])
+const hostLiveQueryMeta = ref(null)
+const liveQueryAuditItems = ref([])
+
+async function loadLiveQueryAudit() {
+  const aid = selected.value?.agent_id
+  if (!aid) {
+    liveQueryAuditItems.value = []
+    return
+  }
+  try {
+    const r = await listAgentAudit(200)
+    liveQueryAuditItems.value = (r?.items || []).filter((a) =>
+      a.agent_id === aid && String(a.action || '').includes('live_query'),
+    ).slice(0, 40)
+  } catch {
+    liveQueryAuditItems.value = []
+  }
+}
+const hostLiveQueryTableOptions = computed(() => {
+  const fromAgent = selected.value?.health?.sensors?.live_query_tables
+  if (Array.isArray(fromAgent) && fromAgent.length) {
+    return fromAgent.map((t) => ({
+      name: t.name || t,
+      osquery_analog: t.osquery_analog || '',
+    }))
+  }
+  return LIVE_QUERY_TABLES_DEFAULT
+})
+const hostLiveQueryCols = computed(() => {
+  const keys = new Set()
+  for (const row of hostLiveQueryRows.value.slice(0, 50)) {
+    if (row && typeof row === 'object') Object.keys(row).forEach((k) => keys.add(k))
+  }
+  return [...keys].slice(0, 24)
+})
+const hostRemoteShellId = ref('')
+const hostRemoteShellLines = ref([])
+const hostRemoteShellInput = ref('')
+const hostRemoteShellPhase = ref('idle') // idle | connecting | live | error
+const hostRemoteShellViewRef = ref(null)
+const hostRemoteShellInputRef = ref(null)
+let hostRemoteShellPollTimer = null
+let hostRemoteShellPollBusy = false
+
+const hostRemoteShellStatusLabel = computed(() => {
+  const m = {
+    idle: '未连接 — 请先点「连接 Shell」',
+    connecting: '正在连接终端…',
+    live: '会话进行中',
+    error: '连接失败',
+  }
+  return m[hostRemoteShellPhase.value] || m.idle
+})
+const hostRemoteShellHint = ref('')
+const hostRemoteShellHintKind = ref('info')
+const hostRemoteShellConnectDisabled = computed(() => {
+  if (!selected.value?.online) return true
+  if (hostRemoteShellPhase.value === 'connecting') return true
+  if (hostRemoteShellPhase.value === 'live' && hostRemoteShellId.value) return true
+  if (!isAdmin.value) return true
+  return false
+})
 const hostGroupMods = computed(() => {
   const g = HOST_TAB_GROUPS.find((x) => x.id === hostTabGroup.value)
   return g?.mods || HOST_TAB_GROUPS[0].mods
@@ -5411,6 +6777,10 @@ const policyForm = ref({
   winevent_channel_mode: 'all',
   winevent_channels_text: '',
   intervals_sec: { process: 5, network: 5, file: 12 },
+  remote_ops_enabled: true,
+  remote_ops_read_only: false,
+  remote_ops_run_cmd: true,
+  remote_ops_shell: true,
 })
 const iocItems = ref([])
 const iocText = ref('')
@@ -5647,6 +7017,7 @@ const filteredWhitelist = computed(() => {
   return rows
 })
 const memoryYaraPack = ref(null)
+const memoryYaraView = ref('strings')
 const memoryYaraBusy = ref(false)
 const memoryYaraErr = ref('')
 const memoryYaraControlsBusy = ref(false)
@@ -6139,6 +7510,17 @@ function selectHostGroup(gid) {
   const g = HOST_TAB_GROUPS.find((x) => x.id === gid)
   if (!g) return
   hostTabGroup.value = gid
+  if (gid === 'remote') {
+    loadHostRemoteCommands()
+    if (hostRemoteSubTab.value === 'files' && selected.value?.online) hostRemoteFsLoadVolumes()
+    if (hostRemoteSubTab.value === 'livequery') loadLiveQueryAudit()
+    if (hostRemoteShellPhase.value === 'connecting') {
+      hostRemoteShellPhase.value = 'idle'
+      hostRemoteShellHint.value = '上次连接未完成，请重新点击「连接 Shell」'
+      hostRemoteShellHintKind.value = 'warn'
+    }
+    return
+  }
   if (gid === 'inventory') snapView.value = 'all'
   const cur = module.value
   if (g.mods.length && !g.mods.includes(cur)) {
@@ -6146,11 +7528,16 @@ function selectHostGroup(gid) {
   }
 }
 function syncHostTabGroup(mod) {
+  if (hostTabGroup.value === 'remote') return
   const hit = HOST_TAB_GROUPS.find((g) => g.mods.includes(mod))
   if (hit) hostTabGroup.value = hit.id
 }
 
 function refreshHostDetail() {
+  if (hostTabGroup.value === 'remote') {
+    loadHostRemoteCommands()
+    return
+  }
   loadSnap(module.value)
 }
 const hostsWithAlert = computed(() => {
@@ -6719,6 +8106,58 @@ function describeEvidence(ev) {
       ],
     })
   }
+  if (/^persist_|^registry_/.test(et) || ev.reg_key || ev.key || ev.value_name) {
+    const key = ev.key || ev.reg_key || ''
+    const vn = ev.value_name || (key.includes('\\') ? key.slice(key.lastIndexOf('\\') + 1) : '')
+    const matched = String(ev.matched || '').trim()
+      || (key && ev.value != null && ev.value !== '' ? `${key} = ${ev.value}` : '')
+      || key
+      || String(ev.summary || '')
+    return out({
+      edge: /delete/.test(et) ? '删除持久化' : (/modify|set|write/.test(et) ? '修改持久化' : '新增持久化'),
+      title: ev.label || vn || '持久化项',
+      sub: matched.slice(0, 200),
+      matched,
+      rows: [
+        row('监控点', ev.label),
+        row('注册表键', key, true),
+        row('值名称', vn || ev.value_name),
+        row('写入值', ev.value, true),
+        row('旧值', ev.old_value, true),
+        row('Hive', ev.hive),
+        row('变更', ev.change),
+        row('摘要', ev.summary || ev.source_summary),
+        row('关联进程', ev.process_name || ev.name),
+        row('PID', ev.pid),
+        row('命令行', ev.command_line, true),
+      ],
+    })
+  }
+  if (et === 'building_block_upgrade' || ev.building_block_upgrade) {
+    const related = Array.isArray(ev.related_hits) ? ev.related_hits : []
+    const rules = Array.isArray(ev.distinct_rules) ? ev.distinct_rules : []
+    const matched = String(ev.matched || '').trim()
+      || related.map((x) => x.title || x.rule_id || x.summary).filter(Boolean).join('；')
+      || rules.join('；')
+    return out({
+      edge: '多阶段关联',
+      title: `命中 ${rules.length || related.length || '?'} 条积木/关联`,
+      sub: matched.slice(0, 200),
+      matched,
+      rows: [
+        row('统计窗口(秒)', ev.window_sec),
+        row('战术', Array.isArray(ev.tactics) ? ev.tactics.join(', ') : ev.tactics),
+        row('规则列表', rules.join(', '), true),
+        row('研判提示', ev.investigation),
+        row('风险分', ev.risk_score),
+        ...related.slice(0, 8).flatMap((x, i) => [
+          row(`子告警 ${i + 1}`, x.title || x.rule_id),
+          row(`子告警 ${i + 1} 摘要`, x.summary || x.command_line || x.path || x.remote, true),
+          row(`子告警 ${i + 1} 进程`, x.process_name || (x.pid != null ? `PID ${x.pid}` : '')),
+        ]),
+      ],
+    })
+  }
   return null
 }
 function buildMatchedHint(raw) {
@@ -6764,6 +8203,25 @@ function fallbackEvidenceFromTitle(title) {
   }
   return null
 }
+function hydratePersistFields(raw) {
+  if (!raw || typeof raw !== 'object') return raw
+  const out = { ...raw }
+  if (!(out.key || out.reg_key)) {
+    const fromSummary = String(out.summary || out.source_summary || out.matched || '')
+    let m = fromSummary.match(/(?:持久化(?:新增|修改|删除)|注册表)[^:：]*[:：]\s*([^\s·]+)/i)
+    if (!m) m = fromSummary.match(/\b((?:HK(?:LM|CU|CR|U|CC)|HKEY_[A-Z_]+)\\[^\s·=]+)/i)
+    if (m) {
+      const key = m[1].replace(/（Agent 离线期间）$/, '').trim()
+      out.key = out.key || key
+      out.reg_key = out.reg_key || key
+      if (!out.value_name && key.includes('\\')) out.value_name = key.slice(key.lastIndexOf('\\') + 1)
+      if (!out.label) out.label = '持久化'
+    }
+  }
+  if (!out.matched) out.matched = buildMatchedHint(out)
+  if (!out.etype && (out.building_block_upgrade || out.related_hits)) out.etype = 'building_block_upgrade'
+  return out
+}
 function parseEventEvidence(e) {
   if (!e) return {}
   let raw = null
@@ -6774,7 +8232,8 @@ function parseEventEvidence(e) {
     } catch { /* JSON 被截断时走标题兜底 */ }
   }
   if (!raw || typeof raw !== 'object' || (!raw.evidence && !raw.key && !raw.path && !raw.name && !raw.reg_key && !raw.value_name && !raw.etype
-    && !raw.rule_id && !raw.chain && !raw.matched && !raw.source_summary && !raw.source_etype)) {
+    && !raw.rule_id && !raw.chain && !raw.matched && !raw.source_summary && !raw.source_etype
+    && !raw.summary && !raw.building_block_upgrade && !raw.related_hits && !raw.distinct_rules)) {
     const fb = fallbackEvidenceFromTitle(e.title)
     if (fb) {
       return { ...fb, evidence: fb, matched: buildMatchedHint(fb) }
@@ -6783,9 +8242,11 @@ function parseEventEvidence(e) {
   }
   // 时间线晋升 / 传感器：字段在顶层；规则命中：嵌在 evidence
   if (!raw.evidence) {
-    const matched = buildMatchedHint(raw)
-    return { ...raw, evidence: raw, matched: matched || raw.matched || '' }
+    const hydrated = hydratePersistFields(raw)
+    const matched = buildMatchedHint(hydrated)
+    return { ...hydrated, evidence: hydrated, matched: matched || hydrated.matched || '' }
   }
+  raw = hydratePersistFields(raw)
   if (!raw.matched) {
     return { ...raw, matched: buildMatchedHint(raw.evidence) || buildMatchedHint(raw) }
   }
@@ -7014,7 +8475,24 @@ function enrichEvidenceFlat(flat, root, event, enrich, tree) {
   const resolvedCmd = resolveCommandLine(out, root)
   if (resolvedCmd && !out.command_line) out.command_line = resolvedCmd
   if (!out.etype) {
-    out.etype = nested.etype || root?.etype || listInferredEtype.value || 'process_create'
+    if (out.building_block_upgrade || root?.building_block_upgrade || Array.isArray(out.related_hits) || Array.isArray(root?.related_hits)) {
+      out.etype = 'building_block_upgrade'
+    } else if (out.key || out.reg_key || out.value_name || root?.key || root?.reg_key) {
+      out.etype = out.etype || root?.etype || 'persist_add'
+    } else {
+      out.etype = nested.etype || root?.etype || listInferredEtype.value || ''
+    }
+  }
+  if (!(out.key || out.reg_key) && (out.summary || root?.summary || out.matched)) {
+    const hydrated = hydratePersistFields({ ...out, summary: out.summary || root?.summary, matched: out.matched || root?.matched })
+    if (hydrated.key || hydrated.reg_key) {
+      out.key = out.key || hydrated.key
+      out.reg_key = out.reg_key || hydrated.reg_key
+      out.value_name = out.value_name || hydrated.value_name
+      out.label = out.label || hydrated.label
+      out.matched = out.matched || hydrated.matched
+      if (!out.etype) out.etype = hydrated.etype || 'persist_add'
+    }
   }
   if (!out.ext && out.path) {
     const em = String(out.path).match(/\.([a-z0-9]{1,8})$/i)
@@ -8227,6 +9705,7 @@ function defaultPageForSection(sectionId) {
   const skipCross = {
     detect: new Set(['overview', 'whitelist', 'malware']),
     rules: new Set(['whitelist']),
+    ai: new Set(),
     asset: new Set(),
     deploy: new Set(),
     config: new Set(),
@@ -8256,6 +9735,7 @@ function setSection(id) {
 function goMenu(id) {
   selected.value = null
   clearListFocus()
+  if (id !== 'ai-analyze') stopAiHostsPoll()
   // 跨分区跳转时同步左侧栏
   if (id === 'overview') {
     section.value = 'overview'
@@ -8286,6 +9766,7 @@ function goMenu(id) {
   }
   if (['events', 'behaviors', 'attck', 'investigate', 'timeline', 'hunt', 'dns', 'ioc'].includes(id)) section.value = 'detect'
   if (['rules', 'seq'].includes(id)) section.value = 'rules'
+  if (id === 'ai-analyze') section.value = 'ai'
   if (['hosts', 'groups'].includes(id)) section.value = 'asset'
   if (id === 'assets') { section.value = 'asset'; id = 'hosts' }
   if (['deploy', 'upgrade', 'audit'].includes(id)) section.value = 'deploy'
@@ -8330,6 +9811,7 @@ function goMenu(id) {
   if (id === 'seq') loadSeqRules()
   if (id === 'groups') loadGroups()
   if (id === 'audit') loadAudit()
+  if (id === 'ai-analyze') loadAiAnalyzePage()
   if (id === 'deploy') { loadRelease(); loadCredentials() }
   if (id === 'assets' || id === 'hosts') refresh()
 }
@@ -8907,7 +10389,11 @@ async function softRefresh({ snap = false, rules = false, overview = false, even
       const still = agents.value.find((a) => a.agent_id === selected.value.agent_id)
       selected.value = still || null
       if (still && (snap || page.value === 'hosts' || page.value === 'assets')) {
-        await loadSnap(module.value, { silent: true, keepRow: true })
+        if (hostTabGroup.value === 'remote') {
+          loadHostRemoteCommands()
+        } else {
+          await loadSnap(module.value, { silent: true, keepRow: true })
+        }
       }
     }
     // 告警列表：默认不每几秒全量重拉（会因 updated_at 重排，看起来像「事件名称一直在变」）
@@ -8958,7 +10444,8 @@ async function refresh() {
       const still = agents.value.find((a) => a.agent_id === selected.value.agent_id)
       selected.value = still || null
       if (still) {
-        await loadSnap(module.value, { silent: false, keepRow: true })
+        if (hostTabGroup.value === 'remote') loadHostRemoteCommands()
+        else await loadSnap(module.value, { silent: false, keepRow: true })
       }
     }
     await Promise.all([eventsP, loadOverview(), loadSettings()])
@@ -9071,7 +10558,18 @@ function actionLabel(a) {
     restore_file: '回滚隔离',
     rollback_upgrade: '回滚升级',
     uninstall_agent: '远程卸载',
+    reg_read: '读注册表',
+    fs_list: '列目录',
+    fs_volumes: '枚举盘符',
+    fs_stat: '文件信息',
+    fs_read: '读文件',
+    run_cmd: '执行命令',
+    live_query: 'Live Query',
     cancel_upgrade: '取消升级',
+    shell_open: 'Shell 开启',
+    shell_write: 'Shell 输入',
+    shell_poll: 'Shell 输出',
+    shell_close: 'Shell 关闭',
   })[a] || a
 }
 
@@ -9093,6 +10591,10 @@ async function restoreQuarantined(c) {
     okMsg.value = '回滚指令已下发'
     await loadRespCommands()
     startRespPoll()
+    if (hostTabGroup.value === 'remote') {
+      await loadHostRemoteCommands()
+      startHostRemotePoll()
+    }
   } catch (e) { error.value = e?.message || String(e) }
 }
 function cmdStatusLabel(s) {
@@ -9123,6 +10625,10 @@ function friendlyCmdResult(action, raw) {
   if (action === 'scan_memory') {
     return `扫描 ${o.scanned ?? 0} 个进程，发现 ${o.finding_count ?? 0} 处可疑`
   }
+  if (action === 'live_query') {
+    const n = o.row_count ?? (Array.isArray(o.rows) ? o.rows.length : 0)
+    return `${o.table || '表'} · ${n} 行`
+  }
   if (action === 'restore_file') return o.restored ? `已回滚：${o.restored}` : '隔离回滚完成'
   if (action === 'rollback_upgrade') return '升级回滚已执行'
   if (action === 'upgrade') return o.version ? `升级至 ${o.version}` : '升级指令已执行'
@@ -9148,6 +10654,599 @@ function showRespToast(cls, title, detail, { sticky = false, ms = 4200 } = {}) {
     respToast.value = null
     respToastTimer = null
   }, ms)
+}
+
+function stopHostRemotePoll() {
+  if (hostRemotePollTimer) {
+    clearInterval(hostRemotePollTimer)
+    hostRemotePollTimer = null
+  }
+}
+
+function stopHostRemoteShellPoll() {
+  if (hostRemoteShellPollTimer) {
+    clearInterval(hostRemoteShellPollTimer)
+    hostRemoteShellPollTimer = null
+  }
+}
+
+function hostRemoteResultOf(raw) {
+  const r = parseJsonSafe(raw)
+  if (r?.error && r.result && typeof r.result === 'object' && !Array.isArray(r.result)) {
+    return { ...r.result, _error: r.error }
+  }
+  return r
+}
+
+function hostRemoteCmdError(c) {
+  const r = hostRemoteResultOf(c?.result_json)
+  return r.error || r._error || friendlyCmdResult(c?.action, c?.result_json) || '执行失败'
+}
+
+async function hostRemoteWaitCommand(cmdId, timeoutMs = 120000) {
+  const want = String(cmdId || '').trim()
+  if (!want) return { ok: false, error: '指令未创建（需管理员账号，且策略允许 Shell）' }
+  const start = Date.now()
+  let polls = 0
+  while (Date.now() - start < timeoutMs) {
+    await new Promise((r) => setTimeout(r, polls < 3 ? 400 : 900))
+    polls += 1
+    await loadHostRemoteCommands()
+    const c = hostRemoteCommands.value.find((x) => String(x.id) === want)
+    if (!c) continue
+    if (c.status === 'done') return { ok: true, result: hostRemoteResultOf(c.result_json), cmd: c }
+    if (c.status === 'failed' || c.status === 'expired') {
+      return { ok: false, error: hostRemoteCmdError(c), cmd: c }
+    }
+  }
+  return { ok: false, error: '等待终端执行超时（Agent 是否在线、是否已升级支持 Shell？）' }
+}
+
+function hostLiveQueryCell(row, col) {
+  const v = row?.[col]
+  if (v == null || v === '') return '—'
+  if (typeof v === 'object') return JSON.stringify(v).slice(0, 120)
+  return String(v).slice(0, 200)
+}
+
+async function hostLiveQueryRun() {
+  hostLiveQueryRows.value = []
+  hostLiveQueryMeta.value = null
+  const lim = Math.min(500, Math.max(10, Number(hostLiveQueryLimit.value) || 200))
+  hostLiveQueryLimit.value = lim
+  const done = await hostRemoteExec('live_query', { table: hostLiveQueryTable.value, limit: lim }, { timeoutMs: 180000 })
+  loadLiveQueryAudit()
+  if (!done?.ok) return
+  const res = done.result || {}
+  hostLiveQueryRows.value = Array.isArray(res.rows) ? res.rows : []
+  hostLiveQueryMeta.value = {
+    table: res.table || hostLiveQueryTable.value,
+    row_count: res.row_count ?? hostLiveQueryRows.value.length,
+    schema: res.schema || 'forensic_v1',
+  }
+  okMsg.value = `Live Query ${hostLiveQueryMeta.value.table}：${hostLiveQueryMeta.value.row_count} 行`
+  setTimeout(() => { okMsg.value = '' }, 2500)
+}
+
+function hostLiveQueryExport() {
+  const blob = new Blob([JSON.stringify({ meta: hostLiveQueryMeta.value, rows: hostLiveQueryRows.value }, null, 2)], { type: 'application/json' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = `live-query-${hostLiveQueryTable.value}-${Date.now()}.json`
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
+async function hostRemoteExec(action, params, { timeoutMs = 120000, busy = true, refreshCmdLog = true } = {}) {
+  const a = selected.value
+  if (!a?.agent_id) return null
+  if (!a.online) {
+    error.value = '终端离线，无法下发远程运维指令'
+    return null
+  }
+  if (busy) hostRemoteBusy.value = true
+  try {
+    const r = await createAgentCommand(a.agent_id, action, params)
+    if (!r?.ok) {
+      const msg = r?.error || '创建指令失败（需管理员且策略允许）'
+      if (busy) error.value = msg
+      return { ok: false, error: msg }
+    }
+    if (refreshCmdLog) startHostRemotePoll()
+    const done = await hostRemoteWaitCommand(r?.id, timeoutMs)
+    if (!done.ok && busy) error.value = done.error || '执行失败'
+    return done
+  } catch (e) {
+    const msg = e?.message || String(e)
+    if (busy) error.value = msg
+    return { ok: false, error: msg }
+  } finally {
+    if (busy) hostRemoteBusy.value = false
+  }
+}
+
+function hostRemoteShellAppend(kind, text) {
+  const t = String(text ?? '').trimEnd()
+  if (!t) return
+  hostRemoteShellLines.value.push({ kind, text: t })
+  nextTick(() => {
+    const el = hostRemoteShellViewRef.value
+    if (el) el.scrollTop = el.scrollHeight
+  })
+}
+
+function hostRemoteFmtSize(n) {
+  const x = Number(n)
+  if (!Number.isFinite(x) || x < 0) return '—'
+  if (x < 1024) return `${x} B`
+  if (x < 1024 * 1024) return `${(x / 1024).toFixed(1)} KB`
+  if (x < 1024 * 1024 * 1024) return `${(x / 1024 / 1024).toFixed(1)} MB`
+  return `${(x / 1024 / 1024 / 1024).toFixed(2)} GB`
+}
+
+function hostRemoteFsNorm(p) {
+  return String(p || '').replace(/\//g, '\\').replace(/\\+$/, '').toLowerCase()
+}
+
+function hostRemoteFsSamePath(a, b) {
+  const x = hostRemoteFsNorm(a)
+  const y = hostRemoteFsNorm(b)
+  if (!x || !y) return false
+  return x === y
+}
+
+function hostRemoteFsJoin(base, name) {
+  const b = String(base || '').replace(/\\+$/, '')
+  return `${b}\\${name}`
+}
+
+function hostRemoteFsFind(nodes, path) {
+  const want = hostRemoteFsNorm(path)
+  for (const n of nodes || []) {
+    if (hostRemoteFsNorm(n.path) === want) return n
+    const hit = hostRemoteFsFind(n.children, path)
+    if (hit) return hit
+  }
+  return null
+}
+
+function hostRemoteFsNodeFromEntry(parentPath, e) {
+  const path = hostRemoteFsJoin(parentPath, e.name)
+  return {
+    path,
+    name: e.name,
+    label: e.name,
+    dir: true,
+    child_count: e.child_count ?? null,
+    expanded: false,
+    loaded: false,
+    children: [],
+  }
+}
+
+function hostRemoteFsAttach(path, entries) {
+  const node = hostRemoteFsFind(hostRemoteFsRoots.value, path)
+  if (!node) return
+  node.loaded = true
+  node.expanded = true
+  if (!hostRemoteFsTruncated.value || node.child_count == null) node.child_count = entries.length
+  const prev = new Map((node.children || []).map((c) => [hostRemoteFsNorm(c.path), c]))
+  node.children = entries.filter((e) => e.dir).map((e) => {
+    const childPath = hostRemoteFsJoin(path, e.name)
+    const old = prev.get(hostRemoteFsNorm(childPath))
+    if (old) {
+      old.child_count = e.child_count ?? old.child_count
+      return old
+    }
+    return hostRemoteFsNodeFromEntry(path, e)
+  })
+}
+
+function hostRemoteFsRootsFromEntries(entries) {
+  return (entries || []).map((d) => {
+    const path = String(d.path || d.name || '')
+    const letter = d.drive || path.replace(/:\\?$/, '')
+    return {
+      path: path.endsWith('\\') ? path : `${path}\\`,
+      name: letter,
+      label: String(letter).endsWith(':') ? letter : `${letter}:`,
+      dir: true,
+      child_count: d.child_count ?? null,
+      expanded: false,
+      loaded: false,
+      children: [],
+    }
+  }).filter((n) => n.path && n.path.length >= 3)
+}
+
+function hostRemoteFsNormalizePath(p) {
+  let s = String(p || '').trim().replace(/\//g, '\\')
+  if (/^[a-zA-Z]:$/.test(s)) s += '\\'
+  return s
+}
+
+async function hostRemoteFsDrivesFromCmd() {
+  let done = await hostRemoteExec('run_cmd', {
+    command: 'wmic logicaldisk get name',
+    timeout_sec: 25,
+  }, { timeoutMs: 35000, busy: false })
+  let text = String(done?.result?.output || '')
+  if (!text.trim()) {
+    done = await hostRemoteExec('run_cmd', {
+      command: 'powershell -noprofile -command "Get-PSDrive -PSProvider FileSystem | ForEach-Object { $_.Root }"',
+      timeout_sec: 25,
+    }, { timeoutMs: 35000, busy: false })
+    text = String(done?.result?.output || '')
+  }
+  const seen = new Set()
+  const entries = []
+  for (const m of text.matchAll(/[A-Za-z]:\\/g)) {
+    const path = m[0].toUpperCase()
+    if (seen.has(path)) continue
+    seen.add(path)
+    entries.push({ path, drive: path.slice(0, 1), name: path, dir: true })
+  }
+  return entries
+}
+
+async function hostRemoteFsDiscoverByList() {
+  const entries = []
+  for (const letter of 'CDEFGHIJKLMNOPQRSTUVWXYZAB') {
+    const path = `${letter}:\\`
+    const done = await hostRemoteExec('fs_list', { path, max_entries: 1 }, { timeoutMs: 12000, busy: false })
+    if (done?.ok) entries.push({ path, drive: letter, name: path, dir: true })
+  }
+  return entries
+}
+
+async function hostRemoteFsLoadVolumes() {
+  if (!selected.value?.online) return
+  hostRemoteFsHint.value = ''
+  const done = await hostRemoteExec('fs_volumes', {}, { timeoutMs: 25000, busy: false })
+  let entries = done?.ok ? (done.result?.entries || []) : []
+  if (!entries.length) {
+    entries = await hostRemoteFsDrivesFromCmd()
+    if (entries.length) {
+      hostRemoteFsHint.value = '当前 Agent 较旧，已用 wmic/PowerShell 列出磁盘。'
+    }
+  }
+  if (!entries.length) {
+    entries = await hostRemoteFsDiscoverByList()
+    if (entries.length) hostRemoteFsHint.value = '已通过逐盘 fs_list 探测盘符（无需 run_cmd）。'
+  }
+  hostRemoteFsDrives.value = entries
+  hostRemoteFsRoots.value = hostRemoteFsRootsFromEntries(entries)
+  if (!hostRemoteFsRoots.value.length) {
+    hostRemoteFsHint.value = '没有读到盘符。确认终端在线且已开启远程运维，或手动输入 C:\\ 后点刷新。'
+    return
+  }
+  const first = hostRemoteFsRoots.value[0]
+  hostRemoteFsPath.value = first.path
+  await hostRemoteFsBrowse()
+}
+
+async function hostRemoteFsToggle(node) {
+  if (!node?.path) return
+  hostRemoteFsPath.value = node.path
+  if (node.loaded && node.expanded) {
+    node.expanded = false
+    return
+  }
+  node.expanded = true
+  await hostRemoteFsBrowse()
+}
+
+function hostRemoteFsUp() {
+  let p = String(hostRemoteFsPath.value || '').replace(/\\+$/, '')
+  if (!p) return
+  const i = p.lastIndexOf('\\')
+  if (i <= 2) hostRemoteFsPath.value = `${p.slice(0, 2)}\\`
+  else hostRemoteFsPath.value = p.slice(0, i)
+  hostRemoteFsBrowse()
+}
+
+async function hostRemoteFsBrowse() {
+  hostRemoteFsPreview.value = ''
+  const path = hostRemoteFsNormalizePath(hostRemoteFsPath.value)
+  hostRemoteFsPath.value = path
+  const atDriveRoot = /^[A-Za-z]:$/.test(path.replace(/\\+$/, ''))
+  const done = await hostRemoteExec('fs_list', {
+    path,
+    max_entries: 200,
+    count_dirs: atDriveRoot,
+  }, { timeoutMs: 120000 })
+  if (!done?.ok) {
+    hostRemoteFsHint.value = done?.error || '列目录失败（检查路径、策略是否允许远程运维）'
+    hostRemoteFsEntries.value = []
+    return
+  }
+  hostRemoteFsHint.value = ''
+  const entries = [...(done.result?.entries || [])]
+  entries.sort((a, b) => {
+    if (!!a.dir !== !!b.dir) return a.dir ? -1 : 1
+    return String(a.name || '').localeCompare(String(b.name || ''), 'zh')
+  })
+  hostRemoteFsEntries.value = entries
+  hostRemoteFsTruncated.value = !!done.result?.truncated
+  hostRemoteFsAttach(hostRemoteFsPath.value, entries)
+}
+
+function hostRemoteFsEnter(e) {
+  if (!e?.name) return
+  const base = hostRemoteFsPath.value.replace(/\\+$/, '')
+  const next = e.dir ? `${base}\\${e.name}` : `${base}\\${e.name}`
+  hostRemoteFsPath.value = next
+  if (e.dir) hostRemoteFsBrowse()
+  else {
+    hostRemoteForm.value.path = next
+    hostRemoteFsRead()
+  }
+}
+
+async function hostRemoteFsRead() {
+  const path = String(hostRemoteFsPath.value || '').trim()
+  if (!path) return
+  const stat = await hostRemoteExec('fs_stat', { path }, { timeoutMs: 60000, busy: false })
+  if (stat?.ok && stat.result?.dir) {
+    error.value = '当前路径是目录，请进入目录后双击文件，或选中文件再点「读文件」'
+    hostRemoteFsPreview.value = ''
+    return
+  }
+  const done = await hostRemoteExec('fs_read', { path, max_bytes: 65536 })
+  if (done?.ok) {
+    const r = done.result || {}
+    hostRemoteFsPreview.value = r.text || r.hex_preview || JSON.stringify(r, null, 2)
+  } else if (done?.error) {
+    error.value = done.error
+    hostRemoteFsPreview.value = ''
+  }
+}
+
+function hostRemoteRegApplyShortcut(s) {
+  hostRemoteReg.value.hive = s.hive
+  hostRemoteReg.value.key = s.key
+  hostRemoteReg.value.value = ''
+  if (selected.value?.online) hostRemoteRegLoad()
+}
+
+function hostRemoteRegOpenSubkey(sk) {
+  const base = String(hostRemoteReg.value.key || '').replace(/\\+$/, '')
+  hostRemoteReg.value.key = base ? `${base}\\${sk}` : sk
+  hostRemoteReg.value.value = ''
+  hostRemoteRegLoad()
+}
+
+function hostRemoteRegUp() {
+  const k = String(hostRemoteReg.value.key || '').replace(/\\+$/, '')
+  const i = k.lastIndexOf('\\')
+  if (i < 0) return
+  hostRemoteReg.value.key = k.slice(0, i)
+  hostRemoteReg.value.value = ''
+}
+
+async function hostRemoteRegLoad() {
+  hostRemoteRegResult.value = null
+  const p = { hive: hostRemoteReg.value.hive, key: hostRemoteReg.value.key }
+  if (hostRemoteReg.value.value?.trim()) p.value = hostRemoteReg.value.value.trim()
+  const done = await hostRemoteExec('reg_read', p)
+  if (done?.ok) hostRemoteRegResult.value = done.result
+}
+
+async function hostRemoteRunCmd() {
+  const cmd = hostRemoteCmdLine.value.trim()
+  if (!cmd) return
+  hostRemoteCmdLog.value.unshift({ at: fmtTime(new Date().toISOString()), cmd })
+  hostRemoteCmdLog.value = hostRemoteCmdLog.value.slice(0, 40)
+  const done = await hostRemoteExec('run_cmd', { command: cmd, timeout_sec: 90 })
+  if (done?.ok) {
+    hostRemoteCmdOut.value = done.result?.output || JSON.stringify(done.result, null, 2)
+  }
+}
+
+async function hostRemoteShellStart() {
+  hostRemoteShellHint.value = ''
+  error.value = ''
+  if (!isAdmin.value) {
+    hostRemoteShellHintKind.value = 'err'
+    hostRemoteShellHint.value = '需要管理员账号才能下发 Shell 指令'
+    hostRemoteShellAppend('err', hostRemoteShellHint.value)
+    return
+  }
+  if (!selected.value?.online) {
+    hostRemoteShellHintKind.value = 'err'
+    hostRemoteShellHint.value = '终端离线，无法连接'
+    hostRemoteShellAppend('err', hostRemoteShellHint.value)
+    return
+  }
+  hostRemoteShellLines.value = []
+  hostRemoteShellId.value = ''
+  hostRemoteShellPhase.value = 'connecting'
+  hostRemoteShellAppend('sys', '正在连接终端 cmd 会话…')
+  try {
+    const done = await hostRemoteExec('shell_open', {}, { timeoutMs: 90000 })
+    const sid = done?.result?.session_id || done?.result?.sessionId || ''
+    if (done?.ok && sid) {
+      hostRemoteShellId.value = String(sid)
+      hostRemoteShellPhase.value = 'live'
+      hostRemoteShellHintKind.value = 'ok'
+      hostRemoteShellHint.value = 'Shell 已连接，可直接输入命令'
+      hostRemoteShellAppend('sys', '已连接。输入命令后按 Enter；输出将自动刷新。')
+      stopHostRemoteShellPoll()
+      await hostRemoteShellPollOnce()
+      hostRemoteShellPollTimer = setInterval(() => { hostRemoteShellPollOnce() }, 1500)
+      nextTick(() => { hostRemoteShellInputRef.value?.focus() })
+      return
+    }
+    hostRemoteShellPhase.value = 'error'
+    const msg = done?.error || '连接失败：请确认 Agent 已重新编译部署、EDR 策略已开启「交互式 Shell」'
+    hostRemoteShellHintKind.value = 'err'
+    hostRemoteShellHint.value = msg
+    hostRemoteShellAppend('err', msg)
+  } catch (e) {
+    hostRemoteShellPhase.value = 'error'
+    const msg = e?.message || String(e)
+    hostRemoteShellHintKind.value = 'err'
+    hostRemoteShellHint.value = msg
+    hostRemoteShellAppend('err', msg)
+  }
+}
+
+async function hostRemoteShellPollOnce() {
+  if (hostRemoteShellPollBusy || !hostRemoteShellId.value || !selected.value?.online) return
+  hostRemoteShellPollBusy = true
+  try {
+    const done = await hostRemoteExec(
+      'shell_poll',
+      { session_id: hostRemoteShellId.value },
+      { timeoutMs: 45000, busy: false, refreshCmdLog: false },
+    )
+    if (!done?.ok) {
+      if (String(done?.error || '').includes('session not found')) {
+        hostRemoteShellAppend('err', '会话已在终端结束，请重新连接')
+        await hostRemoteShellStop(true)
+      }
+      return
+    }
+    const chunk = String(done.result?.output || '')
+    if (chunk.trim()) hostRemoteShellAppend('out', chunk.trimEnd())
+  } finally {
+    hostRemoteShellPollBusy = false
+  }
+}
+
+function hostRemoteShellClear() {
+  hostRemoteShellLines.value = []
+}
+
+async function hostRemoteShellQuick(cmd) {
+  if (!hostRemoteShellId.value) return
+  hostRemoteShellInput.value = cmd
+  await hostRemoteShellSend()
+}
+
+async function hostRemoteShellSend() {
+  const line = hostRemoteShellInput.value.trim()
+  if (!line || !hostRemoteShellId.value) return
+  hostRemoteShellAppend('in', line)
+  hostRemoteShellInput.value = ''
+  const done = await hostRemoteExec(
+    'shell_write',
+    { session_id: hostRemoteShellId.value, input: line },
+    { timeoutMs: 90000, busy: false, refreshCmdLog: true },
+  )
+  if (!done?.ok) {
+    hostRemoteShellAppend('err', done?.error || '发送失败')
+    return
+  }
+  await hostRemoteShellPollOnce()
+  setTimeout(() => { hostRemoteShellPollOnce() }, 800)
+}
+
+async function hostRemoteShellStop(silent = false) {
+  stopHostRemoteShellPoll()
+  const sid = hostRemoteShellId.value
+  hostRemoteShellId.value = ''
+  if (sid) {
+    await hostRemoteExec('shell_close', { session_id: sid }, { timeoutMs: 30000, busy: false, refreshCmdLog: true })
+  }
+  hostRemoteShellPhase.value = 'idle'
+  if (!silent) hostRemoteShellAppend('sys', '会话已断开')
+}
+
+function startHostRemotePoll() {
+  stopHostRemotePoll()
+  hostRemotePollTimer = setInterval(async () => {
+    if (page.value !== 'hosts' || hostTabGroup.value !== 'remote' || !selected.value?.agent_id) {
+      stopHostRemotePoll()
+      return
+    }
+    await loadHostRemoteCommands()
+    const pending = hostRemoteCommands.value.some((c) => c.status === 'pending' || c.status === 'sent')
+    if (!pending) stopHostRemotePoll()
+  }, 2500)
+}
+
+async function loadHostRemoteCommands() {
+  const aid = selected.value?.agent_id
+  if (!aid) return
+  try {
+    const r = await listAgentCommands(aid)
+    hostRemoteCommands.value = (r?.items || []).slice(0, 40)
+  } catch (e) {
+    error.value = e?.message || String(e)
+  }
+}
+
+function hostRemotePrefillFromRow(row) {
+  if (!row) return
+  if (row.pid != null && row.pid !== '') hostRemoteForm.value.pid = String(row.pid)
+  if (row.pid != null && row.pid !== '') hostRemoteForm.value.scanPid = String(row.pid)
+  const p = row.path || row.image || ''
+  if (p) hostRemoteForm.value.path = String(p)
+}
+
+function hostRemoteFromRow(row) {
+  hostRemotePrefillFromRow(row)
+  selectHostGroup('remote')
+}
+
+function openInvestigateForHost() {
+  const h = selected.value?.hostname || ''
+  if (!h) return
+  goMenu('investigate')
+  invFilters.value = { ...invFilters.value, hostname: h }
+  invQ.value = ''
+  runInvestigate()
+}
+
+async function hostRemoteAction(action) {
+  const a = selected.value
+  if (!a?.agent_id) return
+  if (!a.online) {
+    error.value = '终端离线，无法下发远程指令'
+    return
+  }
+  const params = {}
+  if (action === 'kill_process') {
+    const pid = Number(String(hostRemoteForm.value.pid || '').trim())
+    if (!pid) {
+      error.value = '请填写要结束的 PID'
+      return
+    }
+    if (!window.confirm(`确认结束 ${a.hostname || a.agent_id} 上的进程 PID ${pid}？`)) return
+    params.pid = pid
+  } else if (action === 'quarantine_file') {
+    const path = String(hostRemoteForm.value.path || '').trim()
+    if (!path) {
+      error.value = '请填写要隔离的文件路径'
+      return
+    }
+    if (!window.confirm(`确认隔离文件？\n${path}`)) return
+    params.path = path
+  } else if (action === 'isolate_network') {
+    if (!window.confirm('确认对该终端执行网络隔离？')) return
+  } else if (action === 'unisolate_network') {
+    if (!window.confirm('确认解除网络隔离？')) return
+  } else if (action === 'scan_memory') {
+    const sp = String(hostRemoteForm.value.scanPid || '').trim()
+    const pid = sp ? Number(sp) : 0
+    if (pid) params.pid = pid
+    else params.max_processes = 40
+    if (!window.confirm(pid ? `扫描 PID ${pid} 内存？` : '扫描该主机前 40 个进程内存？')) return
+  } else if (action === 'refresh_modules') {
+    if (!window.confirm('触发全模块快照刷新？下一心跳起立即采集。')) return
+  }
+  hostRemoteBusy.value = true
+  try {
+    await createAgentCommand(a.agent_id, action, params)
+    okMsg.value = `${actionLabel(action)} · 指令已下发`
+    await loadHostRemoteCommands()
+    startHostRemotePoll()
+  } catch (err) {
+    error.value = err?.message || String(err)
+  } finally {
+    hostRemoteBusy.value = false
+  }
 }
 
 async function loadRespCommands() {
@@ -10049,6 +12148,10 @@ async function loadPolicyPage() {
           network: p.policy.intervals_sec?.network ?? 5,
           file: p.policy.intervals_sec?.file ?? 12,
         },
+        remote_ops_enabled: p.policy.remote_ops_enabled !== false,
+        remote_ops_read_only: !!p.policy.remote_ops?.read_only,
+        remote_ops_run_cmd: p.policy.remote_ops?.run_cmd_enabled !== false,
+        remote_ops_shell: p.policy.remote_ops?.shell_enabled !== false,
       }
       policyRev.value = p.rev || 0
     }
@@ -10068,6 +12171,285 @@ async function loadIoc() {
       iocLibLocal.value = st.local_enabled || 0
     }
   } catch (e) { error.value = e?.message || String(e) }
+}
+
+function renderAiMarkdown(src) {
+  const raw = String(src || '')
+  if (!raw.trim()) return '<p class="muted">暂无正文</p>'
+  const esc = raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+  const lines = esc.split(/\r?\n/)
+  const html = []
+  let inUl = false
+  const closeUl = () => { if (inUl) { html.push('</ul>'); inUl = false } }
+  for (const line of lines) {
+    const h = /^(#{1,3})\s+(.+)$/.exec(line)
+    if (h) {
+      closeUl()
+      const lv = h[1].length
+      html.push(`<h${lv}>${h[2]}</h${lv}>`)
+      continue
+    }
+    if (/^\s*[-*]\s+/.test(line)) {
+      if (!inUl) { html.push('<ul>'); inUl = true }
+      html.push(`<li>${line.replace(/^\s*[-*]\s+/, '')}</li>`)
+      continue
+    }
+    closeUl()
+    if (!line.trim()) {
+      html.push('')
+      continue
+    }
+    const inline = line
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    html.push(`<p>${inline}</p>`)
+  }
+  closeUl()
+  return html.join('\n').replace(
+    /(<li>)(.*?)(<\/li>)/g,
+    (_, a, b, c) => a + b.replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') + c,
+  )
+}
+
+function seedAiHostsFromCache() {
+  /** 进入页面立刻显示已有终端，避免空白等待 */
+  if ((aiHosts.value || []).length) return
+  const src = (agents.value || []).length ? agents.value : []
+  if (!src.length) return
+  aiHosts.value = src.map((a) => ({
+    agent_id: a.agent_id,
+    hostname: a.hostname || '',
+    ip: a.ip || a.last_ip || '',
+    last_ip: a.last_ip || '',
+    online: !!a.online,
+    status: a.status || '',
+    os: a.os || a.platform || '',
+    platform: a.platform || '',
+    version: a.version || '',
+    last_seen: a.last_seen || '',
+    group: a.group || '',
+    threat_count: 0,
+    open_threat_count: 0,
+  }))
+}
+
+async function refreshAiHostsOnly() {
+  if (aiHostsInflight) return aiHostsInflight
+  aiHostsLoading.value = true
+  aiHostsInflight = (async () => {
+    try {
+      const hosts = await aiListHosts(120)
+      if (hosts?.items) aiHosts.value = hosts.items
+      return hosts
+    } finally {
+      aiHostsLoading.value = false
+      aiHostsInflight = null
+    }
+  })()
+  return aiHostsInflight
+}
+
+function stopAiHostsPoll() {
+  if (aiHostsTimer) {
+    clearInterval(aiHostsTimer)
+    aiHostsTimer = null
+  }
+}
+
+function startAiHostsPoll() {
+  stopAiHostsPoll()
+  aiHostsTimer = setInterval(() => {
+    if (page.value !== 'ai-analyze') {
+      stopAiHostsPoll()
+      return
+    }
+    if (aiBusy.value || aiRefining.value) return
+    refreshAiHostsOnly().catch(() => {})
+  }, 15000)
+}
+
+async function loadAiAnalyzePage(opts = {}) {
+  const force = opts?.force === true
+  // 1) 先用缓存终端立刻铺列表，不再整页 aiBusy 卡住
+  seedAiHostsFromCache()
+  startAiHostsPoll()
+
+  // 若全局 agents 也空，先快速拉一次 listAgents
+  if (!(aiHosts.value || []).length && !(agents.value || []).length) {
+    try {
+      const list = await listAgents(120)
+      agents.value = list?.items || list || []
+      seedAiHostsFromCache()
+    } catch (_) { /* ignore */ }
+  }
+
+  // 2) 主机列表优先刷新（带威胁数）
+  const hostsTask = refreshAiHostsOnly().catch((e) => {
+    if (!(aiHosts.value || []).length) error.value = e?.message || String(e)
+  })
+
+  // 3) 状态 / Skill 后台加载，不挡终端点击
+  const sideTask = (async () => {
+    try {
+      const needSkills = force || !(aiSkills.value || []).length
+      const [st, skills] = await Promise.all([
+        aiStatus().catch(() => ({})),
+        needSkills ? aiListSkills({ limit: 240, edrOnly: true }).catch(() => null) : Promise.resolve(null),
+      ])
+      if (st) {
+        aiStatusInfo.value = {
+          ...(aiStatusInfo.value || {}),
+          ...st,
+        }
+      }
+      if (skills?.items) {
+        aiSkills.value = skills.items
+        aiSkillsMeta.value = {
+          total_indexed: skills.total_indexed || 0,
+          edr_relevant: skills.edr_relevant || 0,
+          returned: skills.returned || skills.items.length,
+        }
+      }
+      if (isAdmin.value && st && !st.configured) {
+        await setupLocalAiModel(true)
+      }
+    } catch (e) {
+      // 侧栏失败不阻断主机列表
+      if (!(aiHosts.value || []).length) error.value = e?.message || String(e)
+    }
+  })()
+
+  await Promise.all([hostsTask, sideTask])
+}
+
+async function setupLocalAiModel(silent = false) {
+  const quiet = silent === true
+  try {
+    aiBusy.value = true
+    const r = await aiSetupLocal({
+      base_url: 'http://192.168.31.220:8085/v1',
+      api_key: 'strata-c0938a1a4b224201931e41d162698fe9',
+      model: 'qwen3.8-flash-next-iq3_s',
+      timeout: 120,
+    })
+    aiStatusInfo.value = {
+      ...(aiStatusInfo.value || {}),
+      configured: true,
+      base_url: r?.platform?.base_url || 'http://192.168.31.220:8085/v1',
+      model: r?.platform?.model || 'qwen3.8-flash-next-iq3_s',
+      source: 'platform',
+      timeout: 120,
+      skills_root: aiStatusInfo.value?.skills_root,
+    }
+    if (!quiet) okMsg.value = '本地模型已同步到平台与当前账号'
+  } catch (e) {
+    error.value = e?.message || String(e)
+  } finally {
+    aiBusy.value = false
+  }
+}
+
+async function runAiAnalyze(host) {
+  if (!host?.agent_id || aiBusy.value || aiRefining.value) return
+  const aid = host.agent_id
+  aiSelectedId.value = aid
+    aiResult.value = null
+    aiErrorText.value = ''
+    aiRefining.value = false
+    aiThinkIdx.value = 0
+    aiEntityIdx.value = 0
+    aiThreatIdx.value = 0
+    aiLogIdx.value = 0
+    aiLogCat.value = ''
+    aiChainNodeId.value = ''
+    aiTab.value = 'overview'
+    aiBusy.value = true
+    try {
+    // 1) Agent Team 启发式（通常 <1s）
+    const quick = await aiAnalyzeHost(aid, { useLlm: false })
+    if (aiSelectedId.value !== aid) return
+    aiResult.value = quick
+    aiThinkIdx.value = 0
+    aiEntityIdx.value = 0
+    aiThreatIdx.value = 0
+    aiLogIdx.value = 0
+    aiLogCat.value = ''
+    const nodes = quick?.result?.attack_graph?.nodes || []
+    aiChainNodeId.value = (nodes.find((n) => n.type === 'stage') || nodes[0] || {}).id || ''
+    // 优先看攻击链路；否则研判事件 / 日志
+    const chainN = quick?.result?.attack_graph?.stage_count || 0
+    const thrN = (quick?.result?.threat_events || []).length
+    const logsN = (quick?.result?.forensics_logs || quick?.result?.security_logs || []).length
+    if (chainN) aiTab.value = 'chain'
+    else if (thrN) aiTab.value = 'threats'
+    else if (logsN) aiTab.value = 'logs'
+    else aiTab.value = 'overview'
+    aiBusy.value = false
+    // 2) 报告 Agent + 本地大模型精炼
+    aiRefining.value = true
+    try {
+      const full = await aiAnalyzeHost(aid, { useLlm: true })
+      if (aiSelectedId.value !== aid) return
+      if (full?.ok) {
+        aiResult.value = full
+        if (full.error) aiErrorText.value = ''
+      } else if (full?.error) {
+        error.value = `模型精炼失败：${full.error}`
+      }
+    } catch (e) {
+      if (aiSelectedId.value === aid) {
+        error.value = `模型精炼失败：${e?.message || e}`
+      }
+    } finally {
+      if (aiSelectedId.value === aid) aiRefining.value = false
+    }
+  } catch (e) {
+    const msg = e?.message || String(e)
+    aiErrorText.value = msg
+    error.value = msg
+    aiBusy.value = false
+    aiRefining.value = false
+  }
+}
+
+async function runAiDisposition(d) {
+  const aid = aiSelectedId.value
+  if (!aid || !d?.action || d.action === 'review') return
+  const params = { ...(d.params || {}) }
+  if (d.action === 'kill_process') {
+    const pid = Number(params.pid)
+    if (!pid) {
+      error.value = '处置建议缺少 PID，无法结束进程'
+      return
+    }
+    if (!window.confirm(`【人工审核】确认结束进程？\n${d.target || pid}\n原因：${d.reason || ''}`)) return
+    params.pid = pid
+  } else if (d.action === 'quarantine_file') {
+    const path = params.path || d.target
+    if (!path) {
+      error.value = '处置建议缺少文件路径'
+      return
+    }
+    if (!window.confirm(`【人工审核】确认隔离文件？\n${path}\n原因：${d.reason || ''}`)) return
+    params.path = path
+  } else if (d.action === 'isolate_network') {
+    if (!window.confirm(`【人工审核】确认网络隔离该终端？\n${d.target || aid}\n将阻断大部分出站，保留 DNS/管理端。`)) return
+  } else {
+    error.value = `暂不支持自动下发：${d.action}`
+    return
+  }
+  aiDispBusy.value = true
+  try {
+    await createAgentCommand(aid, d.action, params)
+    okMsg.value = `已下发：${d.label || d.action}（待 Agent 执行）`
+  } catch (e) {
+    error.value = e?.message || String(e)
+  } finally {
+    aiDispBusy.value = false
+  }
 }
 
 async function loadAttckBoard() {
@@ -10297,10 +12679,11 @@ const threatGraphLayers = computed(() => {
 
 const threatGraphLayout = computed(() => {
   const layers = threatGraphLayers.value
-  const COL_W = 248
-  const NODE_W = 208
-  const NODE_H = 86
-  const GAP = 18
+  const COL_W = 268
+  const NODE_W = 228
+  // 名称 + PID + 两行命令行 +「威胁命中」标签，原先 86px 会裁掉路径/命令行
+  const NODE_H = tvReadable.value ? 128 : 108
+  const GAP = 22
   const PAD = 20
   if (!layers.length) {
     return { layers: [], paths: [], width: 0, height: 0, positions: {}, colW: COL_W }
@@ -10320,6 +12703,7 @@ const threatGraphLayout = computed(() => {
           top: `${top}px`,
           left: `${PAD}px`,
           width: `${NODE_W}px`,
+          minHeight: `${NODE_H}px`,
           height: `${NODE_H}px`,
         },
       }
@@ -10696,6 +13080,10 @@ async function savePolicy() {
       fim_paths_text: fimText,
       log_tail_paths_text: logTailText,
       winevent_channels_text: wevtText,
+      remote_ops_read_only,
+      remote_ops_run_cmd,
+      remote_ops_shell,
+      remote_ops_enabled,
       ...rest
     } = policyForm.value
     const fimPaths = String(fimText || '').split(/\r?\n/).map((s) => s.trim()).filter(Boolean).slice(0, 50)
@@ -10706,6 +13094,14 @@ async function savePolicy() {
       fim_paths: fimPaths,
       log_tail_paths: logTailPaths,
       winevent_channels: wineventChannels,
+      remote_ops_enabled,
+      remote_ops: {
+        enabled: remote_ops_enabled,
+        read_only: remote_ops_read_only,
+        run_cmd_enabled: remote_ops_run_cmd,
+        shell_enabled: remote_ops_shell,
+        shell_max_minutes: 15,
+      },
     }, 'global')
     policyRev.value = r?.rev || policyRev.value
     okMsg.value = '策略已保存，终端下次心跳生效'
@@ -11012,7 +13408,7 @@ function rowKey(row) {
 async function loadSnap(m, { silent = false, keepRow = false, syncGroup = true } = {}) {
   const switched = module.value !== m
   module.value = m
-  if (syncGroup) syncHostTabGroup(m)
+  if (syncGroup && hostTabGroup.value !== 'remote') syncHostTabGroup(m)
   if (switched) {
     snapRow.value = null
     snapQ.value = ''
@@ -11052,12 +13448,18 @@ function openHost(a, dest = 'hosts') {
 }
 
 function backFromHost() {
+  stopHostRemotePoll()
+  stopHostRemoteShellPoll()
+  hostRemoteShellId.value = ''
+  hostRemoteShellPhase.value = 'idle'
+  hostRemoteShellLines.value = []
   hostHdrMore.value = false
   hostHealthOpen.value = false
   selected.value = null
   snap.value = null
   snapRow.value = null
   hostRiskItems.value = []
+  hostRemoteCommands.value = []
   page.value = 'hosts'
 }
 
@@ -11270,6 +13672,24 @@ function closeUserMenu() { userMenuOpen.value = false }
 let snapTimer = null
 
 watch([section, page, eventListReturnPage, rulesSection, () => activeEvent.value?.id], saveNavState)
+
+watch(hostRemoteSubTab, (tab) => {
+  if (tab === 'files' && selected.value?.online) hostRemoteFsLoadVolumes()
+  if (tab === 'shell') nextTick(() => { hostRemoteShellInputRef.value?.focus() })
+})
+
+watch(() => selected.value?.agent_id, () => {
+  hostRemoteFsDrives.value = []
+  hostRemoteFsRoots.value = []
+  hostRemoteFsEntries.value = []
+  hostRemoteFsPreview.value = ''
+  hostRemoteFsHint.value = ''
+  hostLiveQueryRows.value = []
+  hostLiveQueryMeta.value = null
+  if (hostTabGroup.value === 'remote' && hostRemoteSubTab.value === 'files' && selected.value?.online) {
+    hostRemoteFsLoadVolumes()
+  }
+})
 
 onMounted(async () => {
   restoreNavState()
@@ -11535,7 +13955,7 @@ tr.wl-off td { opacity: .5; }
   overflow: hidden; /* 结构化页面：只让表格/列表区滚动 */
 }
 /* 无专用布局的表单/列表页：允许页内滚动（仍只有一条滚动条） */
-.page:not(.overview):not(.events-page):not(.behaviors-page):not(.timeline-page):not(.rules-page):not(.settings-page):not(.inv-page):not(.host-detail):not(.threat-detail):not(.attck-page):not(.hosts-page):not(.seq-page):not(.dns-page) {
+.page:not(.overview):not(.events-page):not(.behaviors-page):not(.timeline-page):not(.rules-page):not(.settings-page):not(.inv-page):not(.host-detail):not(.threat-detail):not(.attck-page):not(.hosts-page):not(.seq-page):not(.dns-page):not(.ai-page) {
   overflow: auto;
 }
 /* 概览：撑满可视区，底部面板吃掉剩余高度 */
@@ -12580,6 +15000,227 @@ th { background: #fafbfd; color: var(--muted); font-weight: 600; font-size: 12px
   background: #0f172a; color: #fff; border-color: #0f172a;
 }
 .host-group-btn:hover:not(.on) { background: #f4f7fb; }
+.host-remote-wrap {
+  flex: 1 1 auto; min-height: 0; overflow: auto;
+  padding: 18px 20px 24px; box-shadow: var(--shadow);
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 120px);
+}
+.host-remote-hero {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
+  margin-bottom: 18px; padding: 16px 18px; border-radius: 14px;
+  border: 1px solid var(--line); background: #fff;
+}
+.host-remote-hero h2 { margin: 0 0 8px; font-size: 18px; font-weight: 750; letter-spacing: -0.02em; }
+.host-remote-hero .hint { margin: 0; max-width: 680px; line-height: 1.55; font-size: 13px; }
+.host-remote-steps {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+}
+.host-remote-steps span {
+  font-size: 11px; font-weight: 650; padding: 4px 10px; border-radius: 999px;
+  background: #f1f5f9; color: #475569;
+}
+.host-remote-hero-aside { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.sync-pill.lg { padding: 8px 14px; font-size: 13px; }
+.hr-busy-pill {
+  font-size: 11px; font-weight: 650; color: #b45309; background: #fffbeb; border: 1px solid #fde68a;
+  padding: 4px 10px; border-radius: 999px;
+}
+.host-remote-banner {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed var(--line-2);
+}
+.host-remote-banner b { display: block; font-size: 15px; margin-bottom: 6px; }
+.host-remote-banner .hint { margin: 0; max-width: 720px; line-height: 1.5; }
+.host-remote-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+}
+.host-remote-card {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; min-width: 0;
+}
+.host-remote-card.wide { grid-column: 1 / -1; }
+.host-remote-card h4 { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
+.hr-lq-table-wrap { max-height: 420px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; margin-top: 10px; }
+.hr-lq-table { font-size: 11px; }
+.hr-lq-table td { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.host-sensors-panel { display: none; }
+.btn.sm.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.btn.sm.ghost:hover { color: var(--ink); background: #f4f7fb; }
+.hsp-chip {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 999px;
+  background: #fff; border: 1px solid #e2e8f0;
+  color: #334155; font-size: 11px; line-height: 1.4;
+}
+.hsp-chip.soft { background: #f8fafc; color: #64748b; }
+.hsp-chip.ok { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+.hsp-chip.warn { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
+.hsp-chips, .hsp-channels { margin-top: 6px; }
+.hsp-label { font-size: 11px; color: #64748b; font-weight: 600; margin-right: 2px; }
+.hsp-drift { margin: 8px 0 0; font-size: 12px; color: #b45309; }
+.hsp-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; font-size: 12px; }
+.hsp-score { font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #ecfdf5; color: #047857; }
+.hsp-score[data-lv="fair"] { background: #fffbeb; color: #b45309; }
+.hsp-score[data-lv="poor"] { background: #fef2f2; color: #b91c1c; }
+.hsp-advise { margin: 8px 0 0; padding-left: 18px; color: #92400e; font-size: 12px; line-height: 1.45; }
+.host-remote-links, .host-remote-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.hr-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.hr-field span { font-size: 11px; color: var(--muted); font-weight: 650; }
+.hr-field .field { width: 100%; box-sizing: border-box; }
+.host-remote-cmd-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.host-remote-cmd-hd h4 { margin: 0; }
+.host-remote-cmd-table { width: 100%; font-size: 12px; }
+.host-remote-cmd-table th, .host-remote-cmd-table td { padding: 8px 10px; text-align: left; vertical-align: top; }
+.btn.block { display: block; width: 100%; margin-bottom: 10px; }
+.host-remote-subnav {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;
+}
+.hr-tab {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
+  background: #fff; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.hr-tab:hover { border-color: #cbd5e1; background: #f8fafc; }
+.hr-tab.on {
+  border-color: #c81626; background: #fff5f5; box-shadow: 0 0 0 1px rgba(200, 22, 38, 0.12);
+}
+.hr-tab-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+.hr-tab-hint { font-size: 10px; color: var(--muted); line-height: 1.3; }
+.host-remote-panel { margin-bottom: 16px; }
+.hr-shell-panel { max-width: none; }
+.hr-shell-layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 14px; align-items: start;
+}
+.hr-shell-aside {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+}
+.hr-shell-aside h4 { margin: 0 0 6px; font-size: 13px; }
+.hr-shell-quick { margin-bottom: 6px; text-align: left; font-family: ui-monospace, Consolas, monospace; font-size: 11px; }
+.hr-fs-explorer {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 12px; min-height: 320px;
+}
+.hr-fs-tree, .hr-fs-main {
+  border: 1px solid var(--line); border-radius: 12px; background: #fff; min-height: 280px;
+}
+.hr-fs-tree { overflow: auto; max-height: 520px; padding-bottom: 8px; }
+.hr-fs-tree-hd, .hr-fs-crumb {
+  margin: 0; padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff;
+}
+.hr-fs-crumb { font-weight: 550; }
+.hr-fs-tree-ul { list-style: none; margin: 6px 0 0; padding: 0; }
+.hr-fs-node {
+  width: 100%; display: flex; align-items: center; gap: 6px; text-align: left;
+  border: 0; background: transparent; padding: 5px 8px; cursor: pointer; font-size: 12px;
+}
+.hr-fs-node:hover { background: #f4f7fb; }
+.hr-fs-node.on { background: #fff5f5; color: #9f1239; }
+.hr-fs-caret { width: 12px; font-size: 9px; color: var(--muted); flex-shrink: 0; }
+.hr-fs-node-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hr-fs-node em { font-style: normal; font-size: 10px; color: var(--muted); flex-shrink: 0; }
+.hr-fs-main { padding: 0 0 10px; overflow: auto; max-height: 520px; }
+.hr-fs-drives {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.hr-fs-drives-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-right: 4px; }
+.hr-fs-drive {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  min-width: 56px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line);
+  background: #fff; cursor: pointer; font-size: 12px;
+}
+.hr-fs-drive.on { border-color: #c81626; background: #fff5f5; }
+.hr-fs-drive strong { font-size: 15px; }
+.hr-fs-drive em { font-style: normal; font-size: 10px; color: var(--muted); }
+.hr-fs-row { cursor: pointer; }
+.hr-fs-icon { margin-right: 6px; opacity: 0.85; }
+.hr-fs-preview-ph { align-self: center; }
+.hr-reg-shortcuts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.hr-reg-chip {
+  border: 1px solid var(--line); background: #f8fafc; border-radius: 999px;
+  padding: 4px 12px; font-size: 11px; font-weight: 650; cursor: pointer;
+}
+.hr-reg-chip:hover { background: #eef2f7; }
+.hr-reg-crumb { margin: 0 0 12px; font-size: 12px; color: var(--ink-2); word-break: break-all; }
+.hr-reg-body { display: flex; flex-direction: column; gap: 16px; }
+.hr-reg-section h4 { margin: 0 0 8px; font-size: 13px; }
+.hr-reg-subkey-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.hr-reg-subkey {
+  border: 1px dashed #cbd5e1; background: #fff; border-radius: 8px; padding: 6px 10px;
+  font-size: 12px; font-family: ui-monospace, Consolas, monospace; cursor: pointer;
+}
+.hr-reg-subkey:hover { border-color: #c81626; background: #fff5f5; }
+.hr-reg-dl { display: grid; gap: 8px; margin: 0; font-size: 12px; }
+.hr-reg-dl dt { font-weight: 650; color: var(--muted); font-size: 11px; }
+.hr-reg-data { word-break: break-all; max-width: 100%; }
+.hr-reg-val-table .hr-reg-data { max-width: 480px; }
+.hr-shell-card {
+  border: 1px solid #1e293b; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+}
+.hr-shell-hd {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 10px 14px; background: #1e293b; color: #e2e8f0; font-size: 12px;
+}
+.hr-shell-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hr-shell-led {
+  width: 8px; height: 8px; border-radius: 50%; background: #64748b; flex-shrink: 0;
+}
+.hr-shell-led.live { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+.hr-shell-led.connecting { background: #fbbf24; animation: hr-pulse 1s infinite; }
+.hr-shell-led.error { background: #ef4444; }
+.hr-shell-led.idle { background: #64748b; }
+@keyframes hr-pulse { 50% { opacity: 0.45; } }
+.hr-shell-sid { font-size: 10px; opacity: 0.75; padding: 2px 6px; background: rgba(0,0,0,0.25); border-radius: 4px; }
+.hr-shell-actions { display: flex; gap: 8px; }
+.hr-shell-body {
+  min-height: 280px; max-height: 420px; overflow: auto; padding: 14px 16px;
+  background: #0b1120; font-family: ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.5;
+}
+.hr-shell-empty { color: #94a3b8; text-align: center; padding: 48px 16px; }
+.hr-shell-empty p { margin: 0 0 8px; }
+.hr-shell-line { white-space: pre-wrap; word-break: break-word; margin-bottom: 4px; }
+.hr-shell-line.sys { color: #94a3b8; font-style: italic; }
+.hr-shell-line.in { color: #fde68a; }
+.hr-shell-line.in::before { content: '> '; color: #64748b; }
+.hr-shell-line.out { color: #86efac; }
+.hr-shell-line.err { color: #fca5a5; }
+.hr-shell-inputbar {
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+  background: #1e293b; border-top: 1px solid #334155;
+}
+.hr-shell-prompt { color: #86efac; font-family: ui-monospace, Consolas, monospace; font-weight: 700; }
+.hr-shell-input { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
+.hr-shell-foot { margin-top: 10px; }
+.hr-shell-banner {
+  margin: 0; padding: 8px 14px; font-size: 12px; border-bottom: 1px solid #334155;
+}
+.hr-shell-banner.ok { background: #14532d; color: #bbf7d0; }
+.hr-shell-banner.err { background: #7f1d1d; color: #fecaca; }
+.hr-shell-banner.warn { background: #78350f; color: #fde68a; }
+.hr-shell-banner.info { background: #1e3a5f; color: #bae6fd; }
+.host-remote-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.host-remote-toolbar .grow { flex: 1; min-width: 200px; }
+.host-remote-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 120px; }
+.host-remote-pre {
+  margin: 0; padding: 12px; background: #0f172a; color: #e2e8f0; border-radius: 10px;
+  font-size: 12px; line-height: 1.45; max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-all;
+}
+.host-remote-cmd-in { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
+.host-remote-cmd-log { margin-top: 12px; font-size: 12px; }
+.host-remote-log-line { padding: 4px 0; border-bottom: 1px dashed var(--line-2); }
+.host-remote-log-line em { color: var(--muted); font-style: normal; margin-right: 8px; }
+@media (max-width: 960px) {
+  .host-remote-grid { grid-template-columns: 1fr; }
+  .host-remote-split { grid-template-columns: 1fr; }
+  .hr-fs-explorer { grid-template-columns: 1fr; }
+  .hr-shell-layout { grid-template-columns: 1fr; }
+}
 .settings-rules-table {
   overflow: auto;
 }
@@ -13309,9 +15950,11 @@ tr.row-warn td { background: #fff8ec; }
   overflow: hidden; overflow-wrap: anywhere;
 }
 .tvf-node small {
-  display: block; max-width: 100%; color: var(--muted); font-size: 12px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3;
+  max-width: 100%; max-height: 4.2em; color: #334155; font-size: 11.5px; line-height: 1.4;
+  overflow: hidden; overflow-wrap: anywhere; word-break: break-all;
 }
+.tvf-node.hit small { color: #9f1239; }
 .tvf-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 4px; }
 .tvf-meta span {
   font-size: 11px; padding: 2px 8px; border-radius: 6px; background: #f1f5f9; color: #334155;
@@ -13464,10 +16107,13 @@ tr.row-warn td { background: #fff8ec; }
   max-height: 220px; overflow: auto;
 }
 .tv-proc-cmd {
-  display: block; margin-top: 4px; font-size: 10px; line-height: 1.35;
-  color: #334155; word-break: break-all;
+  display: -webkit-box; margin-top: 6px; margin-right: 4px; padding-right: 52px;
+  font-size: 10.5px; line-height: 1.4; color: #1e293b;
+  word-break: break-all; overflow: hidden;
+  -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3;
+  max-height: 4.2em;
 }
-.tv-proc-node.hit .tv-proc-cmd { color: #fecaca; }
+.tv-proc-node.hit .tv-proc-cmd { color: #9f1239; }
 .evidence-grid.big { padding: 16px; width: 100%; box-sizing: border-box; }
 .raw-detail {
   background: #fff; padding: 16px; border-radius: 8px; width: min(720px, 100%);
@@ -13602,100 +16248,99 @@ tr.row-warn td { background: #fff8ec; }
 .rules-tab.on .rules-tab-meta { color: #475569; background: #f1f5f9; }
 
 .mem-yara-layout {
-  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px;
-  overflow: hidden;
+  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden;
 }
-.mem-yara-lead {
-  margin: 0; flex-shrink: 0; font-size: 12px; color: var(--muted); line-height: 1.5;
+.mem-yara-top {
+  flex-shrink: 0; display: grid; gap: 10px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  align-items: stretch;
 }
-.mem-yara-controls { flex-shrink: 0; }
-.mem-yara-group-toggles {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px;
+@media (max-width: 1100px) { .mem-yara-top { grid-template-columns: 1fr; } }
+.mem-yara-stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;
 }
-@media (max-width: 720px) { .mem-yara-group-toggles { grid-template-columns: 1fr; } }
-.mem-yara-group-toggle {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line-2); background: #fafafa;
+@media (max-width: 900px) { .mem-yara-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mem-yara-stat {
+  border: 1px solid #e8eef6; border-radius: 10px; background: #fff; padding: 10px 12px;
+  text-align: left;
 }
-.mem-yara-group-label { font-size: 12px; font-weight: 600; color: var(--text); }
+.mem-yara-stat.click { cursor: pointer; }
+.mem-yara-stat.click:hover, .mem-yara-stat.click.on { border-color: #93c5fd; background: #f8fbff; }
+.mem-yara-stat.accent { border-color: #bfdbfe; }
+.mem-yara-stat label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.mem-yara-stat b { font-size: 15px; font-weight: 700; word-break: break-all; }
+.mem-yara-toggles {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  border: 1px solid #e8eef6; border-radius: 10px; background: #fff; padding: 8px;
+}
+.mem-yara-tog {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 6px 8px; border-radius: 8px; background: #f8fafc; font-size: 11.5px; font-weight: 600;
+}
+.mem-yara-tog.off { opacity: .7; }
+.mem-yara-tog span {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .mem-yara-switch { flex-shrink: 0; }
 .mem-yara-switch i { box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.12); }
-.mem-yara-table-hd {
-  flex-wrap: wrap; gap: 12px; align-items: flex-start;
+.mem-yara-subnav {
+  display: flex; gap: 4px; padding: 3px; flex-shrink: 0;
+  background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10px; width: fit-content; max-width: 100%;
 }
-.mem-yara-table-hd-left { flex: 1; min-width: 200px; }
-.mem-yara-table-hd-left h3 { margin: 0 0 4px; }
-.mem-yara-table-hint { margin: 0; max-width: 52rem; line-height: 1.45; }
-.mem-yara-table-hd-actions {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; flex-shrink: 0;
+.mem-yara-subnav button {
+  border: 0; background: transparent; color: #475569; font-size: 12.5px; font-weight: 650;
+  padding: 7px 12px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
 }
-.mem-yara-master-label {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--ink-2);
+.mem-yara-subnav button.on { background: #fff; color: #1d4ed8; box-shadow: 0 1px 2px rgba(15,23,42,.08); }
+.mem-yara-subnav em {
+  font-style: normal; font-size: 10px; background: #e2e8f0; color: #334155;
+  padding: 1px 6px; border-radius: 999px;
 }
-.mem-yara-group-off-banner {
+.mem-yara-subnav button.on em { background: #dbeafe; color: #1d4ed8; }
+.mem-yara-body {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid #e8eef6; border-radius: 12px; background: #fff;
+}
+.mem-yara-body.dim { opacity: .78; }
+.mem-yara-body.meta { overflow: auto; padding: 14px; }
+.mem-yara-toolbar {
+  flex-shrink: 0; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; border-bottom: 1px solid #eef2f7;
+}
+.mem-yara-toolbar h3 { margin: 0 0 4px; font-size: 14px; }
+.mem-yara-toolbar p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.45; max-width: 48rem; }
+.mem-yara-toolbar-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.mem-yara-banner {
   margin: 0; padding: 8px 14px; font-size: 12px; color: #92400e; background: #fffbeb; border-bottom: 1px solid #fde68a;
 }
-.mem-yara-panel-off .mem-yara-table { opacity: 0.72; }
+.mem-yara-scroll { flex: 1; min-height: 0; overflow: auto; }
+.mem-yara-table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: fixed; }
+.mem-yara-table th {
+  position: sticky; top: 0; z-index: 1; background: #f8fafc; text-align: left;
+  padding: 9px 12px; border-bottom: 1px solid #e8eef6; color: var(--muted); font-weight: 650;
+}
+.mem-yara-table td {
+  padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; word-break: break-word;
+}
 .mem-yara-table tr.row-off td { opacity: 0.55; }
-.mem-yara-kpis {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; flex-shrink: 0;
-}
-@media (max-width: 900px) { .mem-yara-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.mem-yara-kpi {
-  padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-2);
-  background: #fff;
-}
-.mem-yara-kpi-l { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-.mem-yara-kpi b { font-size: 15px; font-weight: 700; word-break: break-all; }
-.mem-yara-split {
-  flex: 1; min-height: 0; display: grid;
-  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr); gap: 14px;
-}
-@media (max-width: 960px) {
-  .mem-yara-split { grid-template-columns: 1fr; overflow: auto; }
-  .mem-yara-side { max-height: none; }
-  .mem-yara-table-panel { min-height: 360px; }
-}
-.mem-yara-side {
-  min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px;
-}
-.mem-yara-side-block {
-  padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line-2); background: #fff;
-}
-.mem-yara-side-block.accent { border-color: #bfdbfe; background: linear-gradient(180deg, #f8fbff 0%, #fff 70%); }
-.mem-yara-side-block h4 {
-  margin: 0 0 10px; font-size: 12px; font-weight: 700;
-  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
-}
-.mem-yara-facts { list-style: none; margin: 0; padding: 0; font-size: 12px; }
-.mem-yara-facts li {
-  display: grid; grid-template-columns: 52px 1fr; gap: 8px; align-items: start;
-  padding: 4px 0; border-bottom: 1px solid var(--line-2);
-}
-.mem-yara-facts li:last-child { border-bottom: 0; }
-.mem-yara-facts span { color: var(--muted); font-size: 11px; }
-.mem-yara-facts em { font-style: normal; word-break: break-word; }
-.mem-yara-facts.paths em code { font-size: 11px; }
-.mem-yara-clamp {
-  margin: 8px 0 0; font-size: 11px; line-height: 1.45;
-  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-}
-.mem-yara-file-list {
-  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px;
-}
-.mem-yara-file-list code {
-  display: block; padding: 5px 8px; border-radius: 6px; background: #f8fafc;
-  border: 1px solid var(--line-2); font-size: 11px;
-}
-.mem-yara-table-panel { min-height: 0; }
-.mem-yara-table-panel .table-scroll { flex: 1; min-height: 0; overflow: auto; }
-.mem-yara-table { width: 100%; font-size: 12px; }
-.mem-yara-table th { position: sticky; top: 0; z-index: 1; background: #f8fafc; }
-.mem-yara-table th, .mem-yara-table td { padding: 9px 12px; vertical-align: top; }
+.mem-yara-table tbody tr:hover td { background: #f8fbff; }
 .mem-yara-table .mem-yara-str {
-  max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.mem-yara-table tbody tr:hover td { background: #f8fafc; }
+.mem-yara-meta-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;
+}
+.mem-yara-meta-grid section {
+  border: 1px solid #eef2f7; border-radius: 10px; padding: 12px 14px; background: #fbfdff;
+}
+.mem-yara-meta-grid h4 {
+  margin: 0 0 10px; font-size: 13px; display: flex; align-items: center; gap: 8px;
+}
+.mem-yara-meta-grid dl { margin: 0; display: grid; gap: 8px; }
+.mem-yara-meta-grid dl > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; font-size: 12.5px; }
+.mem-yara-meta-grid dl .full { grid-template-columns: 64px minmax(0, 1fr); }
+.mem-yara-meta-grid dt { margin: 0; color: var(--muted); }
+.mem-yara-meta-grid dd { margin: 0; word-break: break-word; }
 .pill.sm { font-size: 10px; padding: 2px 8px; }
 
 /* 规则管理 */
@@ -14215,12 +16860,13 @@ tr.row-warn td { background: #fff8ec; }
 .tv-graph-col { position: relative; flex-shrink: 0; min-height: 80px; }
 .tv-proc-node {
   position: absolute; z-index: 2; box-sizing: border-box;
-  padding: 12px 14px 12px 40px; border-radius: 14px; background: #fff;
+  padding: 12px 14px 28px 40px; border-radius: 14px; background: #fff;
   border: 1px solid #cbd5e1; border-left: 4px solid #38bdf8;
   box-shadow: 0 8px 22px rgba(15,23,42,.1);
   cursor: default; transition: box-shadow .15s, transform .15s, border-color .15s;
+  overflow: hidden;
 }
-.tv-proc-node.readable { padding-left: 38px; min-height: 72px; }
+.tv-proc-node.readable { padding-left: 38px; }
 .tv-proc-node:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(15,23,42,.12); }
 .tv-proc-node.hit {
   border-color: #fca5a5; border-left-color: #ef4444;
@@ -14249,6 +16895,7 @@ tr.row-warn td { background: #fff8ec; }
 .tv-hit-tag {
   position: absolute; right: 8px; bottom: 8px; font-style: normal; font-size: 10px;
   padding: 2px 7px; border-radius: 999px; background: #fee2e2; color: #b91c1c; font-weight: 700;
+  z-index: 1; pointer-events: none;
 }
 .tv-graph-tools {
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -14450,5 +17097,551 @@ tr.row-warn td { background: #fff8ec; }
   .rule-editor { max-height: none; overflow: visible; }
   .split { grid-template-columns: 1fr; }
   .term-pane { max-height: 220px; }
+}
+.ai-page {
+  display: flex; flex-direction: column; min-height: 0; gap: 10px;
+  overflow: hidden; /* 吃满视口，空白交给下方列表撑开 */
+}
+.ai-page > .page-hd { flex-shrink: 0; margin-bottom: 0; }
+.ai-status-bar {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px;
+  align-items: center; font-size: 12px; flex-shrink: 0;
+}
+.ai-status-main { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.ai-status-skills { font-size: 11px; }
+.ai-layout {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 12px;
+}
+.ai-host-pane, .ai-result-pane {
+  min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+}
+.ai-host-pane .panel-hd, .ai-result-pane .panel-hd {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line); flex-shrink: 0;
+}
+.ai-host-pane .panel-hd.tight { padding-top: 8px; padding-bottom: 6px; }
+.ai-host-pane h3 em { font-style: normal; color: var(--muted); margin-left: 4px; }
+.ai-only-online { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.ai-host-list { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+.ai-host-row {
+  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+  border: 1px solid transparent; background: #fff; border-radius: 10px; padding: 10px 12px;
+  cursor: pointer; margin-bottom: 6px;
+}
+.ai-host-row:hover { background: #f8fafc; border-color: var(--line-2); }
+.ai-host-row.on { background: #eff6ff; border-color: #93c5fd; }
+.ai-host-row.offline { opacity: .72; }
+.ai-host-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0;
+}
+.ai-host-dot.on { background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.15); }
+.ai-host-meta { flex: 1; min-width: 0; }
+.ai-host-meta b { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-host-meta small { color: var(--muted); font-size: 11px; }
+.ai-host-badges em { font-style: normal; }
+.ai-skill-box { border-top: 1px solid var(--line); padding: 0 8px 10px; flex-shrink: 0; max-height: 260px; overflow: auto; }
+.ai-skill-matched { display: flex; flex-direction: column; gap: 6px; padding: 4px 6px 8px; }
+.ai-skill-hit { display: grid; gap: 2px; }
+.ai-skill-hit small { font-size: 10.5px; color: var(--muted); line-height: 1.35; padding-left: 2px; }
+.ai-skill-matched .chip.on {
+  background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; font-weight: 650;
+  justify-self: start;
+}
+.ai-skill-matched .chip em {
+  font-style: normal; margin-left: 4px; font-size: 10px; opacity: .75;
+}
+.ai-skill-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 6px 6px; }
+.ai-skill-chips .chip.dim { opacity: .35; }
+.ai-skill-chips .chip.pri { border-color: #93c5fd; background: #eff6ff; }
+.ai-result-body {
+  flex: 1; min-height: 0; overflow: hidden;
+  padding: 12px 14px 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ai-tabs {
+  display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 3px;
+  background: #f1f5f9; border-radius: 10px; border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.ai-tabs button {
+  border: 0; background: transparent; color: #475569; font-size: 12.5px; font-weight: 600;
+  padding: 7px 12px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+}
+.ai-tabs button:hover { background: #fff; color: #0f172a; }
+.ai-tabs button.on { background: #fff; color: #1d4ed8; box-shadow: 0 1px 2px rgba(15,23,42,.08); }
+.ai-tabs button em {
+  font-style: normal; font-size: 10px; background: #fee2e2; color: #b91c1c;
+  padding: 1px 5px; border-radius: 999px; font-weight: 700;
+}
+.ai-tab-pane {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.ai-tab-pane.ai-overview { overflow: auto; }
+.ai-hero {
+  display: grid; grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.4fr); gap: 12px;
+  margin: 0; align-items: stretch; flex-shrink: 0;
+}
+.ai-hero-verdict {
+  border: 1px solid #e8eef6; border-radius: 12px; padding: 12px 14px; background:
+    linear-gradient(135deg, #f8fafc 0%, #eef6ff 100%);
+  display: flex; flex-direction: column; gap: 8px; justify-content: center;
+}
+.ai-hero-meta { display: grid; gap: 2px; }
+.ai-hero-meta b { font-size: 16px; }
+.ai-hero-meta .sev-严重, .ai-hero-meta .sev-高 { color: #b91c1c; }
+.ai-hero-meta .sev-中 { color: #b45309; }
+.ai-hero-meta .sev-低 { color: #047857; }
+.ai-hero-stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;
+}
+.ai-hero-stat {
+  border: 1px solid #e8eef6; border-radius: 10px; background: #fff; padding: 10px 12px;
+  text-align: left; cursor: pointer;
+}
+.ai-hero-stat:hover { border-color: #93c5fd; background: #f8fbff; }
+.ai-hero-stat label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.ai-hero-stat b { font-size: 15px; color: var(--ink); }
+.ai-team-strip {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px;
+}
+.ai-team-pill {
+  display: flex; align-items: center; gap: 8px; border: 1px solid #e8eef6; border-radius: 10px;
+  background: #fff; padding: 8px 10px; min-width: 0;
+}
+.ai-team-pill i {
+  width: 7px; height: 7px; border-radius: 50%; background: #16a34a; flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.12);
+}
+.ai-team-pill span { flex: 1; min-width: 0; display: grid; }
+.ai-team-pill b { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-team-pill small { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-team-pill em { font-style: normal; font-size: 10.5px; color: #027a48; flex-shrink: 0; }
+.ai-board {
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr); gap: 12px; align-items: start;
+}
+.ai-board-main, .ai-board-side { display: grid; gap: 12px; }
+.ai-panel {
+  border: 1px solid #e8eef6; border-radius: 12px; background: #fff; padding: 10px 12px; min-width: 0;
+}
+.ai-panel-hd {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;
+}
+.ai-panel-hd h4 { margin: 0; font-size: 12.5px; font-weight: 700; color: #334155; }
+.ai-panel-empty { margin: 8px 0; color: var(--muted); font-size: 12.5px; }
+.ai-threat-preview { display: grid; gap: 6px; }
+.ai-threat-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start;
+  width: 100%; text-align: left; border: 1px solid #eef2f7; border-radius: 10px;
+  background: #fbfdff; padding: 8px 10px; cursor: pointer;
+}
+.ai-threat-row:hover { border-color: #93c5fd; background: #f0f7ff; }
+.ai-threat-row-body { min-width: 0; display: grid; gap: 2px; }
+.ai-threat-row-body b { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-threat-row-body small {
+  font-size: 11.5px; color: var(--muted); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ai-rail { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.ai-rail li {
+  display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px;
+  padding: 8px 0; border-bottom: 1px dashed #eef2f7;
+}
+.ai-rail li:last-child { border-bottom: 0; }
+.ai-rail-dot {
+  width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; background: #94a3b8;
+  box-shadow: 0 0 0 3px #e2e8f0; justify-self: center;
+}
+.ai-rail-dot[data-k="threat"] { background: #dc2626; box-shadow: 0 0 0 3px #fecaca; }
+.ai-rail-dot[data-k="log"] { background: #2563eb; box-shadow: 0 0 0 3px #bfdbfe; }
+.ai-rail-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.ai-rail time { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ai-rail b { display: block; font-size: 12.5px; line-height: 1.35; }
+.ai-rail small { display: block; margin-top: 2px; font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+.ai-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ai-steps li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; }
+.ai-step-no {
+  width: 22px; height: 22px; border-radius: 50%; background: #e8f1ff; color: #1d4ed8;
+  font-size: 11px; font-weight: 700; display: grid; place-items: center;
+}
+.ai-steps b { display: block; font-size: 12.5px; }
+.ai-steps span, .ai-steps small, .ai-steps em {
+  display: block; font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4;
+}
+.ai-steps em { font-style: normal; color: #64748b; }
+.ai-meta-compact { margin: 0; display: grid; gap: 6px; }
+.ai-meta-compact > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 6px; font-size: 12px; }
+.ai-meta-compact .full { grid-template-columns: 64px minmax(0, 1fr); }
+.ai-meta-compact dt { margin: 0; color: var(--muted); }
+.ai-meta-compact dd { margin: 0; line-height: 1.4; word-break: break-word; }
+.ai-quick-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ai-quick-row button {
+  border: 1px solid #e8eef6; border-radius: 8px; background: #f8fafc; padding: 8px 10px;
+  font-size: 12px; cursor: pointer; text-align: left;
+}
+.ai-quick-row button:hover { background: #eef6ff; border-color: #93c5fd; }
+.ai-log-cats, .ai-threats-head + .hint, .ai-tab-pane > .hint { flex-shrink: 0; }
+.ai-log-grid {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px;
+  align-items: stretch;
+}
+.ai-log-grid > div {
+  border: 1px solid #e8eef6; border-radius: 10px; padding: 10px; background: #fff;
+  min-height: 0; height: 100%; overflow: auto; display: flex; flex-direction: column;
+}
+.ai-log-grid label {
+  display: block; font-size: 12px; font-weight: 650; color: var(--muted); margin-bottom: 8px; flex-shrink: 0;
+}
+.ai-log-grid .ai-mini-tbl { flex: 1; }
+.ai-threats-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 6px 12px; margin-bottom: 8px; flex-shrink: 0;
+}
+.ai-threats-head label { font-size: 12px; font-weight: 650; color: var(--muted); }
+.ai-threats-layout {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.9fr); gap: 12px;
+  align-items: stretch;
+}
+.ai-threats-list {
+  border: 1px solid #e8eef6; border-radius: 10px; background: #fff;
+  overflow: auto; min-height: 0; height: 100%; max-height: none;
+}
+.ai-threat-title { display: block; font-size: 12.5px; font-weight: 650; }
+.ai-threats-list td small { display: block; margin-top: 2px; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px; }
+.ai-threat-card {
+  border: 1px solid #e8eef6; border-radius: 10px; padding: 12px 14px; background: #fff;
+  min-height: 0; height: 100%; overflow: auto; position: static;
+}
+.ai-threat-card h4 { margin: 0 0 4px; font-size: 14px; line-height: 1.35; }
+.ai-threat-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pill[data-role="关键证据"] { background: #fee2e2; color: #b91c1c; }
+.pill[data-role="佐证"] { background: #fffaeb; color: #b54708; }
+.pill[data-role="上下文"] { background: #f1f5f9; color: #475569; }
+.pill[data-ai="支撑真实攻击"] { background: #fee2e2; color: #b91c1c; }
+.pill[data-ai="可疑需复核"] { background: #fffaeb; color: #b54708; }
+.pill[data-ai="疑似误报/合规噪音"] { background: #eef2ff; color: #3730a3; }
+.pill[data-ai="信息不足"] { background: #f1f5f9; color: #475569; }
+.ai-threat-card-top {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.ai-threat-card-top b { font-size: 13px; color: #1d4ed8; }
+.ai-scope-banner {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
+  margin: 0; padding: 8px 10px; border-radius: 10px; flex-shrink: 0;
+  background: #f8fbff; border: 1px solid #dbeafe; font-size: 12px;
+}
+.ai-scope-banner b { color: #1e3a8a; }
+.ai-scope-banner em { font-style: normal; }
+.ai-think-banner {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px;
+  margin-bottom: 8px; padding: 8px 10px; border-radius: 10px;
+  background: #f8fbff; border: 1px solid #dbeafe; flex-shrink: 0;
+}
+.ai-think-banner b { font-size: 12.5px; color: #1e3a8a; }
+.ai-think { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 0; }
+.ai-chain-pane, .ai-logs-pane { overflow: hidden; }
+.ai-chain-board {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; overflow: hidden;
+}
+.ai-chain-flow {
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; flex-shrink: 0;
+  padding: 12px; border: 1px solid #e8eef6; border-radius: 12px; background: #fff;
+}
+.ai-chain-node {
+  min-width: 120px; max-width: 180px; flex: 1 1 120px;
+  border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px;
+  background: #f8fafc; cursor: pointer; display: grid; gap: 2px;
+}
+.ai-chain-node.host { background: linear-gradient(135deg, #eff6ff, #fff); border-color: #93c5fd; }
+.ai-chain-node.stage { background: #fff; }
+.ai-chain-node.on { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,.15); }
+.ai-chain-node:hover { border-color: #93c5fd; }
+.ai-chain-badge {
+  width: fit-content; font-size: 10px; font-weight: 700; color: #1d4ed8;
+  background: #dbeafe; border-radius: 999px; padding: 1px 7px; margin-bottom: 2px;
+}
+.ai-chain-node b { font-size: 13px; }
+.ai-chain-node small, .ai-chain-node em { font-size: 11px; color: var(--muted); font-style: normal; }
+.ai-chain-arrow {
+  align-self: center; color: #94a3b8; font-weight: 700; font-size: 16px; flex: 0 0 auto;
+}
+.ai-chain-detail {
+  flex: 1; min-height: 0; overflow: auto; border: 1px solid #e8eef6; border-radius: 12px;
+  background: #fff; padding: 12px 14px;
+}
+.ai-chain-detail header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.ai-chain-detail h4 { margin: 0; font-size: 15px; }
+.ai-chain-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.ai-chain-item {
+  border: 1px solid #eef2f7; border-radius: 10px; padding: 10px; background: #fbfdff;
+}
+.ai-chain-item[data-k="threat"] { border-color: #fecaca; background: #fff7f7; }
+.ai-chain-item[data-k="log"] { border-color: #bfdbfe; background: #f8fbff; }
+.ai-chain-item-top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.ai-chain-item-top time { font-size: 11px; color: var(--muted); }
+.ai-chain-item b { display: block; font-size: 12.5px; margin-bottom: 4px; }
+.ai-chain-item p { margin: 0; font-size: 12px; color: #475569; line-height: 1.45; }
+.ai-log-cats { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; flex-shrink: 0; }
+.ai-log-cats .chip { cursor: pointer; border: 1px solid #e2e8f0; }
+.ai-log-cats .chip.on { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; font-weight: 650; }
+.ai-log-cats .chip.sm { font-size: 11px; padding: 2px 8px; }
+.ai-log-board {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr); gap: 12px;
+}
+.ai-log-main, .ai-log-side {
+  min-height: 0; border: 1px solid #e8eef6; border-radius: 12px; background: #fff;
+  display: flex; flex-direction: column; overflow: hidden; padding: 10px 12px;
+}
+.ai-log-table-wrap { flex: 1; min-height: 0; overflow: auto; }
+.ai-log-card {
+  margin-top: 8px; border-top: 1px solid #eef2f7; padding-top: 8px; flex-shrink: 0;
+}
+.ai-log-card b { font-size: 13px; }
+.ai-log-card p { margin: 4px 0 0; font-size: 12.5px; line-height: 1.45; }
+.ai-think-step.llm { background: #f5f3ff; }
+.ai-think-step.llm.on { background: #ede9fe; box-shadow: inset 3px 0 0 #7c3aed; }
+.ai-evidence-list { margin: 0; padding-left: 16px; }
+.ai-evidence-list li {
+  font-size: 12px; line-height: 1.45; margin-bottom: 4px;
+  padding: 4px 8px; background: #f8fafc; border-radius: 6px; list-style: disc;
+}
+.ai-mini-tbl .sev-critical, .ai-mini-tbl .sev-高, .ai-mini-tbl .sev-严重 { background: #fee2e2; color: #b91c1c; }
+.ai-mini-tbl .sev-high { background: #fee2e2; color: #b91c1c; }
+.ai-mini-tbl .sev-medium, .ai-mini-tbl .sev-中 { background: #fffaeb; color: #b54708; }
+.ai-mini-tbl .sev-low, .ai-mini-tbl .sev-低 { background: #ecfdf3; color: #027a48; }
+.ai-verdict {
+  display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px;
+  font-weight: 700; font-size: 13px; background: #f1f5f9; color: #334155; width: fit-content;
+}
+.ai-verdict[data-v="真实攻击"] { background: #fee2e2; color: #b91c1c; }
+.ai-verdict[data-v="疑似误报"] { background: #fffaeb; color: #b54708; }
+.ai-verdict[data-v="信息不足"] { background: #eef2ff; color: #3730a3; }
+.ai-disp { margin: 0 0 14px; }
+.ai-disp label {
+  display: block; font-size: 12px; font-weight: 650; color: var(--muted); margin-bottom: 8px;
+}
+.ai-section-hd {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 8px 12px; margin-bottom: 8px; flex-shrink: 0;
+}
+.ai-section-hd label { font-size: 12.5px; font-weight: 700; color: #334155; margin-right: 8px; }
+.ai-report-actions { display: flex; gap: 10px; align-items: center; }
+.ai-entity-pane, .ai-report-pane { overflow: hidden; }
+.ai-entity-board, .ai-report-board {
+  flex: 1 1 auto; min-height: 0;
+  display: grid; gap: 12px; align-items: stretch;
+}
+.ai-entity-board {
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 1fr);
+}
+.ai-report-board {
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.85fr);
+}
+.ai-entity-list {
+  border: 1px solid #e8eef6; border-radius: 12px; background: #fff;
+  overflow: auto; min-height: 0; padding: 6px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ai-entity-row {
+  display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: start;
+  width: 100%; text-align: left; border: 1px solid transparent; border-radius: 10px;
+  background: transparent; padding: 9px 10px; cursor: pointer;
+}
+.ai-entity-row:hover { background: #f8fbff; border-color: #e2e8f0; }
+.ai-entity-row.on { background: #eef6ff; border-color: #93c5fd; }
+.ai-entity-row[data-risk="malicious"] .ai-entity-type { background: #fee2e2; color: #b91c1c; }
+.ai-entity-row[data-risk="suspicious"] .ai-entity-type { background: #fffaeb; color: #b54708; }
+.ai-entity-type {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
+  background: #f1f5f9; color: #475569; border-radius: 7px; padding: 4px 6px; text-align: center;
+}
+.ai-entity-main { min-width: 0; display: grid; gap: 2px; }
+.ai-entity-main b {
+  font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.ai-entity-main small {
+  font-size: 11.5px; color: var(--muted); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ai-entity-detail {
+  border: 1px solid #e8eef6; border-radius: 12px; background: #fff;
+  padding: 12px 14px; min-height: 0; overflow: auto;
+}
+.ai-entity-detail-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.ai-entity-detail-top em { font-style: normal; font-size: 12px; color: var(--muted); }
+.ai-entity-detail > h4 {
+  margin: 0 0 12px; font-size: 14px; line-height: 1.4; word-break: break-all;
+}
+.ai-entity-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.ai-entity-box {
+  border: 1px solid #eef2f7; border-radius: 10px; padding: 10px 12px; background: #fbfdff;
+}
+.ai-entity-box.accent { background: #fff7ed; border-color: #fed7aa; }
+.ai-entity-box.advice { background: #f0fdf4; border-color: #bbf7d0; }
+.ai-entity-box label {
+  display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;
+}
+.ai-entity-box p, .ai-entity-box ol { margin: 0; font-size: 12.5px; line-height: 1.55; }
+.ai-entity-box ol { padding-left: 16px; display: grid; gap: 4px; }
+.ai-entity-box dl { margin: 0; display: grid; gap: 6px; }
+.ai-entity-box dl > div { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 6px; font-size: 12px; }
+.ai-entity-box dl .full { grid-column: 1 / -1; grid-template-columns: 52px minmax(0, 1fr); }
+.ai-entity-box dt { margin: 0; color: var(--muted); }
+.ai-entity-box dd { margin: 0; word-break: break-word; }
+.ai-ioc-strip { margin-top: 12px; }
+.ai-ioc-strip label {
+  display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;
+}
+.ai-ioc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ai-ioc-chips .chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.ai-ioc-list { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 6px; }
+.ai-ioc-list li { font-size: 12px; word-break: break-all; }
+.ai-ioc-list code { font-size: 11.5px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+.ai-panel-empty.fill {
+  flex: 1; display: grid; place-items: center; border: 1px dashed #e2e8f0;
+  border-radius: 12px; background: #f8fafc; color: var(--muted); font-size: 13px;
+}
+.ai-report-doc {
+  min-height: 0; height: 100%; overflow: auto;
+  border: 1px solid #e8eef6; border-radius: 12px; padding: 16px 18px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(180deg, #eff6ff, #fff) border-box;
+}
+.ai-report-side {
+  min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px;
+}
+.ai-report-card {
+  border: 1px solid #e8eef6; border-radius: 12px; padding: 12px 14px; background: #fff;
+}
+.ai-report-card label {
+  display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;
+}
+.ai-report-card b { display: block; font-size: 16px; margin-bottom: 2px; }
+.ai-report-card small { color: var(--muted); font-size: 12px; }
+.ai-report-card p, .ai-report-card ul { margin: 0; font-size: 12.5px; line-height: 1.5; }
+.ai-report-card ul { padding-left: 16px; display: grid; gap: 4px; }
+.ai-report-card.verdict[data-v="真实攻击"] { background: #fef2f2; border-color: #fecaca; }
+.ai-report-card.verdict[data-v="真实攻击"] b { color: #b91c1c; }
+.ai-report-card.verdict[data-v="疑似误报"] { background: #fffbeb; border-color: #fde68a; }
+.ai-report-card.verdict[data-v="疑似误报"] b { color: #b54708; }
+.ai-report-card.verdict[data-v="信息不足"] { background: #eef2ff; border-color: #c7d2fe; }
+.ai-report-card.verdict[data-v="信息不足"] b { color: #3730a3; }
+.ai-mini-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ai-mini-tbl th, .ai-mini-tbl td {
+  text-align: left; padding: 6px 8px; border-bottom: 1px solid #eef2f7; vertical-align: top;
+}
+.ai-mini-tbl th { color: var(--muted); font-weight: 650; background: #f8fafc; }
+.ai-mini-tbl td.mono { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-mini-tbl .pill[data-risk="malicious"] { background: #fee2e2; color: #b91c1c; }
+.ai-mini-tbl .pill[data-risk="suspicious"] { background: #fffaeb; color: #b54708; }
+.ai-disp-list { display: grid; gap: 8px; }
+.ai-disp-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid #e8eef6; border-radius: 10px; padding: 10px 12px; background: #fff;
+}
+.ai-disp-row b { display: block; font-size: 13px; }
+.ai-disp-row .mono { font-size: 12px; color: #334155; }
+.ai-disp-row small { display: block; color: var(--muted); margin-top: 2px; }
+.ai-deliv { display: block; color: #64748b; }
+.ai-think, .ai-meta, .ai-timeline, .ai-hard { margin: 0 0 14px; }
+.ai-think label, .ai-meta label, .ai-timeline label, .ai-hard label {
+  display: block; font-size: 12px; font-weight: 650; color: var(--muted); margin-bottom: 8px;
+}
+.ai-think-layout {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1.4fr); gap: 0;
+  border: 1px solid #e8eef6; border-radius: 12px; overflow: hidden; background: #fff;
+}
+.ai-think-steps {
+  display: flex; flex-direction: column; gap: 0; border-right: 1px solid #e8eef6; background: #f8fafc;
+  max-height: none; height: 100%; overflow: auto; min-height: 0;
+}
+.ai-think-step {
+  text-align: left; border: 0; border-bottom: 1px solid #eef2f7; background: transparent;
+  padding: 10px 12px; cursor: pointer;
+}
+.ai-think-step:hover { background: #eef6ff; }
+.ai-think-step.on { background: #e8f1ff; box-shadow: inset 3px 0 0 #2563eb; }
+.ai-think-step b { display: block; font-size: 12.5px; color: var(--ink); }
+.ai-think-step small { color: var(--muted); font-size: 11px; }
+.ai-think-detail { padding: 12px 14px; min-height: 0; height: 100%; overflow: auto; }
+.ai-think-detail h4 { margin: 0 0 4px; font-size: 14px; }
+.ai-think-block { margin-top: 10px; }
+.ai-think-block label {
+  display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: none;
+}
+.ai-think-block p, .ai-think-block ul { margin: 0; font-size: 12.5px; line-height: 1.55; }
+.ai-think-block ul { padding-left: 16px; }
+.ai-meta-dl {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin: 0;
+  border: 1px solid #e8eef6; border-radius: 10px; padding: 10px 12px; background: #fff;
+}
+.ai-meta-dl > div { display: grid; grid-template-columns: 72px 1fr; gap: 6px; align-items: start; }
+.ai-meta-dl .span2 { grid-column: 1 / -1; }
+.ai-meta-dl dt { margin: 0; color: var(--muted); font-size: 12px; }
+.ai-meta-dl dd { margin: 0; font-size: 12.5px; }
+.ai-mini-tbl tr { cursor: pointer; }
+.ai-mini-tbl tr.on td { background: #eef6ff; }
+.ai-hard ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ai-hard li { font-size: 12.5px; }
+.ai-hard li b { margin-right: 6px; }
+.ai-used-skills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
+.ai-used-skills label { font-size: 12px; color: var(--muted); margin-right: 4px; }
+.ai-tab-pane:has(.ai-disp) { overflow: auto; }
+.ai-md {
+  font-size: 13.5px; line-height: 1.7; color: #0f172a;
+}
+.ai-md h1, .ai-md h2, .ai-md h3 {
+  margin: 16px 0 10px; font-size: 15px; font-weight: 700; color: #0f172a;
+  padding-bottom: 6px; border-bottom: 1px solid #eef2f7;
+}
+.ai-md h1 { font-size: 18px; border-bottom-color: #dbeafe; }
+.ai-md h2:first-child, .ai-md h1:first-child { margin-top: 0; }
+.ai-md p { margin: 0 0 10px; }
+.ai-md ul { margin: 0 0 12px; padding-left: 18px; display: grid; gap: 4px; }
+.ai-md li { line-height: 1.55; }
+.ai-md code {
+  font-size: 12px; background: #f1f5f9; padding: 1px 6px; border-radius: 4px;
+  border: 1px solid #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.ai-md strong, .ai-md b { color: #0f172a; }
+.ai-extra { margin-top: 12px; font-size: 12px; }
+.ai-extra ul { margin: 8px 0 0; padding-left: 18px; }
+.ai-busy, .ai-empty {
+  flex: 1; min-height: 0; display: grid; place-content: center; gap: 10px;
+  text-align: center; padding: 40px 20px; color: var(--muted);
+}
+.ai-spinner {
+  width: 28px; height: 28px; margin: 0 auto; border-radius: 50%;
+  border: 3px solid #e2e8f0; border-top-color: #2563eb; animation: ai-spin .8s linear infinite;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+.pill.ok { background: #ecfdf3; color: #027a48; }
+.pill.warn { background: #fffaeb; color: #b54708; }
+.pill.danger { background: #fee2e2; color: #b91c1c; }
+@media (max-width: 1200px) {
+  .ai-team-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ai-hero { grid-template-columns: 1fr; }
+  .ai-hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ai-board { grid-template-columns: 1fr; }
+}
+@media (max-width: 1100px) {
+  .ai-layout { grid-template-columns: 1fr; }
+  .ai-think-layout { grid-template-columns: 1fr; }
+  .ai-think-steps { border-right: 0; border-bottom: 1px solid #e8eef6; max-height: 180px; }
+  .ai-meta-dl { grid-template-columns: 1fr; }
+  .ai-log-grid, .ai-log-board, .ai-threats-layout, .ai-entity-board, .ai-report-board { grid-template-columns: 1fr; }
+  .ai-threat-card { position: static; }
+  .ai-entity-grid { grid-template-columns: 1fr; }
 }
 </style>

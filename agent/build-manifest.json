@@ -2,11 +2,11 @@
   "schema": 1,
   "version": "0.13.1",
   "build_id": "0.13.1+6cde930e",
-  "build_time": "2026-11-02T16:59:26+0800",
+  "build_time": "2026-11-06T10:30:47+0800",
   "source_rev": "6cde930ebd1ef3de",
   "exe_name": "forensic-agent.exe",
   "exe_size": 13228544,
-  "exe_sha256": "437b866799d44f3e32aec76083bd9b6cce198e6fa718c5b5164b2c7a6df2c22c",
+  "exe_sha256": "4170ab8e770813cc9e0a1e900b936c4655c04ee0a7e544a72928b07a8e7ee926",
   "protocol_min": 1,
   "protocol_max": 2,
   "capabilities": [

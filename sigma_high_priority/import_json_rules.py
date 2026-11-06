@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
 import time
@@ -14,7 +13,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 RULES = ROOT / "rules"
-SRC = Path(os.environ.get("SIGMA_RULES_DIR") or "sigma_all_rules")
+SRC = Path(r"D:\360极速浏览器X下载\sigma_all_rules")
 CATALOG = ROOT / "sigma_high_priority" / "sigma_high_all.json"
 MANIFEST = ROOT / "sigma_high_priority" / "imported_json.txt"
 SOURCE_TAG = "sigma_high_priority"

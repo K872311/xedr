@@ -1,6 +1,6 @@
 # Sigma 高危规则候选（level=high/critical，Windows）
 
-源目录: SigmaHQ `sigma_all_rules`（重导时用环境变量 `SIGMA_RULES_DIR` 指定）
+源目录: `D:\360极速浏览器X下载\sigma_all_rules`
 筛选结果: **1273** 条 high/critical（Windows 相关）
 
 ## 已导入后端
